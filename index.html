@@ -6307,6 +6307,64 @@ header{
     </section>
 
     <section class="card">
+      <div class="card-title"><span class="card-title-text">BOI MAGRO — Variação desde uma Data</span><button type="button" class="info-btn" aria-label="Ajuda: BOI MAGRO — Variação desde uma Data" data-tooltip="Variação percentual entre uma data que você escolhe e hoje, com outra série sobreposta na mesma janela para comparação.">ⓘ</button></div>
+        <div class="pill">Quanto o boi magro andou desde a data que você escolher.</div>
+      <div class="explain">
+        <span class="ex-tag">Para que serve</span>
+        A âncora é sua: o dia em que você comprou o lote, o começo da temporada de reposição, a data de um
+        orçamento que quer revisar. Com o <b>boi gordo sobreposto</b>, o card responde a pergunta da
+        reposição — se o magro subiu mais que a arroba que ele vai produzir, a conta da engorda apertou
+        nessa janela, e o número dessa frase fica na tela.
+      </div>
+      <div class="explain">
+        <span class="ex-tag">Variação não é volatilidade</span>
+        <b>Variação</b> é o preço de hoje contra o da âncora: tem sinal, e é a linha do gráfico.
+        <b>Amplitude</b> e <b>maior queda desde o topo</b> medem o balanço do caminho: não têm sinal, e estão
+        nos indicadores. Duas séries podem fechar a mesma alta por caminhos muito diferentes — e quem
+        precisou vender no meio viveu o segundo número, não o primeiro.
+      </div>
+      <div class="explain">
+        <span class="ex-tag">Sem régua de época</span>
+        A série de o boi magro na planilha começa em <b>ago/2024</b>. Não existem anos anteriores para dizer se a
+        variação do período é grande ou pequena <u>para esta altura do calendário</u>, então este card sai
+        sem o painel de comparação anual que os de boi, bezerro e milho têm. É limitação de dado, não de
+        desenho: no dia em que a série tiver anos, o painel aparece sozinho.
+      </div>
+
+      <div class="vol-bar">
+        <div class="vol-fld" style="min-width:230px"><label for="bvpPraca">Praça</label>
+          <select id="bvpPraca" onchange="try{updateVariacaoDesde('magro')}catch(e){}"
+                  title="De qual praça ler o preço. A lista sai da mesma base regional dos demais cards. A média encadeada não cria degrau quando uma praça falta no dia, mas mistura animais de estados diferentes."></select></div>
+        <div class="vol-fld"><label for="bvpData">Data-âncora</label>
+          <input id="bvpData" type="date" onchange="try{updateVariacaoDesde('magro')}catch(e){}"
+                 title="A partir de qual data medir. Se o dia não tiver pregão, o card usa o primeiro dia seguinte com preço e avisa na leitura."></div>
+        <div class="vol-fld"><label for="bvpBase">Base</label>
+          <select id="bvpBase" onchange="try{updateVariacaoDesde('magro')}catch(e){}"
+                  title="Nominal é o preço que de fato se pagou em cada data. Corrigido traz tudo para reais de dez/2025 e mede ganho real de poder de compra.">
+            <option value="nom" selected>Nominal — o preço de cada época</option>
+            <option value="real">Corrigido — R$ de dez/2025</option>
+          </select></div>
+        <div class="vol-fld"><label for="bvpComp">Comparar com</label>
+          <select id="bvpComp" onchange="try{updateVariacaoDesde('magro')}catch(e){}"
+                  title="Segunda série sobreposta, ancorada na mesma data. Cada uma parte do seu próprio preço: o que se compara são os caminhos, não os níveis.">
+            <option value="boi" selected>Boi gordo</option>
+            <option value="bezerro">Bezerro</option>
+            <option value="milho">Milho CEPEA</option>
+            <option value="">Nenhuma</option>
+          </select></div>
+        <button type="button" onclick="try{vddAtalho('magro','ano')}catch(e){}" title="1º de janeiro do ano corrente">Início do ano</button>
+        <button type="button" onclick="try{vddAtalho('magro','6m')}catch(e){}" title="Seis meses atrás">6 meses</button>
+        <button type="button" onclick="try{vddAtalho('magro','12m')}catch(e){}" title="Doze meses atrás">12 meses</button>
+        <button type="button" onclick="try{vddAtalho('magro','24m')}catch(e){}" title="Vinte e quatro meses atrás">24 meses</button>
+        <span class="vol-scope">R$/cabeça · CEPEA REGIONAL, por praça, desde ago/2024</span>
+      </div>
+
+      <div id="chartMagroVariacao" class="chart-container"></div>
+      <div class="vol-kpis" id="bvpKpis"></div>
+      <div id="chartMagroVariacaoContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
       <div class="card-title"><span class="card-title-text">Relação de Troca BGI/CCM</span><button type="button" class="info-btn" aria-label="Ajuda: Relação BGI/CCM" data-tooltip="Sacas de milho por arroba de boi — cruzamento BGI × CCM. Meses sem CCM: interpolados. média do vencimento anterior e sucessor.">ⓘ</button></div>
       <div class="pill">Quantas sacas de milho a arroba do boi compra, vencimento a vencimento.</div>
     <div class="explain">
@@ -19668,6 +19726,14 @@ function updatePreco() {
            colReal:['Cotação (R$ dez/2025)','Preço corrigido IGP-M (base dez/25)','Cotação'],
            colNom:null, desde:'ago/2004',
            obsNom:'A aba S.H MILHO CEPEA só traz a coluna corrigida: o nominal é revertido pelo IGP-M do painel.' },
+    /* Boi magro não tem aba própria: vem da CEPEA REGIONAL, cotado POR PRAÇA.
+       Não existe "o" boi magro — existem 28, em R$/cabeça, e a média deles
+       não é um preço que alguém pagou. Por isso este é o único card com
+       seletor de praça. */
+    magro: { rot:'Boi magro', rotMin:'boi magro', art:'o', un:'R$/cabeça', unTxt:'por cabeça',
+           porPraca:true, produtoReg:'Boi Magro', desde:'ago/2024',
+           obsNom:'O boi magro sai da aba CEPEA REGIONAL, cotado por praça em R$/cabeça (coluna VST, à vista). '
+                + 'A série começa em ago/2024; a versão corrigida é obtida pelo IGP-M do painel.' },
     soja: { rot:'Soja Paranaguá', rotMin:'soja Paranaguá', art:'a', un:'R$/sc', unTxt:'por saca',
            aliases:['SOJA - PARANAGUÁ','SOJA - PARANAGUA','SOJA PARANAGUÁ','SOJA PARANAGUA','SOJA'],
            colReal:null, colNom:['Preço','Cotação','Preço/sc'], desde:'jan/2026', semHistorico:true,
@@ -19695,19 +19761,61 @@ function updatePreco() {
   /* Lê uma aba e devolve [{d,t,real,nom}]. O que a planilha não traz é
      derivado pelo IGP-M, nos dois sentidos, respeitando o início da
      tabela. */
-  function _vddSerie(chave){
-    if (_VDD_CACHE[chave]) return _VDD_CACHE[chave];
+  function _vddEsc(t){
+    return String(t == null ? '' : t).replace(/[&<>"']/g, function(c){
+      return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c];
+    });
+  }
+
+  function _vddSerie(chave, praca){
     var F = _VDD_FONTES[chave];
     if (!F) return null;
+    var ck = chave + (F.porPraca ? ('|' + (praca || '__TODAS__')) : '');
+    if (_VDD_CACHE[ck]) return _VDD_CACHE[ck];
+
+    var minKIgpm = null;
+    try { var t = shIgpm(); if (t && t.minK != null) minKIgpm = t.minK; } catch(e){}
+    function fator(d){
+      var k = d.getFullYear()*12 + d.getMonth();
+      if (minKIgpm != null && k < minKIgpm) return null;
+      var f = 1;
+      try { f = shFatorIgpm(d.getFullYear(), d.getMonth()) || 1; } catch(e){}
+      return f > 0 ? f : null;
+    }
+
+    /* Caminho regional: lê pelo MESMO _rgSerie que os demais cards da base
+       regional usam, em vez de abrir a aba por fora. Uma segunda leitura da
+       mesma aba seria uma segunda chance de divergir. */
+    if (F.porPraca){
+      var S = null;
+      try { S = _rgSerie(F.produtoReg, praca || '__TODAS__'); } catch(e){}
+      if (!S || !S.datas || !S.datas.length) return null;
+      var reg = [];
+      for (var q=0;q<S.datas.length;q++){
+        var vq = S.valores[q];
+        if (vq == null || !(vq > 0)) continue;
+        var pq = String(S.datas[q]).split('-');
+        if (pq.length < 3) continue;
+        var dq = new Date(+pq[0], +pq[1]-1, +pq[2]);
+        if (isNaN(dq)) continue;
+        var fq = fator(dq);
+        reg.push({ d:dq, t:dq.getTime(), real: fq == null ? null : vq*fq, nom: vq });
+      }
+      if (!reg.length) return null;
+      reg.sort(function(a,b){ return a.t - b.t; });
+      reg._rot = (S.uf ? (S.uf + ' — ') : '') + S.praca;
+      reg._agregado = !!S.agregado;
+      reg._nPracas = S.nPracas || 1;
+      _VDD_CACHE[ck] = reg;
+      return reg;
+    }
+
     var nome = null;
     try { nome = findSheetByAliases(F.aliases); } catch(e){}
     if (!nome) return null;
     var rows = [];
     try { rows = parseSheet(nome) || []; } catch(e){ return null; }
     if (!rows.length) return null;
-
-    var minKIgpm = null;
-    try { var t = shIgpm(); if (t && t.minK != null) minKIgpm = t.minK; } catch(e){}
 
     var out = [];
     for (var i=0;i<rows.length;i++){
@@ -19718,16 +19826,13 @@ function updatePreco() {
       if (F.colReal) for (a=0;a<F.colReal.length;a++){ v = toNum(r[F.colReal[a]]); if (v != null && v > 0){ real = v; break; } }
       if (F.colNom)  for (a=0;a<F.colNom.length;a++){  v = toNum(r[F.colNom[a]]);  if (v != null && v > 0){ nom  = v; break; } }
       if (real == null && nom == null) continue;
-      var k = d.getFullYear()*12 + d.getMonth();
-      var dentro = (minKIgpm == null || k >= minKIgpm);
-      var f = 1;
-      if (dentro){ try { f = shFatorIgpm(d.getFullYear(), d.getMonth()) || 1; } catch(e){} }
-      if (nom  == null && real != null && dentro && f > 0) nom  = real / f;
-      if (real == null && nom  != null && dentro)          real = nom * f;
+      var f2 = fator(d);
+      if (nom  == null && real != null && f2 != null) nom  = real / f2;
+      if (real == null && nom  != null && f2 != null) real = nom * f2;
       out.push({ d:d, t:d.getTime(), real:real, nom:nom });
     }
     out.sort(function(a,b){ return a.t - b.t; });
-    if (out.length) _VDD_CACHE[chave] = out;
+    if (out.length) _VDD_CACHE[ck] = out;
     return out.length ? out : null;
   }
 
@@ -19774,7 +19879,8 @@ function updatePreco() {
     boi:     { pref:'bvi', chave:'boi',     chartId:'chartBoiVariacao',     comp:'bezerro' },
     bezerro: { pref:'bvz', chave:'bezerro', chartId:'chartBezVariacao',     comp:'boi' },
     milho:   { pref:'bvm', chave:'milho',   chartId:'chartMilhoVariacao',   comp:'boi' },
-    soja:    { pref:'bvs', chave:'soja',    chartId:'chartSojaVariacao',    comp:'milho' }
+    soja:    { pref:'bvs', chave:'soja',    chartId:'chartSojaVariacao',    comp:'milho' },
+    magro:   { pref:'bvp', chave:'magro',   chartId:'chartMagroVariacao',   comp:'boi' }
   };
 
   /* Atalhos de período. Escrevem no campo de data e redesenham — assim o
@@ -19812,11 +19918,39 @@ function updatePreco() {
         ctxEl.innerHTML = '<div class="rb-head">Variação desde a data</div><div class="rb-line">' + msg + '</div>'; }
     }
 
-    var serie = _vddSerie(C.chave);
+    /* Seletor de praça, só nos ativos que são cotados por praça. Preenchido
+       no primeiro desenho, a partir da MESMA lista que os demais cards
+       regionais usam. */
+    var praca = null;
+    if (F.porPraca){
+      var selP = document.getElementById(C.pref + 'Praca');
+      if (selP && !selP.options.length){
+        var lista = [];
+        try { lista = _rgPracas(F.produtoReg) || []; } catch(e){}
+        var htmlP = '<option value="__TODAS__">Média encadeada de todas as praças</option>';
+        lista.forEach(function(o){
+          htmlP += '<option value="' + _vddEsc(o.chave) + '">' + _vddEsc(o.uf) + ' — '
+                 + _vddEsc(o.praca) + '</option>';
+        });
+        selP.innerHTML = htmlP;
+        /* Abre numa praça, não na média: a média de 28 praças em R$/cabeça
+           mistura animais de MT e de SP e não é preço que alguém pagou.
+           Presidente Prudente é a praça da região de Piquerobi e tem 98% de
+           cobertura na base; qualquer outra está a um clique. */
+        var padrao = 'SP/Presidente Prudente';
+        var temPadrao = lista.some(function(o){ return o.chave === padrao; });
+        selP.value = temPadrao ? padrao : (lista.length ? lista[0].chave : '__TODAS__');
+      }
+      praca = selP ? selP.value : '__TODAS__';
+    }
+
+    var serie = _vddSerie(C.chave, praca);
     if (!serie || serie.length < 20){
-      vazio('Série de <b>' + F.rot + '</b> indisponível — a aba não foi encontrada na planilha ou está vazia.');
+      vazio('Série de <b>' + F.rot + '</b> indisponível'
+            + (F.porPraca ? ' para esta praça' : ' — a aba não foi encontrada na planilha ou está vazia') + '.');
       return;
     }
+    var rotPraca = serie._rot || null;
 
     var eBase = document.getElementById(C.pref + 'Base');
     var base = (eBase && String(eBase.value) === 'real') ? 'real' : 'nom';
@@ -19931,7 +20065,11 @@ function updatePreco() {
         pctil = Math.round(100*outros.filter(function(v){ return v < varTotal; }).length/outros.length);
       }
     }
-    var temBaixo = (anos.length > 1);
+    /* Três anos é o mínimo para a palavra "mediana" significar alguma coisa.
+       Com um ou dois, o painel viraria uma mediana de duas barras: número com
+       cara de régua e sem régua dentro. Abaixo disso o card diz o fato
+       simples — "a mesma janela em 2025 fez X%" — e não finge estatística. */
+    var temBaixo = (outros.length >= 3);
 
     /* ── Desenho ─────────────────────────────────────────────────────── */
     var COR_A = '#b45309', COR_C = '#0d9488';
@@ -20014,7 +20152,7 @@ function updatePreco() {
          showarrow:false, font:{size:10.5, color:'#6b7280'}});
     } else {
       lay.annotations.push({text:'<span style="color:#b45309">sem comparação anual: a série começa em '
-             + F.desde + '</span>',
+             + F.desde + (outros.length ? (' · só ' + outros.length + ' ano(s) anterior(es)') : '') + '</span>',
          xref:'paper', yref:'paper', x:1, y:-0.14, xanchor:'right', yanchor:'top',
          showarrow:false, font:{size:9.5, color:'#b45309'}});
     }
@@ -20048,6 +20186,14 @@ function updatePreco() {
     if (ctxEl){
       var h = '<div class="rb-head">Leitura</div>';
 
+      if (rotPraca){
+        h += '<div class="rb-line"><b>Praça.</b> ' + _vddEsc(rotPraca)
+           + (serie._agregado ? (' — índice encadeado de ' + serie._nPracas + ' praças, que não cria degrau '
+                               + 'quando uma delas falta no dia. O nível em R$/cabeça mistura animais de '
+                               + 'estados diferentes; para decidir preço, prefira uma praça.')
+                              : '. Trocar a praça no seletor acima refaz o card inteiro.')
+           + '</div>';
+      }
       h += '<div class="rb-line"><b>Quanto andou.</b> De <b>' + _vddData(ancora.d) + '</b> a <b>'
          + _vddData(fimO.d) + '</b> ' + F.art + ' ' + F.rotMin + ' foi de ' + _vddRS(p0,0) + ' para '
          + _vddRS(pN,0) + ' ' + F.unTxt + ' — <span class="rb-num">' + _vddPct(varTotal,1) + '</span>'
@@ -20087,7 +20233,22 @@ function updatePreco() {
            + subiram + ' deles. ' + anoAtual + ' está com ' + _vddPct(varTotal,1)
            + (pctil != null ? ', acima de <b>' + pctil + '%</b> dos anos comparáveis.' : '.')
            + ' É esta linha que separa "subiu" de "subiu mais do que costuma subir nesta época".</div>';
-      } else if (F.semHistorico){
+      } else if (outros.length >= 1){
+        /* Um ou dois anos anteriores: o fato cabe, a estatística não. */
+        var listaAnos = anos.filter(function(_,ix){ return ix !== iAtual; });
+        var pares = listaAnos.map(function(a2,ix2){
+          var vv = varAno[anos.indexOf(a2)];
+          return '<b>' + a2 + '</b> fez ' + _vddPct(vv,1);
+        }).join(' e ');
+        h += '<div class="rb-line" style="border-left:3px solid #b45309;padding-left:9px;margin-top:8px">'
+           + '<b>Só dá para citar, não para medir.</b> A série de ' + F.rot + ' começa em ' + F.desde
+           + ', então a mesma janela do calendário existe em apenas ' + outros.length + ' ano'
+           + (outros.length > 1 ? 's' : '') + ' anterior' + (outros.length > 1 ? 'es' : '') + ': ' + pares
+           + ', contra ' + _vddPct(varTotal,1) + ' agora. É um fato, não uma régua — com '
+           + (outros.length > 1 ? 'dois anos' : 'um ano') + ' não há mediana que signifique alguma coisa, '
+           + 'e por isso o painel de barras não aparece. Ele entra sozinho quando a série chegar a '
+           + 'quatro anos.</div>';
+      } else if (F.semHistorico || !outros.length){
         h += '<div class="rb-line" style="border-left:3px solid #b45309;padding-left:9px;margin-top:8px">'
            + '<b>Sem régua de época, e isso é uma limitação de dado.</b> A série de ' + F.rot
            + ' na planilha começa em ' + F.desde + ' — não existem anos anteriores para dizer se '
@@ -20117,7 +20278,8 @@ function updatePreco() {
         base:base, ancora:ancora.d, fim:fimO.d, precoAncora:p0, precoFim:pN,
         variacao:varTotal, comparador:compChave || null, variacaoComp:varComp,
         topo:yA[iMax], fundo:yA[iMin], amplitude:amplitude, maiorQueda:ddMax,
-        medianaOutrosAnos:medOutros, anosComparaveis:outros.length, percentil:pctil
+        medianaOutrosAnos:medOutros, anosComparaveis:outros.length, percentil:pctil,
+        praca: rotPraca, agregado: !!serie._agregado
       };
       /* Endereço antigo do bezerro, para quem já lia dali. */
       if (C.chave === 'bezerro') window.__3M_SINAIS.bezVariacao = window.__3M_SINAIS.variacaoDesde.bezerro;
@@ -20131,6 +20293,8 @@ function updatePreco() {
   try { window.updateBezVariacao = updateBezVariacao; } catch(e){}
   function updateBoiVariacao(){ return updateVariacaoDesde('boi'); }
   try { window.updateBoiVariacao = updateBoiVariacao; } catch(e){}
+  function updateMagroVariacao(){ return updateVariacaoDesde('magro'); }
+  try { window.updateMagroVariacao = updateMagroVariacao; } catch(e){}
   function updateGraosVariacao(){
     try { updateVariacaoDesde('milho'); } catch(e){ console.warn('Milho — variação desde a data:', e); }
     try { updateVariacaoDesde('soja'); }  catch(e){ console.warn('Soja — variação desde a data:', e); }
@@ -43497,6 +43661,7 @@ function updateRelacao() {
     chartBezVariacao:'m3_2_2', chartBoiVariacao:'m3_2_1',
     chartMilhoVariacao:'m3_2_3', chartSojaVariacao:'m3_2_3',
     chartCurvaVarBGI:'m3_2_1', chartCurvaVarCCM:'m3_2_3', chartCurvaVarSJC:'m3_2_3',
+    chartMagroVariacao:'m3_2_8',
     chartSHMilhoDaily:'m3_2_3', chartSHVolMilho:'m3_2_3', chartSHMilhoAnnual:'m3_2_3',
     chartSHMilhoYoY:'m3_2_3', chartSHMilhoBase100:'m3_2_3', chartSHMilhoMonthly:'m3_2_3', chartJanelaMilho:'m3_2_3',
     chartSHAcucarDaily:'m3_2_4', chartSHVolAcucar:'m3_2_4', chartSHAcucarAnnual:'m3_2_4',
@@ -43845,6 +44010,7 @@ function updateRelacao() {
         ['A pressão da reposição está alta?','Spread bruto e pressão, por praça.','m3_1_4','chartRegGordoMagro'],
         ['A indústria está apertada?','Escala de abate.','m3_1_3','chartEscalaHist'],
         ['O futuro sustenta a engorda?','Curva BGI e custo da @ incremental.','m3_3_5b','chartBGIvsCAI'],
+        ['Quanto o magro andou desde a minha compra?','Variação desde uma data, por praça, contra o boi.','m3_2_8','chartMagroVariacao'],
         ['Quanto sobra por animal?','Margem em reais por cabeça e retorno sobre o capital.','m3_3_5b','chartCaiFinanceiro'],
         ['A curva mudou de formato?','Quanto cada vencimento andou desde uma data.','m3_2_1','chartCurvaVarBGI'],
         ['A conta fecha?','Repor agora compensa?','m3_3_2','chartRepoCadeia']
@@ -44620,6 +44786,7 @@ function updateRelacao() {
       'chartBacktest','chartBtCond','chartBtCondTraj'] },
     par: { rot:'PAR FIXO', dica:'Cruza duas séries físicas nomeadas no título; não depende do ativo selecionado.', ids:[
       'chartBoiMagroTroca','chartBoiMagroAgio','chartBezBoiTroca','chartBezAgioHist',
+      'chartMagroVariacao',
       'chartSHBoiMilhoTroca'] },
     travas: { rot:'SUAS TRAVAS', dica:'Depende das travas que você registrou, não do seletor de ativo.', ids:[
       'chartTrvAjuste','chartTrvCenario'] }
@@ -44833,7 +45000,8 @@ function updateRelacao() {
        flagrou `chartBezBoiTroca` e `chartBezAgioHist` nunca pintados: eles
        só eram desenhados pela série histórica do bezerro, em outra seção. */
     ['_renderBoiMagroTroca','_renderBoiMagroAgio',
-     '_renderBezBoiTroca','_renderBezAgioHist'].forEach(function(f){
+     '_renderBezBoiTroca','_renderBezAgioHist',
+     'updateMagroVariacao'].forEach(function(f){
       try { if(typeof window[f]==='function') window[f](); }
       catch(e){ console.warn(f+':', e); }
     });
