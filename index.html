@@ -6989,6 +6989,52 @@ header{
   </section>
 
   <section class="card">
+    <div class="card-title"><span class="card-title-text">BEZERRO — Variação desde uma Data</span><button type="button" class="info-btn" aria-label="Ajuda: variação desde uma data" data-tooltip="Variação percentual do bezerro entre uma data que você escolhe e hoje, com o boi gordo na mesma janela, e a mesma janela do calendário em cada ano da série para dizer se o número é normal para a época.">ⓘ</button></div>
+      <div class="pill">Quanto o bezerro andou desde a data que você escolher — e se isso é normal para a época.</div>
+    <div class="explain">
+      <span class="ex-tag">Para que serve</span>
+      O card de <b>Índice Base 100</b>, logo acima, mede sempre a partir de 1º de janeiro. Aqui a âncora é
+      sua: a data da compra, o começo da safra, o dia em que o preço virou. O gráfico traz o caminho do
+      preço desde ali, em %, e o <b>boi gordo na mesma janela</b> — porque "o bezerro subiu 14%" só vira
+      decisão quando se sabe o que o boi fez no mesmo período.
+    </div>
+    <div class="explain">
+      <span class="ex-tag">Variação não é volatilidade</span>
+      <b>Variação</b> é o preço de hoje contra o da âncora: tem sinal, e é a linha do gráfico.
+      <b>Amplitude</b> e <b>maior queda desde o topo</b> medem o balanço do caminho: não têm sinal, e estão
+      nos indicadores. Duas séries podem fechar os mesmos +14% por caminhos muito diferentes — e quem
+      precisou vender no meio viveu o segundo número, não o primeiro.
+    </div>
+    <div class="explain">
+      <span class="ex-tag">Cuidado com a âncora</span>
+      A variação depende inteiramente da data escolhida: ancorar num fundo faz qualquer mercado parecer uma
+      festa. O <b>painel de baixo</b> existe para isso — repete a mesma janela do calendário em cada ano da
+      série e diz se o número do ano corrente é grande ou pequeno <u>para essa época</u>.
+    </div>
+
+    <div class="vol-bar">
+      <div class="vol-fld"><label for="bvzData">Data-âncora</label>
+        <input id="bvzData" type="date" onchange="try{updateBezVariacao()}catch(e){}"
+               title="A partir de qual data medir. Se o dia não tiver pregão, o card usa o primeiro dia seguinte com preço e avisa na leitura."></div>
+      <div class="vol-fld"><label for="bvzBase">Base</label>
+        <select id="bvzBase" onchange="try{updateBezVariacao()}catch(e){}"
+                title="Nominal é o preço que de fato se pagou em cada data — comparável com a nota da sua compra. Deflacionado traz tudo para reais de dez/2025 e mede ganho real de poder de compra.">
+          <option value="nom" selected>Nominal — o preço de cada época</option>
+          <option value="real">Deflacionado — R$ de dez/2025</option>
+        </select></div>
+      <button type="button" onclick="try{bvzAtalho('ano')}catch(e){}" title="1º de janeiro do ano corrente">Início do ano</button>
+      <button type="button" onclick="try{bvzAtalho('6m')}catch(e){}" title="Seis meses atrás">6 meses</button>
+      <button type="button" onclick="try{bvzAtalho('12m')}catch(e){}" title="Doze meses atrás">12 meses</button>
+      <button type="button" onclick="try{bvzAtalho('24m')}catch(e){}" title="Vinte e quatro meses atrás">24 meses</button>
+      <span class="vol-scope">série do bezerro desde fev/2000 · o boi entra desde jan/2003 no nominal</span>
+    </div>
+
+    <div id="chartBezVariacao" class="chart-container"></div>
+    <div class="vol-kpis" id="bvzKpis"></div>
+    <div id="chartBezVariacaoContext" class="chart-context"></div>
+  </section>
+
+  <section class="card">
     <div class="card-title"><span class="card-title-text">BEZERRO — Sazonalidade do Preço (R$/cabeça)</span><button type="button" class="info-btn" aria-label="Ajuda: BEZERRO — Sazonalidade do Preço" data-tooltip="Preço médio mensal histórico em R$/cabeça real com bandas de ±1σ e ±2σ. Linha tracejada laranja = ano corrente. Zonas coloridas: vermelho &lt; -2σ, amarelo -2σ/-1σ, verde -1σ/+1σ, azul &gt; +1σ.">ⓘ</button></div>
       <div class="pill">Quais meses costumam pagar acima da média do próprio ano.</div>
     <div class="explain">
@@ -19290,6 +19336,466 @@ function updatePreco() {
   }
 
 
+
+  /* ══════════════════════════════════════════════════════════════════
+     BEZERRO — VARIAÇÃO DESDE UMA DATA
+     ------------------------------------------------------------------
+     O card do Índice Base 100 já responde "quanto andou desde 1º de
+     janeiro", com uma linha por ano. O que faltava era a ÂNCORA MÓVEL:
+     a data em que você comprou, ou a data a partir da qual quer medir.
+
+     Duas coisas que o card separa de propósito, porque são perguntas
+     diferentes e viram o mesmo número na cabeça de quem lê rápido:
+
+       VARIAÇÃO    (preço de hoje ÷ preço da âncora) − 1. Tem sinal.
+                   Responde "quanto andou".
+       AMPLITUDE E QUEDA  o tamanho do balanço no caminho. Não tem sinal.
+                   Responde "quanto doeu chegar aqui". Duas séries podem
+                   fechar os mesmos +14% com caminhos muito diferentes.
+
+     BASES. A aba S.H BEZERRO traz as duas colunas, "Cotação Nominal" e
+     "Cotação (R$ dez/2025)", desde fev/2000 — o nominal do bezerro é o
+     número que de fato se pagou, não uma reconstrução. A aba S.H BOI
+     GORDO só traz a corrigida, então o nominal do boi é revertido pelo
+     índice IGP-M do painel (nominal = real ÷ fator), exatamente como já
+     faz o card de Commodities Nominais. Essa tabela começa em jan/2003:
+     antes disso a reversão devolveria um número proporcional e não o
+     nominal daquela época, então o boi simplesmente não aparece ali.
+     ══════════════════════════════════════════════════════════════════ */
+  var _BVZ_CACHE = {};
+
+  /* Lê uma aba S.H uma vez e guarda {d, real, nom}. A coluna nominal é
+     lida quando existe; quando não existe, é revertida pelo IGP-M e o
+     limite da tabela é respeitado em vez de extrapolado. */
+  function _bvzSerie(chaveCache, aliases, colsReal, colsNom){
+    if (_BVZ_CACHE[chaveCache] !== undefined) return _BVZ_CACHE[chaveCache];
+    _BVZ_CACHE[chaveCache] = null;
+    var nome = null;
+    try { nome = findSheetByAliases(aliases); } catch(e){}
+    if (!nome) return null;
+    var rows = [];
+    try { rows = parseSheet(nome) || []; } catch(e){ return null; }
+    if (!rows.length) return null;
+
+    var minKIgpm = null;
+    try { var t = shIgpm(); if (t && t.minK != null) minKIgpm = t.minK; } catch(e){}
+
+    var out = [];
+    for (var i=0;i<rows.length;i++){
+      var r = rows[i] || {};
+      var d = toDate(r['Data'] || r['DATA']);
+      if (!d) continue;
+      var real = null, nom = null, v;
+      for (var a=0;a<colsReal.length;a++){ v = toNum(r[colsReal[a]]); if (v != null && v > 0){ real = v; break; } }
+      if (colsNom){
+        for (var b=0;b<colsNom.length;b++){ v = toNum(r[colsNom[b]]); if (v != null && v > 0){ nom = v; break; } }
+      }
+      if (nom == null && real != null){
+        /* Reversão pelo IGP-M. Fora da cobertura da tabela o fator trava no
+           extremo e o resultado seria um número proporcional posando de
+           nominal — melhor devolver nada. */
+        var k = d.getFullYear()*12 + d.getMonth();
+        if (minKIgpm == null || k >= minKIgpm){
+          var f = 1;
+          try { f = shFatorIgpm(d.getFullYear(), d.getMonth()) || 1; } catch(e){}
+          if (f > 0) nom = real / f;
+        }
+      }
+      if (real == null && nom == null) continue;
+      out.push({ d:d, t:d.getTime(), real:real, nom:nom });
+    }
+    out.sort(function(a,b){ return a.t - b.t; });
+    _BVZ_CACHE[chaveCache] = out.length ? out : null;
+    return _BVZ_CACHE[chaveCache];
+  }
+
+  function _bvzBezerro(){
+    return _bvzSerie('bez', GLOBAL_FIXED_SHEETS.shBezerro,
+      ['Cotação (R$ dez/2025)','Cotação (R$ dez/25)','Preço corrigido IGP-M (base dez/25)','Cotação'],
+      ['Cotação Nominal','Nominal','Preço']);
+  }
+  function _bvzBoi(){
+    return _bvzSerie('boi', GLOBAL_FIXED_SHEETS.shBoi,
+      ['Cotação (R$ dez/2025)','Preço corrigido IGP-M (base dez/25)','Cotação'], null);
+  }
+
+  function _bvzBase(){
+    var e = document.getElementById('bvzBase');
+    return (e && String(e.value) === 'real') ? 'real' : 'nom';
+  }
+  function _bvzVal(o, base){ return base === 'real' ? o.real : o.nom; }
+
+  /* Primeiro pregão em ou após a data pedida. A âncora quase nunca cai num
+     dia útil, e silenciar isso faria o card medir de uma data que não
+     existe na série. */
+  function _bvzAcha(serie, alvoT, base){
+    for (var i=0;i<serie.length;i++){
+      if (serie[i].t >= alvoT && _bvzVal(serie[i], base) != null) return i;
+    }
+    return -1;
+  }
+  function _bvzUltimo(serie, base){
+    for (var i=serie.length-1;i>=0;i--) if (_bvzVal(serie[i], base) != null) return i;
+    return -1;
+  }
+  /* Mesma data do calendário n anos atrás, com 29/02 caindo para 28/02. */
+  function _bvzRecua(d, anos){
+    var y = d.getFullYear() - anos, m = d.getMonth(), dia = d.getDate();
+    var ult = new Date(y, m+1, 0).getDate();
+    return new Date(y, m, Math.min(dia, ult));
+  }
+
+  function _bvzPct(v, casas){
+    if (v == null || !isFinite(v)) return '—';
+    return (v >= 0 ? '+' : '−') + Math.abs(v).toLocaleString('pt-BR',
+      { minimumFractionDigits: casas==null?1:casas, maximumFractionDigits: casas==null?1:casas }) + '%';
+  }
+  function _bvzRS(v, casas){
+    if (v == null || !isFinite(v)) return '—';
+    return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: casas==null?0:casas,
+                                               maximumFractionDigits: casas==null?0:casas });
+  }
+  function _bvzData(d){
+    if (!d) return '—';
+    var p = function(n){ return (n<10?'0':'') + n; };
+    return p(d.getDate()) + '/' + p(d.getMonth()+1) + '/' + d.getFullYear();
+  }
+
+  /* Atalhos de período. Escrevem no campo de data e redesenham — assim o
+     que o atalho fez continua visível e editável, em vez de virar um
+     estado escondido. */
+  function bvzAtalho(tipo){
+    var hoje = new Date();
+    var alvo;
+    if (tipo === 'ano') alvo = new Date(hoje.getFullYear(), 0, 1);
+    else if (tipo === '6m')  alvo = new Date(hoje.getFullYear(), hoje.getMonth()-6,  hoje.getDate());
+    else if (tipo === '12m') alvo = _bvzRecua(hoje, 1);
+    else if (tipo === '24m') alvo = _bvzRecua(hoje, 2);
+    else return;
+    var e = document.getElementById('bvzData');
+    if (!e) return;
+    var p = function(n){ return (n<10?'0':'') + n; };
+    e.value = alvo.getFullYear() + '-' + p(alvo.getMonth()+1) + '-' + p(alvo.getDate());
+    try { updateBezVariacao(); } catch(err){ console.warn('Bezerro — variação:', err); }
+  }
+  try { window.bvzAtalho = bvzAtalho; } catch(e){}
+
+  function updateBezVariacao(){
+    var chartId = 'chartBezVariacao';
+    var el    = document.getElementById(chartId);
+    var ctxEl = document.getElementById('chartBezVariacaoContext');
+    var kpiEl = document.getElementById('bvzKpis');
+    if (!el) return;
+
+    function vazio(msg){
+      renderPlot(chartId, [], {_no_title:true});
+      if (kpiEl) kpiEl.innerHTML = '';
+      if (ctxEl){ ctxEl.className = 'read-box';
+        ctxEl.innerHTML = '<div class="rb-head">Variação desde a data</div><div class="rb-line">' + msg + '</div>'; }
+    }
+
+    var bez = _bvzBezerro();
+    if (!bez || bez.length < 30){ vazio('Série do bezerro indisponível — a aba <b>S.H BEZERRO</b> não foi encontrada ou está vazia.'); return; }
+    var base = _bvzBase();
+    var boi  = _bvzBoi();
+
+    /* Data-âncora. Vazia ou inválida cai no 1º de janeiro do ano corrente,
+       que é a pergunta mais frequente e a que casa com o card de Base 100
+       logo acima. */
+    var campo = document.getElementById('bvzData');
+    var txt = campo ? String(campo.value || '').trim() : '';
+    var alvo = null;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(txt)){
+      var pp = txt.split('-');
+      alvo = new Date(+pp[0], +pp[1]-1, +pp[2]);
+    }
+    if (!alvo || isNaN(alvo)){
+      alvo = new Date(new Date().getFullYear(), 0, 1);
+      if (campo) campo.value = alvo.getFullYear() + '-01-01';
+    }
+
+    var iAnc = _bvzAcha(bez, alvo.getTime(), base);
+    var iFim = _bvzUltimo(bez, base);
+    if (iAnc < 0 || iFim < 0 || iFim <= iAnc){
+      var ini = bez[0].d, fim = bez[bez.length-1].d;
+      vazio('A data escolhida não deixa janela nenhuma. A série do bezerro vai de <b>' + _bvzData(ini)
+            + '</b> a <b>' + _bvzData(fim) + '</b>'
+            + (base === 'nom' ? ' no nominal' : ' no deflacionado') + '.');
+      return;
+    }
+
+    var ancora = bez[iAnc], p0 = _bvzVal(ancora, base);
+    var fimO   = bez[iFim], pN = _bvzVal(fimO, base);
+    var desloc = (ancora.d.getTime() !== alvo.getTime());
+
+    /* ── Painel de cima: o caminho desde a âncora ────────────────────── */
+    var xs = [], yBez = [], precos = [];
+    for (var i=iAnc;i<=iFim;i++){
+      var v = _bvzVal(bez[i], base);
+      if (v == null) continue;
+      xs.push(bez[i].d); yBez.push((v/p0 - 1)*100); precos.push(v);
+    }
+    if (xs.length < 2){ vazio('Menos de dois pregões na janela escolhida.'); return; }
+
+    /* O boi entra pelo MESMO procedimento, ancorado no seu próprio primeiro
+       pregão da janela. Ancorar os dois no mesmo preço seria comparar
+       níveis; o que interessa é comparar caminhos. */
+    var xBoi = [], yBoi = [], boiAviso = null;
+    if (boi && boi.length){
+      var jAnc = _bvzAcha(boi, ancora.d.getTime(), base);
+      if (jAnc >= 0){
+        var q0 = _bvzVal(boi[jAnc], base);
+        for (var j=jAnc;j<boi.length;j++){
+          if (boi[j].t > fimO.t) break;
+          var w = _bvzVal(boi[j], base);
+          if (w == null) continue;
+          xBoi.push(boi[j].d); yBoi.push((w/q0 - 1)*100);
+        }
+      } else if (base === 'nom'){
+        boiAviso = 'O boi não aparece nesta janela: o nominal dele é revertido pelo IGP-M, e a tabela do '
+                 + 'painel começa em jan/2003.';
+      }
+    }
+
+    /* Topo, fundo e a maior queda desde o topo dentro da janela. O
+       drawdown é calculado sobre o PREÇO, não sobre o percentual, porque é
+       o preço que cai. */
+    var iMax = 0, iMin = 0, pico = precos[0], ddMax = 0, ddIni = 0, ddFim = 0, picoI = 0;
+    for (var m=1;m<precos.length;m++){
+      if (precos[m] > precos[iMax]) iMax = m;
+      if (precos[m] < precos[iMin]) iMin = m;
+      if (precos[m] > pico){ pico = precos[m]; picoI = m; }
+      var dd = (precos[m]/pico - 1)*100;
+      if (dd < ddMax){ ddMax = dd; ddIni = picoI; ddFim = m; }
+    }
+    var varTotal = yBez[yBez.length-1];
+    var varBoi   = yBoi.length ? yBoi[yBoi.length-1] : null;
+    var amplitude = yBez[iMax] - yBez[iMin];
+
+    /* ── Painel de baixo: a mesma janela do calendário, ano a ano ─────
+       Mesma distância em dias? Não: mesma data. Quem pergunta "de março
+       até agora" quer março, não "219 dias". Por isso as duas pontas
+       recuam por ANO civil, com 29/02 caindo para 28/02. */
+    var anos = [], varAno = [], anoAtual = fimO.d.getFullYear();
+    var anoMin = bez[0].d.getFullYear();
+    for (var y = anoAtual; y >= anoMin; y--){
+      var k = anoAtual - y;
+      var dIni = _bvzRecua(ancora.d, k), dFim = _bvzRecua(fimO.d, k);
+      if (dIni < bez[0].d) continue;
+      var a = _bvzAcha(bez, dIni.getTime(), base);
+      var b = _bvzAcha(bez, dFim.getTime(), base);
+      if (a < 0 || b < 0 || b <= a) continue;
+      /* Só conta se o pregão achado não escorregou longe demais da data
+         pedida — feriado prolongado é tolerável, buraco de meses não. */
+      if ((bez[a].t - dIni.getTime()) > 20*86400000) continue;
+      if ((bez[b].t - dFim.getTime()) > 20*86400000) continue;
+      var va = _bvzVal(bez[a], base), vb = _bvzVal(bez[b], base);
+      if (va == null || vb == null || !(va > 0)) continue;
+      anos.push(String(y));
+      varAno.push((vb/va - 1)*100);
+    }
+    anos.reverse(); varAno.reverse();
+
+    var iAtual = anos.indexOf(String(anoAtual));
+    var outros = varAno.filter(function(v,ix){ return ix !== iAtual; });
+    var medOutros = null, subiram = 0;
+    if (outros.length){
+      var ord = outros.slice().sort(function(a,b){ return a-b; });
+      medOutros = ord.length % 2 ? ord[(ord.length-1)/2] : (ord[ord.length/2-1]+ord[ord.length/2])/2;
+      subiram = outros.filter(function(v){ return v > 0; }).length;
+    }
+    var piores = outros.filter(function(v){ return v < varTotal; }).length;
+    var pctil = outros.length ? Math.round(100*piores/outros.length) : null;
+
+    /* ── Desenho ─────────────────────────────────────────────────────── */
+    var COR_BEZ = '#b45309', COR_BOI = '#0d9488';
+    var _h = 620;
+    el.style.height = _h + 'px';
+
+    var traces = [
+      {x:xs, y:yBez, type:'scatter', mode:'lines', name:'Bezerro',
+       line:{color:COR_BEZ, width:2.4},
+       customdata:precos,
+       hovertemplate:'<b>%{x|%d/%m/%Y}</b><br>Bezerro: %{y:+.2f}% desde a âncora'
+                    +'<br>R$ %{customdata:,.2f}/cabeça<extra></extra>'}
+    ];
+    if (xBoi.length > 1){
+      traces.push({x:xBoi, y:yBoi, type:'scatter', mode:'lines', name:'Boi gordo',
+        line:{color:COR_BOI, width:2, dash:'dot'},
+        hovertemplate:'<b>%{x|%d/%m/%Y}</b><br>Boi gordo: %{y:+.2f}% desde a âncora<extra></extra>'});
+    }
+    /* Topo e fundo marcados: são as duas datas que a pergunta "qual foi a
+       oscilação" realmente quer saber. */
+    traces.push({x:[xs[iMax], xs[iMin]], y:[yBez[iMax], yBez[iMin]], type:'scatter', mode:'markers',
+      name:'Topo e fundo da janela', showlegend:false,
+      marker:{size:10, color:COR_BEZ, symbol:['triangle-up','triangle-down'],
+              line:{color:'#fff', width:1.5}},
+      hovertemplate:'<b>%{x|%d/%m/%Y}</b><br>%{y:+.2f}% desde a âncora<extra></extra>'});
+
+    traces.push({x:anos, y:varAno, type:'bar', yaxis:'y2', xaxis:'x2',
+      name:'Mesma janela, ano a ano', showlegend:false,
+      marker:{color:varAno.map(function(v,ix){
+                return ix === iAtual ? 'rgba(180,83,9,0.92)'
+                     : (v >= 0 ? 'rgba(217,119,6,0.42)' : 'rgba(146,64,14,0.45)'); }),
+              line:{color:varAno.map(function(v,ix){ return ix === iAtual ? '#7c2d12' : 'rgba(180,83,9,0.55)'; }),
+                    width:varAno.map(function(v,ix){ return ix === iAtual ? 2 : 1; })}},
+      hovertemplate:'<b>%{x}</b><br>Mesma janela do calendário: %{y:+.2f}%<extra></extra>'});
+
+    var todosY = yBez.concat(yBoi);
+    var loY = Math.min.apply(null, todosY), hiY = Math.max.apply(null, todosY);
+    var folgaY = Math.max(0.6, (hiY - loY) * 0.12);
+    var loB = varAno.length ? Math.min.apply(null, varAno) : -1;
+    var hiB = varAno.length ? Math.max.apply(null, varAno) :  1;
+    var folgaB = Math.max(1, (hiB - loB) * 0.16);
+
+    var _per = _bvzData(ancora.d) + ' → ' + _bvzData(fimO.d);
+    renderPlot(chartId, traces, {
+      height:_h, margin:{l:62,r:26,t:74,b:48}, _no_title:true,
+      bargap:0.3,
+      xaxis:{type:'date', tickfont:{size:10}, gridcolor:'rgba(0,0,0,0)',
+             domain:[0,1], anchor:'y', automargin:false},
+      yaxis:{title:{text:'% desde a âncora', font:{size:10}}, tickfont:{size:10},
+             gridcolor:'#eef1f4', zeroline:true, zerolinecolor:'#374151', zerolinewidth:1.5,
+             range:[loY - folgaY, hiY + folgaY], ticksuffix:'%',
+             domain:[0.42,1], anchor:'x'},
+      xaxis2:{type:'category', tickfont:{size:9.5}, gridcolor:'rgba(0,0,0,0)',
+              title:{text:'A mesma janela do calendário, em cada ano da série', font:{size:9.5}},
+              domain:[0,1], anchor:'y2', automargin:false},
+      yaxis2:{title:{text:'%', font:{size:10}}, tickfont:{size:10},
+              gridcolor:'#f3f4f6', zeroline:true, zerolinecolor:'#374151', zerolinewidth:1.5,
+              range:[loB - folgaB, hiB + folgaB], ticksuffix:'%',
+              domain:[0,0.28], anchor:'x2', nticks:5},
+      shapes:[
+        {type:'rect', xref:'paper', yref:'paper', x0:0, x1:1, y0:0.42, y1:1,
+         line:{width:0}, fillcolor:'rgba(180,83,9,0.03)', layer:'below'}
+      ].concat(medOutros != null ? [
+        {type:'line', xref:'paper', yref:'y2', x0:0, x1:1, y0:medOutros, y1:medOutros,
+         line:{color:'#6b7280', width:1.3, dash:'dash'}}
+      ] : []),
+      annotations:[
+        {text:'<b>Quanto andou desde ' + _bvzData(ancora.d) + '</b>  <span style="color:#6b7280">('
+             + (base==='nom'?'valores nominais':'valores corrigidos, R$ de dez/2025') + ')</span>',
+         xref:'paper', yref:'paper', x:0, y:1.005, xanchor:'left', yanchor:'bottom',
+         showarrow:false, font:{size:10.5, color:COR_BEZ}},
+        {text:'<b>Isso é muito ou pouco para esta época?</b>  <span style="color:#6b7280">'
+             + (medOutros != null ? ('tracejado = mediana dos outros anos, ' + _bvzPct(medOutros,1)) : 'sem anos suficientes')
+             + '</span>',
+         xref:'paper', yref:'paper', x:0, y:0.295, xanchor:'left', yanchor:'bottom',
+         showarrow:false, font:{size:10.5, color:'#6b7280'}},
+        {text:_per, xref:'paper', yref:'paper', x:1, y:1.005, xanchor:'right', yanchor:'bottom',
+         showarrow:false, font:{size:10, color:'#374151'}}
+      ],
+      legend:{orientation:'h', y:1.075, x:0.5, xanchor:'center', yanchor:'bottom',
+              font:{size:9.5, color:'#374151'}}
+    });
+
+    /* ── KPIs ────────────────────────────────────────────────────────── */
+    if (kpiEl){
+      /* Mesmas classes dos demais KPIs do painel (vk-lbl / vk-val / vk-sub,
+         com is-up e is-down). Cor inline aqui criaria um sexto estilo de
+         KPI numa tela que já tem o seu. */
+      function kpi(rot, val, sub, mod){
+        return '<div class="vol-kpi' + (mod ? ' ' + mod : '') + '">'
+             + '<div class="vk-lbl">' + rot + '</div>'
+             + '<div class="vk-val">' + val + '</div>'
+             + '<div class="vk-sub">' + (sub || '') + '</div></div>';
+      }
+      function sinal(v){ return v > 0 ? 'is-up' : (v < 0 ? 'is-down' : ''); }
+      var pp = function(v){ return v.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}); };
+      kpiEl.innerHTML =
+          kpi('Variação no período', _bvzPct(varTotal,1),
+              _bvzRS(p0,0) + ' → ' + _bvzRS(pN,0) + '/cabeça', sinal(varTotal))
+        + kpi('Topo da janela', _bvzPct(yBez[iMax],1),
+              _bvzData(xs[iMax]) + ' · ' + _bvzRS(precos[iMax],0), 'is-up')
+        + kpi('Fundo da janela', _bvzPct(yBez[iMin],1),
+              _bvzData(xs[iMin]) + ' · ' + _bvzRS(precos[iMin],0), 'is-down')
+        + kpi('Amplitude', pp(amplitude) + ' p.p.', 'distância entre topo e fundo')
+        + kpi('Maior queda desde o topo', _bvzPct(ddMax,1),
+              ddMax < -0.05 ? (_bvzData(xs[ddIni]) + ' → ' + _bvzData(xs[ddFim])) : 'não houve recuo',
+              ddMax < -0.05 ? 'is-down' : '')
+        + (varBoi != null
+            ? kpi('Boi gordo no mesmo período', _bvzPct(varBoi,1),
+                  'bezerro ' + (varTotal - varBoi >= 0 ? 'à frente' : 'atrás') + ' em '
+                  + pp(Math.abs(varTotal - varBoi)) + ' p.p.', sinal(varBoi))
+            : '');
+    }
+
+    /* ── Leitura ─────────────────────────────────────────────────────── */
+    if (ctxEl){
+      var h = '<div class="rb-head">Leitura</div>';
+
+      h += '<div class="rb-line"><b>Quanto andou.</b> De <b>' + _bvzData(ancora.d) + '</b> a <b>'
+         + _bvzData(fimO.d) + '</b> o bezerro foi de ' + _bvzRS(p0,0) + ' para ' + _bvzRS(pN,0)
+         + ' por cabeça — <span class="rb-num">' + _bvzPct(varTotal,1) + '</span>'
+         + (base === 'nom' ? ', em valores nominais.' : ', em reais de dez/2025.')
+         + (desloc ? ' A data que você pediu não teve pregão; a âncora foi para o primeiro dia seguinte com preço.' : '')
+         + '</div>';
+
+      if (varBoi != null){
+        var dif = varTotal - varBoi;
+        h += '<div class="rb-line"><b>Contra o boi.</b> No mesmo período o boi gordo fez '
+           + _bvzPct(varBoi,1) + '. O bezerro ficou <span class="rb-num">'
+           + Math.abs(dif).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}) + ' p.p. '
+           + (dif >= 0 ? 'à frente' : 'atrás') + '</span>, ou seja, a reposição '
+           + (dif >= 0 ? 'encareceu mais do que o que ela produz — a conta da engorda apertou nessa janela.'
+                       : 'ficou mais barata em relação ao que ela produz — a conta da engorda folgou nessa janela.')
+           + '</div>';
+      } else if (boiAviso){
+        h += '<div class="rb-line">' + boiAviso + '</div>';
+      }
+
+      h += '<div class="rb-line"><b>Quanto doeu chegar aqui.</b> O caminho passou por um topo de '
+         + _bvzPct(yBez[iMax],1) + ' em ' + _bvzData(xs[iMax]) + ' e um fundo de ' + _bvzPct(yBez[iMin],1)
+         + ' em ' + _bvzData(xs[iMin]) + ' — ' + amplitude.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})
+         + ' pontos percentuais entre as duas pontas.'
+         + (ddMax < -0.05
+             ? ' A maior queda desde um topo dentro da janela foi de <span class="rb-num">' + _bvzPct(ddMax,1)
+               + '</span>, entre ' + _bvzData(xs[ddIni]) + ' e ' + _bvzData(xs[ddFim])
+               + '. Quem comprou no topo e precisou vender no fundo viveu essa diferença, não a variação da primeira linha.'
+             : ' Não houve recuo relevante: o preço não passou por nenhum topo que depois perdesse.')
+         + '</div>';
+
+      if (medOutros != null && iAtual >= 0){
+        h += '<div class="rb-line" style="border-left:3px solid #b45309;padding-left:9px;margin-top:8px">'
+           + '<b>É muito ou pouco para esta época?</b> Nos outros <b>' + outros.length + '</b> anos da série, '
+           + 'a mesma janela do calendário (' + _bvzData(ancora.d).slice(0,5) + ' a '
+           + _bvzData(fimO.d).slice(0,5) + ') teve mediana de <b>' + _bvzPct(medOutros,1) + '</b>, e foi de alta em '
+           + subiram + ' deles. ' + anoAtual + ' está com ' + _bvzPct(varTotal,1)
+           + (pctil != null ? ', acima de <b>' + pctil + '%</b> dos anos comparáveis.' : '.')
+           + ' É esta linha que separa "o bezerro subiu" de "o bezerro subiu mais do que costuma subir nesta época".</div>';
+      }
+
+      h += '<div class="rb-note"><b>Sobre as bases.</b> '
+         + (base === 'nom'
+            ? 'Nominal é o preço que de fato se pagou em cada data — o número comparável com a nota da sua compra. '
+              + 'Em janelas de vários anos ele embute inflação: parte da alta é só o dinheiro valendo menos. '
+            : 'Deflacionado traz tudo para reais de dez/2025, então a variação é ganho real de poder de compra. '
+              + 'É a base dos demais cards desta seção. ')
+         + 'O bezerro tem as duas colunas na planilha desde fev/2000, então o nominal dele é observado, não reconstruído. '
+         + 'O boi só tem a coluna corrigida: o nominal dele é revertido pelo índice IGP-M do painel, que começa em jan/2003 — '
+         + 'antes disso o boi não entra, em vez de exibir um número proporcional posando de nominal. '
+         + '<b>Cuidado com a âncora:</b> a variação depende inteiramente da data escolhida; ancorar num fundo faz '
+         + 'qualquer mercado parecer uma festa. O painel de baixo existe justamente para dizer se o número é do '
+         + 'mercado ou da data.</div>';
+
+      ctxEl.className = 'read-box';
+      ctxEl.innerHTML = h;
+    }
+
+    try {
+      window.__3M_SINAIS = window.__3M_SINAIS || {};
+      window.__3M_SINAIS.bezVariacao = {
+        base: base, ancora: ancora.d, fim: fimO.d,
+        precoAncora: p0, precoFim: pN,
+        variacao: varTotal, variacaoBoi: varBoi,
+        topo: yBez[iMax], fundo: yBez[iMin], amplitude: amplitude,
+        maiorQueda: ddMax, medianaOutrosAnos: medOutros,
+        anosComparaveis: outros.length, percentil: pctil
+      };
+    } catch(e){}
+  }
+  try { window.updateBezVariacao = updateBezVariacao; } catch(e){}
+
   function updateSHBezerroFixed() {
     _updateSHCommodityFixed({
       aliases:     GLOBAL_FIXED_SHEETS.shBezerro,
@@ -19319,6 +19825,7 @@ function updatePreco() {
       spotSheet:   'BEZERRO'  // e a fonte spot é a do próprio animal
     });
     try { updateSHVol('shBezerro'); } catch(e){ console.warn('Volatilidade BEZERRO:', e); }
+    try { updateBezVariacao(); } catch(e){ console.warn('Bezerro — variação desde a data:', e); }
     try { _renderSHBoiHitRate({ aliases: GLOBAL_FIXED_SHEETS.shBezerro,
                                 chartId: 'chartSHBezerroHitRate' }); }
     catch(e){ console.warn('Frequência sazonal BEZERRO:', e); }
@@ -42294,6 +42801,7 @@ function updateRelacao() {
     chartSHBoiGordoMonthly:'m3_2_1', chartSazonalidade:'m3_2_1',
     chartSHBezerroDaily:'m3_2_2', chartSHVolBezerro:'m3_2_2', chartSHBezerroAnnual:'m3_2_2', chartSHBezerroYoY:'m3_2_2', chartSHBezerroBase100:'m3_2_2',
     chartSHBezerroPriceSezon:'m3_2_2', chartSHBezerroMonthly:'m3_2_2',
+    chartBezVariacao:'m3_2_2',
     chartSHMilhoDaily:'m3_2_3', chartSHVolMilho:'m3_2_3', chartSHMilhoAnnual:'m3_2_3',
     chartSHMilhoYoY:'m3_2_3', chartSHMilhoBase100:'m3_2_3', chartSHMilhoMonthly:'m3_2_3', chartJanelaMilho:'m3_2_3',
     chartSHAcucarDaily:'m3_2_4', chartSHVolAcucar:'m3_2_4', chartSHAcucarAnnual:'m3_2_4',
@@ -42652,6 +43160,7 @@ function updateRelacao() {
         ['A arroba do bezerro está cara?','Ágio da @ do bezerro e o ágio histórico.','m3_2_8','chartBezAgioHist'],
         ['Em que fase do ciclo estamos?','Abate de fêmeas e ciclo pecuário.','m3_2_6','chartAbateFemeasMT'],
         ['O bezerro está caro na própria história?','Preço real do bezerro e sazonalidade.','m3_2_2','chartSazonalidadeBezerro'],
+        ['Quanto ele andou desde a minha compra?','Variação desde uma data, contra o boi e contra os outros anos.','m3_2_2','chartBezVariacao'],
         ['O que o ciclo diz sobre a reposição?','Ciclo do bezerro.','m3_2_7','chartAbatePrecoBez']
       ] },
     m3_3_4: { titulo:'Compro milho?',
