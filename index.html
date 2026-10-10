@@ -404,9 +404,11 @@ header h1,
       display:grid; grid-template-columns:repeat(auto-fit,minmax(122px,1fr));
       gap:8px; margin-top:10px;
     }
+    /* Indicador sem juízo nasce neutro. A borda colorida passou a ser
+       sinal de alguma coisa, então ela não pode estar em todos. */
     .vol-kpi{
       padding:8px 10px; background:#fff;
-      border:1px solid #e6eaee; border-left:3px solid #0f766e; border-radius:7px;
+      border:1px solid #e6eaee; border-left:3px solid #cbd5e1; border-radius:7px;
     }
     .vol-kpi .vk-lbl{
       font-size: var(--fs-micro); font-weight:700; color:#6b7280;
@@ -417,6 +419,17 @@ header h1,
       font-variant-numeric:tabular-nums; line-height:1.25;
     }
     .vol-kpi .vk-sub{ font-size: var(--fs-nano); color:#9ca3af; }
+    /* Cor nunca anda sozinha: seta e palavra ao lado, para o indicador
+       funcionar também para quem não distingue verde de vermelho. */
+    .vol-kpi .vk-seta{ font-size:.70em; margin-right:4px; vertical-align:2px; }
+    .vol-kpi .vk-selo{
+      display:inline-block; font-family:var(--font-display); font-size:9px;
+      font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+      padding:2px 6px; border-radius:5px; margin-left:6px; vertical-align:3px;
+      background:#f1f5f9; color:#64748b;
+    }
+    .vol-kpi.is-up   .vk-selo{ background:#dcfce7; color:#166534; }
+    .vol-kpi.is-down .vk-selo{ background:#fee2e2; color:#991b1b; }
     .vol-kpi.is-up   { border-left-color:#15803d; }
     .vol-kpi.is-down { border-left-color:#b91c1c; }
     .vol-kpi.is-up   .vk-val{ color:#15803d; }
@@ -6977,7 +6990,7 @@ header{
   <section class="card">
     <div class="card-title"><span class="card-title-text">Correlação — BGI · CCM · SJC · Dólar</span><button type="button" class="info-btn" aria-label="Ajuda: Correlação" data-tooltip="Correlação de Pearson (252 pregões) entre retornos de BGI, CCM, SJC e Dólar/PTAX.gões. Verde = correlação positiva, Vermelho = negativa.">ⓘ</button></div>
     <div class="pill">Correlação de retornos diários (252 pregões): BOI · MILHO · SOJA · DÓLAR.</div>
-    <div id="chartCorrelacaoFisico" style="height:320px"></div>
+    <div id="chartCorrelacaoFisico" style="height:360px"></div>
   </section>
 
   <section class="card">
@@ -7690,7 +7703,7 @@ header{
     </div>
     <div class="pill">Base 100 por safra (Jul → Jun). El Niño ↑ tende a elevar preços no MT pelo déficit hídrico na segunda safra. La Niña ↑ favorece chuvas no Sul mas pode afetar MT. Safra atual em destaque.</div>
       <div class="explain"><span class="ex-tag">Para que serve</span>Separa o padrão sazonal do milho por fase do ENSO — El Niño, La Niña e neutro. A pergunta não é se o clima mexe no preço, e sim <b>se o mês típico muda de comportamento</b> conforme a fase.<span class="ex-tag">Cuidado com o tamanho da amostra</span>Cada fase tem poucos episódios em trinta anos. Diferença entre curvas com três ou quatro anos de base pode ser só acaso — olhe a contagem antes de tratar o padrão como regra.</div>
-    <div id="chartSHMilhoEnso" class="chart-container" style="height:400px"></div>
+    <div id="chartSHMilhoEnso" class="chart-container" style="height:420px"></div>
     <div id="chartSHMilhoEnsoContext" class="chart-context"></div>
   </section>
 
@@ -8933,7 +8946,7 @@ header{
           <input type="checkbox" id="pcSenoide" title="Ajusta uma senóide com tendência sobre a série e desenha junto, como contraponto. Os dois modelos passam pelo mesmo backtest causal e o resultado aparece na tabela abaixo do gráfico."> Comparar com o modelo de senóide
         </label>
     </div>
-    <div id="chartProjCiclo" class="chart-container" style="height:500px"></div>
+    <div id="chartProjCiclo" class="chart-container" style="height:560px"></div>
     <div class="vol-kpis" id="pcKpis"></div>
 
     <div class="pc-sec">
@@ -9045,7 +9058,7 @@ header{
         <input type="checkbox" id="pcAnualRot" checked title="Escreve sobre cada barra a variação em relação ao ano anterior."> Rótulos de variação anual
       </label>
     </div>
-    <div id="chartProjAnual" class="chart-container" style="height:440px"></div>
+    <div id="chartProjAnual" class="chart-container" style="height:420px"></div>
     <div class="vol-kpis" id="pcAnualKpis"></div>
     <div id="chartProjAnualContext" class="chart-context"></div>
   </section>
@@ -9091,7 +9104,7 @@ header{
       <span class="ex-tag">Para que serve</span>
       Mede a <b>velocidade do movimento</b>, não só a direção. Serve para perceber quando uma alta está perdendo força, que costuma ser o momento de fechar a trava em vez de esperar mais.
     </div>
-      <div id="chartSlope" class="chart-container" style="height:240px"></div>
+      <div id="chartSlope" class="chart-container" style="height:360px"></div>
     <div id="ctxAuto_chartSlope" class="chart-context"></div>
       <div id="readingSlope" class="slope-reading-panel"></div>
     </section>
@@ -9775,7 +9788,7 @@ header{
 
     <div class="vol-kpis" id="trvKpis"></div>
     <div id="chartTrvAjuste" class="chart-container"></div>
-    <div id="chartTrvCenario" class="chart-container" style="height:320px"></div>
+    <div id="chartTrvCenario" class="chart-container" style="height:360px"></div>
     <div id="chartTrvContext" class="chart-context"></div>
   </section>
 
@@ -12586,9 +12599,248 @@ function _pngNome(txt){
   return '3m-' + t;
 }
 
+
+  /* ═══════════════════════════════════════════════════════════════════
+     SISTEMA VISUAL DO PAINEL
+     Três regras que valem para todos os gráficos de uma vez, por morarem
+     no único ponto por onde todos passam (renderPlot → applyPlotlyTheme).
+     Nenhuma delas encosta em série, cálculo, filtro ou dado: é
+     apresentação pura. Isso é o que evita 29 edições à mão e, mais
+     importante, o que impede a dispersão de voltar no próximo card novo.
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* ── 1. EIXO DUPLO VIRA PAINÉIS EMPILHADOS ──────────────────────────
+     Duas escalas no mesmo plano é o erro número um de gráfico. O
+     alinhamento entre elas é arbitrário: cada eixo é autoescalado ao
+     próprio mínimo e máximo, as duas linhas são obrigadas a ocupar a
+     mesma faixa da tela, e o desenho passa a mostrar uma correlação que
+     o dado não tem. Medido neste painel: bezerro em R$ contra bezerro em
+     US$ tem correlação de 0,18 e o gráfico fazia as duas parecerem a
+     mesma curva. Mexendo só na escala da direita a história virava outra.
+
+     A conversão é mecânica e cabe num lugar só. O traço continua dizendo
+     yaxis:'y2'; o que muda é que y e y2 deixam de se sobrepor e passam a
+     ocupar faixas verticais diferentes da figura. Distância vertical
+     volta a ser uma quantidade comparável dentro de cada painel, e deixa
+     de ser comparável entre painéis — que é exatamente a verdade.
+
+     Quem fica em cima: por padrão o eixo principal. Nos cards em que a
+     manchete é a série do eixo secundário (a fatia de fêmeas, não o
+     volume abatido; o padrão sazonal, não a curva), a ordem é invertida
+     pela carta abaixo.                                                  */
+  var _DUPLO_Y2_EM_CIMA = {
+    /* A fatia de fêmeas é a manchete destes cards; o volume abatido é apoio. */
+    chartAbateIBGE:1, chartAbateIBGEBez:1, chartAbateFemeasMT:1,
+    /* O card se chama "breadth do atacado": o breadth é a resposta, as
+       contagens de alta e de queda são o detalhe de onde ele sai. */
+    chartAtkBreadth:1
+  };
+  /* Proporções. O painel de cima manda; o de baixo é apoio e fica com
+     cerca de um terço. O vão entre eles é o que impede o olho de ligar
+     uma curva à outra como se fosse uma só. */
+  var _DUPLO_FAIXAS = {
+    2: [[0.42, 1], [0, 0.30]],
+    3: [[0.64, 1], [0.33, 0.57], [0, 0.26]],
+    4: [[0.76, 1], [0.51, 0.71], [0.26, 0.46], [0, 0.21]]
+  };
+  function _empilhaEixos(chartId, layout, traces){
+    if (!layout) return layout;
+    /* Só entram os eixos que (a) estão sobrepostos e (b) têm alguém
+       desenhado neles. Um y2 declarado e vazio viraria um painel em
+       branco, que é pior do que o problema original. */
+    var usados = {};
+    (traces || []).forEach(function(t){ if (t && t.yaxis) usados[t.yaxis] = 1; });
+    var sec = [];
+    ['yaxis2','yaxis3','yaxis4'].forEach(function(k){
+      var e = layout[k];
+      if (e && e.overlaying === 'y' && usados[k.replace('axis','')]) sec.push(k);
+    });
+    if (!sec.length) return layout;
+
+    var ordem = ['yaxis'].concat(sec);
+    if (_DUPLO_Y2_EM_CIMA[chartId] && ordem.length >= 2){
+      var t0 = ordem[0]; ordem[0] = ordem[1]; ordem[1] = t0;
+    }
+    var n = ordem.length;
+    var faixa = (_DUPLO_FAIXAS[n] || _DUPLO_FAIXAS[4]).map(function(f){ return f.slice(); });
+
+    /* Alguns cards já dividem a figura por conta própria: têm um eixo com
+       domínio declarado ocupando a faixa de baixo. Empilhar por cima disso
+       sem olhar coloca dois painéis no mesmo lugar — foi o que aconteceu na
+       pressão de fêmeas, com o painel de abate e o de deságio um sobre o
+       outro. O empilhamento só pode usar o espaço que sobra. */
+    var piso = 0;
+    Object.keys(layout).forEach(function(k){
+      if (!/^yaxis\d*$/.test(k) || ordem.indexOf(k) >= 0) return;
+      var e = layout[k];
+      if (e && Array.isArray(e.domain) && e.domain[1] < 0.95) piso = Math.max(piso, e.domain[1]);
+    });
+    if (piso > 0){
+      piso = Math.min(piso + 0.08, 0.5);
+      faixa = faixa.map(function(f){ return [piso + f[0]*(1-piso), piso + f[1]*(1-piso)]; });
+    }
+
+    ordem.forEach(function(k, i){
+      var e = layout[k] = Object.assign({}, layout[k] || {});
+      e.domain = faixa[i];
+      delete e.overlaying;
+      delete e.side;          /* o título do secundário volta para a esquerda */
+      delete e.position;
+      e.anchor = 'x';
+      if (e.showgrid !== false) e.showgrid = true;
+      /* Painel baixo não comporta seis marcas de escala. */
+      if (faixa[i][1] - faixa[i][0] < 0.40 && e.nticks == null) e.nticks = 3;
+      if (e.title && typeof e.title === 'string') e.title = { text: e.title };
+      if (e.title && typeof e.title === 'object') e.title.standoff = 8;
+      /* Eixo visível e sem título faz o Plotly escrever "Click to enter Y
+         axis title" em cima do painel. Enquanto estava sobreposto ninguém
+         via; agora que virou painel, vê. */
+      if (!e.title || !e.title.text) e.title = { text: '' };
+    });
+
+    /* O eixo do tempo passa a morar embaixo do último painel; os de cima
+       perdem os rótulos, que seriam a mesma coisa repetida. */
+    layout.xaxis = Object.assign({}, layout.xaxis || {});
+    /* A régua do tempo mora embaixo do painel mais BAIXO da figura, que nem
+       sempre é o último da pilha: pode ser um eixo que o próprio card já
+       tinha posicionado lá. */
+    var maisBaixo = null, menor = 2;
+    Object.keys(layout).forEach(function(k){
+      if (!/^yaxis\d*$/.test(k)) return;
+      var e = layout[k];
+      if (e && Array.isArray(e.domain) && e.domain[0] < menor){ menor = e.domain[0]; maisBaixo = k; }
+    });
+    layout.xaxis.anchor = (maisBaixo || ordem[n - 1]).replace('axis', '');
+
+    /* Dois painéis precisam de mais altura que um. Sem isto cada um fica
+       com cem pixels e nenhuma das duas séries é legível. */
+    var minimo = (n >= 3) ? 600 : 520;
+    if (!(typeof layout.height === 'number') || layout.height < minimo) layout.height = minimo;
+    layout.__empilhado = n;
+    return layout;
+  }
+
+  /* ── 2. COR SEGUE A COISA, NUNCA A POSIÇÃO ──────────────────────────
+     Levantamento de 10/10/2026 nos gráficos que o painel desenha: 24
+     cores de série e 25 entidades pintadas com mais de uma cor. O bezerro
+     aparecia em quatro cores diferentes. Pior: em dois cards vizinhos —
+     "Boi gordo, variação desde uma data" e "Bezerro, variação desde uma
+     data" — boi e bezerro estavam com as cores trocadas entre si, de modo
+     que quem aprendia "âmbar é boi" num card lia o outro ao contrário.
+
+     Três cores de identidade, e só três. O trio passa em todos os testes
+     do validador de paleta (faixa de luminosidade, piso de croma,
+     separação para daltonismo, piso de visão normal e contraste contra o
+     fundo), em claro e escuro, considerando TODOS os pares — não só os
+     vizinhos. Quatro não passa: a quarta cor sempre cai abaixo do piso
+     contra alguma das três. Então, da quarta série em diante, cinza de
+     contexto e rótulo na ponta da linha.                                */
+  var _COR_ENT_BOI    = '#0d9488';   /* o que a 3M vende: arroba         */
+  var _COR_ENT_REPO   = '#b45309';   /* o que a 3M compra: reposição     */
+  var _COR_ENT_INSUMO = '#6250d6';   /* insumo e terceira medida         */
+  function _entNorm(s){
+    return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+           .replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+  /* A cor segue o ATIVO, não a categoria. A tentação era pintar toda a
+     reposição de âmbar — bezerro e boi magro são a mesma coisa na conta da
+     3M —, mas existe um card que mostra os dois juntos (o de prazo de
+     pagamento), e ali uma cor só não separa nada. Então bezerro fica com o
+     âmbar e o boi magro divide o roxo com os insumos, que é seguro porque
+     nenhum gráfico do painel põe boi magro e milho na mesma figura — isso
+     foi conferido, não suposto. A soja entra no âmbar pelo mesmo
+     critério: ela nunca divide figura com bezerro nem com boi magro, e
+     dividir o roxo com o milho a deixaria sem cor no card de variação da
+     soja, onde os dois aparecem juntos.
+     A ordem importa: "boi magro" tem de ser testado antes de "boi". */
+  var _ENTIDADES = [
+    { cor: _COR_ENT_REPO,   re: /^(bezerro|reposicao|soja|sjc)\b/ },
+    { cor: _COR_ENT_INSUMO, re: /^(boi magro|magro|milho|curva ccm|ccm|cambio|dolar)\b/ },
+    { cor: _COR_ENT_BOI,    re: /^(boi gordo|boi|arroba|vivo sp)\b/ }
+  ];
+  function _corPorEntidade(chartId, traces){
+    if (!Array.isArray(traces) || traces.length < 2) return traces;
+    var alvo = traces.map(function(t){
+      if (!t || !t.name) return null;
+      var lc = t.line && t.line.color, mc = t.marker && t.marker.color;
+      /* Só recolore quem tem uma cor sólida. Array de cores é barra
+         pintada por categoria, degradê de família é ordenação: as duas
+         coisas são deliberadas e ficam de fora. */
+      if (typeof lc !== 'string' && typeof mc !== 'string') return null;
+      if (Array.isArray(lc) || Array.isArray(mc)) return null;
+      var nome = _entNorm(t.name);
+      for (var i = 0; i < _ENTIDADES.length; i++){
+        if (_ENTIDADES[i].re.test(nome)) return _ENTIDADES[i].cor;
+      }
+      return null;
+    });
+    /* Duas séries do mesmo gráfico não podem receber a mesma cor. Se o
+       card mostra "Bezerro em R$" e "Bezerro em US$", a identidade não
+       separa nada — e pintar as duas de âmbar apagaria o gráfico. Nesse
+       caso a cor fica como estava. */
+    var conta = {};
+    alvo.forEach(function(c){ if (c) conta[c] = (conta[c] || 0) + 1; });
+    return traces.map(function(t, i){
+      var c = alvo[i];
+      if (!c || conta[c] > 1) return t;
+      var novo = Object.assign({}, t);
+      if (novo.line)   novo.line   = Object.assign({}, novo.line,   { color: c });
+      if (novo.marker && !Array.isArray(novo.marker.color))
+                       novo.marker = Object.assign({}, novo.marker, { color: c });
+      if (!novo.line && !novo.marker) novo.line = { color: c };
+      return novo;
+    });
+  }
+
+  /* ── 3. UMA GRADE SÓ E TRÊS ALTURAS ─────────────────────────────────
+     O arquivo acumulou 18 alturas de gráfico, 6 cinzas de grade e 122
+     grades pontilhadas em 122 gráficos. Pontilhado é ruído: de longe vira
+     cinza sujo e, num gráfico de linha, disputa com o tracejado que de
+     fato significa alguma coisa — projeção, limite, média. A grade volta
+     a ser um fio sólido de um tom só, atrás do dado, e a altura encaixa
+     em três degraus para o painel ter um ritmo vertical.                */
+  var _GRADE_COR = '#eceef1';
+  var _GRADE_ZERO = '#dfe3e8';
+  function _grauAltura(h){
+    if (typeof h !== 'number' || !isFinite(h) || h <= 0) return h;
+    if (h <= 390) return 360;
+    if (h <= 480) return 420;
+    return 560;
+  }
+  /* Grade transparente é escolha de desenho: o gráfico pediu para não ter
+     grade nenhuma. Só os cinzas entram na padronização. */
+  function _gradeNeutra(c){
+    if (c == null) return true;
+    var s = String(c).toLowerCase().replace(/\s+/g, '');
+    return !(s === 'transparent' || /,0\)$/.test(s));
+  }
+  function _ritmoGrade(layout){
+    if (!layout) return layout;
+    Object.keys(layout).forEach(function(k){
+      if (!/^[xy]axis\d*$/.test(k)) return;
+      var e = layout[k];
+      if (!e || typeof e !== 'object' || e.showgrid === false) return;
+      if (!_gradeNeutra(e.gridcolor)) return;
+      e.griddash  = 'solid';
+      e.gridcolor = _GRADE_COR;
+      e.gridwidth = 1;
+      if (e.zerolinecolor) e.zerolinecolor = _GRADE_ZERO;
+    });
+    return layout;
+  }
+
 function applyPlotlyTheme(chartId, layout, traces) {
     layout = layout || {};
     var id = String(chartId || '').toLowerCase();
+
+    /* Empilhar vem ANTES de tudo: a conta de margem, de legenda e de
+       colisão de anotações mais abaixo lê layout.height e os eixos, e
+       precisa enxergar a figura já na forma final. */
+    try { layout = _empilhaEixos(chartId, layout, traces); } catch(e){ console.warn('empilha eixos:', e); }
+    try {
+      if (typeof layout.height !== 'number' || !isFinite(layout.height)) layout.height = 420;
+      layout.height = _grauAltura(layout.height);
+    } catch(e){}
 
     // Typography (BMS internal standard)
     var FF = 'Montserrat, sans-serif';
@@ -12613,8 +12865,8 @@ function applyPlotlyTheme(chartId, layout, traces) {
 
     // Axis styling (merge with existing)
     layout.xaxis = Object.assign({
-      gridcolor: 'rgba(229,231,235,0.65)',
-      griddash: 'dot',
+      gridcolor: '#eceef1',
+      griddash: 'solid',
       linecolor: '#e5e7eb',
       zerolinecolor: '#e5e7eb',
       ticks: 'outside',
@@ -12628,8 +12880,8 @@ function applyPlotlyTheme(chartId, layout, traces) {
     }, layout.xaxis || {});
 
     layout.yaxis = Object.assign({
-      gridcolor: 'rgba(229,231,235,0.65)',
-      griddash: 'dot',
+      gridcolor: '#eceef1',
+      griddash: 'solid',
       linecolor: '#e5e7eb',
       zerolinecolor: '#e5e7eb',
       ticks: 'outside',
@@ -12941,14 +13193,18 @@ function applyPlotlyTheme(chartId, layout, traces) {
     // If rangeslider is enabled, keep legend clear of it (avoid overlap)
     try {
       if (layout.xaxis && layout.xaxis.rangeslider && layout.xaxis.rangeslider.visible) {
-        layout.legend = Object.assign({
-          orientation: 'h',
-          x: 0,
-          xanchor: 'left',
-          y: 1.06,
-          yanchor: 'bottom'
-        }, layout.legend || {});
-        layout.margin = Object.assign({ t: 76, b: 85 }, layout.margin || {});
+        layout.legend = Object.assign({}, layout.legend || {});
+        /* Object.assign preservava o y do card, e quem pedia y negativo
+           continuava com a legenda debaixo do slider. Aqui o slider manda:
+           qualquer legenda que não esteja acima da área de plotagem sobe. */
+        if (!(layout.legend.y > 1)){
+          layout.legend.orientation = 'h';
+          layout.legend.x = 0; layout.legend.xanchor = 'left';
+          layout.legend.y = 1.06; layout.legend.yanchor = 'bottom';
+        }
+        layout.margin = Object.assign({}, layout.margin || {});
+        layout.margin.t = Math.max(layout.margin.t || 0, 76);
+        layout.margin.b = Math.max(layout.margin.b || 0, 85);
       }
     } catch(e) {}
 
@@ -12956,6 +13212,11 @@ function applyPlotlyTheme(chartId, layout, traces) {
     // Este é o único lugar do programa onde a tipografia e a altura de todos
     // os 67 gráficos passam. Mexer aqui, e só aqui, evita 67 edições e não
     // encosta em série, cálculo, filtro ou trace: é apresentação pura.
+    /* A grade é a última coisa a ser acertada: ela não entra em nenhuma
+       conta de layout, então pode ser normalizada depois que tudo já
+       convergiu, inclusive nos eixos que o próprio card declarou. */
+    try { layout = _ritmoGrade(layout); } catch(e){}
+
     try { layout = _liveEscalaGrafico(chartId, layout); } catch(e){}
 
     return layout;
@@ -13135,8 +13396,8 @@ function applyPlotlyTheme(chartId, layout, traces) {
         x0: x, x1: x,
         yref: 'paper',
         y0: 0, y1: 1,
-        line: { color: _statusColor(statusKey), width: 1, dash: 'dot' },
-        opacity: 0.18
+        line: { color: '#94a3b8', width: 1, dash: 'dot' },
+        opacity: 0.22
       });
     }
 
@@ -13146,11 +13407,17 @@ function applyPlotlyTheme(chartId, layout, traces) {
       mode: 'markers',
       x: [x],
       y: [y],
+      /* Era um ponto verde, tirado do status global do painel. Verde é
+         cor de juízo — nos indicadores ele quer dizer "bom" — e aqui
+         queria dizer apenas "este é o dado mais recente", em 106
+         gráficos. Duas coisas diferentes na mesma tinta. Agora é um anel
+         neutro: marca o lugar sem afirmar nada. */
       marker: {
-        size: 4,
+        size: 7,
         symbol: 'circle',
-        color: _statusColor(statusKey),
-        opacity: 0.9
+        color: '#ffffff',
+        line: { color: '#334155', width: 2 },
+        opacity: 1
       },
       hoverinfo: 'skip',
       showlegend: false,
@@ -13834,12 +14101,28 @@ function applyPlotlyTheme(chartId, layout, traces) {
   // Tons quase idênticos que apareciam em cards diferentes. Trocar por um
   // único código não muda nenhuma distinção de leitura, só evita que dois
   // gráficos usem dois âmbares ligeiramente diferentes lado a lado.
+  /* Apelidos de cor. Além de juntar tons quase iguais, aqui moram as
+     trocas que o validador de paleta exigiu:
+       #0f766e → #0d9488  o teal da marca reprovava no piso de croma; para
+                          um leitor daltônico ele não era "a cor do boi",
+                          era mais um cinza. Mesmo teal, um passo acima.
+       #7c3aed → #6250d6  um roxo só no painel, o validado.
+       #000000 → #334155  preto puro fica fora da faixa de luminosidade da
+       #111827 → #334155  paleta: num gráfico ele não é identidade, é peso.
+       #1d4ed8 → #6250d6  azul e roxo são indistinguíveis sob deuteranopia
+       #2563eb → #6250d6  (ΔE 0,4). Fica um dos dois. */
   var _ALIAS_COR = {
     '#d97706': '#b45309',
-    '#6366f1': '#7c3aed',
+    '#6366f1': '#6250d6',
+    '#7c3aed': '#6250d6',
+    '#1d4ed8': '#6250d6',
+    '#2563eb': '#6250d6',
     '#9ca3af': '#94a3b8',
-    '#374151': '#111827',
-    'rgba(15,118,110,1)': '#0f766e',
+    '#374151': '#334155',
+    '#111827': '#334155',
+    '#000000': '#334155',
+    '#0f766e': '#0d9488',
+    'rgba(15,118,110,1)': '#0d9488',
     'rgba(37,99,235,0.7)': 'rgba(37,99,235,0.55)'
   };
   function _aliasCores(traces){
@@ -13929,9 +14212,9 @@ function applyPlotlyTheme(chartId, layout, traces) {
     var _famOk = _fam.length >= 3;
     function _corFamilia(pos, n){
       var u = n > 1 ? pos/(n-1) : 0;
-      return 'rgb(' + Math.round(15  + u*(147-15))
-             + ','  + Math.round(118 + u*(197-118))
-             + ','  + Math.round(110 + u*(253-110)) + ')';
+      return 'rgb(' + Math.round(13  + u*(147-13))
+             + ','  + Math.round(148 + u*(197-148))
+             + ','  + Math.round(136 + u*(253-136)) + ')';
     }
 
     // Nem todo gráfico chama a série principal de "Preço": nos cards diários
@@ -14135,7 +14418,8 @@ function applyPlotlyTheme(chartId, layout, traces) {
     var spec = _getChartSpec(chartId);
     layout = applyPlotlyTheme(chartId, (layout || {}), traces);
     var namedTraces = _normalizeTraceNames(chartId, (traces || []), spec);
-    var themedTraces = _aliasCores(_normalizaLarguras(_padronizaEstilo(chartId, _applyHoverTemplates(chartId, namedTraces, spec))));
+    var themedTraces = _corPorEntidade(chartId,
+                         _aliasCores(_normalizaLarguras(_padronizaEstilo(chartId, _applyHoverTemplates(chartId, namedTraces, spec)))));
     layout = _addSemanticBands(chartId, layout);
 
     var decoratedTraces = _appendLastPointMarker(chartId, themedTraces, statusKey, layout);
@@ -14218,24 +14502,24 @@ function applyPlotlyTheme(chartId, layout, traces) {
       var n = normName(tr.name);
       // Trend line: red dashed (all trend charts)
       if(n.indexOf('tend')>=0){
-        Plotly.restyle(gd, {'line.color':'#d62728','line.dash':'dash','line.width':2}, [i]);
+        Plotly.restyle(gd, {'line.color':'#334155','line.dash':'dash','line.width':2}, [i]);
         continue;
       }
 
       // Residual bands: black (for all trend charts)
       if(isSigmaName(n) || (n.indexOf('σ')>=0) || (n.indexOf('+1')>=0 && n.indexOf('σ')>=0) || (n.indexOf('-1')>=0 && n.indexOf('σ')>=0)){
-        Plotly.restyle(gd, {'line.color':'#000000','line.dash':'dot','line.width':1}, [i]);
+        Plotly.restyle(gd, {'line.color':'#94a3b8','line.dash':'dot','line.width':1}, [i]);
         continue;
       }
 
       // Base100 special rules
       if(isBase100){
         if(n.indexOf('serie total')>=0 || n.indexOf('série total')>=0){
-          Plotly.restyle(gd, {'line.color':'#000000','line.dash':'solid','line.width':2}, [i]);
+          Plotly.restyle(gd, {'line.color':'#334155','line.dash':'solid','line.width':2}, [i]);
           continue;
         }
         if(n.indexOf('2025')>=0){
-          Plotly.restyle(gd, {'line.color':'#d62728','line.dash':'dash','line.width':2}, [i]);
+          Plotly.restyle(gd, {'line.color':'#94a3b8','line.dash':'dash','line.width':2}, [i]);
           continue;
         }
       }
@@ -16175,7 +16459,7 @@ function updatePreco() {
           type:'scatter',
           mode:'lines',
           name:'+1σ resíduo',
-          line:{width:1, dash:'dot', color:'#000000'}
+          line:{width:1, dash:'dot', color:'#94a3b8'}
         });
         traces.push({
           x:dates,
@@ -16183,7 +16467,7 @@ function updatePreco() {
           type:'scatter',
           mode:'lines',
           name:'-1σ resíduo',
-          line:{width:1, dash:'dot', color:'#000000'}
+          line:{width:1, dash:'dot', color:'#94a3b8'}
         });
         traces.push({
           x:dates,
@@ -16191,7 +16475,7 @@ function updatePreco() {
           type:'scatter',
           mode:'lines',
           name:'+2σ resíduo',
-          line:{width:1, dash:'dot', color:'#000000'}
+          line:{width:1, dash:'dot', color:'#94a3b8'}
         });
         traces.push({
           x:dates,
@@ -16199,7 +16483,7 @@ function updatePreco() {
           type:'scatter',
           mode:'lines',
           name:'-2σ resíduo',
-          line:{width:1, dash:'dot', color:'#000000'}
+          line:{width:1, dash:'dot', color:'#94a3b8'}
         });
       }
       layout.annotations.push({
@@ -18022,9 +18306,13 @@ function updatePreco() {
 
       var traces = [
         {x:datesD, y:yD, type:'scatter', mode:'lines', name:(cfg.priceLabel || 'Preço diário'), line:{width:2, color:'#2563eb'}},
-        {x:datesD, y:mm100, type:'scatter', mode:'lines', name:'MM 100D', line:{width:1.5, dash:'dot', color:'#16a34a'}},
-        {x:datesD, y:mm200, type:'scatter', mode:'lines', name:'MM 200D', line:{width:1.5, dash:'dot', color:'#f59e0b'}},
-        {x:datesD, y:mm365, type:'scatter', mode:'lines', name:'MM 365D', line:{width:1.5, dash:'dot', color:'#dc2626'}}
+        /* 100, 200 e 365 dias são a MESMA medida em janelas crescentes:
+           ordem, não identidade. Verde, âmbar e vermelho sugeriam três
+           categorias diferentes — e gastavam duas cores reservadas. Uma
+           rampa de um tom só, do claro ao escuro, diz o que são.        */
+        {x:datesD, y:mm100, type:'scatter', mode:'lines', name:'MM 100D', line:{width:1.5, dash:'dot', color:'#94a3b8'}},
+        {x:datesD, y:mm200, type:'scatter', mode:'lines', name:'MM 200D', line:{width:1.5, dash:'dot', color:'#64748b'}},
+        {x:datesD, y:mm365, type:'scatter', mode:'lines', name:'MM 365D', line:{width:1.5, dash:'dot', color:'#334155'}}
       ];
 
       var layout = {
@@ -19713,16 +20001,22 @@ function updatePreco() {
 
   /* Registro de fontes. Acrescentar um ativo é acrescentar uma linha. */
   var _VDD_FONTES = {
-    boi: { rot:'Boi gordo', rotMin:'boi gordo', art:'o', un:'R$/@', unTxt:'por arroba', aliases:null,
+    /* `lado` diz de que lado da operação a 3M está em cada produto, que é
+       o que decide se um número subindo é bom ou ruim. A 3M compra
+       reposição e milho e vende arroba. A soja fica neutra de propósito:
+       a operação tem lavoura, então uma alta pode ser receita ou custo
+       conforme o ano, e afirmar um dos dois seria chute. */
+    boi: { lado:'receita',
+           rot:'Boi gordo', rotMin:'boi gordo', art:'o', un:'R$/@', unTxt:'por arroba', aliases:null,
            colReal:['Cotação (R$ dez/2025)','Preço corrigido IGP-M (base dez/25)','Cotação'],
            colNom:null, desde:'jul/1997',
            obsNom:'A aba S.H BOI GORDO só traz a coluna corrigida: o nominal é revertido pelo IGP-M do painel, '
                 + 'cuja tabela começa em jan/2003. Antes disso a série não entra no nominal.' },
-    bezerro: { rot:'Bezerro', rotMin:'bezerro', art:'o', un:'R$/cabeça', unTxt:'por cabeça', aliases:null,
+    bezerro: { lado:'custo', rot:'Bezerro', rotMin:'bezerro', art:'o', un:'R$/cabeça', unTxt:'por cabeça', aliases:null,
            colReal:['Cotação (R$ dez/2025)','Cotação (R$ dez/25)','Preço corrigido IGP-M (base dez/25)','Cotação'],
            colNom:['Cotação Nominal'], desde:'fev/2000',
            obsNom:'A aba S.H BEZERRO traz as duas colunas, então o nominal do bezerro é observado, não reconstruído.' },
-    milho: { rot:'Milho CEPEA', rotMin:'milho CEPEA', art:'o', un:'R$/sc', unTxt:'por saca', aliases:null,
+    milho: { lado:'custo', rot:'Milho CEPEA', rotMin:'milho CEPEA', art:'o', un:'R$/sc', unTxt:'por saca', aliases:null,
            colReal:['Cotação (R$ dez/2025)','Preço corrigido IGP-M (base dez/25)','Cotação'],
            colNom:null, desde:'ago/2004',
            obsNom:'A aba S.H MILHO CEPEA só traz a coluna corrigida: o nominal é revertido pelo IGP-M do painel.' },
@@ -19730,11 +20024,11 @@ function updatePreco() {
        Não existe "o" boi magro — existem 28, em R$/cabeça, e a média deles
        não é um preço que alguém pagou. Por isso este é o único card com
        seletor de praça. */
-    magro: { rot:'Boi magro', rotMin:'boi magro', art:'o', un:'R$/cabeça', unTxt:'por cabeça',
+    magro: { lado:'custo', rot:'Boi magro', rotMin:'boi magro', art:'o', un:'R$/cabeça', unTxt:'por cabeça',
            porPraca:true, produtoReg:'Boi Magro', desde:'ago/2024',
            obsNom:'O boi magro sai da aba CEPEA REGIONAL, cotado por praça em R$/cabeça (coluna VST, à vista). '
                 + 'A série começa em ago/2024; a versão corrigida é obtida pelo IGP-M do painel.' },
-    soja: { rot:'Soja Paranaguá', rotMin:'soja Paranaguá', art:'a', un:'R$/sc', unTxt:'por saca',
+    soja: { lado:'neutro', rot:'Soja Paranaguá', rotMin:'soja Paranaguá', art:'a', un:'R$/sc', unTxt:'por saca',
            aliases:['SOJA - PARANAGUÁ','SOJA - PARANAGUA','SOJA PARANAGUÁ','SOJA PARANAGUA','SOJA'],
            colReal:null, colNom:['Preço','Cotação','Preço/sc'], desde:'jan/2026', semHistorico:true,
            obsNom:'A aba de soja traz preço de tela, já nominal; a versão corrigida é obtida pelo IGP-M do painel. '
@@ -20160,25 +20454,67 @@ function updatePreco() {
 
     /* ── KPIs, nas classes dos demais do painel ──────────────────────── */
     if (kpiEl){
-      function kpi(rot, val, sub, mod){
+      function kpi(rot, val, sub, mod, selo){
+        var seta = (mod === 'is-up' || mod === 'is-down')
+                 ? '<span class="vk-seta">' + (String(val).indexOf('-') === 0
+                     || String(val).indexOf('\u2212') === 0 ? '\u25bc' : '\u25b2') + '</span>' : '';
         return '<div class="vol-kpi' + (mod ? ' ' + mod : '') + '">'
-             + '<div class="vk-lbl">' + rot + '</div><div class="vk-val">' + val + '</div>'
+             + '<div class="vk-lbl">' + rot + '</div>'
+             + '<div class="vk-val">' + seta + val
+             + (selo ? '<span class="vk-selo">' + selo + '</span>' : '') + '</div>'
              + '<div class="vk-sub">' + (sub || '') + '</div></div>';
       }
-      function sinal(v){ return v > 0 ? 'is-up' : (v < 0 ? 'is-down' : ''); }
+      /* ── Cor dos indicadores: juízo, não sinal ────────────────────────
+         A regra antiga era literalmente `v > 0 ? verde : vermelho`. Ela
+         não sabe de que lado da operação a 3M está: o boi magro subir 11%
+         é CUSTO de reposição subindo para quem engorda, e saía verde. E o
+         "fundo da janela" é só o mínimo da série — não é prejuízo nenhum
+         — e saía vermelho, às vezes com o valor +0,0%, que é a própria
+         âncora.
+         Agora a cor só aparece onde existe bom ou ruim, e o que decide é
+         o lado do produto. Topo, fundo, amplitude e maior queda são
+         descrição do caminho, não veredito: ficam em tinta neutra.      */
+      var _lado = F.lado || 'neutro';
+      function _bom(v, lado){ return (lado === 'receita') ? (v > 0) : (v < 0); }
+      function juizo(v){
+        if (_lado === 'neutro' || !(Math.abs(v) > 0.05)) return '';
+        return _bom(v, _lado) ? 'is-up' : 'is-down';
+      }
+      function selo(v){
+        if (_lado === 'neutro' || !(Math.abs(v) > 0.05)) return '';
+        if (_lado === 'receita') return v > 0 ? 'receita subiu' : 'receita caiu';
+        return v > 0 ? 'custo subiu' : 'custo caiu';
+      }
+      /* O comparador é o único lugar onde o juízo não é sobre o número
+         mostrado, e sim sobre a RELAÇÃO: quando um dos dois é custo e o
+         outro é receita, a troca melhora se a receita andar mais que o
+         custo. Se os dois forem do mesmo lado, não há troca a julgar. */
+      function trocaCls(){
+        var lc = ((_VDD_FONTES[compChave] || {}).lado) || 'neutro';
+        if (_lado === 'neutro' || lc === 'neutro' || _lado === lc) return '';
+        if (varComp == null) return '';
+        var dif = varTotal - varComp;
+        return _bom(dif, _lado) ? 'is-up' : 'is-down';
+      }
       kpiEl.innerHTML =
           kpi('Variação no período', _vddPct(varTotal,1),
-              _vddRS(p0,0) + ' → ' + _vddRS(pN,0) + ' ' + F.unTxt, sinal(varTotal))
-        + kpi('Topo da janela', _vddPct(yA[iMax],1), _vddData(xs[iMax]) + ' · ' + _vddRS(precos[iMax],0), 'is-up')
-        + kpi('Fundo da janela', _vddPct(yA[iMin],1), _vddData(xs[iMin]) + ' · ' + _vddRS(precos[iMin],0), 'is-down')
-        + kpi('Amplitude', _vddNum(amplitude,1) + ' p.p.', 'distância entre topo e fundo')
+              _vddRS(p0,0) + ' \u2192 ' + _vddRS(pN,0) + ' ' + F.unTxt,
+              juizo(varTotal), selo(varTotal))
+        + kpi('Topo da janela', _vddPct(yA[iMax],1),
+              _vddData(xs[iMax]) + ' \u00b7 ' + _vddRS(precos[iMax],0), '', 'm\u00e1ximo')
+        + kpi('Fundo da janela', _vddPct(yA[iMin],1),
+              _vddData(xs[iMin]) + ' \u00b7 ' + _vddRS(precos[iMin],0), '', 'm\u00ednimo')
+        + kpi('Amplitude', _vddNum(amplitude,1) + ' p.p.', 'dist\u00e2ncia entre topo e fundo')
         + kpi('Maior queda desde o topo', _vddPct(ddMax,1),
-              ddMax < -0.05 ? (_vddData(xs[ddIni]) + ' → ' + _vddData(xs[ddFim])) : 'não houve recuo',
-              ddMax < -0.05 ? 'is-down' : '')
+              ddMax < -0.05 ? (_vddData(xs[ddIni]) + ' \u2192 ' + _vddData(xs[ddFim])) : 'n\u00e3o houve recuo',
+              '', ddMax < -0.05 ? 'recuo' : '')
         + (varComp != null
-            ? kpi(compRot + ' no mesmo período', _vddPct(varComp,1),
-                  F.rot + (varTotal - varComp >= 0 ? ' à frente' : ' atrás') + ' em '
-                  + _vddNum(Math.abs(varTotal - varComp),1) + ' p.p.', sinal(varComp))
+            ? kpi(compRot + ' no mesmo per\u00edodo', _vddPct(varComp,1),
+                  F.rot + (varTotal - varComp >= 0 ? ' \u00e0 frente' : ' atr\u00e1s') + ' em '
+                  + _vddNum(Math.abs(varTotal - varComp),1) + ' p.p.',
+                  trocaCls(),
+                  trocaCls() === 'is-up' ? 'troca a favor'
+                    : (trocaCls() === 'is-down' ? 'troca contra' : ''))
             : '');
     }
 
@@ -23816,10 +24152,10 @@ function updatePreco() {
           + '<div class="vk-val">' + Math.round(positivas/Y.length*100) + '%</div>'
           + '<div class="vk-sub">' + positivas + ' de ' + Y.length + ' pregões</div></div>'
       + _baseDecomposta(atual, emPct)
-      + '<div class="vol-kpi is-up"><div class="vk-lbl">Base mais alta</div>'
+      + '<div class="vol-kpi"><div class="vk-lbl">Base mais alta</div>'
           + '<div class="vk-val">' + _v(Y[iMax]) + '</div>'
           + '<div class="vk-sub">' + X[iMax].toLocaleDateString('pt-BR') + '</div></div>'
-      + '<div class="vol-kpi is-down"><div class="vk-lbl">Base mais baixa</div>'
+      + '<div class="vol-kpi"><div class="vk-lbl">Base mais baixa</div>'
           + '<div class="vk-val">' + _v(Y[iMin]) + '</div>'
           + '<div class="vk-sub">' + X[iMin].toLocaleDateString('pt-BR') + '</div></div>';
     }
@@ -24072,10 +24408,10 @@ function updatePreco() {
           : '<div class="vol-kpi"><div class="vk-lbl">Falta para vencer</div>'
               + '<div class="vk-val">' + (mesesFalta<=0 ? 'vencido' : mesesFalta + (mesesFalta>1?' meses':' mês')) + '</div>'
               + '<div class="vk-sub">' + X.length + ' pregões acompanhados</div></div>')
-      + '<div class="vol-kpi is-up"><div class="vk-lbl">Base mais alta</div>'
+      + '<div class="vol-kpi"><div class="vk-lbl">Base mais alta</div>'
           + '<div class="vk-val">' + Y[iMax].toFixed(2) + '</div>'
           + '<div class="vk-sub">' + X[iMax].toLocaleDateString('pt-BR') + '</div></div>'
-      + '<div class="vol-kpi is-down"><div class="vk-lbl">Base mais baixa</div>'
+      + '<div class="vol-kpi"><div class="vk-lbl">Base mais baixa</div>'
           + '<div class="vk-val">' + Y[iMin].toFixed(2) + '</div>'
           + '<div class="vk-sub">' + X[iMin].toLocaleDateString('pt-BR') + '</div></div>';
     }
