@@ -9677,39 +9677,43 @@ header{
       é o que estaria na sua tela naquele dia. O gráfico de baixo agrupa os pregões por faixa de percentil:
       é ali que se vê se o balizador separou alguma coisa.
     </div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 4px">
-      <select id="bcContrato" onchange="try{_BC_MOMENTO=null;updateBacktestCondicional();}catch(e){}"
-        style="font-family:var(--font-display);font-size: var(--fs-sm);font-weight:700;border:1px solid #d1d5db;border-radius:6px;padding:3px 8px;background:#f9fafb;color:#374151;cursor:pointer">
-      </select>
-      <select id="bcGatilho" onchange="try{_BC_MOMENTO=null;updateBacktestCondicional();}catch(e){}"
-        style="font-family:var(--font-display);font-size: var(--fs-sm);border:1px solid #d1d5db;border-radius:6px;padding:3px 8px;background:#f9fafb;color:#374151;cursor:pointer">
-        <optgroup label="Percentil dentro do próprio contrato">
-          <option value="p90">Preço acima do percentil 90</option>
-          <option value="p75" selected>Preço acima do percentil 75</option>
-          <option value="p25">Preço abaixo do percentil 25</option>
-          <option value="p10">Preço abaixo do percentil 10</option>
-        </optgroup>
-        <optgroup label="Resíduo da tendência do contrato">
-          <option value="z2">Preço acima de +2σ</option>
-          <option value="z1">Preço acima de +1σ</option>
-          <option value="zm1">Preço abaixo de −1σ</option>
-          <option value="zm2">Preço abaixo de −2σ</option>
-        </optgroup>
-      </select>
-      <select id="bcJanela" onchange="try{_BC_MOMENTO=null;updateBacktestCondicional();}catch(e){}"
-        style="font-family:var(--font-display);font-size: var(--fs-sm);border:1px solid #d1d5db;border-radius:6px;padding:3px 8px;background:#f9fafb;color:#374151;cursor:pointer">
-        <option value="exp" selected>Referência: toda a vida do contrato até a data</option>
-        <option value="42">Referência: 42 pregões anteriores</option>
-        <option value="21">Referência: 21 pregões anteriores</option>
-      </select>
-      <select id="bcMomento" onchange="try{updateBacktestCondicional();}catch(e){}"
-        style="font-family:var(--font-display);font-size: var(--fs-sm);font-weight:700;border:1px solid #0f766e;border-radius:6px;padding:3px 8px;background:#f0fdfa;color:#0f766e;cursor:pointer">
-      </select>
-      <select id="bcEscopo" onchange="try{updateBacktestCondicional();}catch(e){}"
-        style="font-family:var(--font-display);font-size: var(--fs-sm);border:1px solid #d1d5db;border-radius:6px;padding:3px 8px;background:#f9fafb;color:#374151;cursor:pointer">
-        <option value="ate" selected>Analisar: só até o dia selecionado</option>
-        <option value="tudo">Analisar: a vida inteira do contrato</option>
-      </select>
+    <div class="vol-bar">
+      <div class="vol-fld"><label for="bcContrato">Contrato</label>
+        <select id="bcContrato" onchange="try{_BC_MOMENTO=null;updateBacktestCondicional();}catch(e){}"></select></div>
+      <div class="vol-fld"><label for="bcData">Dia da decisão</label>
+        <input id="bcData" type="date" onchange="try{_bcSetData(this.value);}catch(e){}"
+               title="Digite qualquer data da vida do contrato. Tudo no card passa a ser lido deste dia para trás. Data sem pregão recua para o pregão anterior — que é o que estaria na sua tela."></div>
+      <div class="vol-fld"><label for="bcGatilho">Gatilho</label>
+        <select id="bcGatilho" onchange="try{_BC_MOMENTO=null;updateBacktestCondicional();}catch(e){}">
+          <optgroup label="Percentil dentro do próprio contrato">
+            <option value="p90">Acima do percentil 90</option>
+            <option value="p75" selected>Acima do percentil 75</option>
+            <option value="p25">Abaixo do percentil 25</option>
+            <option value="p10">Abaixo do percentil 10</option>
+          </optgroup>
+          <optgroup label="Resíduo da tendência do contrato">
+            <option value="z2">Acima de +2&#963;</option>
+            <option value="z1">Acima de +1&#963;</option>
+            <option value="zm1">Abaixo de &#8722;1&#963;</option>
+            <option value="zm2">Abaixo de &#8722;2&#963;</option>
+          </optgroup>
+        </select></div>
+      <div class="vol-fld"><label for="bcJanela">Referência</label>
+        <select id="bcJanela" onchange="try{_BC_MOMENTO=null;updateBacktestCondicional();}catch(e){}">
+          <option value="exp" selected>Toda a vida do contrato até a data</option>
+          <option value="42">42 pregões anteriores</option>
+          <option value="21">21 pregões anteriores</option>
+        </select></div>
+      <div class="vol-fld"><label for="bcEscopo">Modo</label>
+        <select id="bcEscopo" onchange="try{updateBacktestCondicional();}catch(e){}"
+                title="Decisão mostra apenas o que existia até a data escolhida, que é a pergunta de quem vai travar. Resultado abre o contrato inteiro, com dados que na hora ninguém tinha.">
+          <option value="ate" selected>Decisão — só o que existia até a data</option>
+          <option value="tudo">Resultado — o contrato inteiro</option>
+        </select></div>
+      <button type="button" onclick="try{_bcAtalho('ultimo')}catch(e){}" title="O pregão mais recente em que o gatilho esteve ligado">Último acionamento</button>
+      <button type="button" onclick="try{_bcAtalho('30')}catch(e){}" title="Trinta pregões antes do último pregão do contrato">30 pregões antes do fim</button>
+      <button type="button" onclick="try{_bcAtalho('fim')}catch(e){}" title="O último pregão do contrato">Vencimento</button>
+      <span class="vol-scope" id="bcNota"></span>
     </div>
     <div id="btCondKpis" class="vol-kpis"></div>
     <div id="chartBtCond" class="chart-container"></div>
@@ -37717,7 +37721,31 @@ function updatePreco() {
      e é a única coisa no card que o operador não poderia saber na hora.
      ======================================================================= */
   var _BC_CAR_DIA = 15;   // pregões mínimos antes de emitir estatística
-  var _BC_MOMENTO = null; // pregão escolhido (dateKey), ou null = padrão
+  /* Dia da decisão, em AAAA-MM-DD, ou null para o padrão do card. É a
+     ÚNICA fonte do dia: o campo de data escreve aqui, os atalhos escrevem
+     aqui, e todo o resto do card lê daqui. Era isto que faltava: antes o
+     dia vinha de um seletor de acionamentos e também de um clique na
+     tabela, e as duas portas mexiam no mesmo recorte. */
+  var _BC_MOMENTO = null;
+  var _BC_R = null;   // último cálculo, para os atalhos não refazerem a conta
+
+  function _bcBr(k){
+    if (!k || !/^\d{4}-\d{2}-\d{2}$/.test(k)) return k || '—';
+    var p = k.split('-'); return p[2] + '/' + p[1] + '/' + p[0];
+  }
+  function _bcSetData(v){
+    _BC_MOMENTO = (v && /^\d{4}-\d{2}-\d{2}$/.test(v)) ? v : null;
+    try { updateBacktestCondicional(); } catch(e){}
+  }
+  function _bcAtalho(tipo){
+    var R = _BC_R; if (!R || !R.n) return;
+    var k;
+    if (tipo === 'fim') k = R.S[R.n-1].k;
+    else if (tipo === '30') k = R.S[Math.max(0, R.n-1-30)].k;
+    else k = R.todosLigados.length ? R.todosLigados[R.todosLigados.length-1].k : R.S[R.n-1].k;
+    _BC_MOMENTO = k;
+    try { updateBacktestCondicional(); } catch(e){}
+  }
 
   function _bcFmt(x, d){ return (x==null||isNaN(x)) ? '—'
     : x.toLocaleString('pt-BR',{minimumFractionDigits:(d==null?2:d), maximumFractionDigits:(d==null?2:d)}); }
@@ -37929,14 +37957,16 @@ function updatePreco() {
     var kpEl = document.getElementById('btCondKpis');
     var rxEl = document.getElementById('btCondRaioX');
     var tbEl = document.getElementById('btCondTabela');
-    var mmEl = document.getElementById('bcMomento');
+    var dtEl = document.getElementById('bcData');
+    var ntEl = document.getElementById('bcNota');
     var ctEl = document.getElementById('bcContrato');
     var cEl  = document.getElementById('chartBtCondContext');
 
     function limpar(msg){
       renderPlot(chartId, [], {_no_title:true});
       renderPlot('chartBtCondTraj', [], {_no_title:true});
-      [kpEl,rxEl,tbEl,mmEl].forEach(function(e){ if (e) e.innerHTML = ''; });
+      [kpEl,rxEl,tbEl].forEach(function(e){ if (e) e.innerHTML = ''; });
+      if (ntEl) ntEl.innerHTML = '';
       if (cEl){ cEl.className='read-box';
         cEl.innerHTML = '<div class="rb-head">Estatística do dia por contrato</div><div class="rb-line">'+msg+'</div>'; }
     }
@@ -37966,10 +37996,20 @@ function updatePreco() {
     try { R = _bcCalcula(cfg); } catch(e){ limpar('Falha ao calcular: '+e.message); return; }
     if (!R || R.erro){ limpar((R && R.erro) || 'Falha ao calcular.'); return; }
 
-    // Momento: o padrão é o último pregão com o gatilho ligado
-    var M = null;
+    /* O dia da decisão vem do campo de data e vale como CORTE: tudo no
+       card é lido deste dia para trás. Data sem pregão — fim de semana,
+       feriado, ou antes de o contrato começar a negociar — encaixa para
+       TRÁS, no último pregão existente. É o oposto da âncora dos cards de
+       variação, que avança, e a razão está na pergunta: lá se quer o
+       começo de uma janela; aqui se quer o que estava na tela naquele
+       dia, que é o último fechamento conhecido. */
+    var M = null, _dtPedida = _BC_MOMENTO, _encaixou = false, _antesDoInicio = false;
     if (_BC_MOMENTO){
-      for (var q=0;q<R.n;q++) if (R.S[q].k === _BC_MOMENTO) M = R.raioX(q);
+      var iAlvo = -1;
+      for (var q=0;q<R.n;q++){ if (R.S[q].k <= _BC_MOMENTO) iAlvo = q; else break; }
+      _antesDoInicio = (iAlvo < 0);
+      M = R.raioX(iAlvo >= 0 ? iAlvo : 0);
+      _encaixou = (M.k !== _dtPedida);
     }
     /* Padrão: o acionamento mais recente que ainda deixava ao menos 20
        pregões até a liquidação. Abrir no último dia do contrato daria um
@@ -37987,13 +38027,27 @@ function updatePreco() {
     var escopo = val('bcEscopo','ate');
     var A = R.resumo(escopo === 'tudo' ? R.n-1 : M.i);
 
-    if (mmEl){
-      var op = R.todosLigados.slice().reverse().map(function(e){
-        return '<option value="'+e.k+'"'+(e.k===M.k?' selected':'')+'>Dia: '+e.br+'</option>';
-      });
-      if (!R.todosLigados.length) op = ['<option value="'+R.S[R.n-1].k+'">Dia: '+R.S[R.n-1].br+'</option>'];
-      mmEl.innerHTML = op.join('');
-      mmEl.onchange = function(){ _BC_MOMENTO = this.value; try{ updateBacktestCondicional(); }catch(e){} };
+    /* O campo volta a mostrar o pregão que de fato foi usado. Quem
+       digitou um sábado vê a data se corrigir e lê o porquê na nota ao
+       lado, em vez de ficar sem saber a que dia o card está respondendo. */
+    _BC_MOMENTO = M.k;
+    _BC_R = R;
+    if (dtEl){
+      dtEl.value    = M.k;
+      dtEl.min      = R.S[0].k;
+      dtEl.max      = R.S[R.n-1].k;
+      dtEl.disabled = (escopo === 'tudo');
+      dtEl.style.opacity = (escopo === 'tudo') ? '0.45' : '';
+    }
+    if (ntEl){
+      ntEl.innerHTML = (escopo === 'tudo')
+        ? ('Modo resultado: o corte é o fim do contrato, ' + R.S[R.n-1].br + '.')
+        : (_antesDoInicio
+            ? ('O ' + R.contrato.rot + ' só começou a negociar em <b>' + R.S[0].br
+               + '</b>; o card usou esse primeiro pregão.')
+            : (_encaixou
+                ? ('Sem pregão em ' + _bcBr(_dtPedida) + ' — o card usou o anterior, <b>' + M.br + '</b>.')
+                : (R.contrato.rot + ' · ' + R.n + ' pregões, de ' + R.S[0].br + ' a ' + R.S[R.n-1].br)));
     }
 
     var rotLiq = R.venceu ? 'Liquidou a' : 'Último preço (em aberto)';
@@ -38001,8 +38055,15 @@ function updatePreco() {
     var rotEsc = (escopo === 'ate') ? 'até ' + M.br : 'na vida inteira do contrato';
 
     if (kpEl){
+      /* O recorte vem primeiro. Era justamente o que mudava sem avisar
+         quando o dia mudava; agora é um número na tela, ao lado dos
+         outros, e crescer deixa de ser surpresa. */
       kpEl.innerHTML =
-        '<div class="vol-kpi"><div class="vk-lbl">' + rotLiq + '</div>'
+        '<div class="vol-kpi"><div class="vk-lbl">Recorte da análise</div>'
+          + '<div class="vk-val">' + A.nComEst + '</div>'
+          + '<div class="vk-sub">pregões ' + (escopo==='ate' ? ('até ' + M.br) : 'do contrato')
+          + ' · ' + A.ligados.length + ' com o gatilho · ' + A.blocos.length + ' período(s)</div></div>'
+      + '<div class="vol-kpi"><div class="vk-lbl">' + rotLiq + '</div>'
           + '<div class="vk-val">R$ ' + _bcFmt(R.F,2) + '</div>'
           + '<div class="vk-sub">' + R.S[R.n-1].br + ' · ' + R.n + ' pregões</div></div>'
       + '<div class="vol-kpi ' + (A.resMedioLig>=0?'is-up':'is-down') + '">'
@@ -38181,7 +38242,7 @@ function updatePreco() {
         var tdL = td.replace('text-align:right','text-align:left');
         var linhas = A.blocos.slice().reverse().map(function(b){
           var sel = (M.i >= b.ini && M.i <= b.fim);
-          return '<tr data-k="' + R.S[b.meio].k + '" style="cursor:pointer'+(sel?';background:#f0fdfa':'')+'">'
+          return '<tr'+(sel?' style="background:#f0fdfa"':'')+'>'
             + '<td '+tdL+'>' + (sel?'<b>':'') + b.de + (b.n>1 ? ' a ' + b.ate : '') + (sel?'</b>':'') + '</td>'
             + '<td '+td+'>' + b.n + '</td>'
             + '<td '+td+'>R$ ' + _bcFmt(b.preco,2) + '</td>'
@@ -38194,7 +38255,7 @@ function updatePreco() {
         tbEl.innerHTML =
           '<div style="margin:12px 0 4px;font-size: var(--fs-nano);color:#9ca3af;font-weight:700;'
           + 'text-transform:uppercase;letter-spacing:.04em">Períodos com o gatilho ligado, '
-          + rotEsc + ' — clique para trocar o dia</div>'
+          + rotEsc + ' — o período que contém o dia da decisão está em destaque</div>'
         + '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse" id="bcTab">'
         + '<thead><tr><th '+thL+'>Período</th><th '+th+'>Pregões</th><th '+th+'>Preço médio</th>'
         + '<th '+th+'>Percentil médio</th><th '+th+'>Travar ali rendeu</th></tr></thead>'
@@ -38204,15 +38265,10 @@ function updatePreco() {
         + '<td '+tf+'>' + A.ligados.length + '</td><td '+tf+'>—</td><td '+tf+'>—</td>'
         + '<td '+tf+'>' + (A.resMedioLig==null?'—':_bcRs(A.resMedioLig,2)) + '</td>'
         + '</tr></tfoot></table></div>';
-        try {
-          var tb = document.getElementById('bcTab');
-          if (tb) tb.addEventListener('click', function(ev){
-            var tr = ev.target; while (tr && tr.tagName !== 'TR') tr = tr.parentElement;
-            if (!tr || !tr.getAttribute('data-k')) return;
-            _BC_MOMENTO = tr.getAttribute('data-k');
-            try { updateBacktestCondicional(); } catch(e){}
-          });
-        } catch(e){}
+        /* A tabela era saída e controle ao mesmo tempo: clicar numa linha
+           mudava o corte, e ela se reescrevia debaixo do cursor com outro
+           número de linhas. Agora é só leitura — o dia muda num lugar só,
+           o campo de data. */
       }
     }
 
