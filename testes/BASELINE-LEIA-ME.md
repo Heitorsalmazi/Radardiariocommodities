@@ -69,3 +69,28 @@ perdia de forma intermitente os quatro cards do Ciclo pecuário. Sondei o painel
 O defeito era do capturador. Agora ele colhe **com a seção aberta**, dá duas
 voltas e une o resultado. Um retrato instável é pior que nenhum: treina quem lê
 a ignorar o alarme.
+
+## Retrato reavaliado — Etapa 4 · 12/10/2026
+
+A Visão Executiva entrou como **primeira seção** do painel (`m3_0_1`). O
+capturador percorre as seções na ordem de `_M3_ESTRUTURA` e, para cada gráfico,
+anota a seção que estava aberta quando ele foi visto pela primeira vez. Com uma
+seção nova na frente, treze gráficos que já nasciam desenhados passaram a ser
+colhidos com `m3_0_1` aberta em vez de `m3_1_1`:
+
+```
+chartPreco · chartMM · chartTrend · chartPercentil · chartMediaStd
+chartBoiVsBGIAll · chartRatioBGICCM · chartAbateIBGE · chartAbatePreco
+chartAgio · chartBoiMagroTroca · chartBoiMagroAgio · chartBaseAtivo
+```
+
+**Nenhuma série mudou** — nem contagem de pontos, nem primeiro, nem último
+valor; o comparador acusou zero diferença em `contasFixas`, `cai`, `sinais`,
+`backtest`, `opcoes`, `exportacoes`, `logistica` e `frescor`, e zero "dado do
+dia" mexido. O campo `secao` é metadado de captura, não propriedade do gráfico:
+ele diz onde o retrato foi tirado, não de onde o número veio.
+
+Três gráficos novos entraram no retrato — `chartVeBoi`, `chartVeMilho` e
+`chartVeTroca`, os compactos da Visão Executiva.
+
+O retrato foi readotado nesta data com `--atualizar`.
