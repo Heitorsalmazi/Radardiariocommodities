@@ -208,6 +208,42 @@ const SAIDA = process.argv[3] || path.join(__dirname, 'baseline.json');
       });
     });
 
+    /* ── Etapa 2.1: dimensionamento, validação e retorno vazio ────────── */
+    tenta('hedge_500at_100pct_cima', () => {
+      if (typeof window._hsDimensiona !== 'function') throw new Error('_hsDimensiona ausente');
+      const r = window._hsDimensiona({ ativo:'BGI', estrategia:'venda_futuro', precoFuturo:350,
+                                       custoProd:300, margemRS:0, qtdFisica:500, pctTrava:100,
+                                       arredonda:'cima' });
+      return { n:r.nContratos, travado:r.qtdEfetiva, coberturaPct:r6(r.coberturaFisicaPct),
+               excedente:r.excedente, desprotegido:r.desprotegido, sobreprotege:r.sobreprotege };
+    });
+    tenta('hedge_500at_100pct_baixo', () => {
+      const r = window._hsDimensiona({ ativo:'BGI', estrategia:'venda_futuro', precoFuturo:350,
+                                       custoProd:300, margemRS:0, qtdFisica:500, pctTrava:100,
+                                       arredonda:'baixo' });
+      return { n:r.nContratos, travado:r.qtdEfetiva, coberturaPct:r6(r.coberturaFisicaPct),
+               excedente:r.excedente, desprotegido:r.desprotegido, sobreprotege:r.sobreprotege };
+    });
+    tenta('hedge_200at_abaixo_de_um_contrato', () => {
+      const r = window._hsDimensiona({ ativo:'BGI', estrategia:'venda_futuro', precoFuturo:350,
+                                       custoProd:300, margemRS:0, qtdFisica:200, pctTrava:100,
+                                       arredonda:'baixo' });
+      return { n:r.nContratos, semContrato:r.semContrato, abaixoDeUm:r.abaixoDeUmContrato,
+               desprotegido:r.desprotegido };
+    });
+    ['altoValido:1200', 'separadorTrocado:28962', 'zero:0', 'bordaBaixa:70', 'foraBaixa:69']
+      .forEach(par => {
+        const [nome, v] = par.split(':');
+        tenta('breakeven_' + nome, () => {
+          if (typeof window._mbValidaBreakeven !== 'function') throw new Error('_mbValidaBreakeven ausente');
+          const r = window._mbValidaBreakeven(Number(v), 350);
+          return { estado:r.estado, valor:r6(r.valor), sugestao:r6(r.sugestao), fator:r.fator };
+        });
+      });
+    tenta('retornoVazio_nao_aplicavel',  () => PM.calcularRetornoVazio(1000, 5.0977, false));
+    tenta('retornoVazio_obrigatorio',    () => PM.calcularRetornoVazio(1000, 5.0977, {modo:'obrigatorio', km:null}));
+    tenta('retornoVazio_km_contratado',  () => PM.calcularRetornoVazio(1000, 5.0977, {modo:'obrigatorio', km:600}));
+
     /* ── corrigidos pelo IGP-M e carcaça (séries longas) ───────────────── */
     tenta('igpm_jan2003', () => shFatorIgpm(2003, 0));
     tenta('igpm_jan2024', () => shFatorIgpm(2024, 0));

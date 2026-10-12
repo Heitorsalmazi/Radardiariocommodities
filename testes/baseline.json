@@ -1,5 +1,5 @@
 {
- "capturadoEm": "2026-10-12T12:47:45.892Z",
+ "capturadoEm": "2026-10-12T13:43:13.557Z",
  "url": "http://127.0.0.1:8777/local.html",
  "errosDeConsole": [],
  "resumo": {
@@ -498,6 +498,61 @@
     "lL": 2546.519365,
     "llP": 0.298892
    },
+   "hedge_500at_100pct_cima": {
+    "n": 2,
+    "travado": 660,
+    "coberturaPct": 132,
+    "excedente": 160,
+    "desprotegido": 0,
+    "sobreprotege": true
+   },
+   "hedge_500at_100pct_baixo": {
+    "n": 1,
+    "travado": 330,
+    "coberturaPct": 66,
+    "excedente": 0,
+    "desprotegido": 170,
+    "sobreprotege": false
+   },
+   "hedge_200at_abaixo_de_um_contrato": {
+    "n": 0,
+    "semContrato": true,
+    "abaixoDeUm": true,
+    "desprotegido": 200
+   },
+   "breakeven_altoValido": {
+    "estado": "ok",
+    "valor": 1200,
+    "sugestao": null,
+    "fator": null
+   },
+   "breakeven_separadorTrocado": {
+    "estado": "fora_escala",
+    "valor": null,
+    "sugestao": 289.62,
+    "fator": 100
+   },
+   "breakeven_zero": {
+    "estado": "invalido",
+    "valor": null,
+    "sugestao": null,
+    "fator": null
+   },
+   "breakeven_bordaBaixa": {
+    "estado": "ok",
+    "valor": 70,
+    "sugestao": null,
+    "fator": null
+   },
+   "breakeven_foraBaixa": {
+    "estado": "fora_escala",
+    "valor": null,
+    "sugestao": null,
+    "fator": null
+   },
+   "retornoVazio_nao_aplicavel": 0,
+   "retornoVazio_obrigatorio": 4689.884,
+   "retornoVazio_km_contratado": 2813.9304,
    "igpm_jan2003": 4.277545,
    "igpm_jan2024": 1.053521,
    "carcacaArroba_impressao": {

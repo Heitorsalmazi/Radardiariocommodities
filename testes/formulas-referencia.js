@@ -266,7 +266,101 @@ function contratoDe(nomeAba){
   return m ? CONTRATOS[m[1]] : null;
 }
 
-/* ══ 8 · ARREDONDAMENTO ══════════════════════════════════════════════════
+/* ══ 8 · DIMENSIONAMENTO DO HEDGE ════════════════════════════════════════
+   Contrato não se fraciona. O volume protegido quase nunca bate com o que se
+   queria proteger, e a diferença tem dois nomes muito diferentes:
+
+     arredondar para CIMA  → pode travar MAIS do que existe no pasto. O
+                             excedente é posição vendida a descoberto: ganha
+                             na queda, perde na alta, e não tem boi atrás.
+     arredondar para BAIXO → nunca sobra, mas deixa um resto exposto.
+
+   A cobertura é medida contra o volume FÍSICO, porque a pergunta de quem tem
+   boi é "quanto do MEU boi está travado", não "quanto do meu alvo". */
+function dimensionaHedge(volumeFisico, pctTrava, tamanhoContrato, modo){
+  var V = num(volumeFisico), p = num(pctTrava), T = num(tamanhoContrato);
+  if (V == null || p == null || T == null || T <= 0 || V < 0) return null;
+  var alvo   = V * (p / 100);
+  var nBaixo = Math.floor(alvo / T);
+  var nCima  = Math.ceil(alvo / T);
+  var m      = (modo === 'baixo') ? 'baixo' : 'cima';
+  var n      = (m === 'baixo') ? nBaixo : nCima;
+  var efet   = n * T;
+  return {
+    volumeFisico: V, alvo: alvo, tamanhoContrato: T, modo: m,
+    contratos: n, contratosBaixo: nBaixo, contratosCima: nCima,
+    volumeTravado: efet,
+    volumeTravadoBaixo: nBaixo * T, volumeTravadoCima: nCima * T,
+    coberturaFisicaPct: V > 0 ? (efet / V) * 100 : null,
+    coberturaAlvoPct:   alvo > 0 ? (efet / alvo) * 100 : null,
+    excedente:    efet > V ? efet - V : 0,
+    desprotegido: V > efet ? V - efet : 0,
+    sobreprotege: efet > V,
+    semContrato:  (n === 0 && alvo > 0),
+    abaixoDeUmContrato: (alvo > 0 && alvo < T)
+  };
+}
+
+/* ══ 9 · VALIDAÇÃO DO BREAKEVEN ══════════════════════════════════════════
+   Espelho da função que roda na tela. NÃO corrige escala: valida e, quando
+   não fecha, diz por quê e sugere. Corrigir calado é como consertar o
+   termômetro em vez de medir a febre. */
+var BE_MIN_REL = 0.20, BE_MAX_REL = 5.0;
+function validaBreakeven(be, refPrice){
+  var out = { estado:'ausente', valor:null, bruto:null, sugestao:null, fator:null };
+  if (be === null || be === undefined || be === '') return out;
+  var n = (typeof be === 'number') ? be : parseFloat(String(be).replace(',', '.'));
+  if (!isFinite(n)) { out.estado = 'invalido'; return out; }
+  out.bruto = n;
+  if (n <= 0) { out.estado = 'invalido'; return out; }
+  var r = num(refPrice);
+  if (r == null || r <= 0) { out.estado = 'sem_referencia'; out.valor = n; return out; }
+  var min = r * BE_MIN_REL, max = r * BE_MAX_REL;
+  if (n >= min && n <= max) { out.estado = 'ok'; out.valor = n; return out; }
+  var cand = [100, 1000];
+  for (var i = 0; i < cand.length; i++){
+    var v = n / cand[i];
+    if (v >= min && v <= max){ out.sugestao = v; out.fator = cand[i]; break; }
+  }
+  out.estado = 'fora_escala';
+  return out;
+}
+
+/* ══ 10 · MAGNITUDE DE PREÇO POR CONTRATO ════════════════════════════════
+   Um preço de soja em torno de 25 é US$/saca; em torno de 150, alguém somou
+   reais na coluna errada. Faixas declaradas, não adivinhadas — servem para
+   ACUSAR incompatibilidade, nunca para converter nada. */
+var FAIXA_PRECO = {
+  BGI: { min: 100,  max: 800,   unidade:'R$/@'  },
+  CCM: { min: 20,   max: 200,   unidade:'R$/sc' },
+  SJC: { min: 8,    max: 60,    unidade:'US$/sc'},
+  DOL: { min: 2000, max: 15000, unidade:'R$/US$ mil' },
+  ETH: { min: 1000, max: 8000,  unidade:'R$/m³' },
+  DI1: { min: 0,    max: 60,    unidade:'% a.a.' }
+};
+function precoCompativel(prefixo, preco){
+  var f = FAIXA_PRECO[String(prefixo || '').toUpperCase()];
+  var v = num(preco);
+  if (!f) return { estado:'contrato_desconhecido', ok:null };
+  if (v == null) return { estado:'ausente', ok:null, unidade:f.unidade };
+  if (v >= f.min && v <= f.max) return { estado:'ok', ok:true, unidade:f.unidade };
+  return { estado:'fora_da_faixa', ok:false, unidade:f.unidade,
+           faixa:[f.min, f.max],
+           motivo:'preço ' + v + ' fora da faixa ' + f.min + '–' + f.max + ' esperada para ' + f.unidade };
+}
+
+/* ══ 11 · CUSTO DA @ INCREMENTAL ═════════════════════════════════════════
+   Denominador zero ou negativo significa que o animal não ganhou arroba
+   comercial nenhuma — e aí não existe custo por arroba produzida. Devolver
+   um número aqui seria inventar. */
+function custoArrobaIncremental(cmv, originacao, jurosReposicao, arrobasIncrementais){
+  var C = num(cmv), O = num(originacao), J = num(jurosReposicao), A = num(arrobasIncrementais);
+  if (C == null || O == null || A == null) return null;
+  if (!(A > 0)) return null;
+  return (C - O - (J || 0)) / A;
+}
+
+/* ══ 12 · ARREDONDAMENTO ═════════════════════════════════════════════════
    Arredonda só na EXIBIÇÃO, nunca no meio da conta. Esta função existe para
    os testes poderem comparar o que a tela mostra. */
 function arredonda(v, casas){
@@ -292,6 +386,9 @@ var API = {
   comissaoPercentual:comissaoPercentual, comissaoPorCabeca:comissaoPorCabeca,
   receitaLiquida:receitaLiquida,
   base:base, basePercentual:basePercentual,
+  dimensionaHedge:dimensionaHedge, validaBreakeven:validaBreakeven,
+  precoCompativel:precoCompativel, custoArrobaIncremental:custoArrobaIncremental,
+  FAIXA_PRECO:FAIXA_PRECO,
   precoRealizadoHedgeVenda:precoRealizadoHedgeVenda, ajusteFuturos:ajusteFuturos,
   CONTRATOS:CONTRATOS, contratoDe:contratoDe, arredonda:arredonda
 };
