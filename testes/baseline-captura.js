@@ -195,6 +195,18 @@ const SAIDA = process.argv[3] || path.join(__dirname, 'baseline.json');
       CAMPOS_CAI.forEach(k => { if (typeof c[k] === 'number' && isFinite(c[k])) o[k] = r6(c[k]); });
       return o;
     });
+    /* COM DEDUÇÃO SOBRE A RECEITA — o cenário onde o break-even estava errado
+       até a Etapa 2. Com dedução em zero o defeito ficava invisível, que é
+       justamente por que ele durou tanto. Duas âncoras, em dois preços de
+       venda: o break-even tem de sair IGUAL nas duas. */
+    const ST_DED = Object.assign({}, ST_FIXO, { dedPct:'1.5' });
+    ['320','400'].forEach(sp => {
+      tenta('calcEngine_deducao1.5pct_sp' + sp, () => {
+        const c = window.__3M_calcEngine(ST_DED, sp); const o = {};
+        CAMPOS_CAI.forEach(k => { if (typeof c[k] === 'number' && isFinite(c[k])) o[k] = r6(c[k]); });
+        return o;
+      });
+    });
 
     /* ── corrigidos pelo IGP-M e carcaça (séries longas) ───────────────── */
     tenta('igpm_jan2003', () => shFatorIgpm(2003, 0));
