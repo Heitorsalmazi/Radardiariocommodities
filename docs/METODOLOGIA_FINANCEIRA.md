@@ -840,6 +840,38 @@ saída de cada suíte.
 
 ---
 
+## Adendo da Etapa 4 — a unidade da soja física
+
+A auditoria de unidades da Etapa 2 conferiu os contratos futuros e confirmou
+que o **SJC é cotado em dólar por saca de 60 kg**. Ela não alcançou a série
+**física** de soja, e ali há um erro de rótulo.
+
+`_activePriceUnit` põe a aba `SOJA - PARANAGUÁ` no mesmo ramo do SJC e a
+rotula **US$/saca**. Prova interna, em 39 pregões nos quais a soja física, o
+SJC e o dólar negociaram no mesmo dia:
+
+| data | físico Paranaguá | SJCX26 | dólar | SJC em R$ | físico ÷ SJC em R$ |
+|---|---|---|---|---|---|
+| 26/08/2026 | 154,57 | US$ 27,9101 | 5,1928 | 144,93 | 1,067 |
+| 27/08/2026 | 155,05 | US$ 27,9541 | 5,2003 | 145,37 | 1,067 |
+| 28/08/2026 | 159,76 | US$ 28,3951 | 5,2438 | 148,90 | 1,073 |
+
+Mediana da razão nos 39 pregões: **1,067**. Se a série física estivesse em
+dólar, essa razão seria o próprio câmbio, perto de **5,2**; em 1,07 ela é o
+prêmio de porto que se espera de Paranaguá sobre o futuro convertido.
+
+**Conclusão:** a série física de soja está em **R$/saca de 60 kg**.
+
+**Situação:** a Visão Executiva (Etapa 4) já mostra R$/sc e declara a
+divergência na própria tela. `_activePriceUnit` **não foi alterada** — é
+comportamento de tela antiga e depende de autorização. Enquanto isso, as duas
+telas divergem de propósito e com aviso, em vez de uma delas ficar errada em
+silêncio.
+
+Detalhes e demais limitações em `docs/VISAO_EXECUTIVA.md`.
+
+---
+
 ## Fontes
 
 - [B3 — Ofício Circular 135/2024-PRE: alteração do índice de liquidação do contrato futuro de Boi Gordo](https://b3.com.br/data/files/F2/30/96/A0/72E629106EEC8429AC094EA8/OC%20135-2024%20PRE%20Alteracao%20do%20Indice%20de%20Liquidacao%20do%20contrato%20futuro%20de%20Boi%20Gordo%20(PT).pdf)
