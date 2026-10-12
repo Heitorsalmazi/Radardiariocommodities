@@ -1,0 +1,5865 @@
+{
+ "capturadoEm": "2026-10-12T13:43:13.557Z",
+ "url": "http://127.0.0.1:8777/local.html",
+ "errosDeConsole": [],
+ "resumo": {
+  "abas": 147,
+  "contratos": 80,
+  "graficos": 125,
+  "sinais": 10
+ },
+ "dados": {
+  "contratos": {
+   "BGIH26": {
+    "pregoes": 128,
+    "primeiro": 329.9,
+    "ultimo": 355.01
+   },
+   "BGIJ26": {
+    "pregoes": 143,
+    "primeiro": 327.3,
+    "ultimo": 356.15
+   },
+   "BGIK26": {
+    "pregoes": 163,
+    "primeiro": 326.55,
+    "ultimo": 348.18
+   },
+   "BGIM26": {
+    "pregoes": 161,
+    "primeiro": 342.45,
+    "ultimo": 337.58
+   },
+   "BGIN26": {
+    "pregoes": 183,
+    "primeiro": 342.45,
+    "ultimo": 346.02
+   },
+   "BGIQ26": {
+    "pregoes": 185,
+    "primeiro": 343.95,
+    "ultimo": 344.07
+   },
+   "BGIU26": {
+    "pregoes": 165,
+    "primeiro": 340.45,
+    "ultimo": 356.3
+   },
+   "BGIV26": {
+    "pregoes": 166,
+    "primeiro": 344.9,
+    "ultimo": 367.85
+   },
+   "BGIX26": {
+    "pregoes": 132,
+    "primeiro": 352.45,
+    "ultimo": 371.65
+   },
+   "BGIZ26": {
+    "pregoes": 127,
+    "primeiro": 352,
+    "ultimo": 371.85
+   },
+   "BGIF27": {
+    "pregoes": 129,
+    "primeiro": 352,
+    "ultimo": 376.4
+   },
+   "BGIG27": {
+    "pregoes": 129,
+    "primeiro": 352,
+    "ultimo": 376.8
+   },
+   "BGIH27": {
+    "pregoes": 129,
+    "primeiro": 352,
+    "ultimo": 375.6
+   },
+   "BGIJ27": {
+    "pregoes": 11,
+    "primeiro": 370.7,
+    "ultimo": 375
+   },
+   "ETHM26": {
+    "pregoes": 7,
+    "primeiro": 2355,
+    "ultimo": 2376
+   },
+   "ETHN26": {
+    "pregoes": 30,
+    "primeiro": 2375,
+    "ultimo": 2149
+   },
+   "ETHQ26": {
+    "pregoes": 51,
+    "primeiro": 2378,
+    "ultimo": 2423.5
+   },
+   "ETHU26": {
+    "pregoes": 52,
+    "primeiro": 2401,
+    "ultimo": 2551.5
+   },
+   "ETHV26": {
+    "pregoes": 52,
+    "primeiro": 2426,
+    "ultimo": 2585
+   },
+   "ETHX26": {
+    "pregoes": 52,
+    "primeiro": 2507.5,
+    "ultimo": 2594
+   },
+   "ETHZ26": {
+    "pregoes": 52,
+    "primeiro": 2528,
+    "ultimo": 2654
+   },
+   "ETHF27": {
+    "pregoes": 52,
+    "primeiro": 2584.5,
+    "ultimo": 2680.5
+   },
+   "ETHG27": {
+    "pregoes": 52,
+    "primeiro": 2584.5,
+    "ultimo": 2685
+   },
+   "ETHH27": {
+    "pregoes": 52,
+    "primeiro": 2584,
+    "ultimo": 2680
+   },
+   "ETHJ27": {
+    "pregoes": 44,
+    "primeiro": 2559.5,
+    "ultimo": 2665
+   },
+   "ETHK27": {
+    "pregoes": 44,
+    "primeiro": 2559.5,
+    "ultimo": 2665
+   },
+   "ETHZ27": {
+    "pregoes": 44,
+    "primeiro": 2559.5,
+    "ultimo": 2665
+   },
+   "ETHF28": {
+    "pregoes": 44,
+    "primeiro": 2559.5,
+    "ultimo": 2665
+   },
+   "BGIK27": {
+    "pregoes": 107,
+    "primeiro": 356.75,
+    "ultimo": 372.4
+   },
+   "BGIM27": {
+    "pregoes": 11,
+    "primeiro": 369.9,
+    "ultimo": 374.2
+   },
+   "BGIV27": {
+    "pregoes": 11,
+    "primeiro": 369.9,
+    "ultimo": 374.2
+   },
+   "CCMH26": {
+    "pregoes": 198,
+    "primeiro": 72.62,
+    "ultimo": 71.88
+   },
+   "CCMK26": {
+    "pregoes": 219,
+    "primeiro": 71.14,
+    "ultimo": 65.38
+   },
+   "CCMN26": {
+    "pregoes": 238,
+    "primeiro": 70.4,
+    "ultimo": 64.68
+   },
+   "CCMU26": {
+    "pregoes": 251,
+    "primeiro": 68,
+    "ultimo": 72.18
+   },
+   "CCMX26": {
+    "pregoes": 195,
+    "primeiro": 71.32,
+    "ultimo": 78.43
+   },
+   "CCMF27": {
+    "pregoes": 140,
+    "primeiro": 72.93,
+    "ultimo": 81.79
+   },
+   "CCMH27": {
+    "pregoes": 140,
+    "primeiro": 75.16,
+    "ultimo": 83.87
+   },
+   "CCMK27": {
+    "pregoes": 141,
+    "primeiro": 71.23,
+    "ultimo": 82.62
+   },
+   "CCMN27": {
+    "pregoes": 140,
+    "primeiro": 70.38,
+    "ultimo": 80.24
+   },
+   "CCMU27": {
+    "pregoes": 140,
+    "primeiro": 69.52,
+    "ultimo": 79.7
+   },
+   "CCMX27": {
+    "pregoes": 83,
+    "primeiro": 72.42,
+    "ultimo": 82.5
+   },
+   "SJCH26": {
+    "pregoes": 23,
+    "primeiro": 24.4103,
+    "ultimo": 25.8322
+   },
+   "SJCK26": {
+    "pregoes": 161,
+    "primeiro": 23.96,
+    "ultimo": 26.0637
+   },
+   "SJCN26": {
+    "pregoes": 158,
+    "primeiro": 25.485,
+    "ultimo": 24.4433
+   },
+   "SJCQ26": {
+    "pregoes": 145,
+    "primeiro": 23.8757,
+    "ultimo": 25.9535
+   },
+   "SJCU26": {
+    "pregoes": 166,
+    "primeiro": 23.578,
+    "ultimo": 28.136
+   },
+   "SJCX26": {
+    "pregoes": 168,
+    "primeiro": 23.6828,
+    "ultimo": 29.0509
+   },
+   "SJCF27": {
+    "pregoes": 142,
+    "primeiro": 24.3276,
+    "ultimo": 29.3816
+   },
+   "SJCH27": {
+    "pregoes": 142,
+    "primeiro": 24.3276,
+    "ultimo": 29.4808
+   },
+   "SJCK27": {
+    "pregoes": 142,
+    "primeiro": 24.4103,
+    "ultimo": 29.558
+   },
+   "SJCN27": {
+    "pregoes": 85,
+    "primeiro": 26.5597,
+    "ultimo": 29.5745
+   },
+   "SJCQ27": {
+    "pregoes": 25,
+    "primeiro": 26.5708,
+    "ultimo": 29.1226
+   },
+   "SJCU27": {
+    "pregoes": 4,
+    "primeiro": 27.3038,
+    "ultimo": 28.136
+   },
+   "DOLN26": {
+    "pregoes": 13,
+    "primeiro": 5085.202,
+    "ultimo": 5176.6
+   },
+   "DOLQ26": {
+    "pregoes": 36,
+    "primeiro": 5124.042,
+    "ultimo": 5077.3
+   },
+   "DOLU26": {
+    "pregoes": 56,
+    "primeiro": 5160.561,
+    "ultimo": 5181.6
+   },
+   "DOLV26": {
+    "pregoes": 56,
+    "primeiro": 5196.996,
+    "ultimo": 5219.393
+   },
+   "DOLX26": {
+    "pregoes": 56,
+    "primeiro": 5231.338,
+    "ultimo": 5250.887
+   },
+   "DOLZ26": {
+    "pregoes": 56,
+    "primeiro": 5264.568,
+    "ultimo": 5279.63
+   },
+   "DOLF27": {
+    "pregoes": 56,
+    "primeiro": 5299.61,
+    "ultimo": 5309.752
+   },
+   "DOLG27": {
+    "pregoes": 56,
+    "primeiro": 5337.674,
+    "ultimo": 5341.331
+   },
+   "DOLH27": {
+    "pregoes": 56,
+    "primeiro": 5368.808,
+    "ultimo": 5368.663
+   },
+   "DOLJ27": {
+    "pregoes": 56,
+    "primeiro": 5409.395,
+    "ultimo": 5404.272
+   },
+   "DOLK27": {
+    "pregoes": 56,
+    "primeiro": 5445.334,
+    "ultimo": 5436.079
+   },
+   "DOLM27": {
+    "pregoes": 56,
+    "primeiro": 5481.466,
+    "ultimo": 5467.085
+   },
+   "DOLN27": {
+    "pregoes": 56,
+    "primeiro": 5522.137,
+    "ultimo": 5503.471
+   },
+   "DOLQ27": {
+    "pregoes": 56,
+    "primeiro": 5561.064,
+    "ultimo": 5539.063
+   },
+   "DOLV27": {
+    "pregoes": 56,
+    "primeiro": 5638.251,
+    "ultimo": 5610.408
+   },
+   "DOLF28": {
+    "pregoes": 56,
+    "primeiro": 5745.68,
+    "ultimo": 5714.286
+   },
+   "DOLJ28": {
+    "pregoes": 56,
+    "primeiro": 5865.264,
+    "ultimo": 5827.544
+   },
+   "DOLN28": {
+    "pregoes": 56,
+    "primeiro": 5981.992,
+    "ultimo": 5943.095
+   },
+   "DOLV28": {
+    "pregoes": 56,
+    "primeiro": 6106.186,
+    "ultimo": 6066.893
+   },
+   "DOLF29": {
+    "pregoes": 56,
+    "primeiro": 6213.389,
+    "ultimo": 6176.66
+   },
+   "DOLJ29": {
+    "pregoes": 56,
+    "primeiro": 6334.47,
+    "ultimo": 6304.046
+   },
+   "DOLN29": {
+    "pregoes": 56,
+    "primeiro": 6463.807,
+    "ultimo": 6437.737
+   },
+   "DOLV29": {
+    "pregoes": 39,
+    "primeiro": 6637.18,
+    "ultimo": 6576.663
+   },
+   "DOLF30": {
+    "pregoes": 39,
+    "primeiro": 6764.431,
+    "ultimo": 6694.124
+   },
+   "DOLN30": {
+    "pregoes": 56,
+    "primeiro": 6975.061,
+    "ultimo": 6965.15
+   },
+   "DOLF31": {
+    "pregoes": 56,
+    "primeiro": 7246.107,
+    "ultimo": 7246.753
+   }
+  },
+  "cai": {
+   "cAI": null,
+   "dias": 0,
+   "arE": null,
+   "arC": 0,
+   "bLL": null,
+   "bMB": null,
+   "gmd": null,
+   "sys": "pasto",
+   "cabecas": 1
+  },
+  "contasFixas": {
+   "_pcrMotor_presente": true,
+   "freteANTT_1000km_ccd3.5_cc500": 4000,
+   "freteANTT_km_zero": null,
+   "retornoVazio_1000km_ccd3.5_on": 3220,
+   "retornoVazio_desligado": 0,
+   "fatorRetornoVazio": 0.92,
+   "fretePorCabeca_9000_30cab": 300,
+   "fretePorCabeca_zero_cabecas": null,
+   "comissao_300a_2pct": 6,
+   "comissao_300a_45porcabeca": 45,
+   "comissao_valor_zero": 0,
+   "precoColocado_300_10_5_2": 317,
+   "precoColocado_sem_outros": 315,
+   "escolherVeiculo_25cab": "3e",
+   "escolherVeiculo_26cab": "6e",
+   "escolherVeiculo_70cab": "6e",
+   "escolherVeiculo_110cab": "9e",
+   "escolherVeiculo_111cab": null,
+   "veiculosANTT": {
+    "3e": {
+     "eixos": 3,
+     "capacidade": 25,
+     "rotulo": "3 eixos"
+    },
+    "6e": {
+     "eixos": 6,
+     "capacidade": 70,
+     "rotulo": "6 eixos"
+    },
+    "9e": {
+     "eixos": 9,
+     "capacidade": 110,
+     "rotulo": "9 eixos"
+    }
+   },
+   "calcEngine_cicloFixo_sp320": {
+    "cAI": 175.205086,
+    "d": 340,
+    "arE": 11,
+    "arC": 21.624,
+    "bLL": 276.236433,
+    "bMB": 250.025586,
+    "lL": 946.343365,
+    "llP": 0.136761
+   },
+   "calcEngine_cicloFixo_sp280": {
+    "cAI": 175.205086,
+    "d": 340,
+    "arE": 11,
+    "arC": 21.624,
+    "bLL": 276.236433,
+    "bMB": 250.025586,
+    "lL": 81.383365,
+    "llP": 0.013441
+   },
+   "calcEngine_deducao1.5pct_sp320": {
+    "cAI": 175.205086,
+    "d": 340,
+    "arE": 11,
+    "arC": 21.624,
+    "bLL": 280.44308,
+    "bMB": 253.833082,
+    "lL": 842.548165,
+    "llP": 0.123615
+   },
+   "calcEngine_deducao1.5pct_sp400": {
+    "cAI": 175.205086,
+    "d": 340,
+    "arE": 11,
+    "arC": 21.624,
+    "bLL": 280.44308,
+    "bMB": 253.833082,
+    "lL": 2546.519365,
+    "llP": 0.298892
+   },
+   "hedge_500at_100pct_cima": {
+    "n": 2,
+    "travado": 660,
+    "coberturaPct": 132,
+    "excedente": 160,
+    "desprotegido": 0,
+    "sobreprotege": true
+   },
+   "hedge_500at_100pct_baixo": {
+    "n": 1,
+    "travado": 330,
+    "coberturaPct": 66,
+    "excedente": 0,
+    "desprotegido": 170,
+    "sobreprotege": false
+   },
+   "hedge_200at_abaixo_de_um_contrato": {
+    "n": 0,
+    "semContrato": true,
+    "abaixoDeUm": true,
+    "desprotegido": 200
+   },
+   "breakeven_altoValido": {
+    "estado": "ok",
+    "valor": 1200,
+    "sugestao": null,
+    "fator": null
+   },
+   "breakeven_separadorTrocado": {
+    "estado": "fora_escala",
+    "valor": null,
+    "sugestao": 289.62,
+    "fator": 100
+   },
+   "breakeven_zero": {
+    "estado": "invalido",
+    "valor": null,
+    "sugestao": null,
+    "fator": null
+   },
+   "breakeven_bordaBaixa": {
+    "estado": "ok",
+    "valor": 70,
+    "sugestao": null,
+    "fator": null
+   },
+   "breakeven_foraBaixa": {
+    "estado": "fora_escala",
+    "valor": null,
+    "sugestao": null,
+    "fator": null
+   },
+   "retornoVazio_nao_aplicavel": 0,
+   "retornoVazio_obrigatorio": 4689.884,
+   "retornoVazio_km_contratado": 2813.9304,
+   "igpm_jan2003": 4.277545,
+   "igpm_jan2024": 1.053521,
+   "carcacaArroba_impressao": {
+    "n": 512,
+    "primeiraData": "2024-08-01",
+    "primeiro": 251.323512,
+    "ultimaData": "2026-08-31",
+    "ultimo": 364.05
+   },
+   "vivoSP_boiGordo": {
+    "n": 505,
+    "nPracas": 5,
+    "unidade": "R$/@",
+    "primeiraData": "2024-08-01",
+    "primeiro": 237.829667,
+    "ultimaData": "2026-08-31",
+    "ultimo": 342.66
+   },
+   "vivoSP_vacaGorda": {
+    "n": 500,
+    "nPracas": 5,
+    "unidade": "R$/@",
+    "primeiraData": "2024-08-01",
+    "primeiro": 217.575979,
+    "ultimaData": "2026-08-31",
+    "ultimo": 319.77
+   }
+  },
+  "sinais": {
+   "btAtivo": null,
+   "variacaoDesde": {
+    "boi": {
+     "base": "nom",
+     "ancora": "2026-01-02T00:00:00.000Z",
+     "fim": "2026-09-01T00:00:00.000Z",
+     "precoAncora": 319.2,
+     "precoFim": 346,
+     "variacao": 8.395989974937358,
+     "comparador": "bezerro",
+     "variacaoComp": 10.399940069246094,
+     "topo": 14.990601503759414,
+     "fundo": -0.4229323308270527,
+     "amplitude": 15.413533834586467,
+     "maiorQueda": -11.565181855333062,
+     "medianaOutrosAnos": 0.8983479700824359,
+     "anosComparaveis": 23,
+     "percentil": 70,
+     "praca": null,
+     "agregado": false
+    },
+    "bezerro": {
+     "base": "nom",
+     "ancora": "2026-01-02T00:00:00.000Z",
+     "fim": "2026-08-25T00:00:00.000Z",
+     "precoAncora": 3070.21,
+     "precoFim": 3389.51,
+     "variacao": 10.399940069246094,
+     "comparador": "boi",
+     "variacaoComp": 7.565789473684226,
+     "topo": 11.833392504095809,
+     "fundo": -0.98299464857452,
+     "amplitude": 12.816387152670329,
+     "maiorQueda": -2.305796966378526,
+     "medianaOutrosAnos": 4.361194029850757,
+     "anosComparaveis": 25,
+     "percentil": 68,
+     "praca": null,
+     "agregado": false
+    },
+    "milho": {
+     "base": "nom",
+     "ancora": "2026-01-02T00:00:00.000Z",
+     "fim": "2026-09-01T00:00:00.000Z",
+     "precoAncora": 69.45,
+     "precoFim": 70.96,
+     "variacao": 2.174226061915041,
+     "comparador": "boi",
+     "variacaoComp": 8.395989974937358,
+     "topo": 3.815694744420428,
+     "fundo": -9.44564434845213,
+     "amplitude": 13.261339092872559,
+     "maiorQueda": -12.773925104022188,
+     "medianaOutrosAnos": -2.491939431611734,
+     "anosComparaveis": 21,
+     "percentil": 62,
+     "praca": null,
+     "agregado": false
+    },
+    "soja": {
+     "base": "nom",
+     "ancora": "2026-01-02T00:00:00.000Z",
+     "fim": "2026-09-01T00:00:00.000Z",
+     "precoAncora": 142.14,
+     "precoFim": 161.14,
+     "variacao": 13.36710285633882,
+     "comparador": "milho",
+     "variacaoComp": 2.174226061915041,
+     "topo": 13.36710285633882,
+     "fundo": -12.522864781201626,
+     "amplitude": 25.889967637540444,
+     "maiorQueda": -12.522864781201626,
+     "medianaOutrosAnos": null,
+     "anosComparaveis": 0,
+     "percentil": null,
+     "praca": null,
+     "agregado": false
+    },
+    "magro": {
+     "base": "nom",
+     "ancora": "2026-01-05T00:00:00.000Z",
+     "fim": "2026-08-31T00:00:00.000Z",
+     "precoAncora": 4100,
+     "precoFim": 4481.01,
+     "variacao": 9.2929268292683,
+     "comparador": "boi",
+     "variacaoComp": 8.131868131868124,
+     "topo": 11.918292682926811,
+     "fundo": 0,
+     "amplitude": 11.918292682926811,
+     "maiorQueda": -5.934077967586504,
+     "medianaOutrosAnos": 12.155841764906029,
+     "anosComparaveis": 1,
+     "percentil": 0,
+     "praca": "SP — Presidente Prudente",
+     "agregado": false
+    }
+   },
+   "curvaVariacao": {
+    "BGI": {
+     "dAnc": "2026-07-14T00:00:00.000Z",
+     "dFim": "2026-09-01T00:00:00.000Z",
+     "travou": false,
+     "vencimentos": [
+      "Q26",
+      "U26",
+      "V26",
+      "X26",
+      "Z26",
+      "F27",
+      "G27",
+      "H27",
+      "K27"
+     ],
+     "naoExistia": 3,
+     "jaVenceu": 5,
+     "variacao": [
+      1.1524327502572485,
+      2.9917618152912384,
+      3.5322262876442467,
+      3.8273501885738304,
+      3.536126966448583,
+      2.715240824123333,
+      2.684289412726537,
+      2.301511643742349,
+      1.4299332697807365
+     ],
+     "media": 2.685652573176456,
+     "inclinacao": 0.2775005195234881,
+     "formato": "paralelo",
+     "curto": "Q26",
+     "longo": "K27"
+    },
+    "CCM": {
+     "dAnc": "2026-07-15T00:00:00.000Z",
+     "dFim": "2026-09-01T00:00:00.000Z",
+     "travou": false,
+     "vencimentos": [
+      "U26",
+      "X26",
+      "F27",
+      "H27",
+      "K27",
+      "N27",
+      "U27",
+      "X27"
+     ],
+     "naoExistia": 0,
+     "jaVenceu": 3,
+     "variacao": [
+      5.8978873239436735,
+      9.371077952865736,
+      10.303438975050572,
+      10.617251384858895,
+      11.078246840548545,
+      11.259012756516906,
+      11.468531468531463,
+      12.781954887218028
+     ],
+     "media": 10.347175198691726,
+     "inclinacao": 6.884067563274354,
+     "formato": "inclinou",
+     "curto": "U26",
+     "longo": "X27"
+    },
+    "SJC": {
+     "dAnc": "2026-07-15T00:00:00.000Z",
+     "dFim": "2026-09-01T00:00:00.000Z",
+     "travou": false,
+     "vencimentos": [
+      "U26",
+      "X26",
+      "F27",
+      "H27",
+      "K27",
+      "N27"
+     ],
+     "naoExistia": 1,
+     "jaVenceu": 4,
+     "variacao": [
+      7.045297174728549,
+      9.652519853851494,
+      9.623836849213863,
+      9.655605934930023,
+      9.448941354207552,
+      8.998669511920966
+     ],
+     "media": 9.070811779808741,
+     "inclinacao": 1.953372337192417,
+     "formato": "inclinou",
+     "curto": "U26",
+     "longo": "N27"
+    }
+   },
+   "base": {
+    "valor": -10.300000000000011,
+    "rank": 2,
+    "contrato": "BGIU26",
+    "emPct": false
+   },
+   "cai": {
+    "melhorVenc": "V26",
+    "margemInc": 138.10419020633483,
+    "positivosInc": 10,
+    "total": 10,
+    "melhorVencVend": "X26",
+    "margemVend": 35.513651488233336,
+    "positivosVend": 9,
+    "totalVend": 10,
+    "porVenc": {
+     "V26": {
+      "preco": 367.85,
+      "cAI": 229.7458097936652,
+      "cVend": 340.89781637051755,
+      "margInc": 138.10419020633483,
+      "margVend": 26.952183629482477,
+      "meses": 0,
+      "milho": 71.97166666666668,
+      "repo": 375.3925714285714,
+      "repoSrc": "fisico",
+      "repoBase": 347.58571428571423,
+      "repoMes": "M26"
+     },
+     "X26": {
+      "preco": 371.65,
+      "cAI": 240.21206082811176,
+      "cVend": 336.13634851176664,
+      "margInc": 131.43793917188822,
+      "margVend": 35.513651488233336,
+      "meses": 1,
+      "milho": 75.305,
+      "repo": 362.34,
+      "repoSrc": "fisico",
+      "repoBase": 335.49999999999994,
+      "repoMes": "N26"
+     },
+     "Z26": {
+      "preco": 371.85,
+      "cAI": 248.51179789842794,
+      "cVend": 346.5313616862088,
+      "margInc": 123.33820210157208,
+      "margVend": 25.31863831379121,
+      "meses": 2,
+      "milho": 77.94833333333334,
+      "repo": 373.5155454545454,
+      "repoSrc": "fisico",
+      "repoBase": 345.84772727272724,
+      "repoMes": "Q26"
+     },
+     "F27": {
+      "preco": 376.4,
+      "cAI": 255.29916169426647,
+      "cVend": 349.1241063952745,
+      "margInc": 121.1008383057335,
+      "margVend": 27.275893604725468,
+      "meses": 3,
+      "milho": 80.11000000000001,
+      "repo": 373.68,
+      "repoSrc": "fisico",
+      "repoBase": 346,
+      "repoMes": "U26"
+     },
+     "G27": {
+      "preco": 376.8,
+      "cAI": 259.904312149423,
+      "cVend": 366.34451402657163,
+      "margInc": 116.89568785057702,
+      "margVend": 10.455485973428381,
+      "meses": 4,
+      "milho": 81.57666666666667,
+      "repo": 397.2780000000001,
+      "repoSrc": "futuro",
+      "repoBase": 367.85,
+      "repoMes": "V26"
+     },
+     "H27": {
+      "preco": 375.6,
+      "cAI": 263.8396225383749,
+      "cVend": 370.4867055670416,
+      "margInc": 111.76037746162513,
+      "margVend": 5.113294432958412,
+      "meses": 5,
+      "milho": 82.83,
+      "repo": 401.382,
+      "repoSrc": "futuro",
+      "repoBase": 371.65,
+      "repoMes": "X26"
+     },
+     "J27": {
+      "preco": 375,
+      "cAI": 265.36246206388677,
+      "cVend": 371.186328131019,
+      "margInc": 109.63753793611323,
+      "margVend": 3.8136718689809754,
+      "meses": 6,
+      "milho": 83.31500000000001,
+      "repo": 401.59800000000007,
+      "repoSrc": "futuro",
+      "repoBase": 371.85,
+      "repoMes": "Z26"
+     },
+     "K27": {
+      "preco": 372.4,
+      "cAI": 265.1426707921634,
+      "cVend": 374.34079201209886,
+      "margInc": 107.25732920783656,
+      "margVend": -1.940792012098882,
+      "meses": 7,
+      "milho": 83.245,
+      "repo": 406.512,
+      "repoSrc": "futuro",
+      "repoBase": 376.4,
+      "repoMes": "F27"
+     },
+     "M27": {
+      "preco": 374.2,
+      "cAI": 262.5889055397584,
+      "cVend": 373.6903863597823,
+      "margInc": 111.61109446024159,
+      "margVend": 0.509613640217708,
+      "meses": 8,
+      "milho": 82.43166666666667,
+      "repo": 406.944,
+      "repoSrc": "futuro",
+      "repoBase": 376.8,
+      "repoMes": "G27"
+     },
+     "V27": {
+      "preco": 374.2,
+      "cAI": 255.75967673978218,
+      "cVend": 369.3420543678083,
+      "margInc": 118.44032326021781,
+      "margVend": 4.857945632191672,
+      "meses": 12,
+      "milho": 80.25666666666667,
+      "repo": 404.136,
+      "repoSrc": "futuro",
+      "repoBase": 374.2,
+      "repoMes": "M27"
+     }
+    },
+    "spot": 346,
+    "diasCiclo": 105,
+    "agioRepo": 8,
+    "repoManual": false,
+    "mesesEntrada": 4,
+    "milho": {
+     "scTotal": 21.82374636627907,
+     "scPorArroba": 3.0237265488436518,
+     "pvMedio": 456.375,
+     "dias": 105,
+     "arProduzidas": 7.217500000000005
+    }
+   },
+   "caiFin": {
+    "escala": "cab",
+    "cabecas": 1,
+    "melhorDinheiro": "X26",
+    "lucroCab": 700.2404232192409,
+    "melhorROI": "X26",
+    "roiCiclo": 0.10971089026465036,
+    "roiAno": 0.4360119144616732,
+    "porVenc": {
+     "V26": {
+      "lucroCab": 531.4296807143207,
+      "margemEngordaCab": 996.7669928142224,
+      "roi": 0.0820993325262538,
+      "roiAno": 0.31558546919943153,
+      "margemLiquida": 0.07326949471111179,
+      "capital": 6473.008541748858,
+      "receita": 7253.082375000002,
+      "arrobasVendidas": 19.717500000000005,
+      "arrobasProduzidas": 7.217500000000005
+     },
+     "X26": {
+      "lucroCab": 700.2404232192409,
+      "margemEngordaCab": 948.6533259731038,
+      "roi": 0.10971089026465036,
+      "roiAno": 0.4360119144616732,
+      "margemLiquida": 0.09555671058316517,
+      "capital": 6382.597220112646,
+      "receita": 7328.008875000001,
+      "arrobasVendidas": 19.717500000000005,
+      "arrobasProduzidas": 7.217500000000005
+     },
+     "Z26": {
+      "lucroCab": 499.2202509521783,
+      "margemEngordaCab": 890.1934736680971,
+      "roi": 0.07586958148120736,
+      "roiAno": 0.28944409838174545,
+      "margemLiquida": 0.06808831064620467,
+      "capital": 6579.978974522661,
+      "receita": 7331.952375000003,
+      "arrobasVendidas": 19.717500000000005,
+      "arrobasProduzidas": 7.217500000000005
+     },
+     "F27": {
+      "lucroCab": 537.8124321511748,
+      "margemEngordaCab": 874.0453004716321,
+      "roi": 0.08112767676337408,
+      "roiAno": 0.31148356926315546,
+      "margemLiquida": 0.0724651796087287,
+      "capital": 6629.210321402617,
+      "receita": 7421.667000000001,
+      "arrobasVendidas": 19.717500000000005,
+      "arrobasProduzidas": 7.217500000000005
+     },
+     "G27": {
+      "lucroCab": 206.15604468107333,
+      "margemEngordaCab": 843.6946270615401,
+      "roi": 0.029636329868138588,
+      "roiAno": 0.1068569745516903,
+      "margemLiquida": 0.027748105025022132,
+      "capital": 6956.193482739827,
+      "receita": 7429.554000000002,
+      "arrobasVendidas": 19.717500000000005,
+      "arrobasProduzidas": 7.217500000000005
+     },
+     "H27": {
+      "lucroCab": 100.82138298185666,
+      "margemEngordaCab": 806.6305243292799,
+      "roi": 0.014331711632343102,
+      "roiAno": 0.05071000719679186,
+      "margemLiquida": 0.013613669949303431,
+      "capital": 7034.845911518895,
+      "receita": 7405.893000000002,
+      "arrobasVendidas": 19.717500000000005,
+      "arrobasProduzidas": 7.217500000000005
+     },
+     "J27": {
+      "lucroCab": 75.1960750766327,
+      "margemEngordaCab": 791.3089300538978,
+      "roi": 0.010668939208686907,
+      "roiAno": 0.03757973168306439,
+      "margemLiquida": 0.010169791650615973,
+      "capital": 7048.130428506542,
+      "receita": 7394.062500000002,
+      "arrobasVendidas": 19.717500000000005,
+      "arrobasProduzidas": 7.217500000000005
+     },
+     "K27": {
+      "lucroCab": -38.26756649856023,
+      "margemEngordaCab": 774.1297735575608,
+      "roi": -0.005383710890973412,
+      "roiAno": -0.018590390371945986,
+      "margemLiquida": -0.005211578979857434,
+      "capital": 7108.027766260901,
+      "receita": 7342.797000000001,
+      "arrobasVendidas": 19.717500000000005,
+      "arrobasProduzidas": 7.217500000000005
+     },
+     "M27": {
+      "lucroCab": 10.048306950992554,
+      "margemEngordaCab": 805.5530742667942,
+      "roi": 0.0014161165788818483,
+      "roiAno": 0.0049313278708920105,
+      "margemLiquida": 0.0013618750406672972,
+      "capital": 7095.677785882995,
+      "receita": 7378.2885000000015,
+      "arrobasVendidas": 19.717500000000005,
+      "arrobasProduzidas": 7.217500000000005
+     },
+     "V27": {
+      "lucroCab": 95.78654300273931,
+      "margemEngordaCab": 854.8430331306226,
+      "roi": 0.013658209762292246,
+      "roiAno": 0.04828681320942674,
+      "margemLiquida": 0.01298221708228667,
+      "capital": 7013.111137536339,
+      "receita": 7378.2885000000015,
+      "arrobasVendidas": 19.717500000000005,
+      "arrobasProduzidas": 7.217500000000005
+     }
+    }
+   },
+   "bezVariacao": {
+    "base": "nom",
+    "ancora": "2026-01-02T00:00:00.000Z",
+    "fim": "2026-08-25T00:00:00.000Z",
+    "precoAncora": 3070.21,
+    "precoFim": 3389.51,
+    "variacao": 10.399940069246094,
+    "comparador": "boi",
+    "variacaoComp": 7.565789473684226,
+    "topo": 11.833392504095809,
+    "fundo": -0.98299464857452,
+    "amplitude": 12.816387152670329,
+    "maiorQueda": -2.305796966378526,
+    "medianaOutrosAnos": 4.361194029850757,
+    "anosComparaveis": 25,
+    "percentil": 68,
+    "praca": null,
+    "agregado": false
+   },
+   "ciclo": {
+    "fase": "liquidação",
+    "fem": 47.0940187587941,
+    "neutro": 38.22505129907968,
+    "limLiq": 43.22505129907968,
+    "delta12": 3.3786833167489334,
+    "anos": 28.75
+   },
+   "projCiclo": {
+    "vale": {
+     "k": 24284,
+     "v": 230.57956441734464
+    },
+    "t0": 36,
+    "precoHoje": 346,
+    "pico": {
+     "k": 24315,
+     "v": 362.52894736842103
+    },
+    "picoConfirmado": false,
+    "desvio": 0.07523088597145522,
+    "deriva": 0.009312147299087581,
+    "dVT": 30.5,
+    "dTV": 36,
+    "cobertura": 0.7952270977675134,
+    "nRef": 4,
+    "proj": [
+     {
+      "k": 24321,
+      "inf": 315.91198218307017,
+      "cen": 338.8385021729971,
+      "sup": 360.79952731579806,
+      "fase": "retração"
+     },
+     {
+      "k": 24322,
+      "inf": 308.2262106753193,
+      "cen": 334.2498846582362,
+      "sup": 359.27946174271466,
+      "fase": "retração"
+     },
+     {
+      "k": 24323,
+      "inf": 302.7042238758992,
+      "cen": 330.7527779262618,
+      "sup": 358.9758060408781,
+      "fase": "retração"
+     },
+     {
+      "k": 24324,
+      "inf": 296.4817765458691,
+      "cen": 329.013256706627,
+      "sup": 362.36219992707885,
+      "fase": "retração"
+     },
+     {
+      "k": 24325,
+      "inf": 291.0636853206916,
+      "cen": 327.1054612810228,
+      "sup": 365.64970629044313,
+      "fase": "retração"
+     },
+     {
+      "k": 24326,
+      "inf": 286.634102765928,
+      "cen": 325.005790344532,
+      "sup": 367.51933402711313,
+      "fase": "retração"
+     },
+     {
+      "k": 24327,
+      "inf": 283.2807528760768,
+      "cen": 322.68539798209645,
+      "sup": 368.16869049066986,
+      "fase": "retração"
+     },
+     {
+      "k": 24328,
+      "inf": 279.4193211886347,
+      "cen": 320.60391024592326,
+      "sup": 367.37942974222034,
+      "fase": "retração"
+     },
+     {
+      "k": 24329,
+      "inf": 278.3909318114008,
+      "cen": 320.8630715947039,
+      "sup": 369.5188083368249,
+      "fase": "retração"
+     },
+     {
+      "k": 24330,
+      "inf": 276.5488024492363,
+      "cen": 320.411504714142,
+      "sup": 370.0030375438333,
+      "fase": "retração"
+     },
+     {
+      "k": 24331,
+      "inf": 273.8821646566181,
+      "cen": 318.8289757041323,
+      "sup": 368.4070871069885,
+      "fase": "retração"
+     },
+     {
+      "k": 24332,
+      "inf": 270.06247550321893,
+      "cen": 316.01052575577216,
+      "sup": 364.93416995166183,
+      "fase": "retração"
+     },
+     {
+      "k": 24333,
+      "inf": 265.503168314694,
+      "cen": 311.4667443584565,
+      "sup": 359.8246589977757,
+      "fase": "retração"
+     },
+     {
+      "k": 24334,
+      "inf": 261.40869019544203,
+      "cen": 307.6967402705229,
+      "sup": 355.22228718832736,
+      "fase": "retração"
+     },
+     {
+      "k": 24335,
+      "inf": 257.18714682157173,
+      "cen": 303.44111579998497,
+      "sup": 350.1115304427755,
+      "fase": "retração"
+     },
+     {
+      "k": 24336,
+      "inf": 253.45660098261038,
+      "cen": 299.5781170813964,
+      "sup": 345.58494335362445,
+      "fase": "retração"
+     },
+     {
+      "k": 24337,
+      "inf": 249.85133543983906,
+      "cen": 295.74530656917113,
+      "sup": 341.29121332181177,
+      "fase": "retração"
+     },
+     {
+      "k": 24338,
+      "inf": 246.34453607901946,
+      "cen": 291.74824242577716,
+      "sup": 336.64449412985635,
+      "fase": "retração"
+     },
+     {
+      "k": 24339,
+      "inf": 242.37121345462586,
+      "cen": 287.2816469609984,
+      "sup": 331.48776680362687,
+      "fase": "retração"
+     },
+     {
+      "k": 24340,
+      "inf": 238.8354981932218,
+      "cen": 283.2904254690242,
+      "sup": 327.0127545852393,
+      "fase": "aproximação do vale"
+     },
+     {
+      "k": 24341,
+      "inf": 236.53474007800202,
+      "cen": 280.8637119090544,
+      "sup": 324.31116471259264,
+      "fase": "aproximação do vale"
+     },
+     {
+      "k": 24342,
+      "inf": 232.78474025333085,
+      "cen": 276.2548479434442,
+      "sup": 319.01839969640065,
+      "fase": "aproximação do vale"
+     },
+     {
+      "k": 24343,
+      "inf": 228.73832981426918,
+      "cen": 270.88458801653616,
+      "sup": 312.87876884474,
+      "fase": "aproximação do vale"
+     },
+     {
+      "k": 24344,
+      "inf": 227.8336140429307,
+      "cen": 269.01094389205184,
+      "sup": 310.79592510594284,
+      "fase": "aproximação do vale"
+     },
+     {
+      "k": 24345,
+      "inf": 226.99548723895356,
+      "cen": 267.1138233437476,
+      "sup": 308.6582230492734,
+      "fase": "aproximação do vale"
+     },
+     {
+      "k": 24346,
+      "inf": 228.33368818644976,
+      "cen": 267.51512020377976,
+      "sup": 309.1655615768353,
+      "fase": "aproximação do vale"
+     },
+     {
+      "k": 24347,
+      "inf": 230.4013403694267,
+      "cen": 268.71517874110555,
+      "sup": 310.6247336552041,
+      "fase": "aproximação do vale"
+     },
+     {
+      "k": 24348,
+      "inf": 232.54245774536335,
+      "cen": 270.26028400233065,
+      "sup": 312.53654685958486,
+      "fase": "aproximação do vale"
+     },
+     {
+      "k": 24349,
+      "inf": 232.96823874439013,
+      "cen": 270.0192337825918,
+      "sup": 312.4265086476993,
+      "fase": "aproximação do vale"
+     },
+     {
+      "k": 24350,
+      "inf": 231.56433555522256,
+      "cen": 267.6790466094477,
+      "sup": 309.9566437833159,
+      "fase": "aproximação do vale"
+     },
+     {
+      "k": 24351,
+      "inf": 231.12785572713986,
+      "cen": 266.712258929923,
+      "sup": 309.143508394434,
+      "fase": "início de recuperação (ciclo seguinte)"
+     },
+     {
+      "k": 24352,
+      "inf": 230.52791275256436,
+      "cen": 265.9564409284065,
+      "sup": 308.57940644055657,
+      "fase": "início de recuperação (ciclo seguinte)"
+     },
+     {
+      "k": 24353,
+      "inf": 229.1543966079939,
+      "cen": 264.4367093979749,
+      "sup": 307.1370962885685,
+      "fase": "início de recuperação (ciclo seguinte)"
+     },
+     {
+      "k": 24354,
+      "inf": 227.78025913984104,
+      "cen": 262.98787355483137,
+      "sup": 305.82212864668486,
+      "fase": "início de recuperação (ciclo seguinte)"
+     },
+     {
+      "k": 24355,
+      "inf": 226.4566181387138,
+      "cen": 261.6474149664653,
+      "sup": 304.8221685461505,
+      "fase": "início de recuperação (ciclo seguinte)"
+     },
+     {
+      "k": 24356,
+      "inf": 226.81805704502693,
+      "cen": 262.2458552757562,
+      "sup": 306.0870615614198,
+      "fase": "início de recuperação (ciclo seguinte)"
+     }
+    ]
+   },
+   "backtest": {
+    "nContratos": 7,
+    "acerto": 0.2624113475177305,
+    "media": -8.368602585202547,
+    "melhorAntec": 1
+   }
+  },
+  "backtest": {
+   "nContratos": 7,
+   "acerto": 0.2624113475177305,
+   "media": -8.368602585202547,
+   "melhorAntec": 1
+  },
+  "opcoes": {
+   "graficos": [
+    {
+     "id": "opcGraficoPremio",
+     "series": [
+      {
+       "nome": "Preço referência",
+       "n": 3,
+       "primeiro": 5.96,
+       "ultimo": 4.61
+      },
+      {
+       "nome": "Último negócio",
+       "n": 0,
+       "primeiro": null,
+       "ultimo": null
+      }
+     ]
+    },
+    {
+     "id": "opcGraficoFutStrike",
+     "series": [
+      {
+       "nome": "Futuro objeto",
+       "n": 5,
+       "primeiro": 358.55,
+       "ultimo": 358.15
+      },
+      {
+       "nome": "Strike",
+       "n": 5,
+       "primeiro": 358,
+       "ultimo": 358
+      }
+     ]
+    },
+    {
+     "id": "opcGraficoPct",
+     "series": [
+      {
+       "nome": "Prêmio % do futuro",
+       "n": 3,
+       "primeiro": 1.672748,
+       "ultimo": 1.28717
+      }
+     ]
+    },
+    {
+     "id": "opcGraficoCadeia",
+     "series": [
+      {
+       "nome": "Referência B3",
+       "n": 56,
+       "primeiro": 0.002792,
+       "ultimo": 11.578947
+      }
+     ]
+    }
+   ],
+   "leituras": {
+    "opcMercado": "BoiMilhoSoja",
+    "opcSerieTit": "BGIU26P035800 5 observações · strike 358 · venc. SET/26",
+    "opcData": "03/09/202602/09/202601/09/202631/08/202628/08/2026",
+    "opcFuturo": "BGIU26 · SET/26 · 27dBGIV26 · OUT/26 · 57dBGIX26 · NOV/26 · 88dBGIZ26 · DEZ/26 · 118dBGIF27 · JAN/27 · 148dBGIG27 · FEV/",
+    "opcDte": "Todos> 18016-3046-6061-9091-120121-180",
+    "opcMoney": "Todos< -15%-15% a -10%-10% a -7,5%-7,5% a -5%-5% a -2,5%ATM (-2,5% a +2,5%)+2,5% a +5%+5% a +7,5%+10% a +15%",
+    "opcLiquidez": "Liquidez históricaHistórico em formação — 5 de 20 pregões.",
+    "opcAviso": "Histórico em formação. 5 de 20 pregões mínimos para comparação estatística. Enquanto isso, nenhuma opção é classificada "
+   },
+   "linhasDaCadeia": 57
+  },
+  "exportacoes": {
+   "boi": {
+    "anos": 30,
+    "anoAtual": 2026,
+    "ultimoMes": 7,
+    "mesesDoAnoAtual": 7,
+    "paises": 211
+   },
+   "boi_semanal": {
+    "campos": 18
+   },
+   "milho": {
+    "anos": 30,
+    "anoAtual": 2026,
+    "ultimoMes": 7,
+    "mesesDoAnoAtual": 7,
+    "paises": 163
+   },
+   "milho_semanal": {
+    "campos": 18
+   },
+   "soja": {
+    "anos": 30,
+    "anoAtual": 2026,
+    "ultimoMes": 7,
+    "mesesDoAnoAtual": 7,
+    "paises": 128
+   },
+   "soja_semanal": {
+    "campos": 18
+   }
+  },
+  "logistica": {
+   "pracas": 28,
+   "veiculos": {
+    "3e": {
+     "eixos": 3,
+     "capacidade": 25,
+     "rotulo": "3 eixos"
+    },
+    "6e": {
+     "eixos": 6,
+     "capacidade": 70,
+     "rotulo": "6 eixos"
+    },
+    "9e": {
+     "eixos": 9,
+     "capacidade": 110,
+     "rotulo": "9 eixos"
+    }
+   },
+   "pedagioPorEixo": 10
+  },
+  "frescor": {
+   "S.H BOI GORDO": "2026-09-01",
+   "S.H BEZERRO": "2026-09-01",
+   "S.H MILHO CEPEA": "2026-09-01",
+   "BEZERRO": "2026-09-01",
+   "SOJA - PARANAGUÁ": "2026-09-01",
+   "MILHO - CEPEA": "2026-09-01",
+   "BOI GORDO": "2026-09-01",
+   "AÇÚCAR": "2026-09-01",
+   "ETANOL": "2026-08-28",
+   "BGIH26": "2026-06-09",
+   "BGIJ26": "2026-08-19",
+   "BGIK26": "2026-08-31",
+   "BGIM26": "2026-06-30",
+   "BGIN26": "2026-07-31",
+   "BGIQ26": "2026-08-31",
+   "BGIU26": "2026-09-01",
+   "BGIV26": "2026-09-01",
+   "BGIX26": "2026-09-01",
+   "BGIZ26": "2026-09-01",
+   "BGIF27": "2026-09-01",
+   "BGIG27": "2026-09-01",
+   "BGIH27": "2026-09-01",
+   "BGIJ27": "2026-09-01",
+   "ETHM26": "2026-06-30",
+   "ETHN26": "2026-07-31",
+   "ETHQ26": "2026-08-31",
+   "ETHU26": "2026-09-01",
+   "ETHV26": "2026-09-01",
+   "ETHX26": "2026-09-01",
+   "ETHZ26": "2026-09-01",
+   "ETHF27": "2026-09-01",
+   "ETHG27": "2026-09-01",
+   "ETHH27": "2026-09-01",
+   "ETHJ27": "2026-09-01",
+   "ETHK27": "2026-09-01",
+   "ETHZ27": "2026-09-01",
+   "ETHF28": "2026-09-01",
+   "BGIK27": "2026-09-01",
+   "BGIM27": "2026-09-01",
+   "BGIV27": "2026-09-01",
+   "CCMH26": "2026-08-19",
+   "CCMK26": "2026-05-15",
+   "CCMN26": "2026-07-15",
+   "CCMU26": "2026-09-01",
+   "CCMX26": "2026-09-01",
+   "CCMF27": "2026-09-01",
+   "CCMH27": "2026-09-01",
+   "CCMK27": "2026-09-01",
+   "CCMN27": "2026-09-01",
+   "CCMU27": "2026-09-01",
+   "CCMX27": "2026-09-01",
+   "SJCH26": "2026-08-31",
+   "SJCK26": "2026-04-29",
+   "SJCN26": "2026-06-29",
+   "SJCQ26": "2026-07-30",
+   "SJCU26": "2026-08-28",
+   "SJCX26": "2026-09-01",
+   "SJCF27": "2026-09-01",
+   "SJCH27": "2026-09-01",
+   "SJCK27": "2026-09-01",
+   "SJCN27": "2026-09-01",
+   "SJCQ27": "2026-09-01",
+   "SJCU27": "2026-09-01",
+   "DOLN26": "2026-07-01",
+   "DOLQ26": "2026-08-03",
+   "DOLU26": "2026-08-31",
+   "DOLV26": "2026-08-31",
+   "DOLX26": "2026-08-31",
+   "DOLZ26": "2026-08-31",
+   "DOLF27": "2026-08-31",
+   "DOLG27": "2026-08-31",
+   "DOLH27": "2026-08-31",
+   "DOLJ27": "2026-08-31",
+   "DOLK27": "2026-08-31",
+   "DOLM27": "2026-08-31",
+   "DOLN27": "2026-08-31",
+   "DOLQ27": "2026-08-31",
+   "DOLV27": "2026-08-31",
+   "DOLF28": "2026-08-31",
+   "DOLJ28": "2026-08-31",
+   "DOLN28": "2026-08-31",
+   "DOLV28": "2026-08-31",
+   "DOLF29": "2026-08-31",
+   "DOLJ29": "2026-08-31",
+   "DOLN29": "2026-08-31",
+   "DOLV29": "2026-08-31",
+   "DOLF30": "2026-08-31",
+   "DOLN30": "2026-08-31",
+   "DOLF31": "2026-08-31",
+   "REPOSIÇÃO SCOT": "2026-06-22",
+   "DI1Q26": "2026-07-31",
+   "DI1U26": "2026-08-31",
+   "DI1V26": "2026-08-31",
+   "DI1X26": "2026-08-31",
+   "DI1Z26": "2026-08-31",
+   "DI1F27": "2026-08-31",
+   "DI1G27": "2026-08-31",
+   "DI1H27": "2026-08-31",
+   "DI1J27": "2026-08-31",
+   "DI1K27": "2026-08-31",
+   "DI1M27": "2026-08-31",
+   "DI1N27": "2026-08-31",
+   "DI1Q27": "2026-08-31",
+   "DI1V27": "2026-08-31",
+   "DI1X27": "2026-08-31",
+   "DI1Z27": "2026-08-31",
+   "DI1F28": "2026-08-31",
+   "DI1J28": "2026-08-31",
+   "DI1N28": "2026-08-31",
+   "DI1V28": "2026-08-31",
+   "DI1X28": "2026-08-31",
+   "DI1Z28": "2026-08-31",
+   "DI1F29": "2026-08-31",
+   "DI1J29": "2026-08-31",
+   "DI1N29": "2026-08-31",
+   "DI1V29": "2026-08-31",
+   "DI1X29": "2026-08-31",
+   "DI1Z29": "2026-08-31",
+   "DI1F30": "2026-08-31",
+   "DI1J30": "2026-08-31",
+   "DI1N30": "2026-08-31",
+   "DI1V30": "2026-08-31",
+   "DI1F31": "2026-08-31",
+   "DI1J31": "2026-08-31",
+   "DI1N31": "2026-08-31",
+   "DI1V31": "2026-08-31",
+   "DI1F32": "2026-08-31",
+   "DI1F33": "2026-08-31",
+   "DI1F34": "2026-08-31",
+   "DI1F35": "2026-08-31",
+   "DI1F36": "2026-08-31",
+   "DI1F37": "2026-08-31",
+   "DI1F38": "2026-08-31",
+   "DI1F39": "2026-08-31",
+   "DI1F40": "2026-08-31",
+   "DI1F41": "2026-08-31"
+  },
+  "carga": {
+   "parseVia": "worker",
+   "parseErro": null,
+   "plotlyOrigem": "principal",
+   "xlsxPresente": true,
+   "html2canvasPresente": false,
+   "pptxPresente": false
+  },
+  "abas": 147,
+  "graficos": {
+   "chartPreco": {
+    "secao": "m3_1_1",
+    "series": []
+   },
+   "chartMM": {
+    "secao": "m3_1_1",
+    "series": []
+   },
+   "chartTrend": {
+    "secao": "m3_1_1",
+    "series": []
+   },
+   "chartPercentil": {
+    "secao": "m3_1_1",
+    "series": []
+   },
+   "chartMediaStd": {
+    "secao": "m3_1_1",
+    "series": []
+   },
+   "chartBoiVsBGIAll": {
+    "secao": "m3_1_1",
+    "series": []
+   },
+   "chartRatioBGICCM": {
+    "secao": "m3_1_1",
+    "series": []
+   },
+   "chartAbateIBGE": {
+    "secao": "m3_1_1",
+    "series": []
+   },
+   "chartAbatePreco": {
+    "secao": "m3_1_1",
+    "series": []
+   },
+   "chartAgio": {
+    "secao": "m3_1_1",
+    "series": []
+   },
+   "chartBoiMagroTroca": {
+    "secao": "m3_1_1",
+    "series": []
+   },
+   "chartBoiMagroAgio": {
+    "secao": "m3_1_1",
+    "series": []
+   },
+   "chartBaseAtivo": {
+    "secao": "m3_1_1",
+    "series": []
+   },
+   "chartSlope": {
+    "secao": "m3_1_2",
+    "series": [
+     {
+      "nome": null,
+      "n": 85,
+      "primeiro": 0,
+      "ultimo": 0
+     },
+     {
+      "nome": "Slope 22 (%/pregão)",
+      "n": 85,
+      "primeiro": -0.125831,
+      "ultimo": -0.069806
+     },
+     {
+      "nome": "Slope 5 (%/pregão)",
+      "n": 85,
+      "primeiro": -0.086073,
+      "ultimo": 0.059432
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": -0.069806,
+      "ultimo": -0.069806
+     }
+    ]
+   },
+   "chartZScore": {
+    "secao": "m3_1_2",
+    "series": [
+     {
+      "nome": "Z-Score",
+      "n": 86,
+      "primeiro": -1.863902,
+      "ultimo": 0.262159
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 0.262159,
+      "ultimo": 0.262159
+     }
+    ]
+   },
+   "chartGauss": {
+    "secao": "m3_1_2",
+    "series": [
+     {
+      "nome": "Frequência",
+      "n": 0,
+      "primeiro": null,
+      "ultimo": null
+     },
+     {
+      "nome": "Preço Atual",
+      "n": 1,
+      "primeiro": 0.47799,
+      "ultimo": 0.47799
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 0.47799,
+      "ultimo": 0.47799
+     }
+    ]
+   },
+   "chartVolDiaria": {
+    "secao": "m3_1_2",
+    "series": [
+     {
+      "nome": "Variação do pregão (%)",
+      "n": 415,
+      "primeiro": 0.093298,
+      "ultimo": 0.464576
+     },
+     {
+      "nome": "Volatilidade móvel 21 pregões (σ)",
+      "n": 395,
+      "primeiro": 0.311439,
+      "ultimo": 0.343697
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 0.343697,
+      "ultimo": 0.343697
+     }
+    ]
+   },
+   "chartBollinger": {
+    "secao": "m3_1_2t",
+    "series": [
+     {
+      "nome": null,
+      "n": 86,
+      "primeiro": 373.930589,
+      "ultimo": 373.930589
+     },
+     {
+      "nome": null,
+      "n": 86,
+      "primeiro": 370.21139,
+      "ultimo": 348.983033
+     },
+     {
+      "nome": null,
+      "n": 86,
+      "primeiro": 361.716667,
+      "ultimo": 345.55
+     },
+     {
+      "nome": null,
+      "n": 86,
+      "primeiro": 353.221944,
+      "ultimo": 342.116967
+     },
+     {
+      "nome": null,
+      "n": 86,
+      "primeiro": 315.498602,
+      "ultimo": 315.498602
+     },
+     {
+      "nome": "Preço",
+      "n": 106,
+      "primeiro": 358.9,
+      "ultimo": 346
+     },
+     {
+      "nome": "MM21",
+      "n": 86,
+      "primeiro": 361.716667,
+      "ultimo": 345.55
+     },
+     {
+      "nome": "+2σ",
+      "n": 86,
+      "primeiro": 370.21139,
+      "ultimo": 348.983033
+     },
+     {
+      "nome": "−2σ",
+      "n": 86,
+      "primeiro": 353.221944,
+      "ultimo": 342.116967
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 346,
+      "ultimo": 346
+     }
+    ]
+   },
+   "chartMACD": {
+    "secao": "m3_1_2t",
+    "series": [
+     {
+      "nome": "Histograma",
+      "n": 106,
+      "primeiro": 0,
+      "ultimo": -0.220228
+     },
+     {
+      "nome": "MACD",
+      "n": 106,
+      "primeiro": 0,
+      "ultimo": 0.404166
+     },
+     {
+      "nome": "Sinal",
+      "n": 106,
+      "primeiro": 0,
+      "ultimo": 0.624394
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 0.404166,
+      "ultimo": 0.404166
+     }
+    ]
+   },
+   "chartIFR": {
+    "secao": "m3_1_2t",
+    "series": [
+     {
+      "nome": "IFR(14)",
+      "n": 92,
+      "primeiro": 60.333333,
+      "ultimo": 56.707258
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 56.707258,
+      "ultimo": 56.707258
+     }
+    ]
+   },
+   "chartSHBoiGordoDaily": {
+    "secao": "m3_1_3",
+    "series": [
+     {
+      "nome": "BOI GORDO",
+      "n": 7243,
+      "primeiro": 224.572873,
+      "ultimo": 346
+     },
+     {
+      "nome": "MM 100D",
+      "n": 7144,
+      "primeiro": 222.626192,
+      "ultimo": 346.5225
+     },
+     {
+      "nome": "MM 200D",
+      "n": 7044,
+      "primeiro": 220.073466,
+      "ultimo": 340.06825
+     },
+     {
+      "nome": "MM 365D",
+      "n": 6879,
+      "primeiro": 220.948457,
+      "ultimo": 326.753014
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 346,
+      "ultimo": 346
+     }
+    ]
+   },
+   "chartSHVolBoi": {
+    "secao": "m3_1_3",
+    "series": [
+     {
+      "nome": "Variação do pregão (%)",
+      "n": 166,
+      "primeiro": 0,
+      "ultimo": 0.464576
+     },
+     {
+      "nome": "Volatilidade móvel 21 pregões (σ)",
+      "n": 166,
+      "primeiro": 0.271664,
+      "ultimo": 0.343697
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 0.343697,
+      "ultimo": 0.343697
+     }
+    ]
+   },
+   "chartEscalaHist": {
+    "secao": "m3_1_3",
+    "series": [
+     {
+      "nome": "SP",
+      "n": 271,
+      "primeiro": 9,
+      "ultimo": 8.9
+     },
+     {
+      "nome": "MS",
+      "n": 268,
+      "primeiro": 8,
+      "ultimo": 7.3
+     },
+     {
+      "nome": "GO",
+      "n": 273,
+      "primeiro": 6,
+      "ultimo": 6.7
+     },
+     {
+      "nome": "MT",
+      "n": 273,
+      "primeiro": 6,
+      "ultimo": 7
+     },
+     {
+      "nome": "MG",
+      "n": 272,
+      "primeiro": 10,
+      "ultimo": 15
+     },
+     {
+      "nome": "PA",
+      "n": 273,
+      "primeiro": 6,
+      "ultimo": 6.7
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 8.9,
+      "ultimo": 8.9
+     }
+    ]
+   },
+   "chartEscalaDif": {
+    "secao": "m3_1_3",
+    "series": [
+     {
+      "nome": "encurtando",
+      "n": 159,
+      "primeiro": 4,
+      "ultimo": 2
+     },
+     {
+      "nome": "estável",
+      "n": 159,
+      "primeiro": 2,
+      "ultimo": 3
+     },
+     {
+      "nome": "alongando",
+      "n": 159,
+      "primeiro": 0,
+      "ultimo": 1
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 2,
+      "ultimo": 2
+     }
+    ]
+   },
+   "chartEscalaMT": {
+    "secao": "m3_1_3",
+    "series": [
+     {
+      "nome": "Preço",
+      "n": 7,
+      "primeiro": "Sudeste",
+      "ultimo": "Centro-Sul"
+     }
+    ]
+   },
+   "chartRegional": {
+    "secao": "m3_1_4",
+    "series": [
+     {
+      "nome": "Goiânia (GO)",
+      "n": 243,
+      "primeiro": 291.305592,
+      "ultimo": 321.12
+     },
+     {
+      "nome": "Tendência do período",
+      "n": 243,
+      "primeiro": 295.069269,
+      "ultimo": 330.351891
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 321.12,
+      "ultimo": 321.12
+     }
+    ]
+   },
+   "chartRegBase": {
+    "secao": "m3_1_4",
+    "series": [
+     {
+      "nome": "base",
+      "n": 241,
+      "primeiro": 1.308677,
+      "ultimo": 7.94
+     },
+     {
+      "nome": "Indicador 1",
+      "n": 1,
+      "primeiro": 7.94,
+      "ultimo": 7.94
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 7.94,
+      "ultimo": 7.94
+     }
+    ]
+   },
+   "chartRegDisp": {
+    "secao": "m3_1_4",
+    "series": [
+     {
+      "nome": "Disseminação · saldo de praças em alta",
+      "n": 243,
+      "primeiro": 45.833333,
+      "ultimo": -10
+     },
+     {
+      "nome": "Dispersão entre praças (CV %)",
+      "n": 244,
+      "primeiro": 3.45951,
+      "ultimo": 2.973483
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 2.973483,
+      "ultimo": 2.973483
+     }
+    ]
+   },
+   "chartPrazo": {
+    "secao": "m3_1_4",
+    "series": [
+     {
+      "nome": "Boi Gordo",
+      "n": 512,
+      "primeiro": 36.45,
+      "ultimo": 34.859524
+     },
+     {
+      "nome": "Vaca Gorda",
+      "n": 512,
+      "primeiro": 36.7,
+      "ultimo": 34.192857
+     },
+     {
+      "nome": "Bezerro",
+      "n": 380,
+      "primeiro": 10,
+      "ultimo": 23.385714
+     },
+     {
+      "nome": "Boi Magro",
+      "n": 286,
+      "primeiro": 30,
+      "ultimo": 22.421429
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 34.859524,
+      "ultimo": 34.859524
+     }
+    ]
+   },
+   "chartRegGordoMagro": {
+    "secao": "m3_1_4",
+    "series": [
+     {
+      "nome": "Spread bruto de terminação (R$/cabeça)",
+      "n": 234,
+      "primeiro": 2005.46318,
+      "ultimo": 2253.19
+     },
+     {
+      "nome": "Pressão da reposição (% da receita bruta)",
+      "n": 234,
+      "primeiro": 67.392879,
+      "ultimo": 66.490333
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 2253.19,
+      "ultimo": 2253.19
+     }
+    ]
+   },
+   "chartAtkSerie": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": "Carcaça casada — boi",
+      "n": 244,
+      "primeiro": 21.708061,
+      "ultimo": 24.27
+     },
+     {
+      "nome": "tendência",
+      "n": 2,
+      "primeiro": 22.05293,
+      "ultimo": 25.462226
+     },
+     {
+      "nome": "faixa do spread",
+      "n": 11,
+      "primeiro": 24.27,
+      "ultimo": 26.895
+     },
+     {
+      "nome": "faixa do spread (p25–p75)",
+      "n": 11,
+      "primeiro": 24.27,
+      "ultimo": 26.310542
+     },
+     {
+      "nome": "projeção pela curva BGI",
+      "n": 11,
+      "primeiro": 24.27,
+      "ultimo": 26.615706
+     },
+     {
+      "nome": "picos",
+      "n": 2,
+      "primeiro": 24.73,
+      "ultimo": 25.95
+     },
+     {
+      "nome": "vales",
+      "n": 3,
+      "primeiro": 21.138636,
+      "ultimo": 23.09
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 24.27,
+      "ultimo": 24.27
+     }
+    ]
+   },
+   "chartAtkDisp": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": null,
+      "n": 244,
+      "primeiro": 22.65,
+      "ultimo": 25.35
+     },
+     {
+      "nome": null,
+      "n": 244,
+      "primeiro": 21.02,
+      "ultimo": 23.17
+     },
+     {
+      "nome": "Indicador 2",
+      "n": 244,
+      "primeiro": 21.708061,
+      "ultimo": 24.27
+     },
+     {
+      "nome": "Indicador 3",
+      "n": 244,
+      "primeiro": 7.508732,
+      "ultimo": 8.982283
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 25.35,
+      "ultimo": 25.35
+     }
+    ]
+   },
+   "chartAtkCortes": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": "Traseiro",
+      "n": 244,
+      "primeiro": 24.385355,
+      "ultimo": 27.2
+     },
+     {
+      "nome": "Dianteiro",
+      "n": 244,
+      "primeiro": 19.400393,
+      "ultimo": 21.72
+     },
+     {
+      "nome": "Ponta de agulha",
+      "n": 244,
+      "primeiro": 18.781019,
+      "ultimo": 21.12
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 27.2,
+      "ultimo": 27.2
+     }
+    ]
+   },
+   "chartAtkPremio": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": null,
+      "n": 244,
+      "primeiro": 35.623252,
+      "ultimo": 35.623252
+     },
+     {
+      "nome": null,
+      "n": 244,
+      "primeiro": 23.72067,
+      "ultimo": 23.72067
+     },
+     {
+      "nome": "Indicador 2",
+      "n": 244,
+      "primeiro": 25.69516,
+      "ultimo": 25.230203
+     },
+     {
+      "nome": "Indicador 3",
+      "n": 244,
+      "primeiro": 4.984962,
+      "ultimo": 5.48
+     },
+     {
+      "nome": "Série 5",
+      "n": 1,
+      "primeiro": 25.230203,
+      "ultimo": 25.230203
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 35.623252,
+      "ultimo": 35.623252
+     }
+    ]
+   },
+   "chartAtkPremium": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": "Preço",
+      "n": 244,
+      "primeiro": 1.277342,
+      "ultimo": 1.269841
+     },
+     {
+      "nome": "Indicador 1",
+      "n": 1,
+      "primeiro": 1.269841,
+      "ultimo": 1.269841
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 1.269841,
+      "ultimo": 1.269841
+     }
+    ]
+   },
+   "chartAtkMix": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": "Traseiro",
+      "n": 244,
+      "primeiro": 100,
+      "ultimo": 111.542358
+     },
+     {
+      "nome": "Dianteiro",
+      "n": 244,
+      "primeiro": 100,
+      "ultimo": 111.956495
+     },
+     {
+      "nome": "Ponta de agulha",
+      "n": 244,
+      "primeiro": 100,
+      "ultimo": 112.453962
+     },
+     {
+      "nome": "Carcaça casada — boi",
+      "n": 244,
+      "primeiro": 100,
+      "ultimo": 111.801788
+     },
+     {
+      "nome": "Carcaça casada — vaca",
+      "n": 244,
+      "primeiro": 100,
+      "ultimo": 116.366233
+     },
+     {
+      "nome": "dispersão",
+      "n": 244,
+      "primeiro": 0,
+      "ultimo": 1.795797
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 111.542358,
+      "ultimo": 111.542358
+     }
+    ]
+   },
+   "chartAtkBreadth": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": "em alta",
+      "n": 120,
+      "primeiro": 0,
+      "ultimo": 4
+     },
+     {
+      "nome": "em queda",
+      "n": 120,
+      "primeiro": 0,
+      "ultimo": 0
+     },
+     {
+      "nome": "breadth · média 21",
+      "n": 120,
+      "primeiro": 0,
+      "ultimo": 0.104762
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 0.104762,
+      "ultimo": 0.104762
+     }
+    ]
+   },
+   "chartAtkBoiVaca": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": "na carcaça (atacado)",
+      "n": 244,
+      "primeiro": 8.976931,
+      "ultimo": 4.70233
+     },
+     {
+      "nome": "no animal vivo (R$/@ · praças de SP)",
+      "n": 234,
+      "primeiro": 5.877111,
+      "ultimo": 7.15827
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 4.70233,
+      "ultimo": 4.70233
+     }
+    ]
+   },
+   "chartAtkSpread": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": "carcaça equivalente",
+      "n": 240,
+      "primeiro": 325.620911,
+      "ultimo": 364.05
+     },
+     {
+      "nome": "boi gordo SP",
+      "n": 240,
+      "primeiro": 308.588126,
+      "ultimo": 342.66
+     },
+     {
+      "nome": "spread",
+      "n": 240,
+      "primeiro": 17.032786,
+      "ultimo": 21.39
+     },
+     {
+      "nome": "Indicador 3",
+      "n": 1,
+      "primeiro": 21.39,
+      "ultimo": 21.39
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 364.05,
+      "ultimo": 364.05
+     }
+    ]
+   },
+   "chartAtkTransm": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": "boi gordo SP",
+      "n": 3,
+      "primeiro": 0.966468,
+      "ultimo": 0.798659
+     },
+     {
+      "nome": "Carcaça casada — boi",
+      "n": 3,
+      "primeiro": 0,
+      "ultimo": -3.957262
+     },
+     {
+      "nome": "gap (p.p.)",
+      "n": 3,
+      "primeiro": -0.966468,
+      "ultimo": -4.75592
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 0.798659,
+      "ultimo": 0.798659
+     }
+    ]
+   },
+   "chartAtkProj": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": "faixa do spread (p25–p75)",
+      "n": 10,
+      "primeiro": 397.075,
+      "ultimo": 403.425
+     },
+     {
+      "nome": "faixa do spread (p25–p75)",
+      "n": 10,
+      "primeiro": 388.30813,
+      "ultimo": 394.65813
+     },
+     {
+      "nome": "BGI (boi vivo)",
+      "n": 10,
+      "primeiro": 367.85,
+      "ultimo": 374.2
+     },
+     {
+      "nome": "carcaça projetada",
+      "n": 10,
+      "primeiro": 392.885584,
+      "ultimo": 399.235584
+     },
+     {
+      "nome": "carcaça de hoje",
+      "n": 10,
+      "primeiro": 364.05,
+      "ultimo": 364.05
+     },
+     {
+      "nome": "boi gordo de hoje",
+      "n": 10,
+      "primeiro": 342.66,
+      "ultimo": 342.66
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 394.65813,
+      "ultimo": 394.65813
+     }
+    ]
+   },
+   "chartSpdMemoria": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": "projetar com o spread de HOJE",
+      "n": 9,
+      "primeiro": 3.631792,
+      "ultimo": 6.161533
+     },
+     {
+      "nome": "projetar com a MÉDIA da série até a data",
+      "n": 9,
+      "primeiro": 4.706491,
+      "ultimo": 7.072751
+     },
+     {
+      "nome": "quanto do spread de hoje sobrevive",
+      "n": 7,
+      "primeiro": 0.913667,
+      "ultimo": -0.002953
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 6.161533,
+      "ultimo": 6.161533
+     }
+    ]
+   },
+   "chartSpdQuem": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": "movimento do BOI GORDO",
+      "n": 25,
+      "primeiro": 8.281841,
+      "ultimo": -3.283333
+     },
+     {
+      "nome": "movimento do SPREAD (o atacado por si)",
+      "n": 25,
+      "primeiro": 1.175737,
+      "ultimo": 3.883333
+     },
+     {
+      "nome": "resultado na carcaça",
+      "n": 25,
+      "primeiro": 9.457578,
+      "ultimo": 0.6
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": -3.283333,
+      "ultimo": -3.283333
+     }
+    ]
+   },
+   "chartSpdSazonal": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": "2024",
+      "n": 5,
+      "primeiro": -1.532722,
+      "ultimo": 10.10051
+     },
+     {
+      "nome": "2025",
+      "n": 12,
+      "primeiro": 0.642636,
+      "ultimo": 1.779145
+     },
+     {
+      "nome": "2026",
+      "n": 8,
+      "primeiro": 2.422319,
+      "ultimo": -1.468868
+     },
+     {
+      "nome": "média dos anos",
+      "n": 12,
+      "primeiro": 1.532478,
+      "ultimo": 5.939828
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 5.939828,
+      "ultimo": 5.939828
+     }
+    ]
+   },
+   "chartAtkBGI": {
+    "secao": "m3_1_5",
+    "series": [
+     {
+      "nome": "spread carcaça − BGI",
+      "n": 10,
+      "primeiro": -3.8,
+      "ultimo": -10.15
+     },
+     {
+      "nome": "BGI",
+      "n": 10,
+      "primeiro": 367.85,
+      "ultimo": 374.2
+     },
+     {
+      "nome": "carcaça equivalente hoje",
+      "n": 10,
+      "primeiro": 364.05,
+      "ultimo": 364.05
+     },
+     {
+      "nome": "carcaça projetada (BGI + spread de hoje)",
+      "n": 10,
+      "primeiro": 392.885584,
+      "ultimo": 399.235584
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 374.2,
+      "ultimo": 374.2
+     }
+    ]
+   },
+   "chartAtkExport": {
+    "secao": "m3_1_6",
+    "series": [
+     {
+      "nome": "volume exportado",
+      "n": 24,
+      "primeiro": 217.409116,
+      "ultimo": 227.938544
+     },
+     {
+      "nome": "atacado doméstico (R$/kg)",
+      "n": 24,
+      "primeiro": 100,
+      "ultimo": 140.279086
+     },
+     {
+      "nome": "exportação (US$/t FOB)",
+      "n": 24,
+      "primeiro": 100,
+      "ultimo": 143.179571
+     },
+     {
+      "nome": "externo ÷ doméstico (trajetória)",
+      "n": 24,
+      "primeiro": 1,
+      "ultimo": 1.020677
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 140.279086,
+      "ultimo": 140.279086
+     }
+    ]
+   },
+   "chartAtkAbate": {
+    "secao": "m3_1_7",
+    "series": [
+     {
+      "nome": "abate total (IBGE)",
+      "n": 20,
+      "primeiro": 100,
+      "ultimo": 101.820423
+     },
+     {
+      "nome": "carcaça casada (atacado)",
+      "n": 20,
+      "primeiro": 100,
+      "ultimo": 144.449562
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 101.820423,
+      "ultimo": 101.820423
+     }
+    ]
+   },
+   "chartAtkFemeas": {
+    "secao": "m3_1_7",
+    "series": [
+     {
+      "nome": "vaca no atacado (R$/kg)",
+      "n": 25,
+      "primeiro": 15.758872,
+      "ultimo": 23.182381
+     },
+     {
+      "nome": "deságio da vaca no atacado (%)",
+      "n": 25,
+      "primeiro": 8.13905,
+      "ultimo": 4.948339
+     },
+     {
+      "nome": "deságio da vaca no vivo (%)",
+      "n": 25,
+      "primeiro": 9.721133,
+      "ultimo": 7.43772
+     },
+     {
+      "nome": "fêmeas no abate (%)",
+      "n": 20,
+      "primeiro": 39.985645,
+      "ultimo": 51.190545
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 23.182381,
+      "ultimo": 23.182381
+     }
+    ]
+   },
+   "chartBGICarrego": {
+    "secao": "m3_1_8",
+    "series": [
+     {
+      "nome": "Prêmio sobre o spot de hoje",
+      "n": 9,
+      "primeiro": 7.413295,
+      "ultimo": 8.150289
+     },
+     {
+      "nome": "Taxa anualizada, nominal (≥3 meses)",
+      "n": 7,
+      "primeiro": 40.053531,
+      "ultimo": 8.150289
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 8.150289,
+      "ultimo": 8.150289
+     }
+    ]
+   },
+   "chartSHBoiGordoAnnual": {
+    "secao": "m3_2_1",
+    "series": [
+     {
+      "nome": "Média anual",
+      "n": 30,
+      "primeiro": 222.714922,
+      "ultimo": 350.858523
+     },
+     {
+      "nome": "Tendência",
+      "n": 30,
+      "primeiro": 209.035959,
+      "ultimo": 308.998388
+     },
+     {
+      "nome": "+2σ",
+      "n": 30,
+      "primeiro": 266.475382,
+      "ultimo": 366.43781
+     },
+     {
+      "nome": "+1σ",
+      "n": 30,
+      "primeiro": 237.75567,
+      "ultimo": 337.718099
+     },
+     {
+      "nome": "-1σ",
+      "n": 30,
+      "primeiro": 180.316248,
+      "ultimo": 280.278677
+     },
+     {
+      "nome": "-2σ",
+      "n": 30,
+      "primeiro": 151.596537,
+      "ultimo": 251.558965
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 308.998388,
+      "ultimo": 308.998388
+     }
+    ]
+   },
+   "chartSazonalidade": {
+    "secao": "m3_2_1",
+    "series": [
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 73.0216,
+      "ultimo": 73.0216
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 76.73
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 89.76
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 115.8
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 128.82
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 137.3711,
+      "ultimo": 137.3711
+     },
+     {
+      "nome": "+2σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 128.82
+     },
+     {
+      "nome": "+1σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 115.8
+     },
+     {
+      "nome": "-1σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 89.76
+     },
+     {
+      "nome": "-2σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 76.73
+     },
+     {
+      "nome": "Média histórica",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 102.78
+     },
+     {
+      "nome": "1998",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 104.882
+     },
+     {
+      "nome": "1999",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 118.029
+     },
+     {
+      "nome": "2000",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 90.7534
+     },
+     {
+      "nome": "2001",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 104.7513
+     },
+     {
+      "nome": "2002",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 101.1048
+     },
+     {
+      "nome": "2003",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 99.2054
+     },
+     {
+      "nome": "2004",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 91.2433
+     },
+     {
+      "nome": "2005",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 86.1571
+     },
+     {
+      "nome": "2006",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 104.7144
+     },
+     {
+      "nome": "2007",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 129.2194
+     },
+     {
+      "nome": "2008",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 101.4306
+     },
+     {
+      "nome": "2009",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 90.0099
+     },
+     {
+      "nome": "2010",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 125.259
+     },
+     {
+      "nome": "2011",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 94.6796
+     },
+     {
+      "nome": "2012",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 90.6516
+     },
+     {
+      "nome": "2013",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 110.0027
+     },
+     {
+      "nome": "2014",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 121.4534
+     },
+     {
+      "nome": "2015",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 93.5932
+     },
+     {
+      "nome": "2016",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 94.2291
+     },
+     {
+      "nome": "2017",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 99.0161
+     },
+     {
+      "nome": "2018",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 96.044
+     },
+     {
+      "nome": "2019",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 129.7695
+     },
+     {
+      "nome": "2020",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 112.4849
+     },
+     {
+      "nome": "2021",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 96.6991
+     },
+     {
+      "nome": "2022",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 83.3288
+     },
+     {
+      "nome": "2023",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 89.9893
+     },
+     {
+      "nome": "2024",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 120.5227
+     },
+     {
+      "nome": "2025",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 98.5614
+     },
+     {
+      "nome": "2026",
+      "n": 9,
+      "primeiro": 100,
+      "ultimo": 107.9234
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 128.82,
+      "ultimo": 128.82
+     }
+    ]
+   },
+   "chartSHBoiGordoYoY": {
+    "secao": "m3_2_1",
+    "series": [
+     {
+      "nome": "YoY %",
+      "n": 29,
+      "primeiro": -1.326834,
+      "ultimo": 12.177955
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 12.177955,
+      "ultimo": 12.177955
+     }
+    ]
+   },
+   "chartSHBoiGordoBase100": {
+    "secao": "m3_2_1",
+    "series": [
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 73.022771,
+      "ultimo": 73.022771
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 76.733434
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 89.755732
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 115.800327
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 128.822624
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 137.372233,
+      "ultimo": 137.372233
+     },
+     {
+      "nome": "+2σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 128.822624
+     },
+     {
+      "nome": "+1σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 115.800327
+     },
+     {
+      "nome": "-1σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 89.755732
+     },
+     {
+      "nome": "-2σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 76.733434
+     },
+     {
+      "nome": "MB100 — Série Total",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 102.778029
+     },
+     {
+      "nome": "MB100 — 2026",
+      "n": 9,
+      "primeiro": 100,
+      "ultimo": 107.923447
+     },
+     {
+      "nome": "MB100 — 2026 (projeção BGI)",
+      "n": 4,
+      "primeiro": 107.923447,
+      "ultimo": 115.986513
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 128.822624,
+      "ultimo": 128.822624
+     }
+    ]
+   },
+   "chartBoiVariacao": {
+    "secao": "m3_2_1",
+    "series": [
+     {
+      "nome": "Boi gordo",
+      "n": 167,
+      "primeiro": 0,
+      "ultimo": 8.39599
+     },
+     {
+      "nome": "Bezerro",
+      "n": 162,
+      "primeiro": 0,
+      "ultimo": 10.39994
+     },
+     {
+      "nome": "Topo e fundo",
+      "n": 2,
+      "primeiro": 14.990602,
+      "ultimo": -0.422932
+     },
+     {
+      "nome": "Mesma janela, ano a ano",
+      "n": 24,
+      "primeiro": 0.898348,
+      "ultimo": 8.39599
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 8.39599,
+      "ultimo": 8.39599
+     }
+    ]
+   },
+   "chartCurvaVarBGI": {
+    "secao": "m3_2_1",
+    "series": [
+     {
+      "nome": "Curva em 14/07/2026",
+      "n": 9,
+      "primeiro": 340.15,
+      "ultimo": 367.15
+     },
+     {
+      "nome": "Curva em 01/09/2026",
+      "n": 9,
+      "primeiro": 344.07,
+      "ultimo": 372.4
+     },
+     {
+      "nome": "Variação por vencimento",
+      "n": 9,
+      "primeiro": 1.152433,
+      "ultimo": 1.429933
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 367.15,
+      "ultimo": 367.15
+     }
+    ]
+   },
+   "chartSHBoiGordoPriceSezon": {
+    "secao": "m3_2_1",
+    "series": [
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 155.147683,
+      "ultimo": 155.147683
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 173.10631,
+      "ultimo": 179.04954
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 216.522838,
+      "ultimo": 221.256613
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 303.355893,
+      "ultimo": 305.670758
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 346.77242,
+      "ultimo": 347.877831
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 397.8795,
+      "ultimo": 397.8795
+     },
+     {
+      "nome": "+2σ",
+      "n": 12,
+      "primeiro": 346.77242,
+      "ultimo": 347.877831
+     },
+     {
+      "nome": "+1σ",
+      "n": 12,
+      "primeiro": 303.355893,
+      "ultimo": 305.670758
+     },
+     {
+      "nome": "-1σ",
+      "n": 12,
+      "primeiro": 216.522838,
+      "ultimo": 221.256613
+     },
+     {
+      "nome": "-2σ",
+      "n": 12,
+      "primeiro": 173.10631,
+      "ultimo": 179.04954
+     },
+     {
+      "nome": "Média histórica (R$/@)",
+      "n": 12,
+      "primeiro": 259.939365,
+      "ultimo": 263.463685
+     },
+     {
+      "nome": "2026 (R$/@)",
+      "n": 9,
+      "primeiro": 320.597619,
+      "ultimo": 346
+     },
+     {
+      "nome": "2026 — projeção BGI",
+      "n": 4,
+      "primeiro": 346,
+      "ultimo": 371.85
+     },
+     {
+      "nome": "Média 2026: R$ 350.86/@",
+      "n": 12,
+      "primeiro": 350.858523,
+      "ultimo": 350.858523
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 347.877831,
+      "ultimo": 347.877831
+     }
+    ]
+   },
+   "chartSHBoiGordoMonthly": {
+    "secao": "m3_2_1",
+    "series": [
+     {
+      "nome": "Mensal (corrigida)",
+      "n": 354,
+      "primeiro": 224.993894,
+      "ultimo": 371.85
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 371.85,
+      "ultimo": 371.85
+     }
+    ]
+   },
+   "chartSHBoiGordoHitRate": {
+    "secao": "m3_2_1",
+    "series": [
+     {
+      "nome": "Preço",
+      "n": 12,
+      "primeiro": 0.975638,
+      "ultimo": 3.099787
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 3.099787,
+      "ultimo": 3.099787
+     }
+    ]
+   },
+   "chartSHBezerroDaily": {
+    "secao": "m3_2_2",
+    "series": [
+     {
+      "nome": "BEZERRO",
+      "n": 6605,
+      "primeiro": 1081.833915,
+      "ultimo": 3389.51
+     },
+     {
+      "nome": "MM 100D",
+      "n": 6506,
+      "primeiro": 1105.369395,
+      "ultimo": 3389.5803
+     },
+     {
+      "nome": "MM 200D",
+      "n": 6406,
+      "primeiro": 1122.198755,
+      "ultimo": 3253.700216
+     },
+     {
+      "nome": "MM 365D",
+      "n": 6241,
+      "primeiro": 1192.317629,
+      "ultimo": 3075.966272
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 3389.51,
+      "ultimo": 3389.51
+     }
+    ]
+   },
+   "chartSHVolBezerro": {
+    "secao": "m3_2_2",
+    "series": [
+     {
+      "nome": "Variação do pregão (%)",
+      "n": 162,
+      "primeiro": 0.118373,
+      "ultimo": -0.117283
+     },
+     {
+      "nome": "Volatilidade móvel 21 pregões (σ)",
+      "n": 162,
+      "primeiro": 0.300265,
+      "ultimo": 0.200764
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 0.200764,
+      "ultimo": 0.200764
+     }
+    ]
+   },
+   "chartSHBezerroAnnual": {
+    "secao": "m3_2_2",
+    "series": [
+     {
+      "nome": "Média anual",
+      "n": 27,
+      "primeiro": 1122.040027,
+      "ultimo": 3306.033148
+     },
+     {
+      "nome": "Tendência",
+      "n": 27,
+      "primeiro": 1155.873832,
+      "ultimo": 2912.669385
+     },
+     {
+      "nome": "+2σ",
+      "n": 27,
+      "primeiro": 1742.398347,
+      "ultimo": 3499.193901
+     },
+     {
+      "nome": "+1σ",
+      "n": 27,
+      "primeiro": 1449.13609,
+      "ultimo": 3205.931643
+     },
+     {
+      "nome": "-1σ",
+      "n": 27,
+      "primeiro": 862.611574,
+      "ultimo": 2619.407128
+     },
+     {
+      "nome": "-2σ",
+      "n": 27,
+      "primeiro": 569.349317,
+      "ultimo": 2326.14487
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 2912.669385,
+      "ultimo": 2912.669385
+     }
+    ]
+   },
+   "chartSazonalidadeBezerro": {
+    "secao": "m3_2_2",
+    "series": [
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 74.5348,
+      "ultimo": 74.5348
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 76.84
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 91.13
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 119.69
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 133.97
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 137.9891,
+      "ultimo": 137.9891
+     },
+     {
+      "nome": "+2σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 133.97
+     },
+     {
+      "nome": "+1σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 119.69
+     },
+     {
+      "nome": "-1σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 91.13
+     },
+     {
+      "nome": "-2σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 76.84
+     },
+     {
+      "nome": "Média histórica",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 105.41
+     },
+     {
+      "nome": "2001",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 125.2329
+     },
+     {
+      "nome": "2002",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 107.4985
+     },
+     {
+      "nome": "2003",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 95.4593
+     },
+     {
+      "nome": "2004",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 89.1351
+     },
+     {
+      "nome": "2005",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 90.2884
+     },
+     {
+      "nome": "2006",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 106.1059
+     },
+     {
+      "nome": "2007",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 122.8464
+     },
+     {
+      "nome": "2008",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 123.1466
+     },
+     {
+      "nome": "2009",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 94.5654
+     },
+     {
+      "nome": "2010",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 106.3527
+     },
+     {
+      "nome": "2011",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 99.905
+     },
+     {
+      "nome": "2012",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 90.9201
+     },
+     {
+      "nome": "2013",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 112.2101
+     },
+     {
+      "nome": "2014",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 134.0123
+     },
+     {
+      "nome": "2015",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 97.8058
+     },
+     {
+      "nome": "2016",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 89.0136
+     },
+     {
+      "nome": "2017",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 96.3175
+     },
+     {
+      "nome": "2018",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 102.2042
+     },
+     {
+      "nome": "2019",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 115.9984
+     },
+     {
+      "nome": "2020",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 127.4341
+     },
+     {
+      "nome": "2021",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 98.8724
+     },
+     {
+      "nome": "2022",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 80.436
+     },
+     {
+      "nome": "2023",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 91.1418
+     },
+     {
+      "nome": "2024",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 120.3597
+     },
+     {
+      "nome": "2025",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 117.9126
+     },
+     {
+      "nome": "2026",
+      "n": 8,
+      "primeiro": 100,
+      "ultimo": 109.7465
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 133.97,
+      "ultimo": 133.97
+     }
+    ]
+   },
+   "chartSHBezerroYoY": {
+    "secao": "m3_2_2",
+    "series": [
+     {
+      "nome": "YoY %",
+      "n": 26,
+      "primeiro": 19.197649,
+      "ultimo": 16.534766
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 16.534766,
+      "ultimo": 16.534766
+     }
+    ]
+   },
+   "chartSHBezerroBase100": {
+    "secao": "m3_2_2",
+    "series": [
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 74.539667,
+      "ultimo": 74.539667
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 76.845018
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 91.126007
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 119.687986
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 133.968975
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 137.988044,
+      "ultimo": 137.988044
+     },
+     {
+      "nome": "+2σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 133.968975
+     },
+     {
+      "nome": "+1σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 119.687986
+     },
+     {
+      "nome": "-1σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 91.126007
+     },
+     {
+      "nome": "-2σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 76.845018
+     },
+     {
+      "nome": "MB100 — Série Total",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 105.406996
+     },
+     {
+      "nome": "MB100 — 2026",
+      "n": 9,
+      "primeiro": 100,
+      "ultimo": 110.471054
+     },
+     {
+      "nome": "MB100 — 2026",
+      "n": 0,
+      "primeiro": null,
+      "ultimo": null
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 133.968975,
+      "ultimo": 133.968975
+     }
+    ]
+   },
+   "chartBezVariacao": {
+    "secao": "m3_2_2",
+    "series": [
+     {
+      "nome": "Bezerro",
+      "n": 162,
+      "primeiro": 0,
+      "ultimo": 10.39994
+     },
+     {
+      "nome": "Boi gordo",
+      "n": 161,
+      "primeiro": 0,
+      "ultimo": 7.565789
+     },
+     {
+      "nome": "Topo e fundo",
+      "n": 2,
+      "primeiro": 11.833393,
+      "ultimo": -0.982995
+     },
+     {
+      "nome": "Mesma janela, ano a ano",
+      "n": 26,
+      "primeiro": 20.734987,
+      "ultimo": 10.39994
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 10.39994,
+      "ultimo": 10.39994
+     }
+    ]
+   },
+   "chartSHBezerroPriceSezon": {
+    "secao": "m3_2_2",
+    "series": [
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 724.357477,
+      "ultimo": 724.357477
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 856.172498,
+      "ultimo": 837.613284
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 1412.808568,
+      "ultimo": 1428.513546
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 2526.080707,
+      "ultimo": 2610.314071
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 3082.716777,
+      "ultimo": 3201.214334
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 3662.614815,
+      "ultimo": 3662.614815
+     },
+     {
+      "nome": "+2σ",
+      "n": 12,
+      "primeiro": 3082.716777,
+      "ultimo": 3201.214334
+     },
+     {
+      "nome": "+1σ",
+      "n": 12,
+      "primeiro": 2526.080707,
+      "ultimo": 2610.314071
+     },
+     {
+      "nome": "-1σ",
+      "n": 12,
+      "primeiro": 1412.808568,
+      "ultimo": 1428.513546
+     },
+     {
+      "nome": "-2σ",
+      "n": 12,
+      "primeiro": 856.172498,
+      "ultimo": 837.613284
+     },
+     {
+      "nome": "Média histórica (R$/@)",
+      "n": 12,
+      "primeiro": 1969.444638,
+      "ultimo": 2019.413809
+     },
+     {
+      "nome": "2026 (R$/@)",
+      "n": 9,
+      "primeiro": 3078.181905,
+      "ultimo": 3400.5
+     },
+     {
+      "nome": "Média 2026: R$ 3316.32/@",
+      "n": 12,
+      "primeiro": 3316.316119,
+      "ultimo": 3316.316119
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 3201.214334,
+      "ultimo": 3201.214334
+     }
+    ]
+   },
+   "chartSHBezerroMonthly": {
+    "secao": "m3_2_2",
+    "series": [
+     {
+      "nome": "Mensal (corrigida)",
+      "n": 319,
+      "primeiro": 1082.872747,
+      "ultimo": 3378.355294
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 3378.355294,
+      "ultimo": 3378.355294
+     }
+    ]
+   },
+   "chartSHBezerroHitRate": {
+    "secao": "m3_2_2",
+    "series": [
+     {
+      "nome": "Preço",
+      "n": 12,
+      "primeiro": -2.598393,
+      "ultimo": 1.639602
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 1.639602,
+      "ultimo": 1.639602
+     }
+    ]
+   },
+   "chartBezDolar": {
+    "secao": "m3_2_2",
+    "series": [
+     {
+      "nome": "Bezerro · R$/cabeça",
+      "n": 52,
+      "primeiro": 3398.84,
+      "ultimo": 3389.51
+     },
+     {
+      "nome": "Bezerro · US$/cabeça",
+      "n": 52,
+      "primeiro": 668.378562,
+      "ultimo": 657.674816
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 3389.51,
+      "ultimo": 3389.51
+     }
+    ]
+   },
+   "chartSHMilhoDaily": {
+    "secao": "m3_2_3",
+    "series": [
+     {
+      "nome": "Diário",
+      "n": 5502,
+      "primeiro": 67.08,
+      "ultimo": 70.96
+     },
+     {
+      "nome": "MM21",
+      "n": 5482,
+      "primeiro": 67.445714,
+      "ultimo": 67.231429
+     },
+     {
+      "nome": "MM63",
+      "n": 5440,
+      "primeiro": 67.798889,
+      "ultimo": 65.264444
+     },
+     {
+      "nome": "MM200",
+      "n": 5303,
+      "primeiro": 66.04005,
+      "ultimo": 67.26755
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 70.96,
+      "ultimo": 70.96
+     }
+    ]
+   },
+   "chartSHVolMilho": {
+    "secao": "m3_2_3",
+    "series": [
+     {
+      "nome": "Variação do pregão (%)",
+      "n": 167,
+      "primeiro": -0.071942,
+      "ultimo": 1.039442
+     },
+     {
+      "nome": "Volatilidade móvel 21 pregões (σ)",
+      "n": 167,
+      "primeiro": 0.316254,
+      "ultimo": 0.394523
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 0.394523,
+      "ultimo": 0.394523
+     }
+    ]
+   },
+   "chartSHMilhoAnnual": {
+    "secao": "m3_2_3",
+    "series": [
+     {
+      "nome": "Média safra",
+      "n": 23,
+      "primeiro": 66.31207,
+      "ultimo": 77.858889
+     },
+     {
+      "nome": "Tendência",
+      "n": 23,
+      "primeiro": 65.116474,
+      "ultimo": 75.989644
+     },
+     {
+      "nome": "+2σ",
+      "n": 23,
+      "primeiro": 86.649362,
+      "ultimo": 97.522532
+     },
+     {
+      "nome": "+1σ",
+      "n": 23,
+      "primeiro": 75.882918,
+      "ultimo": 86.756088
+     },
+     {
+      "nome": "-1σ",
+      "n": 23,
+      "primeiro": 54.35003,
+      "ultimo": 65.223199
+     },
+     {
+      "nome": "-2σ",
+      "n": 23,
+      "primeiro": 43.583586,
+      "ultimo": 54.456755
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 75.989644,
+      "ultimo": 75.989644
+     }
+    ]
+   },
+   "chartSHMilhoYoY": {
+    "secao": "m3_2_3",
+    "series": [
+     {
+      "nome": "Var. YoY (%)",
+      "n": 22,
+      "primeiro": -10.167607,
+      "ultimo": 16.985969
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 16.985969,
+      "ultimo": 16.985969
+     }
+    ]
+   },
+   "chartSHMilhoBase100": {
+    "secao": "m3_2_3",
+    "series": [
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 45.3863,
+      "ultimo": 45.3863
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 49.76
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 77.33
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 132.48
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 160.05
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 177.5514,
+      "ultimo": 177.5514
+     },
+     {
+      "nome": "+2σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 160.05
+     },
+     {
+      "nome": "+1σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 132.48
+     },
+     {
+      "nome": "-1σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 77.33
+     },
+     {
+      "nome": "-2σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 49.76
+     },
+     {
+      "nome": "MB100 — Série Total",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 104.91
+     },
+     {
+      "nome": "El Niño — média",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 111.700133
+     },
+     {
+      "nome": "La Niña — média",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 102.188887
+     },
+     {
+      "nome": "2026/27 (atual)",
+      "n": 3,
+      "primeiro": 100,
+      "ultimo": 109.4773
+     },
+     {
+      "nome": "2026/27 (projeção CCM)",
+      "n": 10,
+      "primeiro": 109.4773,
+      "ultimo": 127.466383
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 104.91,
+      "ultimo": 104.91
+     }
+    ]
+   },
+   "chartMilhoVariacao": {
+    "secao": "m3_2_3",
+    "series": [
+     {
+      "nome": "Milho CEPEA",
+      "n": 168,
+      "primeiro": 0,
+      "ultimo": 2.174226
+     },
+     {
+      "nome": "Boi gordo",
+      "n": 167,
+      "primeiro": 0,
+      "ultimo": 8.39599
+     },
+     {
+      "nome": "Topo e fundo",
+      "n": 2,
+      "primeiro": 3.815695,
+      "ultimo": -9.445644
+     },
+     {
+      "nome": "Mesma janela, ano a ano",
+      "n": 22,
+      "primeiro": 9.097474,
+      "ultimo": 2.174226
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 2.174226,
+      "ultimo": 2.174226
+     }
+    ]
+   },
+   "chartSojaVariacao": {
+    "secao": "m3_2_3",
+    "series": [
+     {
+      "nome": "Soja Paranaguá",
+      "n": 168,
+      "primeiro": 0,
+      "ultimo": 13.367103
+     },
+     {
+      "nome": "Milho CEPEA",
+      "n": 168,
+      "primeiro": 0,
+      "ultimo": 2.174226
+     },
+     {
+      "nome": "Topo e fundo",
+      "n": 2,
+      "primeiro": 13.367103,
+      "ultimo": -12.522865
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 13.367103,
+      "ultimo": 13.367103
+     }
+    ]
+   },
+   "chartCurvaVarCCM": {
+    "secao": "m3_2_3",
+    "series": [
+     {
+      "nome": "Curva em 15/07/2026",
+      "n": 8,
+      "primeiro": 68.16,
+      "ultimo": 73.15
+     },
+     {
+      "nome": "Curva em 01/09/2026",
+      "n": 8,
+      "primeiro": 72.18,
+      "ultimo": 82.5
+     },
+     {
+      "nome": "Variação por vencimento",
+      "n": 8,
+      "primeiro": 5.897887,
+      "ultimo": 12.781955
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 73.15,
+      "ultimo": 73.15
+     }
+    ]
+   },
+   "chartCurvaVarSJC": {
+    "secao": "m3_2_3",
+    "series": [
+     {
+      "nome": "Curva em 15/07/2026",
+      "n": 6,
+      "primeiro": 26.2842,
+      "ultimo": 27.1329
+     },
+     {
+      "nome": "Curva em 01/09/2026",
+      "n": 6,
+      "primeiro": 28.136,
+      "ultimo": 29.5745
+     },
+     {
+      "nome": "Variação por vencimento",
+      "n": 6,
+      "primeiro": 7.045297,
+      "ultimo": 8.99867
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 27.1329,
+      "ultimo": 27.1329
+     }
+    ]
+   },
+   "chartSHMilhoMonthly": {
+    "secao": "m3_2_3",
+    "series": [
+     {
+      "nome": "Mensal (corrigida)",
+      "n": 266,
+      "primeiro": 67.551364,
+      "ultimo": 70.96
+     },
+     {
+      "nome": "MM12",
+      "n": 255,
+      "primeiro": 66.384805,
+      "ultimo": 67.434173
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 70.96,
+      "ultimo": 70.96
+     }
+    ]
+   },
+   "chartJanelaMilho": {
+    "secao": "m3_2_3",
+    "series": [
+     {
+      "nome": "Curva CCM (R$/sc)",
+      "n": 13,
+      "primeiro": 75.305,
+      "ultimo": 81.1
+     },
+     {
+      "nome": "Padrão sazonal do mês (índice)",
+      "n": 13,
+      "primeiro": 98.044282,
+      "ultimo": 98.044282
+     }
+    ]
+   },
+   "chartSHMilhoEnso": {
+    "secao": "m3_2_3",
+    "series": [
+     {
+      "nome": null,
+      "n": 24,
+      "primeiro": 100,
+      "ultimo": 100
+     },
+     {
+      "nome": null,
+      "n": 24,
+      "primeiro": 100,
+      "ultimo": 100
+     },
+     {
+      "nome": null,
+      "n": 24,
+      "primeiro": 100,
+      "ultimo": 100
+     },
+     {
+      "nome": "Série Total",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 104.906391
+     },
+     {
+      "nome": "La Niña — média",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 102.188892
+     },
+     {
+      "nome": "El Niño — média",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 111.700138
+     },
+     {
+      "nome": "Safra 2026/27",
+      "n": 3,
+      "primeiro": 100,
+      "ultimo": 109.477311
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 104.906391,
+      "ultimo": 104.906391
+     }
+    ]
+   },
+   "chartSHAcucarDaily": {
+    "secao": "m3_2_4",
+    "series": [
+     {
+      "nome": "AÇÚCAR",
+      "n": 5728,
+      "primeiro": 119.739434,
+      "ultimo": 94.07
+     },
+     {
+      "nome": "MM 100D",
+      "n": 5629,
+      "primeiro": 105.335334,
+      "ultimo": 98.3426
+     },
+     {
+      "nome": "MM 200D",
+      "n": 5529,
+      "primeiro": 92.887259,
+      "ultimo": 105.082269
+     },
+     {
+      "nome": "MM 365D",
+      "n": 5364,
+      "primeiro": 96.331113,
+      "ultimo": 117.840045
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 94.07,
+      "ultimo": 94.07
+     }
+    ]
+   },
+   "chartSHVolAcucar": {
+    "secao": "m3_2_4",
+    "series": [
+     {
+      "nome": "Variação do pregão (%)",
+      "n": 117,
+      "primeiro": 0,
+      "ultimo": 2.696507
+     },
+     {
+      "nome": "Volatilidade móvel 21 pregões (σ)",
+      "n": 117,
+      "primeiro": 1.146494,
+      "ultimo": 1.155831
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 1.155831,
+      "ultimo": 1.155831
+     }
+    ]
+   },
+   "chartSHAcucarAnnual": {
+    "secao": "m3_2_4",
+    "series": [
+     {
+      "nome": "Média anual",
+      "n": 24,
+      "primeiro": 97.897361,
+      "ultimo": 99.47188
+     },
+     {
+      "nome": "Tendência",
+      "n": 24,
+      "primeiro": 116.977994,
+      "ultimo": 131.954269
+     },
+     {
+      "nome": "+2σ",
+      "n": 24,
+      "primeiro": 166.254765,
+      "ultimo": 181.23104
+     },
+     {
+      "nome": "+1σ",
+      "n": 24,
+      "primeiro": 141.61638,
+      "ultimo": 156.592654
+     },
+     {
+      "nome": "-1σ",
+      "n": 24,
+      "primeiro": 92.339609,
+      "ultimo": 107.315884
+     },
+     {
+      "nome": "-2σ",
+      "n": 24,
+      "primeiro": 67.701224,
+      "ultimo": 82.677498
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 131.954269,
+      "ultimo": 131.954269
+     }
+    ]
+   },
+   "chartSHAcucarYoY": {
+    "secao": "m3_2_4",
+    "series": [
+     {
+      "nome": "YoY %",
+      "n": 23,
+      "primeiro": -1.720159,
+      "ultimo": -21.76343
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": -21.76343,
+      "ultimo": -21.76343
+     }
+    ]
+   },
+   "chartSHAcucarBase100": {
+    "secao": "m3_2_4",
+    "series": [
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 49.686937,
+      "ultimo": 49.686937
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 52.536694
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 78.412526
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 130.164189
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 156.04002
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 160.721221,
+      "ultimo": 160.721221
+     },
+     {
+      "nome": "+2σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 156.04002
+     },
+     {
+      "nome": "+1σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 130.164189
+     },
+     {
+      "nome": "-1σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 78.412526
+     },
+     {
+      "nome": "-2σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 52.536694
+     },
+     {
+      "nome": "MB100 — Série Total",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 104.288357
+     },
+     {
+      "nome": "MB100 — 2026",
+      "n": 6,
+      "primeiro": 100,
+      "ultimo": 87.404163
+     },
+     {
+      "nome": "MB100 — 2026",
+      "n": 0,
+      "primeiro": null,
+      "ultimo": null
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 156.04002,
+      "ultimo": 156.04002
+     }
+    ]
+   },
+   "chartSHAcucarMonthly": {
+    "secao": "m3_2_4",
+    "series": [
+     {
+      "nome": "Mensal (corrigida)",
+      "n": 278,
+      "primeiro": 114.460423,
+      "ultimo": 92.530625
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 92.530625,
+      "ultimo": 92.530625
+     }
+    ]
+   },
+   "chartSHEtanolDaily": {
+    "secao": "m3_2_5",
+    "series": [
+     {
+      "nome": "ETANOL",
+      "n": 1229,
+      "primeiro": 3.019,
+      "ultimo": 2.2429
+     },
+     {
+      "nome": "MM 100D",
+      "n": 1130,
+      "primeiro": 2.466493,
+      "ultimo": 2.68649
+     },
+     {
+      "nome": "MM 200D",
+      "n": 1030,
+      "primeiro": 2.692419,
+      "ultimo": 2.598589
+     },
+     {
+      "nome": "MM 365D",
+      "n": 865,
+      "primeiro": 2.494905,
+      "ultimo": 2.772301
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 2.2429,
+      "ultimo": 2.2429
+     }
+    ]
+   },
+   "chartSHVolEtanol": {
+    "secao": "m3_2_5",
+    "series": [
+     {
+      "nome": "Variação do pregão (%)",
+      "n": 25,
+      "primeiro": 0.90456,
+      "ultimo": 0.818088
+     },
+     {
+      "nome": "Volatilidade móvel 21 pregões (σ)",
+      "n": 25,
+      "primeiro": 0.703273,
+      "ultimo": 2.469463
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 2.469463,
+      "ultimo": 2.469463
+     }
+    ]
+   },
+   "chartSHEtanolAnnual": {
+    "secao": "m3_2_5",
+    "series": [
+     {
+      "nome": "Média anual",
+      "n": 25,
+      "primeiro": 3.04535,
+      "ultimo": 2.582702
+     },
+     {
+      "nome": "Tendência",
+      "n": 25,
+      "primeiro": 2.631787,
+      "ultimo": 2.781929
+     },
+     {
+      "nome": "+2σ",
+      "n": 25,
+      "primeiro": 3.2285,
+      "ultimo": 3.378641
+     },
+     {
+      "nome": "+1σ",
+      "n": 25,
+      "primeiro": 2.930143,
+      "ultimo": 3.080285
+     },
+     {
+      "nome": "-1σ",
+      "n": 25,
+      "primeiro": 2.333431,
+      "ultimo": 2.483573
+     },
+     {
+      "nome": "-2σ",
+      "n": 25,
+      "primeiro": 2.035075,
+      "ultimo": 2.185217
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 2.781929,
+      "ultimo": 2.781929
+     }
+    ]
+   },
+   "chartSHEtanolYoY": {
+    "secao": "m3_2_5",
+    "series": [
+     {
+      "nome": "YoY %",
+      "n": 24,
+      "primeiro": -9.003809,
+      "ultimo": -1.687279
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": -1.687279,
+      "ultimo": -1.687279
+     }
+    ]
+   },
+   "chartSHEtanolBase100": {
+    "secao": "m3_2_5",
+    "series": [
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 53.072618,
+      "ultimo": 53.072618
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 60.509733
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 80.462031
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 120.366627
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 140.318925
+     },
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 146.963002,
+      "ultimo": 146.963002
+     },
+     {
+      "nome": "+2σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 140.318925
+     },
+     {
+      "nome": "+1σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 120.366627
+     },
+     {
+      "nome": "-1σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 80.462031
+     },
+     {
+      "nome": "-2σ",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 60.509733
+     },
+     {
+      "nome": "MB100 — Série Total",
+      "n": 12,
+      "primeiro": 100,
+      "ultimo": 100.414329
+     },
+     {
+      "nome": "MB100 — 2026",
+      "n": 6,
+      "primeiro": 100,
+      "ultimo": 73.168436
+     },
+     {
+      "nome": "MB100 — 2026 (projeção ETH)",
+      "n": 7,
+      "primeiro": 73.168436,
+      "ultimo": 84.006328
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 140.318925,
+      "ultimo": 140.318925
+     }
+    ]
+   },
+   "chartSHEtanolMonthly": {
+    "secao": "m3_2_5",
+    "series": [
+     {
+      "nome": "Mensal (corrigida)",
+      "n": 283,
+      "primeiro": 3.04535,
+      "ultimo": 2.228067
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 2.228067,
+      "ultimo": 2.228067
+     }
+    ]
+   },
+   "chartAbateFemeasMT": {
+    "secao": "m3_2_6",
+    "series": [
+     {
+      "nome": "Abate total",
+      "n": 55,
+      "primeiro": 430528,
+      "ultimo": 609829
+     },
+     {
+      "nome": "% Fêmeas",
+      "n": 55,
+      "primeiro": 0.418783,
+      "ultimo": 0.431498
+     },
+     {
+      "nome": "% média hist.",
+      "n": 2,
+      "primeiro": 0.4,
+      "ultimo": 0.4
+     },
+     {
+      "nome": "% Fêmeas –12m",
+      "n": 43,
+      "primeiro": 0.418783,
+      "ultimo": 0.483549
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 0.431498,
+      "ultimo": 0.431498
+     }
+    ]
+   },
+   "chartCicloTempo": {
+    "secao": "m3_2_6",
+    "series": [
+     {
+      "nome": "Preço mês a mês",
+      "n": 345,
+      "primeiro": -12.539167,
+      "ultimo": 36.122787
+     },
+     {
+      "nome": "Preço do boi · 12 meses",
+      "n": 345,
+      "primeiro": -12.539167,
+      "ultimo": 23.958343
+     },
+     {
+      "nome": "Descarte de fêmeas · 12 meses",
+      "n": 345,
+      "primeiro": -13.575009,
+      "ultimo": 23.061626
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 23.958343,
+      "ultimo": 23.958343
+     }
+    ]
+   },
+   "chartProjCiclo": {
+    "secao": "m3_2_6",
+    "series": [
+     {
+      "nome": "Preço real mensal",
+      "n": 120,
+      "primeiro": 275.447069,
+      "ultimo": 346
+     },
+     {
+      "nome": "Linha do ciclo (13 meses)",
+      "n": 120,
+      "primeiro": 273.586216,
+      "ultimo": 348.014952
+     },
+     {
+      "nome": "Vales",
+      "n": 2,
+      "primeiro": 239.285753,
+      "ultimo": 230.579564
+     },
+     {
+      "nome": "Topos",
+      "n": 1,
+      "primeiro": 369.045443,
+      "ultimo": 369.045443
+     },
+     {
+      "nome": "Pico ainda não confirmado",
+      "n": 1,
+      "primeiro": 362.528947,
+      "ultimo": 362.528947
+     },
+     {
+      "nome": "_p95",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 310.692094
+     },
+     {
+      "nome": "Faixa externa · 9 em cada 10 casos",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 222.521197
+     },
+     {
+      "nome": "_q90",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 290.323088
+     },
+     {
+      "nome": "_q10",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 237.632745
+     },
+     {
+      "nome": "_sup",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 306.087062
+     },
+     {
+      "nome": "Entre o cenário inferior e o superior",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 226.818057
+     },
+     {
+      "nome": "Cenário central",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 262.245855
+     },
+     {
+      "nome": "Curva BGI da B3 (deflacionada)",
+      "n": 10,
+      "primeiro": 367.85,
+      "ultimo": 374.2
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 346,
+      "ultimo": 346
+     }
+    ]
+   },
+   "chartProjSenoide": {
+    "secao": "m3_2_6",
+    "series": [
+     {
+      "nome": "Preço real mensal",
+      "n": 120,
+      "primeiro": 275.447069,
+      "ultimo": 346
+     },
+     {
+      "nome": "Onda ajustada (senóide)",
+      "n": 120,
+      "primeiro": 272.30226,
+      "ultimo": 331.702328
+     },
+     {
+      "nome": "Vales",
+      "n": 2,
+      "primeiro": 239.285753,
+      "ultimo": 230.579564
+     },
+     {
+      "nome": "Topos",
+      "n": 1,
+      "primeiro": 369.045443,
+      "ultimo": 369.045443
+     },
+     {
+      "nome": "Pico ainda não confirmado",
+      "n": 1,
+      "primeiro": 362.528947,
+      "ultimo": 362.528947
+     },
+     {
+      "nome": "_p95",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 451.0536
+     },
+     {
+      "nome": "Faixa externa · 9 em cada 10 casos",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 283.860407
+     },
+     {
+      "nome": "_p90",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 436.007467
+     },
+     {
+      "nome": "_p10",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 293.646835
+     },
+     {
+      "nome": "_p80",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 415.836134
+     },
+     {
+      "nome": "Entre o pessimista e o otimista",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 304.304716
+     },
+     {
+      "nome": "Cenário realista (senóide corrigida)",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 351.128408
+     },
+     {
+      "nome": "Modelo de ciclos (central)",
+      "n": 37,
+      "primeiro": 346,
+      "ultimo": 262.245855
+     },
+     {
+      "nome": "Curva BGI da B3 (deflacionada)",
+      "n": 10,
+      "primeiro": 367.85,
+      "ultimo": 374.2
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 346,
+      "ultimo": 346
+     }
+    ]
+   },
+   "chartProjAnual": {
+    "secao": "m3_2_6",
+    "series": [
+     {
+      "nome": "Média anual · cenário central",
+      "n": 15,
+      "primeiro": 297.141248,
+      "ultimo": 265.77168
+     },
+     {
+      "nome": "Tendência de longo prazo",
+      "n": 15,
+      "primeiro": 265.472025,
+      "ultimo": 313.692831
+     },
+     {
+      "nome": "+1σ",
+      "n": 15,
+      "primeiro": 295.987582,
+      "ultimo": 349.751287
+     },
+     {
+      "nome": "−1σ",
+      "n": 15,
+      "primeiro": 238.102544,
+      "ultimo": 281.351908
+     },
+     {
+      "nome": "+2σ",
+      "n": 15,
+      "primeiro": 330.01085,
+      "ultimo": 389.954601
+     },
+     {
+      "nome": "−2σ",
+      "n": 15,
+      "primeiro": 213.554785,
+      "ultimo": 252.345252
+     }
+    ]
+   },
+   "chartAbateIBGEBez": {
+    "secao": "m3_2_7",
+    "series": [
+     {
+      "nome": "Abate total do mês",
+      "n": 351,
+      "primeiro": 1226118,
+      "ultimo": 3618930
+     },
+     {
+      "nome": "% de fêmeas · mês a mês (sem suavizar)",
+      "n": 351,
+      "primeiro": 37.179782,
+      "ultimo": 51.190545
+     },
+     {
+      "nome": "% de fêmeas · suavizada (exponencial 6m)",
+      "n": 351,
+      "primeiro": 37.179782,
+      "ultimo": 46.239902
+     },
+     {
+      "nome": "% de fêmeas · média móvel 12 meses",
+      "n": 340,
+      "primeiro": 33.398358,
+      "ultimo": 47.094019
+     },
+     {
+      "nome": "tendência estrutural",
+      "n": 340,
+      "primeiro": 33.340975,
+      "ultimo": 42.942852
+     }
+    ]
+   },
+   "chartAbatePrecoBez": {
+    "secao": "m3_2_7",
+    "series": [
+     {
+      "nome": "Bezerro · R$/cabeça real",
+      "n": 314,
+      "primeiro": 1082.872747,
+      "ultimo": 3264.502273
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 3264.502273,
+      "ultimo": 3264.502273
+     }
+    ]
+   },
+   "chartMagroVariacao": {
+    "secao": "m3_2_8",
+    "series": [
+     {
+      "nome": "Boi magro",
+      "n": 157,
+      "primeiro": 0,
+      "ultimo": 9.292927
+     },
+     {
+      "nome": "Boi gordo",
+      "n": 165,
+      "primeiro": 0,
+      "ultimo": 8.131868
+     },
+     {
+      "nome": "Topo e fundo",
+      "n": 2,
+      "primeiro": 11.918293,
+      "ultimo": 0
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 9.292927,
+      "ultimo": 9.292927
+     }
+    ]
+   },
+   "chartSHBoiMilhoTroca": {
+    "secao": "m3_2_8",
+    "series": [
+     {
+      "nome": null,
+      "n": 12,
+      "primeiro": 3.952901,
+      "ultimo": 4.281323
+     },
+     {
+      "nome": "Faixa interquartil (Q1–Q3)",
+      "n": 12,
+      "primeiro": 3.356039,
+      "ultimo": 3.577953
+     },
+     {
+      "nome": "Mediana histórica",
+      "n": 12,
+      "primeiro": 3.584673,
+      "ultimo": 3.764315
+     },
+     {
+      "nome": "2026",
+      "n": 9,
+      "primeiro": 4.726023,
+      "ultimo": 4.875986
+     },
+     {
+      "nome": "2026 — projeção BGI/CCM",
+      "n": 4,
+      "primeiro": 4.875986,
+      "ultimo": 4.73862
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 3.577953,
+      "ultimo": 3.577953
+     }
+    ]
+   },
+   "chartBezBoiTroca": {
+    "secao": "m3_2_8",
+    "series": [
+     {
+      "nome": "Bezerros por boi vendido",
+      "n": 319,
+      "primeiro": 4.819271,
+      "ultimo": 2.047433
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 2.047433,
+      "ultimo": 2.047433
+     }
+    ]
+   },
+   "chartBezAgioHist": {
+    "secao": "m3_2_8",
+    "series": [
+     {
+      "nome": "Ágio mensal",
+      "n": 319,
+      "primeiro": -40.714209,
+      "ultimo": 39.547595
+     },
+     {
+      "nome": "Média de 12 meses",
+      "n": 308,
+      "primeiro": -36.504589,
+      "ultimo": 36.524298
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 39.547595,
+      "ultimo": 39.547595
+     }
+    ]
+   },
+   "chartCorrelacaoFisico": {
+    "secao": "m3_2_9",
+    "series": [
+     {
+      "nome": "Série 1",
+      "n": 4,
+      "primeiro": "BGI",
+      "ultimo": "Dólar"
+     }
+    ]
+   },
+   "chartBGIDolar": {
+    "secao": "m3_2_9",
+    "series": [
+     {
+      "nome": "BGIX26 (Nov/26)",
+      "n": 56,
+      "primeiro": 66.9618,
+      "ultimo": 70.9404
+     },
+     {
+      "nome": "BGIZ26 (Dez/26)",
+      "n": 56,
+      "primeiro": 66.7671,
+      "ultimo": 70.6489
+     },
+     {
+      "nome": "BGIF27 (Jan/27)",
+      "n": 56,
+      "primeiro": 66.5992,
+      "ultimo": 70.9826
+     },
+     {
+      "nome": "BGIG27 (Fev/27)",
+      "n": 56,
+      "primeiro": 65.9744,
+      "ultimo": 70.6285
+     },
+     {
+      "nome": "BGIH27 (Mar/27)",
+      "n": 56,
+      "primeiro": 65.8712,
+      "ultimo": 70.0454
+     },
+     {
+      "nome": "BGIJ27 (Abr/27)",
+      "n": 15,
+      "primeiro": 68.3515,
+      "ultimo": 69.4821
+     },
+     {
+      "nome": "BGIK27 (Mai/27)",
+      "n": 56,
+      "primeiro": 64.9455,
+      "ultimo": 68.5512
+     },
+     {
+      "nome": "BGIM27 (Jun/27)",
+      "n": 15,
+      "primeiro": 67.3808,
+      "ultimo": 68.5374
+     },
+     {
+      "nome": "BGIV27 (Out/27)",
+      "n": 15,
+      "primeiro": 65.61,
+      "ultimo": 66.7866
+     },
+     {
+      "nome": "BGIV26 (Out/26) (selecionado)",
+      "n": 56,
+      "primeiro": 66.6828,
+      "ultimo": 70.535
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 70.9404,
+      "ultimo": 70.9404
+     }
+    ]
+   },
+   "chartBGIDolarCasado": {
+    "secao": "m3_2_9",
+    "series": [
+     {
+      "nome": "Passados",
+      "n": 7,
+      "primeiro": 68.58,
+      "ultimo": 68.763
+     },
+     {
+      "nome": "Corrente",
+      "n": 4,
+      "primeiro": 70.478,
+      "ultimo": 70.888
+     },
+     {
+      "nome": "Futuros",
+      "n": 6,
+      "primeiro": 70.544,
+      "ultimo": 66.697
+     },
+     {
+      "nome": "Boi Físico",
+      "n": 1,
+      "primeiro": 66.291,
+      "ultimo": 66.291
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 68.763,
+      "ultimo": 68.763
+     }
+    ]
+   },
+   "chartEcoBoiJuros": {
+    "secao": "m3_2_9",
+    "series": []
+   },
+   "chartEcoYoY": {
+    "secao": "m3_2_9",
+    "series": []
+   },
+   "chartEcoJuroReal": {
+    "secao": "m3_2_9",
+    "series": []
+   },
+   "chartAtkCorr": {
+    "secao": "m3_2_10",
+    "series": [
+     {
+      "nome": "Preço",
+      "n": 5,
+      "primeiro": "Traseiro",
+      "ultimo": "Carcaça casada — vaca"
+     }
+    ]
+   },
+   "chartAtkLag": {
+    "secao": "m3_2_10",
+    "series": [
+     {
+      "nome": "Preço",
+      "n": 61,
+      "primeiro": 0.030483,
+      "ultimo": 0.035
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 0.035,
+      "ultimo": 0.035
+     }
+    ]
+   },
+   "chartCascata": {
+    "secao": "m3_2_10",
+    "series": [
+     {
+      "nome": "Preço",
+      "n": 4,
+      "primeiro": 0.992961,
+      "ultimo": 0.462786
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 0.462786,
+      "ultimo": 0.462786
+     }
+    ]
+   },
+   "chartRepoCadeia": {
+    "secao": "m3_3_2",
+    "series": [
+     {
+      "nome": "Custo da @ de entrada",
+      "n": 10,
+      "primeiro": 375.392571,
+      "ultimo": 404.136
+     },
+     {
+      "nome": "Custo da @ produzida na engorda",
+      "n": 10,
+      "primeiro": 229.74581,
+      "ultimo": 255.759677
+     },
+     {
+      "nome": "Custo cheio da @ vendida (média ponderada)",
+      "n": 10,
+      "primeiro": 340.897816,
+      "ultimo": 369.342054
+     },
+     {
+      "nome": "Preço travável na B3",
+      "n": 10,
+      "primeiro": 367.85,
+      "ultimo": 374.2
+     },
+     {
+      "nome": "Margem da reposição",
+      "n": 10,
+      "primeiro": 26.952184,
+      "ultimo": 4.857946
+     }
+    ]
+   },
+   "chartBGIvsCAI": {
+    "secao": "m3_3_5b",
+    "series": [
+     {
+      "nome": "Preço do contrato BGI",
+      "n": 10,
+      "primeiro": 367.85,
+      "ultimo": 374.2
+     },
+     {
+      "nome": "Custo da @ vendida (com reposição)",
+      "n": 10,
+      "primeiro": 340.897816,
+      "ultimo": 369.342054
+     },
+     {
+      "nome": "Custo da @ incremental (sem reposição)",
+      "n": 10,
+      "primeiro": 229.74581,
+      "ultimo": 255.759677
+     },
+     {
+      "nome": "JÁ TENHO o animal → vale engordar até aqui?",
+      "n": 10,
+      "primeiro": 138.10419,
+      "ultimo": 118.440323
+     },
+     {
+      "nome": "VOU COMPRAR o magro → vale o ciclo inteiro?",
+      "n": 10,
+      "primeiro": 26.952184,
+      "ultimo": 4.857946
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 374.2,
+      "ultimo": 374.2
+     }
+    ]
+   },
+   "chartCaiFinanceiro": {
+    "secao": "m3_3_5b",
+    "series": [
+     {
+      "nome": "Margem da engorda (R$/cab)",
+      "n": 10,
+      "primeiro": 996.766993,
+      "ultimo": 854.843033
+     },
+     {
+      "nome": "Lucro líquido (R$/cab)",
+      "n": 10,
+      "primeiro": 531.429681,
+      "ultimo": 95.786543
+     },
+     {
+      "nome": "ROI do ciclo (lucro ÷ capital parado)",
+      "n": 10,
+      "primeiro": 0.082099,
+      "ultimo": 0.013658
+     },
+     {
+      "nome": "Margem líquida (lucro ÷ receita)",
+      "n": 10,
+      "primeiro": 0.073269,
+      "ultimo": 0.012982
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 0.013658,
+      "ultimo": 0.013658
+     }
+    ]
+   },
+   "chartBase": {
+    "secao": "m3_3_5b",
+    "series": [
+     {
+      "nome": null,
+      "n": 127,
+      "primeiro": 3.5,
+      "ultimo": 0
+     },
+     {
+      "nome": null,
+      "n": 127,
+      "primeiro": 0,
+      "ultimo": -10.3
+     },
+     {
+      "nome": "Mediana do período (R$ 0.60)",
+      "n": 127,
+      "primeiro": 0.6,
+      "ultimo": 0.6
+     },
+     {
+      "nome": "Base diária",
+      "n": 127,
+      "primeiro": 3.5,
+      "ultimo": -10.3
+     },
+     {
+      "nome": "Último pregão",
+      "n": 1,
+      "primeiro": -10.3,
+      "ultimo": -10.3
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 0.6,
+      "ultimo": 0.6
+     }
+    ]
+   },
+   "chartBaseConv": {
+    "secao": "m3_3_5b",
+    "series": [
+     {
+      "nome": null,
+      "n": 7,
+      "primeiro": 6.22,
+      "ultimo": 7.39
+     },
+     {
+      "nome": "Faixa onde ficaram 8 em cada 10 pregões",
+      "n": 7,
+      "primeiro": -4.28,
+      "ultimo": -28.79
+     },
+     {
+      "nome": null,
+      "n": 7,
+      "primeiro": 0,
+      "ultimo": 0
+     },
+     {
+      "nome": "Base média",
+      "n": 7,
+      "primeiro": 0.813307,
+      "ultimo": -9.176061
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": -28.79,
+      "ultimo": -28.79
+     }
+    ]
+   },
+   "chartJanelaHedge": {
+    "secao": "m3_3_5d",
+    "series": [
+     {
+      "nome": "Prêmio do futuro sobre o físico",
+      "n": 10,
+      "primeiro": 6.315029,
+      "ultimo": 8.150289
+     },
+     {
+      "nome": "Força sazonal do mês de entrega",
+      "n": 10,
+      "primeiro": 48,
+      "ultimo": 48
+     },
+     {
+      "nome": "Margem sobre o custo cheio",
+      "n": 10,
+      "primeiro": 26.952184,
+      "ultimo": 4.857946
+     }
+    ]
+   },
+   "chartBacktest": {
+    "secao": "m3_3_5e",
+    "series": [
+     {
+      "nome": "BGIH26",
+      "n": 128,
+      "primeiro": -20.277273,
+      "ultimo": 4.832727
+     },
+     {
+      "nome": "BGIJ26",
+      "n": 143,
+      "primeiro": -35.228947,
+      "ultimo": -6.378947
+     },
+     {
+      "nome": "BGIK26",
+      "n": 163,
+      "primeiro": -21.915,
+      "ultimo": -0.285
+     },
+     {
+      "nome": "BGIM26",
+      "n": 161,
+      "primeiro": -5.135714,
+      "ultimo": -10.005714
+     },
+     {
+      "nome": "BGIN26",
+      "n": 183,
+      "primeiro": 6.95,
+      "ultimo": 10.52
+     },
+     {
+      "nome": "BGIQ26",
+      "n": 185,
+      "primeiro": -1.966667,
+      "ultimo": -1.846667
+     },
+     {
+      "nome": "BGIU26",
+      "n": 165,
+      "primeiro": -5.55,
+      "ultimo": 10.3
+     },
+     {
+      "nome": "Média de todos os contratos",
+      "n": 9,
+      "primeiro": -0.805617,
+      "ultimo": -6.924722
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 4.832727,
+      "ultimo": 4.832727
+     }
+    ]
+   },
+   "chartBtCond": {
+    "secao": "m3_3_5e",
+    "series": [
+     {
+      "nome": "Linha do gatilho até a decisão",
+      "n": 131,
+      "primeiro": 336.625,
+      "ultimo": 346.2
+     },
+     {
+      "nome": "Preço até a decisão",
+      "n": 145,
+      "primeiro": 340.45,
+      "ultimo": 347.1
+     },
+     {
+      "nome": "O que aconteceu depois",
+      "n": 21,
+      "primeiro": 347.1,
+      "ultimo": 356.3
+     }
+    ]
+   },
+   "chartBtCondTraj": {
+    "secao": "m3_3_5e",
+    "series": [
+     {
+      "nome": "Resultado médio",
+      "n": 6,
+      "primeiro": -21.2,
+      "ultimo": -7.509677
+     }
+    ]
+   },
+   "chartBtAtivo": {
+    "secao": "m3_3_5e",
+    "series": []
+   },
+   "chartTrvAjuste": {
+    "secao": "m3_3_5f",
+    "series": []
+   },
+   "chartTrvCenario": {
+    "secao": "m3_3_5f",
+    "series": []
+   }
+  }
+ }
+}
