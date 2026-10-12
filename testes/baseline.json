@@ -1,11 +1,11 @@
 {
- "capturadoEm": "2026-10-12T13:43:13.557Z",
+ "capturadoEm": "2026-10-12T15:56:53.906Z",
  "url": "http://127.0.0.1:8777/local.html",
  "errosDeConsole": [],
  "resumo": {
   "abas": 147,
   "contratos": 80,
-  "graficos": 125,
+  "graficos": 128,
   "sinais": 10
  },
  "dados": {
@@ -1642,56 +1642,125 @@
   },
   "abas": 147,
   "graficos": {
+   "chartVeBoi": {
+    "secao": "m3_0_1",
+    "series": [
+     {
+      "nome": "Físico CEPEA",
+      "n": 145,
+      "primeiro": 328.9,
+      "ultimo": 346
+     },
+     {
+      "nome": "Futuro BGIV26",
+      "n": 144,
+      "primeiro": 346.7,
+      "ultimo": 367.85
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 346,
+      "ultimo": 346
+     }
+    ]
+   },
+   "chartVeMilho": {
+    "secao": "m3_0_1",
+    "series": [
+     {
+      "nome": "Físico CEPEA",
+      "n": 144,
+      "primeiro": 66.28,
+      "ultimo": 70.96
+     },
+     {
+      "nome": "Futuro CCMX26",
+      "n": 145,
+      "primeiro": 70.42,
+      "ultimo": 78.43
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 70.96,
+      "ultimo": 70.96
+     }
+    ]
+   },
+   "chartVeTroca": {
+    "secao": "m3_0_1",
+    "series": [
+     {
+      "nome": "Físico CEPEA",
+      "n": 145,
+      "primeiro": 4.962281,
+      "ultimo": 4.875986
+     },
+     {
+      "nome": "Futuro BGI/CCM",
+      "n": 144,
+      "primeiro": 4.923317,
+      "ultimo": 4.69017
+     },
+     {
+      "nome": null,
+      "n": 1,
+      "primeiro": 4.875986,
+      "ultimo": 4.875986
+     }
+    ]
+   },
    "chartPreco": {
-    "secao": "m3_1_1",
+    "secao": "m3_0_1",
     "series": []
    },
    "chartMM": {
-    "secao": "m3_1_1",
+    "secao": "m3_0_1",
     "series": []
    },
    "chartTrend": {
-    "secao": "m3_1_1",
+    "secao": "m3_0_1",
     "series": []
    },
    "chartPercentil": {
-    "secao": "m3_1_1",
+    "secao": "m3_0_1",
     "series": []
    },
    "chartMediaStd": {
-    "secao": "m3_1_1",
+    "secao": "m3_0_1",
     "series": []
    },
    "chartBoiVsBGIAll": {
-    "secao": "m3_1_1",
+    "secao": "m3_0_1",
     "series": []
    },
    "chartRatioBGICCM": {
-    "secao": "m3_1_1",
+    "secao": "m3_0_1",
     "series": []
    },
    "chartAbateIBGE": {
-    "secao": "m3_1_1",
+    "secao": "m3_0_1",
     "series": []
    },
    "chartAbatePreco": {
-    "secao": "m3_1_1",
+    "secao": "m3_0_1",
     "series": []
    },
    "chartAgio": {
-    "secao": "m3_1_1",
+    "secao": "m3_0_1",
     "series": []
    },
    "chartBoiMagroTroca": {
-    "secao": "m3_1_1",
+    "secao": "m3_0_1",
     "series": []
    },
    "chartBoiMagroAgio": {
-    "secao": "m3_1_1",
+    "secao": "m3_0_1",
     "series": []
    },
    "chartBaseAtivo": {
-    "secao": "m3_1_1",
+    "secao": "m3_0_1",
     "series": []
    },
    "chartSlope": {

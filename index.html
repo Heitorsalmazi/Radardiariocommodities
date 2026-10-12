@@ -12182,6 +12182,1472 @@ window._rsiCalc = function(arr, n){
   return out;
 };
 </script>
+
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   VISÃO EXECUTIVA — estilo (Etapa 4)
+   Usa os degraus tipográficos e as cores que o painel já definiu em :root.
+   Nenhum tamanho solto, nenhuma cor nova de marca, nenhuma animação além da
+   transição de foco que o resto da interface já tem.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Cabeçalho ─────────────────────────────────────────────────────────── */
+.ve-cab{
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap: var(--space-4); flex-wrap:wrap;
+  border-left:3px solid var(--m3-accent);
+}
+.ve-marca{
+  font-family: var(--font-display); font-size: var(--fs-2xl); font-weight:800;
+  letter-spacing:.06em; color: var(--m3-accent); text-transform:uppercase; line-height:1.1;
+}
+.ve-cab-sub{ font-size: var(--fs-base); color: var(--text-muted); margin-top:4px; max-width:46ch; }
+.ve-cab-r{ display:flex; align-items:center; gap: var(--space-4); flex-wrap:wrap; }
+.ve-cab-item{ display:flex; flex-direction:column; gap:2px; }
+.ve-cab-item > span{
+  font-size: var(--fs-micro); text-transform:uppercase; letter-spacing:.10em; color: var(--text-soft);
+}
+.ve-cab-item > strong{ font-size: var(--fs-md); font-weight:700; font-variant-numeric: tabular-nums; }
+
+/* ── Filtro ────────────────────────────────────────────────────────────── */
+.ve-filtro{ display:flex; align-items:flex-end; gap: var(--space-3); flex-wrap:wrap; margin-bottom: var(--space-3); }
+.ve-filtro-nota{ font-size: var(--fs-sm); color: var(--text-muted); max-width:52ch; line-height:1.4; }
+
+/* ── Cards de indicador ────────────────────────────────────────────────── */
+.ve-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(216px, 1fr)); gap: var(--space-3); }
+.ve-card{
+  border:1px solid var(--border-subtle); border-radius:12px; padding:12px 14px;
+  background: var(--bg-card); display:flex; flex-direction:column; gap:3px; min-width:0;
+}
+.ve-card-forte{ border-color: rgba(15,118,110,.35); background: rgba(15,118,110,.035); }
+.ve-card-vazio{ grid-column: 1 / -1; }
+.ve-card-rot{
+  font-size: var(--fs-micro); text-transform:uppercase; letter-spacing:.10em;
+  color: var(--text-muted); font-weight:700;
+}
+.ve-card-val{
+  font-size: var(--fs-3xl); font-weight:700; line-height:1.15; font-variant-numeric: tabular-nums;
+  display:flex; align-items:baseline; gap:6px; flex-wrap:wrap;
+}
+.ve-card-un{ font-size: var(--fs-nano); font-weight:600; color: var(--text-soft); letter-spacing:.04em; }
+.ve-card-var{ font-size: var(--fs-sm); font-weight:600; font-variant-numeric: tabular-nums; }
+.ve-card-pe{ font-size: var(--fs-micro); color: var(--text-soft); line-height:1.4; }
+.ve-nd{ color: var(--text-soft); }
+
+/* Sinal: três estados, sem semáforo. Alta e baixa usam o verde e o vermelho
+   que o painel já aplica em variação; neutro fica cinza. */
+.ve-alta  { color:#15803d; }
+.ve-baixa { color:#be123c; }
+.ve-neu   { color: var(--text-muted); }
+.ve-ok    { color:#15803d; }
+.ve-atencao{ color:#b45309; }
+.ve-erro  { color:#be123c; }
+
+/* ── Link para a análise detalhada ─────────────────────────────────────── */
+.ve-link{
+  align-self:flex-start; margin-top:4px;
+  background:none; border:none; padding:0; cursor:pointer;
+  font-family: var(--font-sans); font-size: var(--fs-micro); font-weight:700;
+  letter-spacing:.06em; text-transform:uppercase; color: var(--m3-accent);
+}
+.ve-link:hover{ color: var(--m3-accent-dark); text-decoration:underline; }
+.ve-link:focus-visible{ outline:2px solid var(--m3-accent); outline-offset:2px; border-radius:3px; }
+.ve-acoes{ display:flex; gap: var(--space-4); flex-wrap:wrap; margin-top: var(--space-3); }
+
+/* ── Gráficos compactos ────────────────────────────────────────────────── */
+.ve-sec-tit{
+  font-family: var(--font-display); font-size: var(--fs-md); font-weight:700;
+  text-transform:uppercase; letter-spacing:.08em; color: var(--text-muted);
+  margin: var(--space-5) 2px var(--space-3);
+}
+.ve-graf{ display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-4); }
+.ve-graf-um{ min-width:0; margin-bottom:0; }
+.ve-graf-sub{ font-size: var(--fs-micro); color: var(--text-soft); margin:-6px 0 8px;
+              text-transform:uppercase; letter-spacing:.06em; }
+.ve-graf-box{ height:230px; }
+
+/* ── Tabelas ───────────────────────────────────────────────────────────── */
+.ve-tab-wrap{ overflow-x:auto; border:1px solid var(--border-subtle); border-radius:10px; }
+.ve-tab{ width:100%; border-collapse:collapse; font-size: var(--fs-sm); }
+.ve-tab th, .ve-tab td{ padding:7px 10px; border-bottom:1px solid var(--border-subtle); text-align:left; white-space:nowrap; }
+.ve-tab thead th{
+  font-size: var(--fs-micro); text-transform:uppercase; letter-spacing:.08em;
+  color: var(--text-muted); background: var(--bg-pill); font-weight:700;
+}
+.ve-tab td.num, .ve-tab th.num{ text-align:right; font-variant-numeric: tabular-nums; }
+.ve-tab tbody tr:last-child td{ border-bottom:none; }
+.ve-tr-ref td{ background: rgba(15,118,110,.07); font-weight:600; }
+
+/* ── Blocos de leitura ─────────────────────────────────────────────────── */
+.ve-sub{
+  font-size: var(--fs-micro); text-transform:uppercase; letter-spacing:.10em;
+  font-weight:700; color: var(--text-muted); margin: var(--space-4) 0 var(--space-2);
+}
+.ve-sub:first-child{ margin-top:0; }
+.ve-imp{ display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); }
+.ve-imp-l{ border:1px solid var(--border-subtle); border-radius:10px; padding:10px 12px;
+           display:flex; flex-direction:column; gap:2px; min-width:0; }
+.ve-imp-l > span{ font-size: var(--fs-micro); text-transform:uppercase; letter-spacing:.08em; color: var(--text-muted); }
+.ve-imp-l > strong{ font-size: var(--fs-xl); font-weight:700; font-variant-numeric: tabular-nums; }
+.ve-imp-l > em{ font-size: var(--fs-micro); color: var(--text-soft); font-style:normal; }
+.ve-riscos{ margin:0; padding-left:18px; font-size: var(--fs-base); line-height:1.6; }
+.ve-riscos li{ margin-bottom:4px; }
+.ve-nota{
+  margin-top: var(--space-3); font-size: var(--fs-sm); color: var(--text-muted); line-height:1.55;
+  border-left:2px solid var(--border-strong); padding-left:10px;
+}
+.ve-insuf{
+  border:1px dashed var(--border-strong); border-radius:10px; padding:12px 14px;
+  background: var(--bg-pill); font-size: var(--fs-base); color: var(--text-muted);
+  display:flex; flex-direction:column; gap:3px; margin-top: var(--space-2);
+}
+.ve-insuf b{ color: var(--text-main); }
+
+/* ── Premissas ─────────────────────────────────────────────────────────── */
+.ve-det > summary{
+  cursor:pointer; font-size: var(--fs-base); font-weight:600; color: var(--text-main);
+  padding:6px 0; list-style:revert;
+}
+.ve-det[open] > summary{ margin-bottom: var(--space-3); }
+.ve-prem-acoes{ display:flex; gap: var(--space-2); flex-wrap:wrap; align-items:center; margin-bottom: var(--space-3); }
+.ve-prem-nota{ font-size: var(--fs-sm); }
+.ve-btn{
+  font-family: var(--font-sans); font-size: var(--fs-sm); font-weight:600;
+  padding:7px 12px; border-radius:8px; cursor:pointer;
+  border:1px solid var(--border-strong); background:#fff; color: var(--text-main);
+}
+.ve-btn:hover{ border-color: var(--m3-accent); color: var(--m3-accent); }
+.ve-btn:focus-visible{ outline:2px solid var(--m3-accent); outline-offset:2px; }
+.ve-btn-forte{ background: var(--m3-accent); border-color: var(--m3-accent); color:#fff; }
+.ve-btn-forte:hover{ background: var(--m3-accent-dark); border-color: var(--m3-accent-dark); color:#fff; }
+.ve-fs{ border:1px solid var(--border-subtle); border-radius:10px; padding:10px 12px 12px; margin:0 0 var(--space-3); }
+.ve-fs > legend{
+  font-size: var(--fs-micro); text-transform:uppercase; letter-spacing:.10em;
+  font-weight:700; color: var(--text-muted); padding:0 6px;
+}
+.ve-campos{ display:grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: var(--space-2) var(--space-3); }
+.ve-campo{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+.ve-campo > span{ font-size: var(--fs-micro); color: var(--text-muted); text-transform:uppercase; letter-spacing:.06em; }
+.ve-campo input, .ve-campo select{
+  font-family: var(--font-sans); font-size: var(--fs-base); padding:6px 8px;
+  border:1px solid var(--border-strong); border-radius:7px; background:#fff; color: var(--text-main);
+  min-width:0; width:100%;
+}
+.ve-campo input:focus, .ve-campo select:focus{ outline:2px solid var(--m3-accent-soft); border-color: var(--m3-accent); }
+.ve-campo-h{ max-width:280px; }
+.ve-det code{ font-size: var(--fs-micro); background: var(--bg-pill); padding:1px 4px; border-radius:4px; }
+
+/* ── Celular ───────────────────────────────────────────────────────────
+   ABAIXO DE 768 px QUEM MANDA É A REGRA GLOBAL DO PAINEL. Ela diz
+   `[class*="grid"]{ grid-template-columns:1fr !important }` — qualquer grade
+   de cards vira uma coluna —, e `ve-grid` casa com esse seletor. Medido: aos
+   390 px o seletor devolve uma coluna de 320 px, não duas.
+
+   Escrever aqui duas colunas para o celular seria escrever regra morta, e
+   regra morta no arquivo é pior do que regra nenhuma: ela promete um
+   comportamento que não acontece. Então a política do painel fica de pé e
+   esta folha cuida do que é dela — cabeçalho, gráfico e formulário. */
+@media (max-width: 900px){
+  .ve-graf-box{ height:210px; }
+}
+@media (max-width: 640px){
+  .ve-cab{ flex-direction:column; }
+  .ve-cab-r{ gap: var(--space-3); }
+  .ve-card-val{ font-size: var(--fs-2xl); }
+  .ve-graf{ grid-template-columns: 1fr; }
+  .ve-graf-box{ height:200px; }
+  .ve-imp{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ve-campos{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 360px){
+  .ve-imp{ grid-template-columns: 1fr; }
+  .ve-campos{ grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   VISÃO EXECUTIVA — motor de leitura (Etapa 4 · 12/10/2026)
+   ──────────────────────────────────────────────────────────────────────────
+   Esta camada LÊ. Ela não calcula margem, não dimensiona hedge e não
+   arredonda contrato: isso continua morando nos motores já auditados —
+   `__3M_calcEngine` (Etapas 2 e 2.1) e `_hsDimensiona` (Etapa 2.1) —, que
+   a tela chama diretamente. Duplicar qualquer uma dessas contas aqui criaria
+   uma segunda verdade, e a segunda verdade é sempre a que diverge primeiro.
+
+   POR QUE UM LEITOR DE SÉRIE PRÓPRIO. O arquivo tem DUAS definições globais
+   de `extractSeries` e DUAS de `toDate`; quem vence é a última que o
+   navegador carrega. Apoiar a Visão Executiva nesse detalhe de ordem de
+   script seria construir sobre um acidente. Este leitor faz uma coisa só —
+   devolve os pares (Data, Preço) válidos de uma aba — e está coberto por
+   teste. Ele não corrige escala, não adivinha separador decimal e não
+   preenche buraco: valor que não é número vira ausência declarada, nunca
+   número inventado.
+
+   Exposto em `window._veMotor` para o teste medir o que roda, e não uma
+   cópia da fórmula.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  var LS_PREM = 've_premissas_v1';
+
+  /* ── Números ───────────────────────────────────────────────────────────
+     UMA REGRA, SEM ADIVINHAÇÃO: o ponto é sempre separador DECIMAL e a
+     vírgula também; nada aqui remove separador de milhar para montar um
+     número maior. Então "1.234" é um vírgula dois três quatro — nunca mil
+     duzentos e trinta e quatro —, e "1.234,56", que mistura os dois, é
+     recusado em vez de interpretado. Chutar qual é qual seria mover a
+     vírgula de casa em silêncio, que é o erro que a Etapa 2.1 tirou do
+     break-even.
+
+     Na prática os textos que chegam aqui vêm de `<input type="number">`, que
+     entrega sempre a forma com ponto decimal; os valores da planilha chegam
+     já como número. */
+  function num(v){
+    if (v == null || v === '') return null;
+    if (typeof v === 'number') return isFinite(v) ? v : null;
+    var s = String(v).trim();
+    if (!s) return null;
+    if (!/^-?\d+(?:[.,]\d+)?$/.test(s)) return null;
+    var n = Number(s.replace(',', '.'));
+    return isFinite(n) ? n : null;
+  }
+
+  /* ── Datas ─────────────────────────────────────────────────────────────
+     Serial do Excel (sistema 1900), ISO e dd/mm/aaaa. Tudo em UTC, do
+     primeiro parse à formatação, para que a data impressa seja a data lida —
+     misturar UTC com local é como um pregão vira o dia anterior na tela de
+     quem está a oeste de Greenwich. */
+  function data(v){
+    if (v == null || v === '') return null;
+    if (v instanceof Date) return isFinite(v.getTime()) ? v : null;
+    if (typeof v === 'number'){
+      if (!(v > 20000 && v < 80000)) return null;     /* fora disto não é data de pregão */
+      var ep = Date.UTC(1899, 11, 30);
+      var d = new Date(ep + Math.round(v) * 86400000);
+      return isFinite(d.getTime()) ? d : null;
+    }
+    var s = String(v).trim(), m;
+    m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return new Date(Date.UTC(+m[1], +m[2]-1, +m[3]));
+    m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if (m) return new Date(Date.UTC(+m[3], +m[2]-1, +m[1]));
+    return null;
+  }
+  function dBR(d){
+    if (!d) return '—';
+    var p = function(n){ return (n < 10 ? '0' : '') + n; };
+    return p(d.getUTCDate()) + '/' + p(d.getUTCMonth()+1) + '/' + d.getUTCFullYear();
+  }
+  function diasDesde(d){
+    if (!d) return null;
+    var hoje = new Date();
+    var h = Date.UTC(hoje.getUTCFullYear(), hoje.getUTCMonth(), hoje.getUTCDate());
+    return Math.round((h - d.getTime()) / 86400000);
+  }
+
+  /* ── Formatação ───────────────────────────────────────────────────── */
+  function n2(v, c){
+    if (v == null || !isFinite(v)) return '—';
+    c = (c == null) ? 2 : c;
+    return Number(v).toLocaleString('pt-BR', { minimumFractionDigits:c, maximumFractionDigits:c });
+  }
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c];
+    });
+  }
+
+  /* ── Unidades ──────────────────────────────────────────────────────────
+     Função do SÍMBOLO, não do seletor da tela. `_activePriceUnit` resolve
+     pela aba ativa no topo da página, que é o que ela precisa fazer lá; aqui
+     a tela mostra oito instrumentos ao mesmo tempo, e cada card tem de saber
+     a própria unidade sem depender de qual aba está selecionada.
+
+     O DOL é cotado em reais por US$ 1.000. O fator 1/1000 existe para que o
+     card mostre a taxa que o operador usa — e o rótulo diz R$/US$, não
+     "pontos", porque é isso que o número passa a ser depois da divisão. */
+  var UNIDADES = {
+    'BGI':               { moeda:'R$',  un:'@',   rot:'R$/@',    casas:2, fator:1 },
+    'CCM':               { moeda:'R$',  un:'sc',  rot:'R$/sc',   casas:2, fator:1 },
+    'SJC':               { moeda:'US$', un:'sc',  rot:'US$/sc',  casas:2, fator:1 },
+    'DOL':               { moeda:'R$',  un:'US$', rot:'R$/US$',  casas:4, fator:1/1000 },
+    'ETH':               { moeda:'R$',  un:'m³',  rot:'R$/m³',   casas:2, fator:1 },
+    'BOI GORDO':         { moeda:'R$',  un:'@',   rot:'R$/@',    casas:2, fator:1 },
+    'MILHO - CEPEA':     { moeda:'R$',  un:'sc',  rot:'R$/sc',   casas:2, fator:1 },
+    /* SOJA FÍSICA EM REAIS — e a tela antiga discorda.
+       `_activePriceUnit` põe 'SOJA - PARANAGUÁ' no mesmo ramo do SJC e
+       rotula a série física como US$/saca. Os dados dizem o contrário, e a
+       prova está dentro da própria planilha: em 39 pregões nos quais a soja
+       física, o SJC e o dólar negociaram no mesmo dia, a razão entre o
+       físico e o SJC convertido a reais tem mediana de 1,067 — um prêmio de
+       porto de 7% sobre o futuro. Se a série física estivesse em dólar, essa
+       razão seria o próprio câmbio, perto de 5,2.
+       Exemplo de 27/08/2026: físico 155,05; SJCX26 US$ 27,9541; dólar 5,2003
+       → SJC em reais 145,37; razão 1,067.
+       Aqui a unidade é a correta. A tela antiga NÃO foi alterada nesta etapa
+       — mudar o comportamento dela exige autorização —, então a divergência
+       aparece declarada no diagnóstico das fontes em vez de ser emendada em
+       silêncio num canto e deixada errada no outro. */
+    'SOJA - PARANAGUÁ':  { moeda:'R$',  un:'sc',  rot:'R$/sc',   casas:2, fator:1 },
+    'BEZERRO':           { moeda:'R$',  un:'cab', rot:'R$/cab',  casas:2, fator:1 }
+  };
+  function unidade(simbolo){
+    var s = String(simbolo == null ? '' : simbolo).trim().toUpperCase();
+    if (!s) return null;
+    if (UNIDADES[s]) return UNIDADES[s];
+    if (/^(BGI|CCM|SJC|DOL|ETH)[FGHJKMNQUVXZ]\d{2}$/.test(s)) return UNIDADES[s.slice(0,3)];
+    return null;
+  }
+  /* Preço já na unidade de tela, com o cifrão certo. Sem unidade conhecida
+     não há formatação possível: devolve a ausência em vez de supor reais —
+     foi exatamente supor reais que pôs R$ num contrato cotado em dólar. */
+  function preco(v, simbolo){
+    var u = unidade(simbolo);
+    if (u == null || v == null || !isFinite(v)) return '—';
+    return u.moeda + ' ' + n2(v * u.fator, u.casas);
+  }
+
+  /* ── Série de uma aba ──────────────────────────────────────────────────
+     O cache é preso à planilha que estava carregada quando ele foi feito.
+
+     SEM ISSO A TELA NASCIA MEIO VAZIA, e de um jeito que enganava: o painel
+     chama `redrawAll` uma primeira vez ANTES de a planilha chegar, e esse
+     primeiro desenho passava por aqui. As séries de nome fixo — boi, milho e
+     soja físicos — eram consultadas, não achavam nada e tinham a ausência
+     GUARDADA para sempre. As de contrato escapavam por acidente: o nome do
+     vencimento é resolvido na hora, e sem planilha não havia nome nenhum
+     para guardar. O resultado era uma tela com todo o futuro preenchido e
+     todo o físico em branco — com os dados intactos na planilha ao lado.
+
+     Agora, sem planilha não se guarda nada, e trocar de planilha esvazia o
+     cache. Ausência guardada passa a significar o que diz: a aba existe e
+     não tem pregão válido. */
+  var _cache = {}, _cacheWb = null;
+  function _wbMarca(){
+    var wb = window.workbook;
+    return (wb && wb.SheetNames && wb.SheetNames.length) ? wb.SheetNames.length : null;
+  }
+  function serie(aba){
+    if (!aba) return null;
+    var marca = _wbMarca();
+    if (marca == null) return null;
+    if (_cacheWb !== marca){ _cache = {}; _cacheWb = marca; }
+    if (Object.prototype.hasOwnProperty.call(_cache, aba)) return _cache[aba];
+    var rows = [];
+    try { rows = (typeof window.parseSheet === 'function' ? window.parseSheet(aba) : null) || []; }
+    catch(e){ return (_cache[aba] = null); }
+    var pts = [], i, p, d;
+    for (i = 0; i < rows.length; i++){
+      if (!rows[i]) continue;
+      p = num(rows[i]['Preço']);
+      if (p == null) p = num(rows[i]['Preco']);
+      d = data(rows[i]['Data']);
+      if (p == null || !(p > 0) || !d) continue;        /* linha de sobra da planilha */
+      pts.push({ d:d, p:p });
+    }
+    pts.sort(function(a, b){ return a.d - b.d; });
+    return (_cache[aba] = (pts.length ? pts : null));
+  }
+  function limparCache(){ _cache = {}; _cacheWb = null; }
+
+  /* Última cotação válida e a variação contra o pregão anterior. */
+  function ultima(aba){
+    var s = serie(aba);
+    if (!s) return null;
+    var u = s[s.length-1], a = (s.length > 1) ? s[s.length-2] : null;
+    /* Data repetida na aba. Acontece — e muda a leitura de "variação contra o
+       pregão anterior", que passaria a comparar uma linha com a cópia dela
+       mesma. Contar aqui é barato e o diagnóstico mostra; corrigir a planilha
+       é do outro lado. */
+    var rep = 0, i;
+    for (i = 1; i < s.length; i++) if (s[i].d.getTime() === s[i-1].d.getTime()) rep++;
+    var o = { aba:aba, preco:u.p, data:u.d, pregoes:s.length, repetidas:rep,
+              anterior:(a ? a.p : null), dataAnterior:(a ? a.d : null),
+              varAbs:null, varPct:null };
+    /* Comparar com a linha anterior só é "variação do dia" se a linha anterior
+       for de OUTRO dia. Com data repetida, procura-se o último pregão
+       anterior de verdade. */
+    if (a && a.d.getTime() === u.d.getTime()){
+      a = null;
+      for (i = s.length - 2; i >= 0; i--){ if (s[i].d.getTime() < u.d.getTime()){ a = s[i]; break; } }
+      o.anterior = a ? a.p : null; o.dataAnterior = a ? a.d : null;
+    }
+    if (a && a.p > 0){ o.varAbs = u.p - a.p; o.varPct = (u.p / a.p - 1) * 100; }
+    return o;
+  }
+
+  /* Variação contra o último pregão de até N dias atrás. Devolve a data que
+     serviu de base: "30 dias" num mercado que não negocia todo dia é sempre
+     uma aproximação, e dizer qual pregão foi usado é o que torna o número
+     conferível. */
+  function variacao(aba, dias){
+    var s = serie(aba);
+    if (!s || s.length < 2) return null;
+    var fim = s[s.length-1], alvo = fim.d.getTime() - dias*86400000, base = null, i;
+    for (i = s.length-1; i >= 0; i--){ if (s[i].d.getTime() <= alvo){ base = s[i]; break; } }
+    if (!base || !(base.p > 0)) return null;
+    return { de:base.p, para:fim.p, dDe:base.d, dPara:fim.d,
+             abs: fim.p - base.p, pct:(fim.p / base.p - 1) * 100,
+             diasReais: Math.round((fim.d - base.d) / 86400000) };
+  }
+
+  /* ── Vencimentos ──────────────────────────────────────────────────────
+     Só os vigentes e só os que têm série. Um contrato listado na planilha
+     sem nenhum pregão válido é uma linha vazia na tela, não um vencimento
+     disponível. */
+  function vigentes(prefixo){
+    var wb = window.workbook;
+    if (!wb || !wb.SheetNames) return [];
+    var re = new RegExp('^' + prefixo + '[FGHJKMNQUVXZ]\\d{2}$');
+    var l = wb.SheetNames.filter(function(sn){ return re.test(String(sn).trim().toUpperCase()); });
+    l = l.filter(function(sn){
+      try { if (typeof window._isContractExpired === 'function' && window._isContractExpired(sn)) return false; }
+      catch(e){}
+      return !!serie(sn);
+    });
+    l.sort(function(a, b){
+      var ka = 0, kb = 0;
+      try { if (typeof window._contractMaturityKey === 'function'){
+        ka = window._contractMaturityKey(a) || 0; kb = window._contractMaturityKey(b) || 0; } } catch(e){}
+      return ka - kb;
+    });
+    return l;
+  }
+  function primeiroVigente(prefixo){ var l = vigentes(prefixo); return l.length ? l[0] : null; }
+
+  /* ── Relação de troca ─────────────────────────────────────────────────
+     Sacas de milho por arroba de boi: o preço da arroba dividido pelo preço
+     da saca. Mesma conta do gráfico de Relação de Troca BGI/CCM, cujo eixo
+     já se chama "Sacas milho / @". */
+  function relacaoTroca(precoBoi, precoMilho){
+    var a = num(precoBoi), b = num(precoMilho);
+    if (a == null || b == null || !(a > 0) || !(b > 0)) return null;
+    return a / b;
+  }
+
+  /* ── Premissas da operação ────────────────────────────────────────────
+     Guardadas NESTE navegador, em chave própria. A Calculadora do Boi segue
+     exatamente como estava: ela continua lendo os próprios campos ao vivo e
+     não ganhou persistência nenhuma. O botão "copiar da Calculadora" leva os
+     valores de lá para cá numa direção só. */
+  function premissas(){
+    var o = null;
+    try { o = JSON.parse((window.localStorage ? localStorage.getItem(LS_PREM) : null) || 'null'); }
+    catch(e){ o = null; }
+    return (o && typeof o === 'object' && !Array.isArray(o)) ? o : {};
+  }
+  function salvarPremissas(o){
+    try { if (!window.localStorage) return false;
+      localStorage.setItem(LS_PREM, JSON.stringify(o || {})); return true; } catch(e){ return false; }
+  }
+  /* Premissas suficientes para o motor de custo devolver break-even. Não é
+     opinião: é a lista de campos sem os quais `calcEngine` devolve NaN. */
+  function premissasCompletas(p){
+    p = p || premissas();
+    var base = num(p.pesoEntradaKg) > 0 && num(p.rendimento) > 0 && num(p.custoArrobaEntrada) > 0;
+    if (!base) return false;
+    var sis = p.sistema || 'pasto';
+    if (sis === 'pasto' || sis === 'rc'){
+      if (!((num(p.diasSeca) || 0) + (num(p.diasAguas) || 0) > 0)) return false;
+    }
+    if (sis === 'conf' || sis === 'rc'){
+      if (!(num(p.diasCocho) > 0)) return false;
+    }
+    return true;
+  }
+
+  /* ── Resultado do motor de custo, para um preço de venda ──────────────
+     Chama o motor auditado. Se ele não estiver no ar, devolve nulo — nunca
+     uma conta improvisada aqui. */
+  function custo(precoVenda, p){
+    p = p || premissas();
+    if (!premissasCompletas(p)) return null;
+    if (typeof window.__3M_calcEngine !== 'function') return null;
+    var r = null;
+    try { r = window.__3M_calcEngine(p, precoVenda); } catch(e){ return null; }
+    if (!r || !isFinite(r.bMB)) return null;
+    return r;
+  }
+
+  /* ── Dimensionamento de hedge ─────────────────────────────────────────
+     Porta para `hsCalcEngine`, o mesmo motor que a Etapa 2.1 auditou e que
+     mostra as duas opções de arredondamento. */
+  function hedge(ativo, qtdFisica, pctTrava, arredonda){
+    if (typeof window._hsDimensiona !== 'function') return null;
+    var q = num(qtdFisica), t = num(pctTrava);
+    if (q == null || t == null || q < 0) return null;
+    var r = null;
+    try {
+      r = window._hsDimensiona({ ativo:ativo, qtdFisica:q, pctTrava:t,
+                                 arredonda:(arredonda === 'baixo' ? 'baixo' : 'cima'),
+                                 estrategia:'venda_futuro', precoFuturo:0, custoProd:0, margemRS:0 });
+    } catch(e){ return null; }
+    return r || null;
+  }
+
+  /* ── Travas registradas ───────────────────────────────────────────────
+     Lê o mesmo registro de "Minhas Travas". Soma por produto, em contratos e
+     na unidade do contrato. Compra e venda são separadas: somar as duas daria
+     uma exposição líquida que esconde as duas pontas. */
+  var TAM = { BGI:330, CCM:450, SJC:450 };
+  function travas(){
+    var l = [];
+    try { l = JSON.parse((window.localStorage ? localStorage.getItem('m3_travas_v1') : null) || '[]'); }
+    catch(e){ l = []; }
+    if (!Array.isArray(l)) l = [];
+    var out = { BGI:{venda:0, compra:0, contratos:0}, CCM:{venda:0, compra:0, contratos:0},
+                SJC:{venda:0, compra:0, contratos:0}, registros:0, invalidos:0 };
+    l.forEach(function(t){
+      if (!t || typeof t !== 'object') { out.invalidos++; return; }
+      var m = String(t.contrato || '').trim().toUpperCase().match(/^(BGI|CCM|SJC)[FGHJKMNQUVXZ]\d{2}$/);
+      var q = num(t.qtd);
+      if (!m || q == null || !(q > 0)) { out.invalidos++; return; }
+      var k = m[1], lado = (t.oper === 'compra') ? 'compra' : 'venda';
+      out[k][lado] += q * TAM[k];
+      out[k].contratos += q;
+      out.registros++;
+    });
+    return out;
+  }
+
+  window._veMotor = {
+    num:num, data:data, dBR:dBR, diasDesde:diasDesde, n2:n2, esc:esc,
+    unidade:unidade, preco:preco, UNIDADES:UNIDADES,
+    serie:serie, ultima:ultima, variacao:variacao, limparCache:limparCache,
+    vigentes:vigentes, primeiroVigente:primeiroVigente,
+    relacaoTroca:relacaoTroca,
+    premissas:premissas, salvarPremissas:salvarPremissas,
+    premissasCompletas:premissasCompletas,
+    custo:custo, hedge:hedge, travas:travas, TAM:TAM, LS_PREM:LS_PREM
+  };
+})();
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   VISÃO EXECUTIVA — a tela (Etapa 4 · 12/10/2026)
+   ──────────────────────────────────────────────────────────────────────────
+   Uma tela que responde cinco perguntas em uma olhada: como está o mercado,
+   como estão as relações de troca, qual é a margem projetada, que riscos
+   merecem atenção e que análise precisa ser aberta.
+
+   O QUE ELA NÃO FAZ. Não recalcula margem, não dimensiona contrato e não
+   estima preço. Todo número vem de um destes três lugares, e o rodapé de
+   cada bloco diz de qual: a planilha (preço, data, variação), o motor de
+   custo auditado nas Etapas 2 e 2.1 (`__3M_calcEngine`), e o motor de hedge
+   da Etapa 2.1 (`_hsDimensiona`). Onde falta dado aparece "Dados
+   insuficientes para análise" — nunca um número de enchimento.
+
+   REFERÊNCIA DE PREÇO FÍSICO DO BOI: CEPEA, em todo o painel. A diferença
+   contra o BGI é mostrada como o que é — a distância entre o indicador
+   físico CEPEA e o mercado futuro da B3 — sem afirmar convergência.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  var SEC = 'm3_0_1';
+  var M = null;                                   /* motor, resolvido no primeiro uso */
+  function mot(){ return (M || (M = window._veMotor)); }
+
+  /* ── Fontes que esta tela usa ─────────────────────────────────────────
+     Uma linha por fonte: o que é, de onde vem e para onde leva. O
+     diagnóstico do cabeçalho é esta mesma lista com a última data de cada
+     uma — por isso ela mora num lugar só. */
+  var FONTES = [
+    { k:'boiFis',   aba:'BOI GORDO',        rot:'Boi gordo — físico',  fonte:'CEPEA',
+      sec:'m3_1_3', alvo:'chartSHBoiGordoDaily' },
+    { k:'milhoFis', aba:'MILHO - CEPEA',    rot:'Milho — físico',      fonte:'CEPEA',
+      sec:'m3_2_3', alvo:'chartSHMilhoDaily' },
+    { k:'sojaFis',  aba:'SOJA - PARANAGUÁ', rot:'Soja — físico',       fonte:'CEPEA/Paranaguá',
+      sec:'m3_2_3', alvo:null },
+    { k:'bgi',      pre:'BGI', rot:'Boi gordo — futuro',  fonte:'B3',
+      sec:'m3_1_8', alvo:'chartBoiVsBGIAll' },
+    { k:'ccm',      pre:'CCM', rot:'Milho — futuro',      fonte:'B3',
+      sec:'m3_1_8', alvo:'chartRatioBGICCM' },
+    { k:'sjc',      pre:'SJC', rot:'Soja — futuro',       fonte:'B3',
+      sec:'m3_2_3', alvo:null },
+    { k:'dol',      pre:'DOL', rot:'Dólar — futuro',      fonte:'B3',
+      sec:'m3_2_9', alvo:'chartBGIDolar' }
+  ];
+
+  /* Resolve cada fonte na aba que vai ser lida hoje. Contrato futuro é o
+     primeiro vencimento vigente, salvo se o operador escolheu outro. */
+  function abaDe(f, vencRef){
+    if (f.aba) return f.aba;
+    if (f.pre === 'BGI' && vencRef) return vencRef;
+    return mot().primeiroVigente(f.pre);
+  }
+
+  /* ── Campos das premissas ─────────────────────────────────────────────
+     Os nomes são os mesmos que `__3M_calcEngine` espera, para que o objeto
+     salvo entre no motor sem tradutor no meio — tradutor é onde um campo se
+     perde em silêncio. Os quatro últimos são da Visão Executiva e não vão
+     para o motor de custo. */
+  var CAMPOS = [
+    { g:'Animal e venda', c:[
+      ['sistema','Sistema','sel',[['pasto','Pasto'],['conf','Confinamento'],['rc','Pasto + confinamento']]],
+      ['cabecas','Cabeças do lote','n'],
+      ['pesoEntradaKg','Peso de entrada (kg)','n'],
+      ['rendimento','Rendimento de carcaça (%)','n'],
+      ['perdasPct','Perdas / mortalidade (%)','n'],
+      ['custoArrobaEntrada','Custo da @ de entrada (R$)','n'],
+      ['freteCab','Frete por cabeça (R$)','n'],
+      ['comissaoCab','Comissão por cabeça (R$)','n'],
+      ['dedPct','Dedução sobre a receita (%)','n']
+    ]},
+    { g:'Pasto', c:[
+      ['diasSeca','Dias de seca','n'], ['gmdSeca','GMD seca (kg/dia)','n'],
+      ['precoSuplSeca','Preço do suplemento — seca (R$/kg)','n'],
+      ['tipoSeca','Suplementação — seca','sel',[['prot01','0,1% do PV'],['prot03','0,3% do PV']]],
+      ['diasAguas','Dias de águas','n'], ['gmdAguas','GMD águas (kg/dia)','n'],
+      ['precoSuplAguas','Preço do suplemento — águas (R$/kg)','n'],
+      ['tipoAguas','Suplementação — águas','sel',[['prot01','0,1% do PV'],['prot03','0,3% do PV']]]
+    ]},
+    { g:'Confinamento', c:[
+      ['diasCocho','Dias de cocho','n'], ['gmdConf','GMD confinamento (kg/dia)','n'],
+      ['dietaModo','Modo da dieta','sel',[['direto','Custo por dia'],['ms','Pelo preço do milho']]],
+      ['custoDietaDia','Custo da dieta (R$/cab/dia)','n'],
+      ['milhoSc','Milho na dieta (R$/saca)','n'],
+      ['milhoMS','Matéria seca do milho (%)','n'],
+      ['consumoPctPV','Consumo (% do peso vivo)','n']
+    ]},
+    { g:'Custos do período', c:[
+      ['sanClostridia','Sanidade — clostridiose (R$)','n'],
+      ['sanBrucelose','Sanidade — brucelose (R$)','n'],
+      ['sanRaiva','Sanidade — raiva (R$)','n'],
+      ['sanVermifugo','Sanidade — vermífugo (R$)','n'],
+      ['sanEctoparasita','Sanidade — ectoparasita (R$)','n'],
+      ['sanOutros','Sanidade — outros (R$)','n'],
+      ['rastChip','Rastreabilidade — chip (R$)','n'],
+      ['rastBrinco','Rastreabilidade — brinco (R$)','n'],
+      ['arrCabMes','Arrendamento (R$/cab/mês)','n'],
+      ['custoOperDia','Custo operacional (R$/cab/dia)','n'],
+      ['gta','GTA e taxas (R$/cab)','n'],
+      ['outrosTrib','Outros tributos (R$/cab)','n']
+    ]},
+    { g:'Financeiro', c:[
+      ['taxaJuros','Taxa de juros (% a.a. efetiva)','n'],
+      ['jurosMult','Multiplicador do custeio','n']
+    ]},
+    { g:'Exposição a proteger', c:[
+      ['veCabecasVender','Cabeças a vender','n'],
+      ['veMilhoSacas','Milho a comprar (sacas de 60 kg)','n'],
+      ['vePctTrava','Percentual que se pretende travar (%)','n'],
+      ['veArredonda','Arredondamento de contrato','sel',[['cima','Para cima'],['baixo','Para baixo']]]
+    ]}
+  ];
+
+  /* ── Pequenos utilitários de marcação ─────────────────────────────── */
+  function sinalCls(v){ return (v == null || !isFinite(v)) ? 've-neu' : (v > 0 ? 've-alta' : (v < 0 ? 've-baixa' : 've-neu')); }
+  function sinalTxt(v, casas, suf){
+    var m = mot();
+    if (v == null || !isFinite(v)) return '—';
+    return (v > 0 ? '+' : '') + m.n2(v, casas) + (suf || '');
+  }
+  function insuf(motivo){
+    return '<div class="ve-insuf"><b>Dados insuficientes para análise</b>'
+         + (motivo ? ('<span>' + mot().esc(motivo) + '</span>') : '') + '</div>';
+  }
+  function linkPara(sec, alvo, rot){
+    return '<button type="button" class="ve-link" data-ve-sec="' + mot().esc(sec) + '"'
+         + (alvo ? (' data-ve-alvo="' + mot().esc(alvo) + '"') : '')
+         + '>' + mot().esc(rot || 'abrir análise') + ' →</button>';
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     ESQUELETO
+     ══════════════════════════════════════════════════════════════════════ */
+  var _montado = false;
+  function montar(){
+    if (_montado) return true;
+    var slot = document.getElementById('slot_' + SEC);
+    if (!slot) return false;
+    slot.insertAdjacentHTML('beforeend',
+      '<section class="card ve-cab" id="veCab">'
+      +   '<div class="ve-cab-l">'
+      +     '<div class="ve-marca">BMS AGROBRASIL</div>'
+      +     '<div class="ve-cab-sub">Visão Executiva — leitura de mercado, troca, margem e risco</div>'
+      +   '</div>'
+      +   '<div class="ve-cab-r">'
+      +     '<div class="ve-cab-item"><span>Data de referência</span><strong id="veDataRef">—</strong></div>'
+      +     '<div class="ve-cab-item"><span>Última atualização válida</span><strong id="veDataAtu">—</strong></div>'
+      +     '<button type="button" class="ve-link" id="veBtnDiag">diagnóstico das fontes →</button>'
+      +   '</div>'
+      + '</section>'
+      + '<section class="card" id="veDiagCard" style="display:none">'
+      +   '<div class="card-title"><span class="card-title-text">DIAGNÓSTICO DAS FONTES</span></div>'
+      +   '<div id="veDiag"></div>'
+      + '</section>'
+      + '<section class="card">'
+      +   '<div class="card-title"><span class="card-title-text">INDICADORES PRINCIPAIS</span></div>'
+      +   '<div class="ve-filtro" id="veFiltro"></div>'
+      +   '<div class="ve-grid" id="veCards"></div>'
+      + '</section>'
+      + '<div class="ve-sec-tit">Mercado e custos</div>'
+      + '<div class="ve-graf" id="veGraficos"></div>'
+      + '<section class="card">'
+      +   '<div class="card-title"><span class="card-title-text">PREMISSAS DA OPERAÇÃO</span></div>'
+      +   '<div id="vePrem"></div>'
+      + '</section>'
+      + '<section class="card">'
+      +   '<div class="card-title"><span class="card-title-text">VENDA DO BOI</span></div>'
+      +   '<div id="veVenda"></div>'
+      + '</section>'
+      + '<section class="card">'
+      +   '<div class="card-title"><span class="card-title-text">COMPRA DE INSUMOS</span></div>'
+      +   '<div id="veInsumos"></div>'
+      + '</section>'
+      + '<section class="card">'
+      +   '<div class="card-title"><span class="card-title-text">PROTEÇÃO FINANCEIRA</span></div>'
+      +   '<div id="veProtecao"></div>'
+      + '</section>');
+    /* Um ouvinte só, na raiz: os botões nascem e morrem a cada redesenho, e
+       religar ouvinte a cada vez é como se acumulam cliques duplicados. */
+    slot.addEventListener('click', aoClicar);
+    slot.addEventListener('change', aoMudar);
+    _montado = true;
+    return true;
+  }
+
+  function aoClicar(ev){
+    var t = ev.target;
+    if (!t || !t.closest) return;
+    var b = t.closest('[data-ve-sec]');
+    if (b){
+      var sec = b.getAttribute('data-ve-sec'), alvo = b.getAttribute('data-ve-alvo');
+      try {
+        if (alvo && typeof window.m3IrAlvo === 'function') window.m3IrAlvo(sec, alvo);
+        else if (typeof window.m3Ir === 'function') window.m3Ir(sec);
+      } catch(e){ console.warn('Visão Executiva — navegação:', e); }
+      return;
+    }
+    if (t.id === 'veBtnDiag'){
+      var c = document.getElementById('veDiagCard');
+      if (c) c.style.display = (c.style.display === 'none') ? '' : 'none';
+      return;
+    }
+    if (t.id === 'veSalvar'){ salvarForm(); return; }
+    if (t.id === 'veCopiar'){ copiarDaCalculadora(); return; }
+    if (t.id === 'veLimpar'){ limparPremissas(); return; }
+  }
+  function aoMudar(ev){
+    var t = ev.target;
+    if (t && t.id === 'veVencRef'){ salvarForm(true); }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     PREMISSAS — formulário
+     ══════════════════════════════════════════════════════════════════════ */
+  function campoHtml(c, val){
+    var m = mot(), id = 've_' + c[0], rot = m.esc(c[1]);
+    if (c[2] === 'sel'){
+      var ops = (c[3] || []).map(function(o){
+        return '<option value="' + m.esc(o[0]) + '"' + (String(val) === o[0] ? ' selected' : '') + '>'
+             + m.esc(o[1]) + '</option>';
+      }).join('');
+      return '<label class="ve-campo"><span>' + rot + '</span>'
+           + '<select id="' + id + '" data-ve-campo="' + m.esc(c[0]) + '">' + ops + '</select></label>';
+    }
+    return '<label class="ve-campo"><span>' + rot + '</span>'
+         + '<input type="number" step="any" inputmode="decimal" id="' + id + '" '
+         + 'data-ve-campo="' + m.esc(c[0]) + '" value="' + m.esc(val == null ? '' : val) + '"></label>';
+  }
+  function renderPrem(){
+    var m = mot(), p = m.premissas(), host = document.getElementById('vePrem');
+    if (!host) return;
+    var completo = m.premissasCompletas(p);
+    var grupos = CAMPOS.map(function(G){
+      return '<fieldset class="ve-fs"><legend>' + m.esc(G.g) + '</legend><div class="ve-campos">'
+           + G.c.map(function(c){ return campoHtml(c, p[c[0]]); }).join('') + '</div></fieldset>';
+    }).join('');
+    host.innerHTML =
+      '<details class="ve-det"' + (completo ? '' : ' open') + '>'
+      + '<summary>' + (completo
+          ? 'Premissas preenchidas — abrir para revisar'
+          : 'Informe as premissas para que margem, break-even e exposição sejam calculados')
+      + '</summary>'
+      + '<div class="ve-prem-acoes">'
+      +   '<button type="button" class="ve-btn ve-btn-forte" id="veSalvar">Salvar premissas</button>'
+      +   '<button type="button" class="ve-btn" id="veCopiar">Copiar da Calculadora do Boi</button>'
+      +   '<button type="button" class="ve-btn" id="veLimpar">Limpar</button>'
+      +   '<span class="ve-prem-nota" id="veAviso"></span>'
+      + '</div>'
+      + grupos
+      + '<div class="ve-nota">As premissas ficam salvas <b>neste navegador</b>, em chave própria '
+      + '(<code>' + m.esc(m.LS_PREM) + '</code>). A Calculadora do Boi não foi alterada: ela continua '
+      + 'lendo os próprios campos e o botão acima apenas copia de lá para cá. Trocar de máquina ou '
+      + 'limpar os dados do site apaga estas premissas.</div>'
+      + '</details>';
+  }
+  function lerForm(){
+    var o = {}, els = document.querySelectorAll('[data-ve-campo]');
+    Array.prototype.forEach.call(els, function(el){
+      var k = el.getAttribute('data-ve-campo'), v = String(el.value == null ? '' : el.value).trim();
+      if (v !== '') o[k] = v;
+    });
+    var vr = document.getElementById('veVencRef');
+    if (vr && vr.value) o.veVencRef = vr.value;
+    return o;
+  }
+  function salvarForm(silencioso){
+    var m = mot(), atual = m.premissas(), novo = lerForm();
+    /* O seletor de vencimento vive fora do formulário; sem este resgate ele
+       se perderia a cada "Salvar" feito com o formulário fechado. */
+    if (!novo.veVencRef && atual.veVencRef) novo.veVencRef = atual.veVencRef;
+    var ok = m.salvarPremissas(novo);
+    var av = document.getElementById('veAviso');
+    if (av && !silencioso){
+      av.textContent = ok ? 'Premissas salvas.' : 'Não foi possível salvar: este navegador bloqueou o armazenamento local.';
+      av.className = 've-prem-nota ' + (ok ? 've-ok' : 've-erro');
+    }
+    render();
+  }
+  function limparPremissas(){
+    mot().salvarPremissas({});
+    render();
+  }
+  function copiarDaCalculadora(){
+    var m = mot(), base = null;
+    try { if (typeof window.__3M_getState === 'function') base = window.__3M_getState(); } catch(e){}
+    var av = document.getElementById('veAviso');
+    if (!base){
+      if (av){ av.textContent = 'A Calculadora do Boi não está disponível nesta sessão.'; av.className = 've-prem-nota ve-erro'; }
+      return;
+    }
+    var p = m.premissas(), n = 0;
+    Object.keys(base).forEach(function(k){
+      var v = base[k];
+      if (v == null) return;
+      v = String(v).trim();
+      if (v === '') return;
+      p[k] = v; n++;
+    });
+    m.salvarPremissas(p);
+    render();
+    var av2 = document.getElementById('veAviso');
+    if (av2){
+      av2.textContent = n ? (n + ' campo(s) copiado(s) da Calculadora.')
+                          : 'A Calculadora está sem preenchimento: nada foi copiado.';
+      av2.className = 've-prem-nota ' + (n ? 've-ok' : 've-erro');
+    }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     CABEÇALHO E DIAGNÓSTICO
+     ══════════════════════════════════════════════════════════════════════ */
+  function lerFontes(vencRef){
+    var m = mot();
+    return FONTES.map(function(f){
+      var aba = abaDe(f, vencRef);
+      var u = aba ? m.ultima(aba) : null;
+      return { f:f, aba:aba, u:u, idade: u ? m.diasDesde(u.data) : null };
+    });
+  }
+  function renderCab(L){
+    var m = mot();
+    var datas = L.filter(function(x){ return x.u; }).map(function(x){ return x.u.data.getTime(); });
+    var ref = datas.length ? new Date(Math.max.apply(null, datas)) : null;
+    var el = document.getElementById('veDataRef');
+    if (el) el.textContent = ref ? m.dBR(ref) : '—';
+    var ok = L.filter(function(x){ return x.u; }).length;
+    var el2 = document.getElementById('veDataAtu');
+    if (el2){
+      el2.textContent = ref ? (m.dBR(ref) + ' · ' + ok + ' de ' + L.length + ' fontes') : 'nenhuma fonte carregada';
+      el2.className = (ok === L.length) ? 've-ok' : 've-atencao';
+    }
+    var d = document.getElementById('veDiag');
+    if (!d) return;
+    var linhas = L.map(function(x){
+      var est = !x.aba ? '<span class="ve-erro">sem contrato vigente</span>'
+              : !x.u   ? '<span class="ve-erro">sem pregão válido</span>'
+              : (x.idade != null && x.idade > 7) ? '<span class="ve-atencao">' + x.idade + ' dias</span>'
+              : '<span class="ve-ok">em dia</span>';
+      if (x.u && x.u.repetidas > 0){
+        est += ' <span class="ve-atencao">· ' + x.u.repetidas + ' data(s) repetida(s)</span>';
+      }
+      return '<tr><td>' + m.esc(x.f.rot) + '</td><td>' + m.esc(x.f.fonte) + '</td>'
+           + '<td>' + m.esc(x.aba || '—') + '</td>'
+           + '<td class="num">' + (x.u ? m.dBR(x.u.data) : '—') + '</td>'
+           + '<td class="num">' + (x.u ? x.u.pregoes : '—') + '</td>'
+           + '<td>' + est + '</td></tr>';
+    }).join('');
+    d.innerHTML =
+      '<div class="ve-tab-wrap"><table class="ve-tab"><thead><tr>'
+      + '<th>Indicador</th><th>Fonte</th><th>Aba da planilha</th>'
+      + '<th class="num">Último pregão</th><th class="num">Pregões</th><th>Situação</th>'
+      + '</tr></thead><tbody>' + linhas + '</tbody></table></div>'
+      + divergenciaUnidade(L)
+      + '<div class="ve-nota">Todos os valores desta tela são lidos da planilha do Radar. '
+      + 'Nenhum preço é estimado, interpolado ou preenchido: fonte sem pregão válido aparece como '
+      + 'ausência, e os blocos que dependiam dela mostram "Dados insuficientes para análise". '
+      + 'A idade é a distância entre o último pregão da aba e hoje — um fim de semana ou feriado '
+      + 'já a faz passar de dois dias.</div>';
+  }
+
+  /* Divergência declarada, não emendada em silêncio. A tela antiga rotula a
+     soja física como US$/saca; a prova aritmética dentro da planilha diz
+     reais. Esta tela usa reais e conta o porquê, com os números do dia, para
+     que a diferença entre as duas telas seja informação e não surpresa. */
+  function divergenciaUnidade(L){
+    var m = mot(), by = {}; L.forEach(function(x){ by[x.f.k] = x; });
+    var fis = by.sojaFis, fut = by.sjc, dol = by.dol;
+    if (!fis || !fis.u) return '';
+    var razao = null;
+    if (fut && fut.u && dol && dol.u && dol.u.preco > 0){
+      var emReais = fut.u.preco * (dol.u.preco / 1000);
+      if (emReais > 0) razao = fis.u.preco / emReais;
+    }
+    return '<div class="ve-nota"><b>Soja física em reais, e não em dólar.</b> '
+      + 'A tela antiga rotula a aba <code>SOJA - PARANAGUÁ</code> como US$/saca. '
+      + 'Aqui ela aparece em <b>R$/saca</b>, porque é o que os próprios dados mostram: '
+      + (razao == null
+          ? 'o nível da série é da ordem do futuro convertido a reais, não do futuro em dólar.'
+          : 'no último pregão com as três pontas, o físico (' + m.n2(fis.u.preco, 2) + ') dividido '
+            + 'pelo SJC convertido pelo dólar dá <b>' + m.n2(razao, 3) + '</b>. '
+            + 'Se a série estivesse em dólar, essa razão seria o próprio câmbio, perto de '
+            + m.n2(dol.u.preco / 1000, 2) + '.')
+      + ' A tela antiga não foi alterada nesta etapa — a correção dela depende de autorização.</div>';
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     FILTRO — vencimento de referência
+     ══════════════════════════════════════════════════════════════════════ */
+  function renderFiltro(vencRef){
+    var m = mot(), host = document.getElementById('veFiltro');
+    if (!host) return;
+    var l = m.vigentes('BGI');
+    if (!l.length){ host.innerHTML = ''; return; }
+    host.innerHTML = '<label class="ve-campo ve-campo-h"><span>Vencimento BGI de referência</span>'
+      + '<select id="veVencRef">'
+      + l.map(function(sn){
+          var rot = (typeof window._contractLabel === 'function') ? window._contractLabel(sn) : sn;
+          return '<option value="' + m.esc(sn) + '"' + (sn === vencRef ? ' selected' : '') + '>'
+               + m.esc(rot) + '</option>';
+        }).join('')
+      + '</select></label>'
+      + '<span class="ve-filtro-nota">Vale para o card do futuro, para o gráfico do boi e para a '
+      + 'tabela de venda. Os demais contratos continuam listados.</span>';
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     B · CARDS
+     ══════════════════════════════════════════════════════════════════════ */
+  function card(o){
+    var m = mot();
+    return '<div class="ve-card' + (o.destaque ? ' ve-card-forte' : '') + '">'
+      + '<div class="ve-card-rot">' + m.esc(o.rot) + '</div>'
+      + '<div class="ve-card-val">' + o.valor + '<span class="ve-card-un">' + m.esc(o.unidade || '') + '</span></div>'
+      + '<div class="ve-card-var ' + (o.varCls || 've-neu') + '">' + (o.variacao || '—') + '</div>'
+      + '<div class="ve-card-pe">' + m.esc(o.rodape || '') + '</div>'
+      + (o.sec ? linkPara(o.sec, o.alvo, o.linkRot) : '')
+      + '</div>';
+  }
+  function cardCotacao(x, rot, destaque){
+    var m = mot(), f = x.f, u = x.u;
+    if (!u) return card({ rot:rot, valor:'<span class="ve-nd">—</span>', unidade:'',
+                          variacao:'Dados insuficientes para análise',
+                          rodape:(x.aba ? ('aba ' + x.aba) : 'sem contrato vigente'),
+                          sec:f.sec, alvo:f.alvo });
+    var un = m.unidade(x.aba);
+    /* Valor sem cifrão e unidade no rótulo: "344,90 · R$/@" em vez de
+       "R$ 344,90 R$/@". No dólar a diferença deixa de ser estética — o
+       contrato é cotado em reais por mil dólares, e o card mostra a taxa
+       já dividida, com R$/US$ escrito ao lado para que ninguém leia
+       pontos como reais. */
+    return card({
+      rot: rot, destaque: !!destaque,
+      valor: m.n2(u.preco * (un ? un.fator : 1), un ? un.casas : 2),
+      unidade: un ? un.rot : '',
+      variacao: (u.varPct == null ? 'sem pregão anterior'
+                 : (sinalTxt(u.varAbs * (un ? un.fator : 1), un ? un.casas : 2)
+                    + ' · ' + sinalTxt(u.varPct, 2, '%'))),
+      varCls: sinalCls(u.varPct),
+      rodape: f.fonte + ' · ' + m.dBR(u.data) + (x.aba ? (' · ' + x.aba) : ''),
+      sec: f.sec, alvo: f.alvo
+    });
+  }
+  function renderCards(L, vencRef){
+    var m = mot(), host = document.getElementById('veCards');
+    if (!host) return;
+    var by = {}; L.forEach(function(x){ by[x.f.k] = x; });
+    var h = '';
+    h += cardCotacao(by.boiFis,   'Boi gordo — físico (CEPEA)', true);
+    h += cardCotacao(by.bgi,      'Boi gordo — futuro (BGI)',   true);
+    h += cardCotacao(by.milhoFis, 'Milho — físico (CEPEA)');
+    h += cardCotacao(by.ccm,      'Milho — futuro (CCM)');
+    h += cardCotacao(by.sojaFis,  'Soja — físico (Paranaguá)');
+    h += cardCotacao(by.sjc,      'Soja — futuro (SJC)');
+    h += cardCotacao(by.dol,      'Dólar — futuro (DOL)');
+
+    /* Diferença CEPEA × BGI. É a distância entre o indicador físico e o
+       mercado futuro, no mesmo R$/@. Não se afirma que ela vai a zero no
+       vencimento: o indicador de liquidação do BGI é outro, e a base tem
+       componente regional e de prazo que não some por definição. */
+    var pf = by.boiFis.u, pb = by.bgi.u;
+    if (pf && pb){
+      var dif = pb.preco - pf.preco;
+      h += card({
+        rot:'Diferença CEPEA × BGI',
+        valor: m.n2(dif, 2), unidade:'R$/@',
+        variacao: (pf.preco > 0 ? sinalTxt(dif / pf.preco * 100, 2, '% sobre o físico') : '—'),
+        varCls: sinalCls(dif),
+        rodape:'futuro ' + by.bgi.aba + ' menos físico CEPEA · ' + m.dBR(pb.data),
+        sec:'m3_3_5b', alvo:'chartBase', linkRot:'abrir base do contrato'
+      });
+    } else {
+      h += card({ rot:'Diferença CEPEA × BGI', valor:'<span class="ve-nd">—</span>',
+                  variacao:'Dados insuficientes para análise',
+                  rodape:'depende do físico CEPEA e de um contrato BGI vigente',
+                  sec:'m3_3_5b', alvo:'chartBase' });
+    }
+
+    /* Relação de troca BGI/CCM — sacas de milho por arroba de boi. */
+    var rtF = (by.boiFis.u && by.milhoFis.u) ? m.relacaoTroca(by.boiFis.u.preco, by.milhoFis.u.preco) : null;
+    var rtB = (by.bgi.u && by.ccm.u) ? m.relacaoTroca(by.bgi.u.preco, by.ccm.u.preco) : null;
+    if (rtB != null || rtF != null){
+      h += card({
+        rot:'Relação de troca BGI/CCM', destaque:true,
+        valor: (rtB != null ? m.n2(rtB, 2) : m.n2(rtF, 2)), unidade:'sacas/@',
+        variacao: (rtB != null && rtF != null)
+          ? ('físico ' + m.n2(rtF, 2) + ' sacas/@')
+          : (rtB != null ? 'só o futuro tem as duas pontas hoje' : 'só o físico tem as duas pontas hoje'),
+        varCls:'ve-neu',
+        rodape: (rtB != null ? (by.bgi.aba + ' ÷ ' + by.ccm.aba) : 'CEPEA boi ÷ CEPEA milho'),
+        sec:'m3_1_8', alvo:'chartRatioBGICCM'
+      });
+    } else {
+      h += card({ rot:'Relação de troca BGI/CCM', valor:'<span class="ve-nd">—</span>',
+                  variacao:'Dados insuficientes para análise',
+                  rodape:'faltam preços de boi e de milho no mesmo dia',
+                  sec:'m3_1_8', alvo:'chartRatioBGICCM' });
+    }
+
+    /* Custo e margem — só com premissas. */
+    var prem = m.premissas();
+    var precoRef = by.bgi.u ? by.bgi.u.preco : (by.boiFis.u ? by.boiFis.u.preco : null);
+    var r = (precoRef != null) ? m.custo(precoRef, prem) : null;
+    if (r){
+      h += card({
+        rot:'Break-even — margem bruta zero', destaque:true,
+        valor: m.n2(r.bMB, 2), unidade:'R$/@',
+        variacao: (precoRef != null ? ('preço de referência R$ ' + m.n2(precoRef, 2) + '/@') : '—'),
+        varCls: sinalCls(precoRef - r.bMB),
+        rodape:'motor de custo da Calculadora · premissas desta tela',
+        sec:'m3_3_6', alvo:null, linkRot:'abrir a Calculadora'
+      });
+      h += card({
+        rot:'Margem bruta sobre a receita',
+        valor: (isFinite(r.mbP) ? m.n2(r.mbP * 100, 2) : '—'), unidade:'%',
+        variacao: (isFinite(r.mB) ? ('R$ ' + m.n2(r.mB, 2) + ' por cabeça') : '—'),
+        varCls: sinalCls(r.mB),
+        rodape:'margem bruta ÷ receita líquida, ao preço de referência',
+        sec:'m3_3_6', alvo:null, linkRot:'abrir a Calculadora'
+      });
+    } else {
+      h += '<div class="ve-card ve-card-vazio"><div class="ve-card-rot">Custo e margem</div>'
+         + insuf('Preencha as premissas da operação abaixo. Sem peso de entrada, rendimento, '
+               + 'custo da @ de entrada e dias do período, o motor de custo não devolve break-even.')
+         + '</div>';
+    }
+    host.innerHTML = h;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     C · GRÁFICOS COMPACTOS
+     ══════════════════════════════════════════════════════════════════════
+     Um gráfico só nasce se tiver série. Div de gráfico vazio é o defeito que
+     a suíte de regressão persegue desde a Etapa 1 — então aqui ele não é
+     criado, e no lugar fica a ausência declarada. */
+  var DIAS_JANELA = 210;
+  function recorta(s, dias){
+    if (!s || !s.length) return null;
+    var fim = s[s.length-1].d.getTime(), ini = fim - dias*86400000;
+    var o = s.filter(function(p){ return p.d.getTime() >= ini; });
+    return o.length ? o : null;
+  }
+  function serieParaTraco(s, nome, cor, dash, unRot){
+    return { x:s.map(function(p){ return p.d; }), y:s.map(function(p){ return p.p; }),
+             type:'scatter', mode:'lines', name:nome,
+             line:{ width: dash ? 1.6 : 2.2, color:cor, dash: dash || 'solid' },
+             hovertemplate:'%{x|%d/%m/%Y}<br>' + nome + ': <b>%{y:,.2f}</b> ' + unRot + '<extra></extra>' };
+  }
+  function renderGraficos(L, vencRef){
+    var m = mot(), host = document.getElementById('veGraficos');
+    if (!host) return;
+    var by = {}; L.forEach(function(x){ by[x.f.k] = x; });
+
+    var sBoiF = recorta(m.serie('BOI GORDO'), DIAS_JANELA);
+    var sBgi  = by.bgi.aba ? recorta(m.serie(by.bgi.aba), DIAS_JANELA) : null;
+    var sMilF = recorta(m.serie('MILHO - CEPEA'), DIAS_JANELA);
+    var sCcm  = by.ccm.aba ? recorta(m.serie(by.ccm.aba), DIAS_JANELA) : null;
+
+    /* O bloco é redesenhado por inteiro a cada render. Sem purgar antes, o
+       Plotly fica com referência a nós que o innerHTML vai descartar — e é
+       assim que um resize posterior tenta medir um elemento que não está
+       mais no documento. */
+    ['chartVeBoi','chartVeMilho','chartVeTroca'].forEach(function(id){
+      var el = document.getElementById(id);
+      try { if (el && el._fullLayout && window.Plotly && Plotly.purge) Plotly.purge(el); } catch(e){}
+    });
+
+    var blocos = [], pend = [];
+    /* Um CARD por gráfico, com `.card-title-text` próprio. Não é enfeite: o
+       tema do painel copia o título do card para dentro da figura, e é esse
+       texto que vai no PNG baixado pela barra do Plotly. Com os três
+       gráficos dentro de um card só, os três saíam do painel chamados
+       "Mercado e custos" — e o do milho ainda ganhava o sufixo do ativo
+       selecionado, virando "Mercado e custos — Boi Gordo" sobre uma série de
+       milho. Card próprio resolve as duas coisas de uma vez, e de quebra põe
+       cada gráfico na busca global com o nome certo. */
+    function bloco(titulo, sub, id, temDado, motivo){
+      return '<section class="card ve-graf-um">'
+        + '<div class="card-title"><span class="card-title-text">' + m.esc(titulo) + '</span></div>'
+        + '<div class="ve-graf-sub">' + m.esc(sub) + '</div>'
+        + (temDado ? ('<div id="' + id + '" class="chart-container ve-graf-box"></div>')
+                   : insuf(motivo))
+        + '</section>';
+    }
+
+    blocos.push(bloco('Boi gordo — físico e futuro', 'CEPEA e BGI · últimos ' + DIAS_JANELA + ' dias',
+                      'chartVeBoi', !!(sBoiF || sBgi), 'nenhuma série de boi com pregão válido na janela.'));
+    blocos.push(bloco('Milho — físico e futuro', 'CEPEA e CCM · últimos ' + DIAS_JANELA + ' dias',
+                      'chartVeMilho', !!(sMilF || sCcm), 'nenhuma série de milho com pregão válido na janela.'));
+
+    /* Relação de troca: a divisão dia a dia, nos dias em que as duas pontas
+       negociaram. Dia sem as duas não entra — não se inventa o que faltou. */
+    var trocaF = cruzaTroca(sBoiF, sMilF), trocaB = cruzaTroca(sBgi, sCcm);
+    blocos.push(bloco('Relação de troca', 'CEPEA e BGI/CCM · últimos ' + DIAS_JANELA + ' dias',
+                      'chartVeTroca', !!(trocaF || trocaB),
+                      'faltam dias com boi e milho negociados ao mesmo tempo.'));
+    host.innerHTML = blocos.join('');
+
+    if (sBoiF || sBgi){
+      var tB = [];
+      if (sBoiF) tB.push(serieParaTraco(sBoiF, 'Físico CEPEA', '#0d9488', null, 'R$/@'));
+      if (sBgi)  tB.push(serieParaTraco(sBgi, 'Futuro ' + by.bgi.aba, '#1d4ed8', 'dot', 'R$/@'));
+      pend.push(['chartVeBoi', tB, 'R$ por arroba']);
+    }
+    if (sMilF || sCcm){
+      var tM = [];
+      if (sMilF) tM.push(serieParaTraco(sMilF, 'Físico CEPEA', '#b45309', null, 'R$/sc'));
+      if (sCcm)  tM.push(serieParaTraco(sCcm, 'Futuro ' + by.ccm.aba, '#7c3aed', 'dot', 'R$/sc'));
+      pend.push(['chartVeMilho', tM, 'R$ por saca de 60 kg']);
+    }
+    if (trocaF || trocaB){
+      var tT = [];
+      if (trocaF) tT.push(serieParaTraco(trocaF, 'Físico CEPEA', '#0d9488', null, 'sacas/@'));
+      if (trocaB) tT.push(serieParaTraco(trocaB, 'Futuro BGI/CCM', '#1d4ed8', 'dot', 'sacas/@'));
+      pend.push(['chartVeTroca', tT, 'Sacas de milho por @']);
+    }
+    if (typeof window.renderPlot !== 'function') return;
+    pend.forEach(function(p){
+      try {
+        window.renderPlot(p[0], p[1], {
+          _no_title: true,          /* o título do card já diz a commodity */
+          height: 230,
+          margin:{ l:54, r:14, t:10, b:34 },
+          xaxis:{ tickformat:'%d/%m', showgrid:false },
+          yaxis:{ title:{ text:p[2], standoff:6 }, tickformat:',.2f' },
+          legend:{ orientation:'h', y:-0.22, x:0 },
+          showlegend:true
+        });
+      } catch(e){ console.warn('Visão Executiva — gráfico ' + p[0] + ':', e); }
+    });
+  }
+  function cruzaTroca(sBoi, sMilho){
+    if (!sBoi || !sMilho) return null;
+    var m = mot(), mp = {};
+    sMilho.forEach(function(p){ mp[p.d.getTime()] = p.p; });
+    var o = [];
+    sBoi.forEach(function(p){
+      var q = mp[p.d.getTime()];
+      var r = (q == null) ? null : m.relacaoTroca(p.p, q);
+      if (r != null) o.push({ d:p.d, p:r });
+    });
+    return o.length ? o : null;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     D1 · VENDA DO BOI
+     ══════════════════════════════════════════════════════════════════════ */
+  function renderVenda(L, vencRef){
+    var m = mot(), host = document.getElementById('veVenda');
+    if (!host) return;
+    var vs = m.vigentes('BGI');
+    if (!vs.length){
+      host.innerHTML = insuf('Nenhum contrato BGI vigente com pregão válido na planilha.');
+      return;
+    }
+    var prem = m.premissas();
+    var base = m.custo(1, prem);               /* break-even não depende do preço de venda */
+    var be = base ? base.bMB : null;
+    var linhas = vs.map(function(sn){
+      var u = m.ultima(sn);
+      if (!u) return '';
+      var r = base ? m.custo(u.preco, prem) : null;
+      var dist = (be != null) ? (u.preco - be) : null;
+      return '<tr' + (sn === vencRef ? ' class="ve-tr-ref"' : '') + '>'
+        + '<td>' + m.esc((typeof window._contractLabel === 'function') ? window._contractLabel(sn) : sn) + '</td>'
+        + '<td class="num">' + m.n2(u.preco, 2) + '</td>'
+        + '<td class="num">' + m.dBR(u.data) + '</td>'
+        + '<td class="num">' + (be == null ? '—' : m.n2(be, 2)) + '</td>'
+        + '<td class="num ' + sinalCls(dist) + '">' + (dist == null ? '—' : sinalTxt(dist, 2)) + '</td>'
+        + '<td class="num ' + sinalCls(r ? r.mbP : null) + '">'
+        +   ((r && isFinite(r.mbP)) ? sinalTxt(r.mbP * 100, 2, '%') : '—') + '</td>'
+        + '<td class="num ' + sinalCls(r ? r.mB : null) + '">'
+        +   ((r && isFinite(r.mB)) ? sinalTxt(r.mB, 2) : '—') + '</td>'
+        + '</tr>';
+    }).join('');
+    host.innerHTML =
+      '<div class="ve-tab-wrap"><table class="ve-tab"><thead><tr>'
+      + '<th>Vencimento</th><th class="num">Preço (R$/@)</th><th class="num">Data</th>'
+      + '<th class="num">Break-even (R$/@)</th><th class="num">Distância (R$/@)</th>'
+      + '<th class="num">Margem bruta (% da receita)</th><th class="num">Margem bruta (R$/cab)</th>'
+      + '</tr></thead><tbody>' + linhas + '</tbody></table></div>'
+      + (be == null
+          ? insuf('As colunas de custo e margem precisam das premissas da operação. '
+                + 'Preço e data acima vêm da planilha e não dependem delas.')
+          : '')
+      + '<div class="ve-nota">O <b>break-even</b> é o preço por arroba que zera a margem bruta: '
+      + 'custo da mercadoria vendida ÷ (arrobas de carcaça × (1 − perdas) × (1 − dedução)). Ele não '
+      + 'muda com o vencimento, porque não depende do preço de venda. A <b>distância</b> é o preço '
+      + 'do contrato menos o break-even. A <b>margem bruta</b> é a do motor de custo, medida '
+      + '<b>sobre a receita líquida</b> — não confundir com retorno sobre o custo, que divide pela '
+      + 'mesma diferença por outro denominador e dá um número maior. Nada aqui considera a base da '
+      + 'sua região, corretagem, emolumentos nem ajuste diário.</div>';
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     D2 · COMPRA DE INSUMOS
+     ══════════════════════════════════════════════════════════════════════ */
+  function renderInsumos(L){
+    var m = mot(), host = document.getElementById('veInsumos');
+    if (!host) return;
+    var by = {}; L.forEach(function(x){ by[x.f.k] = x; });
+    var h = '';
+
+    var linhas = [['milhoFis','Milho físico (CEPEA)'], ['ccm','Milho futuro (CCM)']].map(function(par){
+      var x = by[par[0]];
+      if (!x || !x.u) return '<tr><td>' + m.esc(par[1]) + '</td><td colspan="4">sem pregão válido</td></tr>';
+      var v30 = m.variacao(x.aba, 30), v180 = m.variacao(x.aba, 180), v365 = m.variacao(x.aba, 365);
+      function cel(v){
+        if (!v) return '<td class="num">—</td>';
+        return '<td class="num ' + sinalCls(v.pct) + '">' + sinalTxt(v.pct, 2, '%') + '</td>';
+      }
+      return '<tr><td>' + m.esc(par[1]) + '</td>'
+        + '<td class="num">' + m.n2(x.u.preco, 2) + '</td>'
+        + cel(v30) + cel(v180) + cel(v365)
+        + '<td class="num">' + m.dBR(x.u.data) + '</td></tr>';
+    }).join('');
+    h += '<div class="ve-tab-wrap"><table class="ve-tab"><thead><tr>'
+      +  '<th>Série</th><th class="num">Preço (R$/sc)</th><th class="num">30 dias</th>'
+      +  '<th class="num">180 dias</th><th class="num">365 dias</th><th class="num">Data</th>'
+      +  '</tr></thead><tbody>' + linhas + '</tbody></table></div>'
+      +  '<div class="ve-nota">Cada variação compara o último pregão com o último pregão de até '
+      +  'aquele número de dias atrás. Um traço significa que a série da planilha <b>não alcança '
+      +  'aquela janela</b> — não que o preço ficou parado.</div>';
+
+    /* Impacto no custo de produção. A conta é o motor rodado duas vezes: uma
+       com o preço do milho das premissas e outra com o preço de hoje. A
+       diferença entre os dois break-evens é o impacto — medido, não estimado.
+       Só vale quando a dieta das premissas é formada PELO PREÇO DO MILHO;
+       com custo de dieta por dia não há ligação a medir, e dizer que há seria
+       inventar uma sensibilidade que o modelo não tem. */
+    var prem = m.premissas();
+    var pMilho = by.milhoFis.u ? by.milhoFis.u.preco : null;
+    var usaMilho = (prem.dietaModo === 'ms') && (m.num(prem.milhoSc) != null)
+                && (prem.sistema === 'conf' || prem.sistema === 'rc');
+    if (!m.premissasCompletas(prem)){
+      h += insuf('Informe as premissas da operação para medir o impacto do milho no custo.');
+    } else if (!usaMilho){
+      h += insuf('As premissas atuais não ligam o custo ao preço do milho: a dieta está em '
+               + '"custo por dia" ou o sistema não tem confinamento. Com dieta formada pelo preço '
+               + 'do milho, esta tela mede o impacto rodando o motor de custo duas vezes.');
+    } else if (pMilho == null){
+      h += insuf('Sem preço físico do milho no pregão mais recente.');
+    } else {
+      var rA = m.custo(1, prem);
+      var p2 = {}; Object.keys(prem).forEach(function(k){ p2[k] = prem[k]; });
+      p2.milhoSc = String(pMilho);
+      var rB = m.custo(1, p2);
+      if (!rA || !rB){
+        h += insuf('O motor de custo não devolveu break-even para uma das duas hipóteses.');
+      } else {
+        var d = rB.bMB - rA.bMB;
+        var dCmv = rB.cmv - rA.cmv;
+        h += '<div class="ve-imp">'
+          + '<div class="ve-imp-l"><span>Milho nas premissas</span><strong>R$ '
+          +   m.n2(m.num(prem.milhoSc), 2) + '/sc</strong></div>'
+          + '<div class="ve-imp-l"><span>Milho no mercado hoje</span><strong>R$ '
+          +   m.n2(pMilho, 2) + '/sc</strong></div>'
+          + '<div class="ve-imp-l"><span>Efeito no break-even</span><strong class="' + sinalCls(d) + '">'
+          +   sinalTxt(d, 2) + ' R$/@</strong></div>'
+          + '<div class="ve-imp-l"><span>Efeito no custo por cabeça</span><strong class="' + sinalCls(dCmv) + '">'
+          +   sinalTxt(dCmv, 2) + ' R$</strong></div>'
+          + '</div>'
+          + '<div class="ve-nota">Os dois valores saem do mesmo motor de custo, rodado com tudo igual '
+          + 'exceto o preço do milho. Mantidas as demais premissas, trocar R$ '
+          + m.n2(m.num(prem.milhoSc), 2) + ' por R$ ' + m.n2(pMilho, 2) + ' por saca move o break-even em '
+          + sinalTxt(d, 2) + ' R$/@. Nenhuma projeção de preço está embutida: é a planilha de hoje '
+          + 'contra a premissa que você salvou.</div>';
+      }
+    }
+    h += '<div class="ve-acoes">' + linkPara('m3_2_3', 'chartSHMilhoDaily', 'série histórica do milho')
+      +  linkPara('m3_1_8', 'chartRatioBGICCM', 'relação de troca BGI/CCM') + '</div>';
+    host.innerHTML = h;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     D3 · PROTEÇÃO FINANCEIRA
+     ══════════════════════════════════════════════════════════════════════ */
+  function renderProtecao(L, vencRef){
+    var m = mot(), host = document.getElementById('veProtecao');
+    if (!host) return;
+    var by = {}; L.forEach(function(x){ by[x.f.k] = x; });
+    var prem = m.premissas(), T = m.travas();
+    var h = '', riscos = [];
+
+    /* ── Exposição do boi ─────────────────────────────────────────────── */
+    var cab = m.num(prem.veCabecasVender);
+    var precoRef = by.bgi.u ? by.bgi.u.preco : null;
+    var r = (precoRef != null) ? m.custo(precoRef, prem) : null;
+    /* Arrobas vendáveis por cabeça direto do motor: recB = arC × preço × (1−perdas),
+       então recB ÷ preço são as arrobas que de fato vão à venda. Sem refazer a conta. */
+    var arrCab = (r && precoRef > 0 && isFinite(r.recB)) ? (r.recB / precoRef) : null;
+    var volBoi = (cab != null && arrCab != null) ? cab * arrCab : null;
+    var travBoi = T.BGI.venda;
+
+    if (volBoi == null){
+      h += '<div class="ve-sub">Boi gordo</div>'
+        + insuf('Informe as cabeças a vender nas premissas e complete os dados do animal '
+              + '(peso de entrada, rendimento, dias e GMD). A conversão de cabeças para arrobas '
+              + 'é feita pelo motor de custo, não por um fator fixo.');
+    } else {
+      var pct = m.num(prem.vePctTrava);
+      if (pct == null) pct = 100;
+      var dim = m.hedge('BGI', volBoi, pct, prem.veArredonda);
+      var cob = volBoi > 0 ? (travBoi / volBoi * 100) : null;
+      h += '<div class="ve-sub">Boi gordo</div>'
+        + '<div class="ve-imp">'
+        + '<div class="ve-imp-l"><span>Exposição física informada</span><strong>' + m.n2(volBoi, 0)
+        +   ' @</strong><em>' + m.n2(cab, 0) + ' cabeças × ' + m.n2(arrCab, 2) + ' @ vendáveis</em></div>'
+        + '<div class="ve-imp-l"><span>Travado em BGI (vendas)</span><strong>' + m.n2(travBoi, 0)
+        +   ' @</strong><em>' + T.BGI.contratos + ' contrato(s) de 330 @</em></div>'
+        + '<div class="ve-imp-l"><span>Cobertura efetiva</span><strong>' + (cob == null ? '—' : m.n2(cob, 1) + '%')
+        +   '</strong><em>travado ÷ exposição</em></div>'
+        + '<div class="ve-imp-l"><span>Sem proteção</span><strong>'
+        +   m.n2(Math.max(0, volBoi - travBoi), 0) + ' @</strong><em>exposição menos travado</em></div>'
+        + '</div>';
+      if (dim){
+        h += '<div class="ve-nota">Para travar ' + m.n2(pct, 0) + '% desta exposição seriam '
+          + '<b>' + dim.nContrBaixo + ' contrato(s)</b> arredondando para baixo ('
+          + m.n2(dim.qtdEfetBaixo, 0) + ' @, ' + m.n2(volBoi > 0 ? dim.qtdEfetBaixo/volBoi*100 : 0, 1) + '% do físico) '
+          + 'ou <b>' + dim.nContrCima + ' contrato(s)</b> para cima ('
+          + m.n2(dim.qtdEfetCima, 0) + ' @, ' + m.n2(volBoi > 0 ? dim.qtdEfetCima/volBoi*100 : 0, 1) + '% do físico). '
+          + (dim.abaixoDeUmContrato
+              ? '<b>O alvo é menor que um contrato:</b> para baixo não protege nada e para cima protege mais do que existe. '
+              : '')
+          + 'As duas opções aparecem sempre — a escolha é sua, e arredondar para cima vende futuro '
+          + 'além do físico que você tem.</div>';
+      }
+      if (travBoi > volBoi) riscos.push('Travado em BGI (' + m.n2(travBoi, 0) + ' @) acima da exposição física informada ('
+        + m.n2(volBoi, 0) + ' @): ' + m.n2(travBoi - volBoi, 0) + ' @ a descoberto.');
+      else if (cob != null && cob < 100) riscos.push(m.n2(volBoi - travBoi, 0) + ' @ de boi sem proteção — '
+        + m.n2(100 - cob, 1) + '% da exposição informada.');
+    }
+
+    /* ── Exposição do milho ───────────────────────────────────────────── */
+    var sacas = m.num(prem.veMilhoSacas);
+    var travMilho = T.CCM.compra;
+    h += '<div class="ve-sub">Milho</div>';
+    if (sacas == null){
+      h += insuf('Informe nas premissas quantas sacas de milho pretende comprar.');
+    } else {
+      var cobM = sacas > 0 ? (travMilho / sacas * 100) : null;
+      var dimM = m.hedge('CCM', sacas, m.num(prem.vePctTrava) == null ? 100 : m.num(prem.vePctTrava), prem.veArredonda);
+      h += '<div class="ve-imp">'
+        + '<div class="ve-imp-l"><span>Milho a comprar</span><strong>' + m.n2(sacas, 0) + ' sacas</strong><em>informado por você</em></div>'
+        + '<div class="ve-imp-l"><span>Travado em CCM (compras)</span><strong>' + m.n2(travMilho, 0)
+        +   ' sacas</strong><em>' + T.CCM.contratos + ' contrato(s) de 450 sacas</em></div>'
+        + '<div class="ve-imp-l"><span>Cobertura efetiva</span><strong>' + (cobM == null ? '—' : m.n2(cobM, 1) + '%')
+        +   '</strong><em>travado ÷ a comprar</em></div>'
+        + '<div class="ve-imp-l"><span>Sem proteção</span><strong>' + m.n2(Math.max(0, sacas - travMilho), 0)
+        +   ' sacas</strong><em>a comprar menos travado</em></div>'
+        + '</div>';
+      if (dimM){
+        h += '<div class="ve-nota">Para o percentual informado seriam <b>' + dimM.nContrBaixo
+          + '</b> contrato(s) para baixo ou <b>' + dimM.nContrCima + '</b> para cima — '
+          + m.n2(dimM.qtdEfetBaixo, 0) + ' ou ' + m.n2(dimM.qtdEfetCima, 0) + ' sacas.</div>';
+      }
+      if (travMilho > sacas) riscos.push('Travado em CCM (' + m.n2(travMilho, 0) + ' sacas) acima do volume a comprar ('
+        + m.n2(sacas, 0) + ' sacas).');
+      else if (cobM != null && cobM < 100) riscos.push(m.n2(sacas - travMilho, 0) + ' sacas de milho sem proteção — '
+        + m.n2(100 - cobM, 1) + '% do volume informado.');
+    }
+
+    /* ── Riscos observados ────────────────────────────────────────────── */
+    if (r && precoRef != null && isFinite(r.bMB) && precoRef < r.bMB){
+      riscos.push('O futuro ' + by.bgi.aba + ' (R$ ' + m.n2(precoRef, 2) + '/@) está <b>abaixo</b> do '
+        + 'break-even das suas premissas (R$ ' + m.n2(r.bMB, 2) + '/@): diferença de R$ '
+        + m.n2(r.bMB - precoRef, 2) + '/@.');
+    }
+    if (T.invalidos > 0){
+      riscos.push(T.invalidos + ' registro(s) de trava sem contrato ou quantidade válidos foram '
+        + 'ignorados nesta conta.');
+    }
+    var sBoiF = m.serie('BOI GORDO'), sMilF = m.serie('MILHO - CEPEA');
+    var hoje = (by.boiFis.u && by.milhoFis.u) ? m.relacaoTroca(by.boiFis.u.preco, by.milhoFis.u.preco) : null;
+    var serieTroca = cruzaTroca(recorta(sBoiF, 365), recorta(sMilF, 365));
+    if (hoje != null && serieTroca && serieTroca.length >= 20){
+      var vals = serieTroca.map(function(p){ return p.p; }).sort(function(a, b){ return a - b; });
+      var med = vals.length % 2 ? vals[(vals.length-1)/2] : (vals[vals.length/2-1] + vals[vals.length/2]) / 2;
+      riscos.push('Relação de troca física hoje em ' + m.n2(hoje, 2) + ' sacas/@, contra mediana de '
+        + m.n2(med, 2) + ' nos ' + serieTroca.length + ' pregões com as duas pontas no último ano.');
+    }
+
+    h += '<div class="ve-sub">Riscos observados</div>';
+    h += riscos.length
+      ? ('<ul class="ve-riscos">' + riscos.map(function(x){ return '<li>' + x + '</li>'; }).join('') + '</ul>')
+      : insuf('Sem exposição informada e sem trava registrada, não há o que observar aqui.');
+    h += '<div class="ve-nota">Cada linha acima é uma <b>observação calculada</b> a partir do que você '
+      + 'informou e do que está na planilha — não é recomendação de compra, venda ou proteção. '
+      + 'As travas vêm do registro de <b>Minhas Travas</b>, salvo neste navegador. Nenhuma posição '
+      + 'é inferida: o que não foi registrado não entra na conta.</div>'
+      + '<div class="ve-acoes">' + linkPara('m3_3_5f', null, 'Minhas Travas')
+      + linkPara('m3_3_5a', null, 'matriz de risco')
+      + linkPara('m3_3_6', null, 'simulador de hedge') + '</div>';
+    host.innerHTML = h;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     DESENHO
+     ══════════════════════════════════════════════════════════════════════ */
+  function render(){
+    if (!montar()) return;
+    var m = mot();
+    if (!m){ return; }
+    var prem = m.premissas();
+    var vigs = m.vigentes('BGI');
+    var vencRef = (prem.veVencRef && vigs.indexOf(prem.veVencRef) >= 0) ? prem.veVencRef
+                : (vigs.length ? vigs[0] : null);
+    var L = lerFontes(vencRef);
+    try { renderCab(L); }                 catch(e){ console.warn('Visão Executiva — cabeçalho:', e); }
+    try { renderFiltro(vencRef); }        catch(e){ console.warn('Visão Executiva — filtro:', e); }
+    try { renderCards(L, vencRef); }      catch(e){ console.warn('Visão Executiva — indicadores:', e); }
+    try { renderGraficos(L, vencRef); }   catch(e){ console.warn('Visão Executiva — gráficos:', e); }
+    try { renderPrem(); }                 catch(e){ console.warn('Visão Executiva — premissas:', e); }
+    try { renderVenda(L, vencRef); }      catch(e){ console.warn('Visão Executiva — venda:', e); }
+    try { renderInsumos(L); }             catch(e){ console.warn('Visão Executiva — insumos:', e); }
+    try { renderProtecao(L, vencRef); }   catch(e){ console.warn('Visão Executiva — proteção:', e); }
+  }
+
+  window._veRender = render;
+  window._veMontar = montar;
+})();
+</script>
+
 <script>
   
   // =========================
@@ -32564,7 +34030,8 @@ function updatePreco() {
         if(document.getElementById('amb_'+a.id)) _amb++;
         _sec += document.querySelectorAll('#amb_'+a.id+' .m3-sec-btn:not([style*="none"])').length;
       });
-      _tsOk('três ambientes montados', _amb===3, _amb+' ambientes · '+_sec+' seções com conteúdo');
+      _tsOk('todos os ambientes montados', _amb===_M3_AMBIENTES.length,
+            _amb+' de '+_M3_AMBIENTES.length+' ambientes · '+_sec+' seções com conteúdo');
     } catch(e){ _tsOk('migração por ambiente', false, e.message); }
 
     /* ── 2. Navegação: nenhuma aba pode lançar ────────────────────────── */
@@ -32821,8 +34288,9 @@ function updatePreco() {
           window._m3AlternaMenu(a.id);  if(sn.style.display==='none') _mnFecha++;
         }
       });
-      _tsOk('os três menus de ambiente abrem e fecham', _mnAbre===3 && _mnFecha===3,
-            _mnAbre+' abriram · '+_mnFecha+' fecharam');
+      var _mnTotal=(window._M3_AMBIENTES||[]).length;
+      _tsOk('os menus de ambiente abrem e fecham', _mnAbre===_mnTotal && _mnFecha===_mnTotal,
+            _mnAbre+' abriram · '+_mnFecha+' fecharam · '+_mnTotal+' esperados');
       if(typeof window._m3FechaMenu==='function') window._m3FechaMenu();
     } catch(e){ _tsOk('menus de ambiente', false, e.message); }
 
@@ -44045,6 +45513,10 @@ function updateRelacao() {
   /* Seções da nova navegação. `render` lista os desenhadores que precisam
      rodar quando a seção aparece — no lugar do antigo switchCicloSubTab. */
   var _M3_ESTRUTURA = [
+    { amb:'exec', id:'m3_0_1', nome:'Visão Executiva',
+      render:['_veRender'],
+      dica:'Mercado, relações de troca, margem projetada e riscos — em uma tela.' },
+
     { amb:'mercado', id:'m3_1_1', nome:'Resumo do dia',
       render:['renderHist7','_m3RenderTodosPaineisDecisao'],
       dica:'O que mudou desde a sessão anterior.' },
@@ -44125,6 +45597,7 @@ function updateRelacao() {
     { amb:'decisao', id:'m3_3_7', nome:'Outros — decisão', oculta:true }
   ];
   var _M3_AMBIENTES = [
+    { id:'exec',    rot:'VISÃO EXECUTIVA', perg:'Como estamos agora, em uma tela?' },
     { id:'mercado', rot:'MERCADO', perg:'O que está acontecendo agora?' },
     { id:'estudo',  rot:'ESTUDO',  perg:'Onde estamos na história e no ciclo?' },
     { id:'decisao', rot:'DECISÃO', perg:'Qual decisão precisa ser analisada?' }
@@ -44309,6 +45782,8 @@ function updateRelacao() {
         if (b) _m3IrSecao(a.id, b.getAttribute('data-sec'));
       });
     });
+    try { if (typeof window._veMontar === 'function') window._veMontar(); }
+    catch(e){ console.warn('Visão Executiva — montagem:', e); }
   }
 
   /* Inventário de componentes, para comparar antes e depois. Conta o que é
@@ -44676,7 +46151,7 @@ function updateRelacao() {
     pai.insertBefore(lay, hud);
 
     /* DUAS LINHAS, UMA UNIDADE.
-       Linha 1 responde "para onde eu vou": os três ambientes e a busca.
+       Linha 1 responde "para onde eu vou": os quatro ambientes e a busca.
        Linha 2 responde "o que estou analisando": ativo, contrato e janela.
        Nada mais mora aqui. Modo, datas, pregões e a caixa de vencidos saem
        da vista permanente e viram conteúdo dos menus que já respondem por
@@ -45725,7 +47200,17 @@ function updateRelacao() {
     if(!uni || !_M3_UNIV[uni]) uni='agro';
     _m3IrUniverso(uni);
     var amb=null; try{ amb=localStorage.getItem('m3_amb'); }catch(e){}
-    if(!amb || !_M3_AMBIENTES.some(function(a){ return a.id===amb; })) amb='mercado';
+    /* ETAPA 4 — a Visão Executiva passa a ser a porta de entrada. Quem já
+       usa o painel tem um ambiente gravado: forçar 'exec' para sempre
+       apagaria a memória de onde a pessoa parou, e nunca abrir nela
+       esconderia a tela nova justamente de quem mais vai usá-la. O
+       meio-termo é apresentá-la UMA vez — na primeira carga depois desta
+       atualização o painel abre na Visão Executiva e registra que já se
+       apresentou; da segunda em diante a memória volta a mandar. Para
+       quem chega agora, ela é simplesmente a primeira tela. */
+    var _veApres=null; try{ _veApres=localStorage.getItem('ve_apresentada_v1'); }catch(e){}
+    if(!_veApres){ amb='exec'; try{ localStorage.setItem('ve_apresentada_v1','1'); }catch(e){} }
+    if(!amb || !_M3_AMBIENTES.some(function(a){ return a.id===amb; })) amb='exec';
     _m3MontaTrilho();
     _m3IrAmbiente(amb);
     _m3MontaIndice();
