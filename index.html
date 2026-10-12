@@ -9438,7 +9438,7 @@ header{
         <div class="bms-fw"><label class="bms-label">Operacional (R$/cab/dia)</label><input id="caiOperDia" class="bms-input cai-in" type="number" step="0.1" value="1.75" placeholder="1,75"></div>
         <div class="bms-fw"><label class="bms-label">Sanidade (R$/cab)</label><input id="caiSan" class="bms-input cai-in" type="number" step="0.01" value="26.16" placeholder="26,16"></div>
         <div class="bms-fw"><label class="bms-label">Terra (% da @ física/cab/mês)</label><input id="caiTerraPct" class="bms-input cai-in" type="number" step="0.5" value="0" placeholder="0"><div id="caiHintTerra" class="cai-hint">—</div></div>
-        <div class="bms-fw"><label class="bms-label">Juros (% a.a.)</label><input id="caiJuros" class="bms-input cai-in" type="number" step="0.5" value="14" placeholder="14"></div>
+        <div class="bms-fw"><label class="bms-label" title="Taxa EFETIVA ao ano. Vira taxa mensal por composição: (1+i)^(1/12) - 1. A 14% a.a. isso dá 1,0979% ao mes, nao 1,1667%.">Juros efetivos (% a.a.)</label><input id="caiJuros" class="bms-input cai-in" type="number" step="0.5" value="14" placeholder="14"></div>
       </div>
       <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
         <button type="button" id="caiBtnPlanilha" class="bms-input" style="width:auto;cursor:pointer;font-weight:700;color:#0f766e;border-color:#0f766e;background:#f0fdfa">Voltar ao automático (curva CCM e BGI)</button>
@@ -9505,8 +9505,13 @@ header{
       <span class="ex-tag">Como ler</span>
       Base <b>positiva</b> (físico acima do futuro) trabalha <b>a favor</b> de quem travou venda: a conta final
       sai acima do preço travado. <b>Negativa</b> trabalha contra. Daí o verde acima de zero e o vermelho
-      abaixo. O segundo gráfico mostra a convergência — perto do vencimento a base tende a zero, porque
-      físico e futuro têm de se encontrar na liquidação.
+      abaixo. O segundo gráfico mostra a convergência, e aqui vale uma distinção que decide dinheiro:
+      <b>o futuro converge para o seu indicador de liquidação</b> — o Indicador do Boi DATAGRO, praça de
+      São Paulo, desde os vencimentos de fevereiro de 2025 (antes disso, o CEPEA/B3, também de São Paulo).
+      Converge para aquele preço, não para o preço da sua porteira. <b>A diferença regional não some no
+      vencimento</b>: frete até São Paulo, qualidade do lote e oferta local são estruturais e continuam
+      lá depois da liquidação. Quem entrega em SP vê a base ir a quase zero; quem está em MT, GO ou PA
+      vê a base encolher até o próprio patamar regional e parar ali.
     </div>
 
     <div class="vol-bar">
@@ -9768,7 +9773,7 @@ header{
           <option value="compra">Compra</option>
         </select>
       </div>
-      <div class="trv-fld"><label for="trvPreco">Preço (R$/@)</label><input id="trvPreco" type="number" step="0.01" placeholder="350,00" style="width:104px"></div>
+      <div class="trv-fld"><label for="trvPreco" id="trvLblPreco">Preço (R$/@)</label><input id="trvPreco" type="number" step="0.01" placeholder="350,00" style="width:104px"></div>
       <div class="trv-fld"><label for="trvQtd">Contratos</label><input id="trvQtd" type="number" step="1" min="1" placeholder="1" style="width:88px"></div>
       <button type="button" class="trv-add" id="trvAdd">Adicionar trava</button>
       <span class="vol-scope" id="trvScope"></span>
@@ -9780,7 +9785,7 @@ header{
           <tr>
             <th>Data</th><th>Contrato</th><th>Operação</th>
             <th style="text-align:right">Preço</th><th style="text-align:right">Contratos</th>
-            <th style="text-align:right">@ totais</th>
+            <th style="text-align:right" id="trvThQtd">@ totais</th>
             <th style="text-align:right">Último</th>
             <th style="text-align:right">Ajuste acumulado</th>
             <th></th>
@@ -10166,7 +10171,7 @@ header{
           <div class="bms-card">
             <div class="bms-sec-title">🏦 Parâmetros Financeiros</div>
             <div class="bms-grid2" style="margin-top:8px">
-              <div class="bms-fw"><label class="bms-label">Taxa de juros a.a. (%)</label><input id="bmsTaxaJuros" class="bms-input" type="number" step="0.1" placeholder="ex: 15"></div>
+              <div class="bms-fw"><label class="bms-label" title="Taxa EFETIVA ao ano. O motor converte para o ciclo por composição: fator = (1+i)^(dias/365) - 1. Uma taxa nominal de 12% a.a. com capitalização mensal equivale a 12,6825% efetivos.">Taxa de juros efetiva a.a. (%)</label><input id="bmsTaxaJuros" class="bms-input" type="number" step="0.1" placeholder="ex: 15"></div>
               <div class="bms-fw"><label class="bms-label">Multiplicador de juros</label><input id="bmsJurosMult" class="bms-input" type="number" step="0.1" placeholder="ex: 1,0" value="1"></div>
             </div>
             <div style="margin-top:10px;background:#f0f9ff;border-radius:9px;padding:10px;border:1px solid #bae6fd">
@@ -10193,8 +10198,8 @@ header{
             <div style="font-size: var(--fs-micro);font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Lucro Líquido</div>
             <div id="bmsLiveValLL" style="font-size: var(--fs-3xl);font-weight:900;color:#15803d;font-variant-numeric:tabular-nums">--</div>
             <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
-              <span style="font-size: var(--fs-nano);color:#6b7280">Margem: <strong id="bmsLiveValMargem" style="color:#15803d">--</strong></span>
-              <span style="font-size: var(--fs-nano);color:#6b7280">ROI: <strong id="bmsLiveValRoi" style="color:#15803d">--</strong></span>
+              <span style="font-size: var(--fs-nano);color:#6b7280" title="Lucro liquido dividido pela receita liquida">Margem líq. s/ receita: <strong id="bmsLiveValMargem" style="color:#15803d">--</strong></span>
+              <span style="font-size: var(--fs-nano);color:#6b7280" title="Lucro liquido dividido pelo capital empregado (nao pelo custo)">ROI s/ capital: <strong id="bmsLiveValRoi" style="color:#15803d">--</strong></span>
             </div>
           </div>
 
@@ -10254,6 +10259,41 @@ header{
             <div style="font-size: var(--fs-micro);font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">DRE resumido</div>
             <div id="bmsDRECompact" style="display:flex;flex-direction:column;gap:3px;font-size: var(--fs-sm)"></div>
           </div>
+
+          <!-- Metodologia: as contas que produzem os números acima -->
+          <details style="padding:10px 14px;border-top:1px solid #f3f4f6">
+            <summary style="font-size: var(--fs-micro);font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;cursor:pointer">Como cada número é calculado</summary>
+            <div style="font-size: var(--fs-nano);color:#374151;line-height:1.55;margin-top:8px">
+              <div style="font-weight:800;color:#111827;margin-bottom:3px">Unidades</div>
+              <div>@ de <b>peso vivo</b> = kg vivos ÷ 30 — é como a reposição é cotada.<br>
+                   @ de <b>carcaça</b> = kg vivos × rendimento ÷ 15 — é como o boi gordo é pago.<br>
+                   As duas só coincidem a 50% de rendimento.</div>
+              <div style="font-weight:800;color:#111827;margin:7px 0 3px">Resultado</div>
+              <div>receita bruta = @ carcaça × preço × (1 − perdas)<br>
+                   receita líquida = receita bruta × (1 − dedução %)<br>
+                   margem bruta = receita líquida − CMV<br>
+                   resultado operacional = margem bruta − despesas<br>
+                   lucro líquido = resultado operacional − tributos</div>
+              <div style="font-weight:800;color:#111827;margin:7px 0 3px">Percentuais — dois nomes, duas contas</div>
+              <div><b>Margem sobre receita</b> = (receita − custo) ÷ receita<br>
+                   <b>Retorno sobre custo</b> = (receita − custo) ÷ custo<br>
+                   <b>ROI</b> = lucro líquido ÷ capital empregado<br>
+                   Com R$ 350 de receita e R$ 300 de custo: margem 14,29%, retorno 16,67%, resultado R$ 50.
+                   Os percentuais desta coluna são <b>sobre receita</b>.</div>
+              <div style="font-weight:800;color:#111827;margin:7px 0 3px">Break-even (R$/@)</div>
+              <div>margem bruta zero = CMV ÷ (@ carcaça × (1 − perdas) × (1 − dedução))<br>
+                   lucro líquido zero = (CMV + despesas + tributos) ÷ (@ carcaça × (1 − perdas) × (1 − dedução))<br>
+                   A dedução divide, não soma: ela é proporcional ao preço.</div>
+              <div style="font-weight:800;color:#111827;margin:7px 0 3px">Custo da @ incremental</div>
+              <div>(CMV − originação − juros da reposição) ÷ (@ carcaça na saída − @ de peso vivo na entrada)<br>
+                   O denominador é a medida <b>comercial</b> das arrobas produzidas: as que você recebe e
+                   não pagou na compra. Não é o ganho físico de carcaça.</div>
+              <div style="font-weight:800;color:#111827;margin:7px 0 3px">Juros</div>
+              <div>A taxa do campo é <b>efetiva ao ano</b>. Fator do ciclo = (1 + i)^(dias ÷ 365) − 1,
+                   composto, base 365. Uma taxa nominal de 12% a.a. capitalizada ao mês vale 12,6825%
+                   efetivos — digitar a nominal subestima o custo.</div>
+            </div>
+          </details>
         </div>
 
         <!-- Exportar resultado para stories -->
@@ -10904,8 +10944,16 @@ body[data-asel-agro="0"] #panelRatioBGICCM {
       // produzir arroba — eles incidem sobre nutrição, insumo, opex e
       // sanidade (fD) e só entram no custo da @ VENDIDA, via cmv.
       var dI=arC-arE,cAI=isFinite(dI)&&dI>0?(cmv-orig-(fR||0))/dI:NaN;
-      var bMB=hS>0&&isFinite(arC)&&arC>0?(cmv+(ded||0)/hS)/(arC*hS):NaN;
-      var bLL=hS>0&&isFinite(arC)&&arC>0&&isFinite(cmv)?(cmv+desp+trib)/(arC*hS):NaN;
+      /* BREAK-EVEN — preço de venda por @ que zera o resultado.
+         A dedução sobre a receita (Funrural e afins) é PROPORCIONAL ao preço,
+         então não pode entrar somada ao custo: ela divide, como (1−ded). Com
+         ela no numerador o break-even mudava conforme o preço que estava sendo
+         testado, que é a definição de não ser um break-even.
+           margem bruta zero  → sp = cmv / (arC·hS·(1−ded))
+           lucro líquido zero → sp = (cmv+desp+trib) / (arC·hS·(1−ded))         */
+      var _liq=1-dPF;
+      var bMB=hS>0&&isFinite(arC)&&arC>0&&_liq>0?cmv/(arC*hS*_liq):NaN;
+      var bLL=hS>0&&isFinite(arC)&&arC>0&&isFinite(cmv)&&_liq>0?(cmv+desp+trib)/(arC*hS*_liq):NaN;
       var cap=isFinite(orig)?orig+bD+opB+trib:NaN;
       var roi=isFinite(cap)&&cap>0?lL/cap:NaN;
       var nC=Math.max(1,Math.floor(pN(st.cabecas)||1));
@@ -24182,9 +24230,16 @@ function updatePreco() {
       if (medias.length){
         h += '<div class="rb-line">Na convergência, a base média sai de ' + _v(medias[medias.length-1])
            + ' quando faltam ' + rot[rot.length-1].toLowerCase() + ' e termina em ' + _v(medias[0])
-           + ' no mês do vencimento, que é o comportamento esperado: perto da liquidação, físico e futuro '
-           + 'precisam se encontrar. Na prática isso quer dizer que travar contrato longo embute uma base '
-           + 'mais negativa hoje, que tende a se corrigir sozinha até a entrega.</div>';
+           + ' no mês do vencimento. O encolhimento é esperado, mas por um motivo preciso: o contrato é '
+           + 'liquidado pelo <b>Indicador do Boi DATAGRO da praça de São Paulo</b> (desde os vencimentos '
+           + 'de fevereiro de 2025; antes, o CEPEA/B3, também de São Paulo), e é contra ESSE preço que o '
+           + 'futuro converge. A série acima usa o CEPEA como físico — mesma praça, metodologia diferente, '
+           + 'então o resíduo não precisa ir a zero nem mesmo aqui.</div>';
+        h += '<div class="rb-line"><b>E não converge para a sua porteira.</b> A distância entre o preço de '
+           + 'São Paulo e o preço onde o seu boi é vendido é frete, qualidade do lote e oferta local — '
+           + 'estrutural, não sazonal. Ela encolhe até o patamar regional e para ali. Travar contrato longo '
+           + 'embute a base de hoje; o que se corrige sozinho até a entrega é a parte CONJUNTURAL dessa '
+           + 'base, não a parte regional.</div>';
       }
       h += '<div class="rb-note">A linha de cima é a <b>base do mês</b>: o boi físico (CEPEA, aba BOI GORDO) '
          + 'menos o contrato BGI <b>daquele mesmo mês</b>, rolando mês a mês. As linhas verticais pontilhadas '
@@ -38911,6 +38966,17 @@ function updatePreco() {
                                  + ' — Minhas Travas e Ajuste Diário';
     } catch(e){}
 
+    /* Moeda e unidade vêm do ativo em foco, não de um 'R$' fixo. O SJC é
+       cotado em US$ por saca; o CCM, em R$ por saca; só o BGI é R$ por @. */
+    try {
+      var _cfgRot = TRV_ATIVOS[_trvAtivoAtivo()] || TRV_ATIVOS.BGI;
+      var _lblP = document.getElementById('trvLblPreco');
+      if (_lblP) _lblP.textContent = 'Preço (' + _cfgRot.moeda + ')';
+      var _thQ = document.getElementById('trvThQtd');
+      if (_thQ) _thQ.textContent = _cfgRot.uniLongo.charAt(0).toUpperCase()
+                                 + _cfgRot.uniLongo.slice(1) + ' totais';
+    } catch(e){}
+
     if (scEl) scEl.textContent = _trvStorageOk()
       ? (_trvLista.length + ' trava(s) salvas neste navegador')
       : (_trvLista.length + ' trava(s) · este navegador não permite salvar, o registro vale só nesta sessão');
@@ -38989,9 +39055,9 @@ function updatePreco() {
           + '<td class="num"><input type="number" step="1" min="1" value="' + t.qtd
             + '" data-trv-idx="' + L.idx + '" data-trv-campo="qtd" style="width:56px;text-align:right"></td>'
           + '<td class="num">' + L.arrobas.toLocaleString('pt-BR') + '</td>'
-          + '<td class="num">' + (L.ultimo ? 'R$ ' + L.ultimo.p.toFixed(2) : '—') + '</td>'
+          + '<td class="num">' + (L.ultimo ? _CFG.cifrao + ' ' + L.ultimo.p.toFixed(2) : '—') + '</td>'
           + '<td class="num ' + cls + '">' + (L.ajuste == null ? '—'
-              : (L.ajuste >= 0 ? '+R$ ' : '−R$ ')
+              : (L.ajuste >= 0 ? '+' : '−') + _CFG.cifrao + ' '
                 + Math.abs(L.ajuste).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})) + '</td>'
           + '<td><button type="button" class="trv-del" data-trv-del="' + L.idx + '" title="Remover">✕</button></td>'
           + '</tr>';
@@ -39058,11 +39124,11 @@ function updatePreco() {
       {x:X, y:Y, type:'scatter', mode:'lines', name:'Ajuste acumulado da carteira',
        line:{color:'#7c3aed', width:2.2}, fill:'tozeroy',
        fillcolor:'rgba(124,58,237,0.12)',
-       hovertemplate:'%{x|%d/%m/%Y}<br>Ajuste acumulado: <b>R$ %{y:,.0f}</b><extra></extra>'},
+       hovertemplate:'%{x|%d/%m/%Y}<br>Ajuste acumulado: <b>'+_CFG.cifrao+' %{y:,.0f}</b><extra></extra>'},
       {x:[X[iPior]], y:[pior], type:'scatter', mode:'markers+text',
        name:'Pior momento de caixa', marker:{size:11, color:'#b91c1c', symbol:'triangle-down'},
        text:[_rs(pior)], textposition:'bottom center', textfont:{size:9.5, color:'#b91c1c'},
-       hovertemplate:'Maior saída de caixa<br>%{x|%d/%m/%Y}: R$ %{y:,.0f}<extra></extra>'}
+       hovertemplate:'Maior saída de caixa<br>%{x|%d/%m/%Y}: '+_CFG.cifrao+' %{y:,.0f}<extra></extra>'}
     ], {
       /* Três coisas disputavam a faixa de cima: o título, a legenda e os
          botões de período. Título e legenda saíam ambos à esquerda, com
@@ -39072,7 +39138,7 @@ function updatePreco() {
          botões de período, que ficam à direita. Cada um com a sua faixa. */
       height:_EXP_ALT, margin:{l:74,r:22,t:76,b:64}, _no_title:true,
       xaxis:{type:'date', tickfont:{size:10}, gridcolor:'rgba(0,0,0,0)'},
-      yaxis:{title:{text:'Ajuste acumulado (R$)', font:{size:10}}, tickfont:{size:10},
+      yaxis:{title:{text:'Ajuste acumulado ('+_CFG.cifrao+')', font:{size:10}}, tickfont:{size:10},
              gridcolor:'#eef1f4', zeroline:true, zerolinecolor:'#374151', zerolinewidth:1.4,
              separatethousands:true},
       annotations:[{text:'<b>Caixa da posição desde a trava</b>  <span style="color:#9ca3af">'
@@ -39111,11 +39177,11 @@ function updatePreco() {
          marker:{color:cenY.map(function(v){ return v>=0 ? 'rgba(21,128,61,0.68)' : 'rgba(185,28,28,0.68)'; }),
                  line:{width:0}},
          text:cenTxt, textposition:'outside', textfont:{size:9, color:'#6b7280'}, cliponaxis:false,
-         hovertemplate:_CFG.rot+' a R$ %{x:,.2f}/'+_CFG.uni+'<br>Ajuste total: <b>R$ %{y:,.0f}</b><extra></extra>'},
+         hovertemplate:_CFG.rot+' a '+_CFG.cifrao+' %{x:,.2f}/'+_CFG.uni+'<br>Ajuste total: <b>'+_CFG.cifrao+' %{y:,.0f}</b><extra></extra>'},
         {x:[pRef], y:[0], type:'scatter', mode:'markers+text',
          name:'Preço de hoje', marker:{size:11, color:'#0f766e', symbol:'diamond'},
          text:['hoje'], textposition:'top center', textfont:{size:9.5, color:'#0f766e'},
-         hovertemplate:'Referência de hoje: R$ %{x:,.2f}/'+_CFG.uni+'<extra></extra>'}
+         hovertemplate:'Referência de hoje: '+_CFG.cifrao+' %{x:,.2f}/'+_CFG.uni+'<extra></extra>'}
       ], {
         height:_EXP_ALT, margin:{l:74,r:22,t:46,b:44}, _no_title:true,
         xaxis:{title:{text:'Preço do '+_CFG.rot.toLowerCase()+' no vencimento ('+_CFG.moeda+')', font:{size:10}},
@@ -39162,7 +39228,13 @@ function updatePreco() {
       + (piorCen != null
           ? '<div class="vol-kpi is-down"><div class="vk-lbl">Caixa no pior cenário</div>'
               + '<div class="vk-val">' + _rs(piorCen) + '</div>'
-              + '<div class="vk-sub">se o boi subir 25%</div></div>'
+              + '<div class="vk-sub">' + (function(){
+                   var iw = cenY.indexOf(piorCen);
+                   var dir = (iw >= 0 && cenX[iw] != null && pRef != null)
+                             ? (cenX[iw] > pRef ? 'subir' : (cenX[iw] < pRef ? 'cair' : 'ficar parado')) : 'variar';
+                   var pct = (iw >= 0 && cenTxt[iw]) ? cenTxt[iw].replace(/[+-]/,'') : '25%';
+                   return 'se o ' + _CFG.rot.toLowerCase() + ' ' + dir + ' ' + pct;
+                 })() + '</div></div>'
           : '');
     }
 
@@ -42146,7 +42218,7 @@ function _agbEquivalenciaBezerro(){
       var rows=parseSheet(nomes[i])||[];
       for (var j=rows.length-1;j>=0;j--){
         var pk=toNum(rows[j]['Peso Bezerro']);
-        if (pk>0) return pk/30;               // arroba de carcaça = 30 kg vivo
+        if (pk>0) return pk/30;               // @ de PESO VIVO = 30 kg (não é a @ de carcaça, que são 15 kg de carcaça)
       }
     }
   } catch(e){}
@@ -53881,9 +53953,9 @@ function render(){
       if(lastBe!==null && lastBe!==undefined && isFinite(lastBe)){
         var t1 = lastBe*(1+(mb1/100));
         var t2 = lastBe*(1+(mb2/100));
-        badgeHtml += '<span class="mb-pill neu">BE ' + fmt(lastBe,2) + '</span>';
-        badgeHtml += '<span class="mb-pill good">MB '+fmt(mb1,1)+'% → ' + fmt(t1,2) + '</span>';
-        badgeHtml += '<span class="mb-pill good">MB '+fmt(mb2,1)+'% → ' + fmt(t2,2) + '</span>';
+        badgeHtml += '<span class="mb-pill neu" title="Breakeven cadastrado, em R$/@">BE ' + fmt(lastBe,2) + '</span>';
+        badgeHtml += '<span class="mb-pill good" title="Preço para retorno sobre custo de '+fmt(mb1,1)+'%: BE x (1 + r)">RSC '+fmt(mb1,1)+'% → ' + fmt(t1,2) + '</span>';
+        badgeHtml += '<span class="mb-pill good" title="Preço para retorno sobre custo de '+fmt(mb2,1)+'%: BE x (1 + r)">RSC '+fmt(mb2,1)+'% → ' + fmt(t2,2) + '</span>';
       }else{
         badgeHtml += '<span class="mb-pill warn">Breakeven: não cadastrado</span>';
       }
@@ -53898,17 +53970,23 @@ function render(){
       var kpiHtml = '';
       if(isBoi){
         kpiHtml = '<div class="mb-kpi-card">' +
-          '<div class="mb-kpi-title">Breakeven & Metas MB</div>';
+          '<div class="mb-kpi-title">Breakeven, retorno e margem</div>';
 
       if(lastBe!==null && lastBe!==undefined && isFinite(lastBe)){
-        var mbNow = ((lastPrice/lastBe)-1)*100;
+        /* Dois indicadores, duas contas, dois nomes. Eram o mesmo número com
+           um nome só, e o nome era o do outro.
+             retorno sobre custo  r = (P − BE) / BE
+             margem sobre receita m = (P − BE) / P = r / (1 + r)              */
+        var mbNow  = ((lastPrice/lastBe)-1)*100;
+        var margNow = (mbNow === -100) ? null : (mbNow/100)/(1+(mbNow/100))*100;
         kpiHtml += '<div class="mb-kpi-row"><span>Breakeven</span><strong>' + fmt(lastBe,2) + '</strong></div>';
-        kpiHtml += '<div class="mb-kpi-row"><span>MB atual</span><strong>' + fmtPct(mbNow,1) + '</strong></div>';
-        kpiHtml += '<div class="mb-kpi-row"><span>Preço p/ MB '+fmt(mb1,1)+'%</span><strong>' + fmt(lastBe*(1+(mb1/100)),2) + '</strong></div>';
-        kpiHtml += '<div class="mb-kpi-row"><span>Preço p/ MB '+fmt(mb2,1)+'%</span><strong>' + fmt(lastBe*(1+(mb2/100)),2) + '</strong></div>';
+        kpiHtml += '<div class="mb-kpi-row" title="(preco - breakeven) / breakeven"><span>Retorno s/ custo</span><strong>' + fmtPct(mbNow,1) + '</strong></div>';
+        kpiHtml += '<div class="mb-kpi-row" title="(preco - breakeven) / preco"><span>Margem s/ receita</span><strong>' + (margNow==null?'—':fmtPct(margNow,1)) + '</strong></div>';
+        kpiHtml += '<div class="mb-kpi-row"><span>Preço p/ RSC '+fmt(mb1,1)+'%</span><strong>' + fmt(lastBe*(1+(mb1/100)),2) + '</strong></div>';
+        kpiHtml += '<div class="mb-kpi-row"><span>Preço p/ RSC '+fmt(mb2,1)+'%</span><strong>' + fmt(lastBe*(1+(mb2/100)),2) + '</strong></div>';
       }else{
         kpiHtml += '<div class="mb-kpi-row"><span>Breakeven</span><strong>—</strong></div>' +
-                   '<div class="mb-kpi-row"><span>Meta MB</span><strong>'+fmt(mb1,1)+'% / '+fmt(mb2,1)+'%</strong></div>';
+                   '<div class="mb-kpi-row"><span>Meta de retorno s/ custo</span><strong>'+fmt(mb1,1)+'% / '+fmt(mb2,1)+'%</strong></div>';
       }
         kpiHtml += '</div>';
       }
@@ -53926,7 +54004,12 @@ function render(){
           rowHtml('Curva de regressão', priceVals, function(v){ return fmt(v,2); }, zCls) +
           rowHtml('Mediana e percentis', priceVals, function(v){ return fmt(v,2); }, pricePctCls) +
           sectionRow('Margem & relações') +
-          rowHtml('MB%', mbVals, function(v){ return fmtPct(v,1); }, mbCls) +
+          rowHtml('RSC% (retorno sobre custo)', mbVals, function(v){ return fmtPct(v,1); }, mbCls) +
+          rowHtml('Margem s/ receita', mbVals.map(function(v){
+            /* Mesma base, outra pergunta. r = (P−BE)/BE  ⇒  m = r/(1+r). */
+            if(v==null || !isFinite(v)) return null;
+            var r = v/100; return (r === -1) ? null : (r/(1+r))*100;
+          }), function(v){ return fmtPct(v,1); }) +
           rowHtml('BOI20/BEZ7', ratioBBVals, function(v){ return fmt(v,2); }) +
           (isFuture ? rowHtml('Basis', basisVals, function(v){ return fmtPct(v,1); }) : '') +
           sectionRow('Indicadores') +
@@ -54123,10 +54206,23 @@ function render(){
 
   // ── Contratos ──
   var hdgContratos = {
-    BGI:  { nome:'Boi Gordo', unidade:'@',  tamanho:330, sheets:['BGI'] },
-    CCM:  { nome:'Milho',     unidade:'sc', tamanho:450, sheets:['CCM'] },
-    SOJA: { nome:'Soja',      unidade:'sc', tamanho:450, sheets:['SOJA'] }
+    BGI:  { nome:'Boi Gordo', unidade:'@',  tamanho:330, sheets:['BGI'],  cifrao:'R$'  },
+    CCM:  { nome:'Milho',     unidade:'sc', tamanho:450, sheets:['CCM'],  cifrao:'R$'  },
+    /* A soja da B3 (SJC) é cotada em DÓLAR por saca de 60 kg. O contrato tem
+       450 sacas, 27 toneladas. A liquidação é em reais, convertida pregão a
+       pregão — o que aparece aqui é a conta em dólar, que é a moeda em que o
+       prêmio e o ajuste de fato acontecem. */
+    SOJA: { nome:'Soja',      unidade:'sc', tamanho:450, sheets:['SOJA'], cifrao:'US$' }
   };
+  /* Cifrão do ativo em foco. Lido na hora, para seguir o seletor sem precisar
+     de estado paralelo que possa ficar para trás. */
+  function hdgCifrao(){
+    try {
+      var el = document.getElementById('hsAtivo');
+      var c  = hdgContratos[el ? el.value : ''];
+      return (c && c.cifrao) ? c.cifrao : 'R$';
+    } catch(e){ return 'R$'; }
+  }
 
   // ── Formatação ──
   function hdgFmt(n, d) {
@@ -54134,7 +54230,7 @@ function render(){
     d = (d !== undefined) ? d : 2;
     return n.toLocaleString('pt-BR', { minimumFractionDigits:d, maximumFractionDigits:d });
   }
-  function hdgFRS(n, d)  { return isFinite(n) ? 'R$ ' + hdgFmt(n, d) : '—'; }
+  function hdgFRS(n, d)  { return isFinite(n) ? hdgCifrao() + ' ' + hdgFmt(n, d) : '—'; }
   function hdgFPct(n)    { return isFinite(n) ? hdgFmt(n, 2) + '%' : '—'; }
   function hdgN(id) {
     var el = document.getElementById(id);
