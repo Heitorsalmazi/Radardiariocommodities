@@ -12347,6 +12347,76 @@ window._rsiCalc = function(arr, n){
    regra morta no arquivo é pior do que regra nenhuma: ela promete um
    comportamento que não acontece. Então a política do painel fica de pé e
    esta folha cuida do que é dela — cabeçalho, gráfico e formulário. */
+/* ══════════════════════════════════════════════════════════════════════════
+   ETAPA 6 — contratos casados, origem das premissas e margem do ciclo
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Os três contratos em uso ────────────────────────────────────────────
+   Fica ao lado dos seletores, não embaixo de tudo: a pergunta "que contrato
+   de milho este número está usando?" aparece no mesmo olhar em que se
+   escolhe o vencimento do boi. */
+.ve-cas{
+  border:1px solid var(--border-subtle); border-radius:10px; padding:8px 12px;
+  display:flex; flex-direction:column; gap:3px; min-width:min(100%, 300px);
+}
+.ve-cas-tit{
+  font-size: var(--fs-micro); text-transform:uppercase; letter-spacing:.08em;
+  font-weight:700; color: var(--text-muted); margin-bottom:2px;
+}
+.ve-cas-item{ display:flex; justify-content:space-between; gap:12px; font-size: var(--fs-sm); }
+.ve-cas-item span{ color: var(--text-muted); }
+.ve-cas-item strong{ font-weight:700; white-space:nowrap; }
+.ve-cas-falta, .ve-cas-item.ve-cas-falta strong{ color:#be123c; }
+
+/* ── Selo de origem do campo ─────────────────────────────────────────────
+   Pequeno de propósito: informa sem competir com o rótulo do campo. O
+   pendente é o único que usa cor de alerta, porque é o único que pede ação. */
+.ve-selo{
+  font-style:normal; font-size: var(--fs-micro); font-weight:700;
+  text-transform:uppercase; letter-spacing:.05em; padding:0 4px; border-radius:3px;
+  border:1px solid var(--border-subtle); color: var(--text-muted); white-space:nowrap;
+}
+.ve-selo-personalizado{ color: var(--m3-accent); border-color: var(--m3-accent); }
+.ve-selo-calculadora{ color:#0f766e; border-color:#99f6e4; }
+.ve-selo-padrao{ color:#6b7280; }
+.ve-selo-pend{ color:#be123c; border-color:#fecdd3; }
+
+.ve-prem-origem{ font-size: var(--fs-sm); color: var(--text-muted); margin-bottom: var(--space-2); }
+.ve-prem-falta{
+  font-size: var(--fs-sm); line-height:1.5; margin-bottom: var(--space-3);
+  border-left:3px solid #be123c; padding-left:10px; color: var(--text-muted);
+}
+
+/* ── Margem do ciclo ─────────────────────────────────────────────────────
+   Grade de números, não tabela: são doze leituras independentes e nenhuma
+   delas é linha de nenhuma outra. */
+.ve-kpi-grid{
+  display:grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: var(--space-3);
+}
+.ve-kpi{
+  border:1px solid var(--border-subtle); border-radius:12px; padding:10px 12px;
+  display:flex; flex-direction:column; gap:2px; min-width:0;
+}
+.ve-kpi-rot{
+  font-size: var(--fs-micro); text-transform:uppercase; letter-spacing:.07em;
+  font-weight:700; color: var(--text-muted);
+}
+.ve-kpi-val{ font-size: var(--fs-xl); font-weight:800; line-height:1.15; }
+.ve-kpi-sub{ font-size: var(--fs-micro); color: var(--text-muted); line-height:1.35; }
+.ve-kpi.ve-kpi-forte{ border-color: var(--m3-accent); }
+.ve-kpi.ve-alta .ve-kpi-val{ color:#0f766e; }
+.ve-kpi.ve-baixa .ve-kpi-val{ color:#be123c; }
+
+.ve-obs{
+  margin-top: var(--space-3); font-size: var(--fs-sm); line-height:1.5;
+  border-left:3px solid #f59e0b; padding-left:10px; color: var(--text-muted);
+}
+.ve-obs-leve{
+  margin-top: var(--space-2); font-size: var(--fs-sm); line-height:1.5;
+  border-left:2px solid var(--border-subtle); padding-left:10px; color: var(--text-muted);
+}
+
 @media (max-width: 900px){
   .ve-graf-box{ height:210px; }
 }
@@ -12358,6 +12428,7 @@ window._rsiCalc = function(arr, n){
   .ve-graf-box{ height:200px; }
   .ve-imp{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ve-campos{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ve-cas{ min-width:100%; }
 }
 @media (max-width: 360px){
   .ve-imp{ grid-template-columns: 1fr; }
@@ -13177,14 +13248,191 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     return out;
   }
 
+  /* ══════════════════════════════════════════════════════════════════════
+     CASAMENTO DE VENCIMENTOS ENTRE CURVAS — Etapa 6 · 13/10/2026
+     ──────────────────────────────────────────────────────────────────────
+     A Visão Executiva compara três mercados futuros por HORIZONTE
+     OPERACIONAL: se o boi de referência é o de janeiro, o milho e a soja
+     que interessam são os de janeiro — não os do primeiro vencimento da
+     curva. Até a Etapa 5 o BGI usava o vencimento escolhido e CCM e SJC
+     usavam sempre `primeiroVigente`, o que comparava janeiro de boi com
+     novembro de milho e chamava isso de relação de troca.
+
+     O CALENDÁRIO DE CADA CURVA É PRÓPRIO. O boi tem contrato em quase todo
+     mês; o milho vive em janeiro, março, maio, julho, setembro e novembro;
+     a soja tem o seu. Então nem todo BGI encontra par exato, e dois BGI
+     consecutivos podem legitimamente cair no mesmo contrato de milho —
+     isso não é erro, é o calendário da B3.
+
+     A regra, nesta ordem:
+       1. mesmo mês e ano do BGI de referência;
+       2. o primeiro vencimento POSTERIOR a ele;
+       3. nada. E "nada" é dito na tela, com o motivo.
+
+     O que esta função NUNCA faz: devolver o primeiro da curva quando não
+     acha par. Voltar ao começo em silêncio é o defeito que ela corrige.
+
+     A chave de vencimento vem de `_contractMaturityKey`, que decodifica mês
+     e ano do CÓDIGO do contrato (BGIF27 → janeiro de 2027). É a data real
+     do vencimento, não a ordem da aba na planilha: duas abas fora de ordem
+     continuam casando certo. E `vigentes` já descarta o que venceu, então
+     um contrato vencido nunca é escolhido automaticamente. */
+  function chaveVenc(sn){
+    try { return (typeof window._contractMaturityKey === 'function')
+                 ? window._contractMaturityKey(sn) : null; }
+    catch(e){ return null; }
+  }
+  function casaVenc(prefixo, vencRef){
+    var kRef = chaveVenc(vencRef);
+    var lista = vigentes(prefixo);
+    var r = { pre:prefixo, ref:vencRef || null, kRef:kRef, aba:null, k:null,
+              criterio:'indisponivel', defasagem:null, lista:lista, motivo:null };
+    if (!lista.length){
+      r.motivo = 'Nenhum contrato ' + prefixo + ' vigente com pregão válido na planilha.';
+      return r;
+    }
+    if (kRef == null){
+      r.motivo = 'Vencimento de referência não reconhecido — sem como casar o ' + prefixo + '.';
+      return r;
+    }
+    var mesmo = null, posterior = null;
+    for (var i = 0; i < lista.length; i++){
+      var k = chaveVenc(lista[i]);
+      if (k == null) continue;
+      if (k === kRef){ mesmo = { sn:lista[i], k:k }; break; }
+      if (k > kRef && posterior == null) posterior = { sn:lista[i], k:k };
+    }
+    var esc = mesmo || posterior;
+    if (!esc){
+      r.motivo = 'A curva ' + prefixo + ' termina em ' + lista[lista.length - 1]
+               + ', antes do vencimento de referência. Sem contrato correspondente.';
+      return r;
+    }
+    r.aba = esc.sn; r.k = esc.k;
+    r.criterio = mesmo ? 'mesmo' : 'posterior';
+    r.defasagem = esc.k - kRef;
+    return r;
+  }
+  /* Rótulo do critério, para a tela não ter de traduzir número em texto. */
+  function criterioRot(c){
+    if (!c) return '—';
+    if (c.criterio === 'mesmo') return 'mesmo vencimento';
+    if (c.criterio === 'posterior')
+      return 'posterior (+' + c.defasagem + (c.defasagem === 1 ? ' mês' : ' meses') + ')';
+    return 'indisponível';
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     PREMISSAS EFETIVAS — de onde vem cada campo
+     ──────────────────────────────────────────────────────────────────────
+     Três fontes, nesta prioridade, e cada campo guarda de qual delas veio:
+
+       1. personalizado — o que o operador salvou NESTA tela;
+       2. calculadora   — o que ele preencheu na Calculadora do Boi;
+       3. padrão        — o cenário de confinamento que o card BGI × cAI já
+                          usa, lido dele mesmo (`_caiCenarioPadrao`), não
+                          recriado aqui. Um segundo conjunto de padrões seria
+                          duas verdades para a mesma pergunta.
+
+     Campo sem nenhuma fonte válida fica PENDENTE e aparece como pendente.
+     Nada é inventado para fechar o cenário.
+
+     PLACEHOLDER NÃO É DADO. Os campos da Calculadora têm `placeholder`
+     ("ex: 375") e nenhum `value`: um campo intocado devolve string vazia, e
+     string vazia não entra. Além disso, `getState` devolve "0" por padrão em
+     oito campos (perdas, frete, comissão, dedução, arrendamento, tributos,
+     multiplicador) e 'pasto' em `sistema` — aceitar isso de uma Calculadora
+     intocada trocaria o sistema do cenário padrão de confinamento para
+     pasto sem ninguém pedir. Por isso a camada da Calculadora só entra
+     INTEIRA, e só quando ao menos um campo que ela NÃO preenche sozinha
+     estiver preenchido. */
+  var CALC_PROPRIOS = ['cabecas','pesoEntradaKg','rendimento','custoArrobaEntrada',
+    'diasSeca','diasAguas','gmdSeca','gmdAguas','precoSuplSeca','precoSuplAguas',
+    'diasCocho','gmdConf','custoDietaDia','milhoSc','milhoMS','consumoPctPV',
+    'sanClostridia','sanBrucelose','sanRaiva','sanVermifugo','sanEctoparasita',
+    'rastChip','rastBrinco','custoOperDia','gta','taxaJuros'];
+
+  function preenchido(v){ return v != null && String(v).trim() !== ''; }
+
+  function calculadoraEmUso(st){
+    if (!st) return false;
+    for (var i = 0; i < CALC_PROPRIOS.length; i++){
+      if (preenchido(st[CALC_PROPRIOS[i]])) return true;
+    }
+    return false;
+  }
+  function estadoCalculadora(){
+    try { if (typeof window.__3M_getState === 'function') return window.__3M_getState() || null; }
+    catch(e){}
+    return null;
+  }
+  /* O cenário padrão do confinamento vem do card BGI × cAI, que já o monta a
+     partir de `_CAI_PADRAO`, do que estiver na Calculadora e da reposição
+     (boi físico CEPEA de hoje mais ágio). Aqui só se pede o objeto pronto. */
+  function cenarioPadrao(){
+    try { if (typeof window._caiCenarioPadrao === 'function') return window._caiCenarioPadrao(); }
+    catch(e){ console.warn('Visão Executiva — cenário padrão:', e); }
+    return null;
+  }
+
+  /* Campos que o motor de custo exige para devolver break-even. Mesma lista
+     de `premissasCompletas`, escrita uma vez e usada pelos dois. */
+  function faltantes(p){
+    p = p || {};
+    var falta = [];
+    if (!(num(p.pesoEntradaKg) > 0)) falta.push(['pesoEntradaKg','Peso de entrada (kg)']);
+    if (!(num(p.rendimento) > 0))    falta.push(['rendimento','Rendimento de carcaça (%)']);
+    if (!(num(p.custoArrobaEntrada) > 0)) falta.push(['custoArrobaEntrada','Custo da @ de entrada (R$)']);
+    var sis = p.sistema || 'pasto';
+    if ((sis === 'pasto' || sis === 'rc') && !((num(p.diasSeca) || 0) + (num(p.diasAguas) || 0) > 0))
+      falta.push(['diasSeca','Dias de pasto (seca + águas)']);
+    if ((sis === 'conf' || sis === 'rc') && !(num(p.diasCocho) > 0))
+      falta.push(['diasCocho','Dias de cocho']);
+    return falta;
+  }
+
+  function premissasEfetivas(){
+    var salvas = premissas();
+    var calc = estadoCalculadora();
+    var emUso = calculadoraEmUso(calc);
+    var padrao = cenarioPadrao();
+
+    var p = {}, origem = {};
+    function camada(fonte, obj){
+      if (!obj) return;
+      Object.keys(obj).forEach(function(k){
+        /* `veVenc*` são filtros da tela, não premissas da operação. */
+        if (k.indexOf('veVenc') === 0) return;
+        if (origem[k]) return;                 /* a camada de cima já respondeu */
+        if (!preenchido(obj[k])) return;
+        p[k] = String(obj[k]).trim();
+        origem[k] = fonte;
+      });
+    }
+    camada('personalizado', salvas);
+    camada('calculadora', emUso ? calc : null);
+    camada('padrao', padrao);
+
+    return { p:p, origem:origem, falta:faltantes(p),
+             completas:premissasCompletas(p),
+             temPadrao:!!padrao, calculadoraEmUso:emUso,
+             nPersonalizado:Object.keys(origem).filter(function(k){ return origem[k]==='personalizado'; }).length,
+             nCalculadora:Object.keys(origem).filter(function(k){ return origem[k]==='calculadora'; }).length,
+             nPadrao:Object.keys(origem).filter(function(k){ return origem[k]==='padrao'; }).length };
+  }
+
   window._veMotor = {
     num:num, data:data, dBR:dBR, diasDesde:diasDesde, n2:n2, esc:esc,
     unidade:unidade, preco:preco, UNIDADES:UNIDADES,
     serie:serie, ultima:ultima, variacao:variacao, limparCache:limparCache,
     vigentes:vigentes, primeiroVigente:primeiroVigente,
+    chaveVenc:chaveVenc, casaVenc:casaVenc, criterioRot:criterioRot,
     relacaoTroca:relacaoTroca,
     premissas:premissas, salvarPremissas:salvarPremissas,
     premissasCompletas:premissasCompletas,
+    premissasEfetivas:premissasEfetivas, faltantes:faltantes,
+    cenarioPadrao:cenarioPadrao, estadoCalculadora:estadoCalculadora,
+    calculadoraEmUso:calculadoraEmUso, CALC_PROPRIOS:CALC_PROPRIOS,
     custo:custo, hedge:hedge, travas:travas, TAM:TAM, LS_PREM:LS_PREM
   };
 })();
@@ -13237,11 +13485,46 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
       sec:'m3_2_9', alvo:'chartBGIDolar' }
   ];
 
-  /* Resolve cada fonte na aba que vai ser lida hoje. Contrato futuro é o
-     primeiro vencimento vigente, salvo se o operador escolheu outro. */
-  function abaDe(f, vencRef){
+  /* ── Resolução da aba de cada fonte ───────────────────────────────────
+     ETAPA 6. Antes: o BGI usava o vencimento escolhido e CCM e SJC usavam
+     sempre o primeiro vigente da própria curva. Com o boi em janeiro e o
+     milho em novembro, a relação de troca da tela comparava dois horizontes
+     diferentes e chamava isso de relação de troca.
+
+     Agora CCM e SJC CASAM com o BGI de referência (mesmo mês, senão o
+     primeiro posterior, senão nada — `casaVenc` no motor), e o operador
+     pode fixar um deles à mão. Dólar segue no primeiro vigente: ele não
+     entra em nenhuma relação por horizonte nesta tela.
+
+     Físico (`f.aba`) não tem vencimento e não muda com nada disto: CEPEA é
+     CEPEA em qualquer horizonte. */
+  function casamento(vencRef, prem){
+    prem = prem || mot().premissas();
+    var out = {};
+    ['CCM','SJC'].forEach(function(pre){
+      var manual = prem['veVenc' + pre];
+      if (manual && mot().vigentes(pre).indexOf(manual) >= 0){
+        out[pre] = { pre:pre, ref:vencRef || null, aba:manual,
+                     k:mot().chaveVenc(manual), kRef:mot().chaveVenc(vencRef),
+                     criterio:'manual', defasagem:null, motivo:null, manual:true };
+        var d = out[pre].k != null && out[pre].kRef != null ? out[pre].k - out[pre].kRef : null;
+        out[pre].defasagem = d;
+      } else {
+        out[pre] = mot().casaVenc(pre, vencRef);
+        out[pre].manual = false;
+      }
+    });
+    return out;
+  }
+  function abaDe(f, vencRef, cas){
     if (f.aba) return f.aba;
-    if (f.pre === 'BGI' && vencRef) return vencRef;
+    if (f.pre === 'BGI') return vencRef || mot().primeiroVigente('BGI');
+    if (f.pre === 'CCM' || f.pre === 'SJC'){
+      var c = (cas || {})[f.pre];
+      /* `null` quando não há correspondente. A tela mostra a ausência; ela
+         NÃO volta ao primeiro da curva, que era o defeito. */
+      return c ? c.aba : null;
+    }
     return mot().primeiroVigente(f.pre);
   }
 
@@ -13324,6 +13607,12 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
   /* ══════════════════════════════════════════════════════════════════════
      ESQUELETO
      ══════════════════════════════════════════════════════════════════════ */
+  /* ETAPA 6 — as premissas efetivas custam uma leitura do cenário padrão,
+     que por sua vez pode mandar o card BGI × cAI rodar uma vez. Uma leitura
+     por redesenho basta; `render` zera o cache no começo. */
+  var _PE = null;
+  function premEfe(){ return (_PE || (_PE = mot().premissasEfetivas())); }
+
   var _montado = false;
   function montar(){
     if (_montado) return true;
@@ -13355,6 +13644,10 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
       + '<section class="card">'
       +   '<div class="card-title"><span class="card-title-text">PREMISSAS DA OPERAÇÃO</span></div>'
       +   '<div id="vePrem"></div>'
+      + '</section>'
+      + '<section class="card">'
+      +   '<div class="card-title"><span class="card-title-text">MARGEM DO CICLO — VENCIMENTO DE REFERÊNCIA</span></div>'
+      +   '<div id="veMargem"></div>'
       + '</section>'
       + '<section class="card">'
       +   '<div class="card-title"><span class="card-title-text">VENDA DO BOI</span></div>'
@@ -13399,61 +13692,113 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
   }
   function aoMudar(ev){
     var t = ev.target;
-    if (t && t.id === 'veVencRef'){ salvarForm(true); }
+    if (t && (t.id === 'veVencRef' || t.id === 'veVencCCM' || t.id === 'veVencSJC')){ salvarForm(true); return; }
+    /* Tocar num campo é o que o torna seu. Antes disso ele é do padrão ou da
+       Calculadora, e continua sendo mesmo depois de um "Salvar". */
+    if (t && t.hasAttribute && t.hasAttribute('data-ve-campo')){
+      t.setAttribute('data-ve-origem', 'personalizado');
+      var lab = t.closest ? t.closest('.ve-campo') : null;
+      var sl = lab ? lab.querySelector('.ve-selo') : null;
+      if (sl){ sl.className = 've-selo ve-selo-personalizado'; sl.textContent = 'personalizado'; }
+    }
   }
 
   /* ══════════════════════════════════════════════════════════════════════
      PREMISSAS — formulário
      ══════════════════════════════════════════════════════════════════════ */
-  function campoHtml(c, val){
+  /* ETAPA 6 — cada campo carrega DE ONDE veio o valor que está nele, e o
+     rótulo diz isso na tela. Três origens e uma ausência:
+       personalizado — o operador salvou aqui;
+       calculadora   — veio da Calculadora do Boi, preenchida por ele;
+       padrao        — veio do cenário de confinamento que o card BGI × cAI
+                       já usa, e que esta tela lê dele em vez de ter o seu;
+       pendente      — nenhuma fonte válida. Fica vazio e é contado como
+                       pendente, nunca preenchido com um número de enchimento.
+
+     A origem também decide o que é SALVO: só o que o operador tocou. Gravar
+     o cenário padrão como se fosse dado da operação transformaria uma
+     suposição em cadastro no primeiro clique em "Salvar". */
+  var ORIGEM_ROT = { personalizado:'personalizado', calculadora:'da Calculadora', padrao:'padrão' };
+  function selo(org){
+    if (!org) return '<em class="ve-selo ve-selo-pend">pendente</em>';
+    return '<em class="ve-selo ve-selo-' + org + '">' + ORIGEM_ROT[org] + '</em>';
+  }
+  function campoHtml(c, val, org){
     var m = mot(), id = 've_' + c[0], rot = m.esc(c[1]);
+    var attr = ' data-ve-campo="' + m.esc(c[0]) + '" data-ve-origem="' + m.esc(org || '') + '"';
     if (c[2] === 'sel'){
       var ops = (c[3] || []).map(function(o){
         return '<option value="' + m.esc(o[0]) + '"' + (String(val) === o[0] ? ' selected' : '') + '>'
              + m.esc(o[1]) + '</option>';
       }).join('');
-      return '<label class="ve-campo"><span>' + rot + '</span>'
-           + '<select id="' + id + '" data-ve-campo="' + m.esc(c[0]) + '">' + ops + '</select></label>';
+      return '<label class="ve-campo"><span>' + rot + ' ' + selo(org) + '</span>'
+           + '<select id="' + id + '"' + attr + '>' + ops + '</select></label>';
     }
-    return '<label class="ve-campo"><span>' + rot + '</span>'
-         + '<input type="number" step="any" inputmode="decimal" id="' + id + '" '
-         + 'data-ve-campo="' + m.esc(c[0]) + '" value="' + m.esc(val == null ? '' : val) + '"></label>';
+    return '<label class="ve-campo"><span>' + rot + ' ' + selo(org) + '</span>'
+         + '<input type="number" step="any" inputmode="decimal" id="' + id + '"' + attr
+         + ' value="' + m.esc(val == null ? '' : val) + '"></label>';
   }
   function renderPrem(){
-    var m = mot(), p = m.premissas(), host = document.getElementById('vePrem');
+    var m = mot(), E = premEfe(), p = E.p, host = document.getElementById('vePrem');
     if (!host) return;
-    var completo = m.premissasCompletas(p);
+    var completo = E.completas;
     var grupos = CAMPOS.map(function(G){
       return '<fieldset class="ve-fs"><legend>' + m.esc(G.g) + '</legend><div class="ve-campos">'
-           + G.c.map(function(c){ return campoHtml(c, p[c[0]]); }).join('') + '</div></fieldset>';
+           + G.c.map(function(c){ return campoHtml(c, p[c[0]], E.origem[c[0]]); }).join('') + '</div></fieldset>';
     }).join('');
+    var resumo = '<div class="ve-prem-origem">'
+      + '<b>' + E.nPersonalizado + '</b> campo(s) personalizado(s) · '
+      + '<b>' + E.nCalculadora + '</b> da Calculadora · '
+      + '<b>' + E.nPadrao + '</b> do cenário padrão'
+      + (E.falta.length ? ' · <b class="ve-selo-pend">' + E.falta.length + ' pendente(s)</b>' : '')
+      + '</div>';
+    var pend = E.falta.length
+      ? '<div class="ve-prem-falta"><b>Falta para calcular margem e break-even:</b> '
+        + E.falta.map(function(f){ return m.esc(f[1]); }).join(' · ')
+        + '. Enquanto faltar, nenhum número de margem é apresentado.</div>'
+      : '';
     host.innerHTML =
       '<details class="ve-det"' + (completo ? '' : ' open') + '>'
       + '<summary>' + (completo
-          ? 'Premissas preenchidas — abrir para revisar'
-          : 'Informe as premissas para que margem, break-even e exposição sejam calculados')
+          ? 'Cenário carregado — abrir para revisar ou personalizar'
+          : 'Faltam premissas para calcular margem, break-even e exposição')
       + '</summary>'
+      + resumo + pend
       + '<div class="ve-prem-acoes">'
       +   '<button type="button" class="ve-btn ve-btn-forte" id="veSalvar">Salvar premissas</button>'
-      +   '<button type="button" class="ve-btn" id="veCopiar">Copiar da Calculadora do Boi</button>'
-      +   '<button type="button" class="ve-btn" id="veLimpar">Limpar</button>'
+      +   '<button type="button" class="ve-btn" id="veCopiar">Copiar da Calculadora</button>'
+      +   '<button type="button" class="ve-btn" id="veLimpar">Restaurar premissas padrão</button>'
       +   '<span class="ve-prem-nota" id="veAviso"></span>'
       + '</div>'
       + grupos
-      + '<div class="ve-nota">As premissas ficam salvas <b>neste navegador</b>, em chave própria '
-      + '(<code>' + m.esc(m.LS_PREM) + '</code>). A Calculadora do Boi não foi alterada: ela continua '
-      + 'lendo os próprios campos e o botão acima apenas copia de lá para cá. Trocar de máquina ou '
-      + 'limpar os dados do site apaga estas premissas.</div>'
+      + '<div class="ve-nota">Esta tela abre com o <b>cenário de confinamento que o Radar já usa</b> '
+      + 'no card BGI × cAI — ele não foi recriado aqui, é lido de lá. Por cima dele entra o que '
+      + 'estiver preenchido na Calculadora do Boi, e por cima de tudo o que você salvar aqui. '
+      + '<b>Só o que você editar é salvo</b>: o cenário padrão continua sendo padrão e não vira '
+      + 'cadastro da operação sozinho. "Restaurar premissas padrão" apaga apenas as suas edições e '
+      + 'mantém os vencimentos escolhidos. O que você salvar fica <b>neste navegador</b>, em chave '
+      + 'própria (<code>' + m.esc(m.LS_PREM) + '</code>). A Calculadora do Boi não foi alterada.</div>'
       + '</details>';
   }
   function lerForm(){
-    var o = {}, els = document.querySelectorAll('[data-ve-campo]');
+    /* ETAPA 6 — só o que o operador tocou. Campo que ainda mostra o valor do
+       cenário padrão ou da Calculadora continua sendo DELES: gravá-lo aqui
+       transformaria uma suposição em cadastro, e no dia em que o padrão
+       mudasse esta tela continuaria com o antigo sem ninguém saber. */
+    var o = {}, els = document.querySelectorAll('[data-ve-campo][data-ve-origem="personalizado"]');
     Array.prototype.forEach.call(els, function(el){
       var k = el.getAttribute('data-ve-campo'), v = String(el.value == null ? '' : el.value).trim();
       if (v !== '') o[k] = v;
     });
     var vr = document.getElementById('veVencRef');
     if (vr && vr.value) o.veVencRef = vr.value;
+    /* Vazio é "automático": a chave sai do objeto em vez de guardar um
+       marcador, para que "automático" seja a ausência de escolha e não mais
+       um valor a interpretar depois. */
+    ['CCM','SJC'].forEach(function(pre){
+      var el = document.getElementById('veVenc' + pre);
+      if (el && el.value) o['veVenc' + pre] = el.value;
+    });
     return o;
   }
   function salvarForm(silencioso){
@@ -13461,6 +13806,14 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     /* O seletor de vencimento vive fora do formulário; sem este resgate ele
        se perderia a cada "Salvar" feito com o formulário fechado. */
     if (!novo.veVencRef && atual.veVencRef) novo.veVencRef = atual.veVencRef;
+    /* Idem para os grãos — mas só quando o formulário está fechado. Com ele
+       aberto, apagar a escolha é justamente como se volta ao automático. */
+    if (!document.getElementById('veVencCCM')){
+      ['CCM','SJC'].forEach(function(pre){
+        var k = 'veVenc' + pre;
+        if (!novo[k] && atual[k]) novo[k] = atual[k];
+      });
+    }
     var ok = m.salvarPremissas(novo);
     var av = document.getElementById('veAviso');
     if (av && !silencioso){
@@ -13469,9 +13822,21 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     }
     render();
   }
+  /* ETAPA 6 — restaurar o padrão apaga as EDIÇÕES, não as preferências de
+     vencimento: quem escolheu o contrato de janeiro não pediu para voltar ao
+     de outubro só porque quis descartar um custo que digitou errado. */
   function limparPremissas(){
-    mot().salvarPremissas({});
+    var m = mot(), atual = m.premissas(), guarda = {};
+    ['veVencRef','veVencCCM','veVencSJC'].forEach(function(k){
+      if (atual[k]) guarda[k] = atual[k];
+    });
+    m.salvarPremissas(guarda);
     render();
+    var av = document.getElementById('veAviso');
+    if (av){
+      av.textContent = 'Suas edições foram descartadas. A tela voltou ao cenário padrão do Radar.';
+      av.className = 've-prem-nota ve-ok';
+    }
   }
   function copiarDaCalculadora(){
     var m = mot(), base = null;
@@ -13502,12 +13867,13 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
   /* ══════════════════════════════════════════════════════════════════════
      CABEÇALHO E DIAGNÓSTICO
      ══════════════════════════════════════════════════════════════════════ */
-  function lerFontes(vencRef){
+  function lerFontes(vencRef, cas){
     var m = mot();
     return FONTES.map(function(f){
-      var aba = abaDe(f, vencRef);
+      var aba = abaDe(f, vencRef, cas);
       var u = aba ? m.ultima(aba) : null;
-      return { f:f, aba:aba, u:u, idade: u ? m.diasDesde(u.data) : null };
+      var c = (cas || {})[f.pre] || null;
+      return { f:f, aba:aba, u:u, idade: u ? m.diasDesde(u.data) : null, cas:c };
     });
   }
   function renderCab(L){
@@ -13579,21 +13945,66 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
   /* ══════════════════════════════════════════════════════════════════════
      FILTRO — vencimento de referência
      ══════════════════════════════════════════════════════════════════════ */
-  function renderFiltro(vencRef){
+  function rotC(sn){
+    if (!sn) return '—';
+    try { if (typeof window._contractLabel === 'function') return window._contractLabel(sn); } catch(e){}
+    return sn;
+  }
+  /* Um seletor por grão: "Automático" segue o BGI; qualquer outro valor é a
+     escolha do operador e fica guardada até ele voltar ao automático. */
+  function selVenc(pre, c, m){
+    var l = m.vigentes(pre);
+    var sel = c && c.manual ? c.aba : '';
+    var ops = '<option value=""' + (sel ? '' : ' selected') + '>Automático — vinculado ao BGI</option>'
+      + l.map(function(sn){
+          return '<option value="' + m.esc(sn) + '"' + (sn === sel ? ' selected' : '') + '>'
+               + m.esc(rotC(sn)) + '</option>';
+        }).join('');
+    return '<label class="ve-campo ve-campo-h"><span>' + (pre === 'CCM' ? 'Milho futuro (CCM)' : 'Soja futura (SJC)')
+         + '</span><select id="veVenc' + pre + '">' + ops + '</select></label>';
+  }
+  function linhaCas(rot, pre, c, m){
+    var txt, cls = '';
+    if (!c || !c.aba){ txt = 'sem contrato correspondente'; cls = ' ve-cas-falta'; }
+    else if (c.manual) txt = rotC(c.aba) + ' — escolhido à mão';
+    else txt = rotC(c.aba) + ' — ' + m.criterioRot(c);
+    return '<div class="ve-cas-item' + cls + '"><span>' + m.esc(rot) + '</span><strong>'
+         + m.esc(txt) + '</strong></div>';
+  }
+  function renderFiltro(vencRef, cas){
     var m = mot(), host = document.getElementById('veFiltro');
     if (!host) return;
     var l = m.vigentes('BGI');
     if (!l.length){ host.innerHTML = ''; return; }
+    var cC = (cas || {}).CCM, cS = (cas || {}).SJC;
+    var faltam = [];
+    if (cC && !cC.aba) faltam.push(cC.motivo);
+    if (cS && !cS.aba) faltam.push(cS.motivo);
     host.innerHTML = '<label class="ve-campo ve-campo-h"><span>Vencimento BGI de referência</span>'
       + '<select id="veVencRef">'
       + l.map(function(sn){
-          var rot = (typeof window._contractLabel === 'function') ? window._contractLabel(sn) : sn;
           return '<option value="' + m.esc(sn) + '"' + (sn === vencRef ? ' selected' : '') + '>'
-               + m.esc(rot) + '</option>';
+               + m.esc(rotC(sn)) + '</option>';
         }).join('')
       + '</select></label>'
-      + '<span class="ve-filtro-nota">Vale para o card do futuro, para o gráfico do boi e para a '
-      + 'tabela de venda. Os demais contratos continuam listados.</span>';
+      + selVenc('CCM', cC, m)
+      + selVenc('SJC', cS, m)
+      /* ETAPA 6 — os três contratos efetivamente usados, escritos. Sem isto
+         o operador vê três preços e não sabe de que meses eles são. */
+      + '<div class="ve-cas">'
+      +   '<div class="ve-cas-tit">Contratos em uso nesta tela</div>'
+      +   linhaCas('Vencimento de referência (BGI)', 'BGI',
+                   { aba:vencRef, manual:false, criterio:'mesmo', defasagem:0 }, m)
+      +   linhaCas('Milho futuro utilizado (CCM)', 'CCM', cC, m)
+      +   linhaCas('Soja futura utilizada (SJC)', 'SJC', cS, m)
+      + '</div>'
+      + '<span class="ve-filtro-nota">O BGI escolhido comanda preço, gráficos, relação de troca e '
+      + 'margem. Milho e soja acompanham por <b>horizonte</b>: mesmo mês quando existe, senão o '
+      + 'primeiro vencimento posterior — os calendários do milho e da soja têm menos meses que o do '
+      + 'boi, então dois BGI seguidos podem cair no mesmo contrato de grão, e isso é o calendário da '
+      + 'B3, não um erro. Os preços físicos CEPEA não dependem de vencimento nenhum.'
+      + (faltam.length ? ' <b class="ve-cas-falta">' + m.esc(faltam.join(' ')) + '</b>' : '')
+      + '</span>';
   }
 
   /* ══════════════════════════════════════════════════════════════════════
@@ -13690,7 +14101,7 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     }
 
     /* Custo e margem — só com premissas. */
-    var prem = m.premissas();
+    var prem = premEfe().p;
     var precoRef = by.bgi.u ? by.bgi.u.preco : (by.boiFis.u ? by.boiFis.u.preco : null);
     var r = (precoRef != null) ? m.custo(precoRef, prem) : null;
     if (r){
@@ -13835,6 +14246,125 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
   }
 
   /* ══════════════════════════════════════════════════════════════════════
+     C2 · MARGEM DO CICLO — ETAPA 6
+     ──────────────────────────────────────────────────────────────────────
+     O resultado econômico do lote ao preço do vencimento escolhido. Todo
+     número aqui sai de `__3M_calcEngine` — o motor auditado nas Etapas 2 e
+     2.1 — através de `_veMotor.custo`. Esta tela NÃO tem fórmula financeira
+     própria e não deve ganhar uma: o único cálculo feito aqui é dividir dois
+     números que o motor já devolveu (custo total ÷ arrobas de carcaça), e
+     ele está rotulado como a divisão que é.
+
+     Trocar o vencimento muda SÓ o preço de venda. Dias de cocho, GMD, peso
+     de entrada e custos continuam onde estavam: o contrato de janeiro não
+     encurta o confinamento de ninguém. Quando o horizonte do contrato não
+     comporta o ciclo, isso vira observação na tela — não um ajuste
+     silencioso das premissas zootécnicas. */
+  function kpi(rot, val, sub, cls){
+    return '<div class="ve-kpi' + (cls ? ' ' + cls : '') + '">'
+         + '<div class="ve-kpi-rot">' + rot + '</div>'
+         + '<div class="ve-kpi-val">' + val + '</div>'
+         + '<div class="ve-kpi-sub">' + (sub || '') + '</div></div>';
+  }
+  function renderMargem(L, vencRef, cas){
+    var m = mot(), host = document.getElementById('veMargem');
+    if (!host) return;
+    var E = premEfe();
+    var by = {}; L.forEach(function(x){ by[x.f.k] = x; });
+    var uB = by.bgi ? by.bgi.u : null;
+    var preco = uB ? uB.preco : null;
+
+    if (!E.completas){
+      host.innerHTML = insuf('Faltam premissas da operação: '
+        + E.falta.map(function(f){ return m.esc(f[1]); }).join(', ')
+        + '. Nenhuma margem é apresentada enquanto faltar — um número de enchimento aqui '
+        + 'seria pior que a ausência dele.');
+      return;
+    }
+    if (preco == null){
+      host.innerHTML = insuf('O vencimento de referência está sem pregão válido na planilha. '
+        + 'Sem preço de venda não há margem a calcular.');
+      return;
+    }
+    var r = m.custo(preco, E.p);
+    if (!r){
+      host.innerHTML = insuf('O motor de custo não respondeu com as premissas atuais.');
+      return;
+    }
+    var arC = isFinite(r.arC) ? r.arC : null;
+    var custoArroba = (arC && arC > 0 && isFinite(r.cT)) ? (r.cT / arC) : null;
+
+    /* Horizonte: o ciclo cabe até o vencimento escolhido? */
+    var kRef = m.chaveVenc(vencRef);
+    var hojeK = new Date().getFullYear() * 12 + new Date().getMonth();
+    var mesesAteVenc = (kRef == null) ? null : (kRef - hojeK);
+    var mesesCiclo = isFinite(r.d) ? (r.d / 30.4) : null;
+    var obsHorizonte = '';
+    if (mesesAteVenc != null && mesesCiclo != null){
+      if (mesesAteVenc < Math.floor(mesesCiclo)){
+        obsHorizonte = '<div class="ve-obs"><b>Observação de horizonte.</b> O ciclo tem '
+          + m.n2(r.d, 0) + ' dias (cerca de ' + m.n2(mesesCiclo, 1) + ' meses) e o vencimento de '
+          + 'referência está a ' + mesesAteVenc + ' ' + (mesesAteVenc === 1 ? 'mês' : 'meses') + '. '
+          + 'Um lote que entrasse hoje sairia depois deste contrato. As premissas <b>não</b> foram '
+          + 'ajustadas por causa disso — a conta continua sendo a do seu ciclo, vendido a este preço.</div>';
+      }
+    }
+    /* Quando não há perdas nem dedução sobre a receita, "custo por arroba
+       vendida" e "break-even de lucro líquido" são o MESMO número por
+       construção — o break-even é o custo total dividido pelas mesmas
+       arrobas. Dois rótulos para um número confundem se ninguém disser por
+       quê, então diz-se. */
+    var iguais = (custoArroba != null && isFinite(r.bLL)
+                  && Math.abs(custoArroba - r.bLL) < 0.005);
+    var obsIguais = iguais
+      ? '<div class="ve-obs-leve">Custo por arroba vendida e break-even de lucro líquido estão '
+        + 'iguais porque o cenário está sem perdas e sem dedução sobre a receita: com os dois em '
+        + 'zero, o break-even é o próprio custo total dividido pelas mesmas arrobas. Informe '
+        + 'perdas/mortalidade e dedução nas premissas e eles se separam.</div>'
+      : '';
+    var cCCM = (cas || {}).CCM;
+    var obsMilho = (E.origem.milhoSc === 'padrao' && cCCM && cCCM.aba)
+      ? '<div class="ve-obs-leve">O preço do milho da dieta vem do cenário padrão do card '
+        + 'BGI × cAI (média da curva CCM na janela do cocho), não do contrato ' + m.esc(cCCM.aba)
+        + ' mostrado acima. São duas perguntas diferentes: quanto custa a dieta ao longo do ciclo, '
+        + 'e quanto vale o milho naquele vencimento.</div>'
+      : '';
+
+    host.innerHTML =
+      '<div class="ve-kpi-grid">'
+      + kpi('Preço de venda', 'R$ ' + m.n2(preco, 2),
+            m.esc(rotC(vencRef)) + ' · ' + m.dBR(uB.data), 've-kpi-forte')
+      + kpi('Peso projetado de abate', m.n2(r.pAb, 1) + ' kg',
+            'entrada ' + m.n2(m.num(E.p.pesoEntradaKg), 0) + ' kg · ' + m.n2(r.d, 0) + ' dias')
+      + kpi('Arrobas comercializadas', m.n2(arC, 2) + ' @', 'carcaça, por cabeça')
+      + kpi('Custo total por cabeça', 'R$ ' + m.n2(r.cT, 2), 'inclui reposição, dieta e período')
+      + kpi('Custo por arroba vendida', custoArroba == null ? '—' : 'R$ ' + m.n2(custoArroba, 2),
+            'custo total ÷ arrobas de carcaça')
+      + kpi('Break-even — margem bruta', 'R$ ' + m.n2(r.bMB, 2), 'zera a margem bruta')
+      + kpi('Break-even — lucro líquido', isFinite(r.bLL) ? 'R$ ' + m.n2(r.bLL, 2) : '—',
+            'zera o lucro líquido')
+      + kpi('Margem bruta por cabeça', 'R$ ' + m.n2(r.mB, 2),
+            sinalTxt(r.mbP * 100, 2, '% da receita líquida'), sinalCls(r.mB))
+      + kpi('Lucro líquido por cabeça', isFinite(r.lL) ? 'R$ ' + m.n2(r.lL, 2) : '—',
+            isFinite(r.llP) ? sinalTxt(r.llP * 100, 2, '% da receita líquida') : '', sinalCls(r.lL))
+      + kpi('ROI do ciclo', isFinite(r.roi) ? sinalTxt(r.roi * 100, 2, '%') : '—',
+            'lucro ÷ capital empregado', sinalCls(r.roi))
+      + kpi('Custo da arroba incremental', isFinite(r.cAI) ? 'R$ ' + m.n2(r.cAI, 2) : '—',
+            'o que custa cada @ produzida')
+      + kpi('Cabeças do lote', m.n2(r.nC, 0),
+            isFinite(r.lLote) ? 'resultado do lote: R$ ' + m.n2(r.lLote, 2) : '')
+      + '</div>'
+      + obsHorizonte + obsIguais + obsMilho
+      + '<div class="ve-nota">Tudo acima sai do motor de custo <code>__3M_calcEngine</code>, o mesmo '
+      + 'da Calculadora do Boi e o mesmo que as Etapas 2 e 2.1 auditaram — esta tela não tem fórmula '
+      + 'financeira própria. O cenário veio de: <b>' + E.nPersonalizado + '</b> campo(s) seus, <b>'
+      + E.nCalculadora + '</b> da Calculadora e <b>' + E.nPadrao + '</b> do cenário padrão do Radar. '
+      + 'Mudar o vencimento troca o <b>preço de venda</b> e nada mais: dias de cocho, ganho, peso e '
+      + 'custos ficam como estão. A margem bruta é medida <b>sobre a receita líquida</b>; nada aqui '
+      + 'considera base regional, corretagem, emolumentos nem ajuste diário.</div>';
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
      D1 · VENDA DO BOI
      ══════════════════════════════════════════════════════════════════════ */
   function renderVenda(L, vencRef){
@@ -13845,7 +14375,7 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
       host.innerHTML = insuf('Nenhum contrato BGI vigente com pregão válido na planilha.');
       return;
     }
-    var prem = m.premissas();
+    var prem = premEfe().p;
     var base = m.custo(1, prem);               /* break-even não depende do preço de venda */
     var be = base ? base.bMB : null;
     var linhas = vs.map(function(sn){
@@ -13920,7 +14450,7 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
        Só vale quando a dieta das premissas é formada PELO PREÇO DO MILHO;
        com custo de dieta por dia não há ligação a medir, e dizer que há seria
        inventar uma sensibilidade que o modelo não tem. */
-    var prem = m.premissas();
+    var prem = premEfe().p;
     var pMilho = by.milhoFis.u ? by.milhoFis.u.preco : null;
     var usaMilho = (prem.dietaModo === 'ms') && (m.num(prem.milhoSc) != null)
                 && (prem.sistema === 'conf' || prem.sistema === 'rc');
@@ -13971,7 +14501,7 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     var m = mot(), host = document.getElementById('veProtecao');
     if (!host) return;
     var by = {}; L.forEach(function(x){ by[x.f.k] = x; });
-    var prem = m.premissas(), T = m.travas();
+    var prem = premEfe().p, T = m.travas();
     var h = '', riscos = [];
 
     /* ── Exposição do boi ─────────────────────────────────────────────── */
@@ -14093,16 +14623,19 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     if (!montar()) return;
     var m = mot();
     if (!m){ return; }
+    _PE = null;                         /* premissas efetivas: uma leitura por redesenho */
     var prem = m.premissas();
     var vigs = m.vigentes('BGI');
     var vencRef = (prem.veVencRef && vigs.indexOf(prem.veVencRef) >= 0) ? prem.veVencRef
                 : (vigs.length ? vigs[0] : null);
-    var L = lerFontes(vencRef);
+    var cas = casamento(vencRef, prem);
+    var L = lerFontes(vencRef, cas);
     try { renderCab(L); }                 catch(e){ console.warn('Visão Executiva — cabeçalho:', e); }
-    try { renderFiltro(vencRef); }        catch(e){ console.warn('Visão Executiva — filtro:', e); }
+    try { renderFiltro(vencRef, cas); }   catch(e){ console.warn('Visão Executiva — filtro:', e); }
     try { renderCards(L, vencRef); }      catch(e){ console.warn('Visão Executiva — indicadores:', e); }
     try { renderGraficos(L, vencRef); }   catch(e){ console.warn('Visão Executiva — gráficos:', e); }
     try { renderPrem(); }                 catch(e){ console.warn('Visão Executiva — premissas:', e); }
+    try { renderMargem(L, vencRef, cas); }catch(e){ console.warn('Visão Executiva — margem:', e); }
     try { renderVenda(L, vencRef); }      catch(e){ console.warn('Visão Executiva — venda:', e); }
     try { renderInsumos(L); }             catch(e){ console.warn('Visão Executiva — insumos:', e); }
     try { renderProtecao(L, vencRef); }   catch(e){ console.warn('Visão Executiva — proteção:', e); }
@@ -23995,6 +24528,12 @@ function updatePreco() {
       taxaJuros:    _v('caiJuros')   || base.taxaJuros    || '14',
       jurosMult: base.jurosMult || '1'
     };
+
+    /* ETAPA 6 — publica o cenário para quem mais precisar dele, sem
+       reconstruí-lo. Quem lê: a Visão Executiva, como terceira camada de
+       premissas (padrão), atrás do que o operador salvou e do que ele
+       preencheu na Calculadora. */
+    try { window.__CAI_CENARIO = { st:stIn, em:Date.now() }; } catch(e){}
 
     var calc;
     try { calc = engine(stIn, '0'); } catch(e){ calc = null; }
@@ -41341,6 +41880,21 @@ function updatePreco() {
     updateBGIvsCAI();
   }
   try { window.caiVoltarPadrao = caiVoltarPadrao; } catch(e){}
+
+  /* ETAPA 6 — o cenário padrão de confinamento, sob demanda.
+     Se o card ainda não rodou nesta sessão, roda uma vez: ele é a única
+     coisa no painel que sabe montar este objeto, e mandá-lo montar é mais
+     barato e muito mais seguro do que ter uma segunda cópia da montagem
+     em outro lugar. O contêiner do gráfico existe no documento desde a
+     carga, então isto funciona mesmo com a seção nunca aberta. */
+  function _caiCenarioPadrao(){
+    if (!window.__CAI_CENARIO){
+      try { updateBGIvsCAI(); } catch(e){ console.warn('Cenário padrão do confinamento:', e); }
+    }
+    var c = window.__CAI_CENARIO;
+    return (c && c.st) ? c.st : null;
+  }
+  try { window._caiCenarioPadrao = _caiCenarioPadrao; } catch(e){}
 
   function caiCopiarMargem(){
     var base = {};
