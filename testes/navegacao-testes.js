@@ -69,8 +69,18 @@ const GRUPOS = ['exec','agro','macro','confin','hedge','estudo','relato'];
   ver('N1 as 35 seções anteriores continuam existindo',
       SECOES_ANTES.every(id => A.ids.indexOf(id) >= 0),
       SECOES_ANTES.filter(id => A.ids.indexOf(id) < 0).join(','));
-  ver('N1 duas seções novas: Calculadora e Relatórios',
-      A.ids.indexOf('m3_4_1') >= 0 && A.ids.indexOf('m3_7_1') >= 0 && A.nSecoes === 37, A.nSecoes);
+  /* ETAPA 6 (inteligência operacional) — a expectativa mudou porque a árvore
+     cresceu por pedido: 37 seções passaram a 42 com as cinco telas novas. O
+     teste continua exigindo os ids nominalmente, que é o que importa; contar
+     42 sem dizer quais passaria com qualquer conjunto de cinco. */
+  ver('N1 duas seções da Etapa 5: Calculadora e Relatórios',
+      A.ids.indexOf('m3_4_1') >= 0 && A.ids.indexOf('m3_7_1') >= 0, A.nSecoes);
+  ver('N1 cinco seções da inteligência operacional',
+      ['m3_4_2','m3_4_3','m3_3_8','m3_3_9','m3_3_10'].every(id => A.ids.indexOf(id) >= 0)
+        && A.nSecoes === 42,
+      A.nSecoes + ' seções · faltando: '
+        + ['m3_4_2','m3_4_3','m3_3_8','m3_3_9','m3_3_10'].filter(id => A.ids.indexOf(id) < 0).join(',')
+        || 'nenhuma');
   ver('N1 só Mercado Agropecuário, Macro, Confinamento, Hedge e Estudos fixam universo',
       A.univ[0] === null && A.univ[1] === 'agro' && A.univ[2] === 'macro'
       && A.univ[3] === 'agro' && A.univ[4] === 'agro' && A.univ[5] === 'agro' && A.univ[6] === null,
