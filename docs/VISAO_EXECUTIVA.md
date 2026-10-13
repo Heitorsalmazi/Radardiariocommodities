@@ -311,7 +311,12 @@ Não volta para SJCX26.
 
 Ao lado dos seletores, a tela nomeia o que está efetivamente em uso:
 *Vencimento de referência (BGI)*, *Milho futuro utilizado (CCM)* e *Soja futura
-utilizada (SJC)*, cada um com o critério.
+utilizada (SJC)*, cada um com o critério em duas palavras.
+
+A explicação da regra **não** fica na tela: ela mora aqui, nesta seção. O que o
+painel mostra é o critério de cada contrato e, quando falta correspondente, o
+motivo da ausência — isso é informação, não explicação, e sem ela o operador
+não saberia por que um card está vazio.
 
 ### Seleção manual
 
