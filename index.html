@@ -12567,6 +12567,1300 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
 }
 </style>
 
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   INTELIGÊNCIA OPERACIONAL DO CONFINAMENTO — estilo
+   ──────────────────────────────────────────────────────────────────────────
+   Mesma gramática da Visão Executiva (grade de números, tabela com caixa de
+   rolagem própria, nota ao pé). O que é novo aqui são duas marcas de leitura
+   que o pedido exige: observado × estimado, e caixa × resultado.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.io-barra{ display:flex; flex-wrap:wrap; align-items:flex-end; gap: var(--space-3); margin-bottom: var(--space-3); }
+.io-campo{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+.io-campo > span{ font-size: var(--fs-sm); color: var(--text-muted); display:flex; align-items:center; gap:5px; }
+.io-campo input, .io-campo select{
+  font-family: var(--font-display); font-size: var(--fs-base); padding:5px 8px;
+  border:1px solid var(--border-subtle); border-radius:7px; background:#fff; min-width:0;
+}
+.io-campo-h{ min-width:150px; }
+.io-campos{ display:grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--space-2) var(--space-3); }
+.io-campos-cen{ grid-template-columns: 1fr; gap:6px; }
+.io-fs{ border:1px solid var(--border-subtle); border-radius:10px; padding:10px 12px 12px; margin:0 0 var(--space-3); }
+.io-fs legend{ font-size: var(--fs-micro); text-transform:uppercase; letter-spacing:.08em; font-weight:700; color: var(--text-muted); padding:0 4px; }
+.io-det{ margin-top: var(--space-4); }
+.io-det > summary{ cursor:pointer; font-size: var(--fs-sm); color: var(--text-muted); padding:4px 0; }
+
+/* ── Observado × estimado ───────────────────────────────────────────────
+   A distinção mais importante destas telas. O observado é cinza e discreto
+   porque é fato e não precisa chamar atenção; o estimado é marcado porque
+   quem lê precisa lembrar, a cada coluna, que aquilo é projeção. */
+.io-obs, .io-est{
+  font-style:normal; font-size: var(--fs-micro); font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; margin-left:5px; white-space:nowrap;
+}
+.io-obs{ color:#9ca3af; }
+.io-est{ color:#b45309; }
+.io-tab th .io-obs, .io-tab th .io-est{ display:block; margin:1px 0 0; }
+.io-est-c{ background:rgba(245,158,11,.045); }
+
+/* ── Grade de resultados ───────────────────────────────────────────── */
+.io-kpi-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: var(--space-3); }
+.io-kpi{ border:1px solid var(--border-subtle); border-radius:12px; padding:10px 12px;
+  display:flex; flex-direction:column; gap:2px; min-width:0; }
+.io-kpi-rot{ font-size: var(--fs-micro); text-transform:uppercase; letter-spacing:.07em; font-weight:700; color: var(--text-muted); }
+.io-kpi-val{ font-size: var(--fs-xl); font-weight:800; line-height:1.15; }
+.io-kpi-sub{ font-size: var(--fs-micro); color: var(--text-muted); line-height:1.35; }
+.io-kpi.io-alta .io-kpi-val{ color:#0f766e; }
+.io-kpi.io-baixa .io-kpi-val{ color:#be123c; }
+
+/* ── Tabelas ───────────────────────────────────────────────────────────
+   Caixa de rolagem própria: a tabela rola dentro dela, a página não. */
+.io-tab-wrap{ overflow-x:auto; border:1px solid var(--border-subtle); border-radius:10px; }
+.io-tab{ width:100%; border-collapse:collapse; font-size: var(--fs-sm); }
+.io-tab th, .io-tab td{ padding:7px 10px; border-bottom:1px solid var(--border-subtle); text-align:left; white-space:nowrap; }
+.io-tab thead th{ font-size: var(--fs-micro); text-transform:uppercase; letter-spacing:.06em; color: var(--text-muted); vertical-align:bottom; }
+.io-tab tbody th{ font-weight:700; }
+.io-tab .num{ text-align:right; font-variant-numeric: tabular-nums; }
+.io-tab tr:last-child td{ border-bottom:0; }
+.io-tr-ref{ background:rgba(15,118,110,.06); }
+.io-tr-ref th, .io-tr-ref td{ font-weight:700; }
+.io-tr-alerta{ background:rgba(190,18,60,.05); }
+.io-tr-nota td{ font-size: var(--fs-micro); color: var(--text-muted); white-space:normal; padding-top:0; }
+.io-alta{ color:#0f766e; }
+.io-baixa{ color:#be123c; }
+.io-min{ font-size: var(--fs-micro); color:#9ca3af; }
+
+/* ── Caixa do ajuste: coluna visualmente separada ───────────────────────
+   Ela não é resultado, e não pode parecer resultado. A borda à esquerda
+   existe para que o olho não some essa coluna com as de dinheiro ganho. */
+.io-caixa{ border-left:2px solid #f59e0b !important; background:rgba(245,158,11,.05); }
+
+/* ── Cenários ──────────────────────────────────────────────────────── */
+.io-cen-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-3); }
+.io-cen-col{ border:1px solid var(--border-subtle); border-radius:12px; padding:12px 14px; min-width:0; }
+.io-cen-base{ border-color: var(--m3-accent); }
+.io-cen-tit{ font-size: var(--fs-md); font-weight:800; margin-bottom:8px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.io-tab-cen{ width:100%; border-collapse:collapse; font-size: var(--fs-sm); margin-top:10px; }
+.io-tab-cen th{ text-align:left; font-weight:500; color: var(--text-muted); padding:4px 0; }
+.io-tab-cen td{ text-align:right; font-variant-numeric: tabular-nums; font-weight:700; padding:4px 0; }
+
+/* ── Selos de origem e avisos ──────────────────────────────────────── */
+.io-selo{ font-style:normal; font-size: var(--fs-micro); font-weight:700; text-transform:uppercase;
+  letter-spacing:.05em; padding:0 4px; border-radius:3px; border:1px solid var(--border-subtle);
+  color: var(--text-muted); white-space:nowrap; }
+.io-selo-personalizado{ color: var(--m3-accent); border-color: var(--m3-accent); }
+.io-selo-calculadora{ color:#0f766e; border-color:#99f6e4; }
+.io-selo-padrao{ color:#6b7280; }
+.io-selo-pend{ color:#be123c; border-color:#fecdd3; }
+
+.io-fonte{ font-size: var(--fs-sm); color: var(--text-muted); line-height:1.5; }
+.io-derivado{ font-size: var(--fs-sm); color: var(--text-muted); line-height:1.5;
+  border-left:2px solid var(--border-strong); padding-left:10px; margin: var(--space-3) 0; }
+.io-sub{ font-size: var(--fs-micro); text-transform:uppercase; letter-spacing:.08em; font-weight:700;
+  color: var(--text-muted); margin: var(--space-4) 0 var(--space-2); }
+.io-insuf{ font-size: var(--fs-sm); color: var(--text-muted); line-height:1.55;
+  border-left:3px solid #be123c; padding-left:10px; }
+.io-nota{ margin-top: var(--space-4); font-size: var(--fs-sm); color: var(--text-muted); line-height:1.55;
+  border-left:2px solid var(--border-strong); padding-left:10px; max-width:92ch; }
+.io-nota-forte{ border-left-color:#f59e0b; }
+.io-acoes{ margin-top: var(--space-3); }
+.io-btn{ cursor:pointer; background:#fff; border:1px solid var(--border-subtle); border-radius:7px;
+  padding:5px 11px; font-family: var(--font-display); font-size: var(--fs-sm); color: var(--text-muted); }
+.io-btn:hover{ border-color: var(--m3-accent); color: var(--m3-accent); }
+
+@media (max-width: 640px){
+  .io-campos{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .io-campo-h{ min-width:0; width:100%; }
+  .io-barra{ gap: var(--space-2); }
+}
+</style>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   INTELIGÊNCIA OPERACIONAL DO CONFINAMENTO — motor (Etapa 6 · 13/10/2026)
+   ──────────────────────────────────────────────────────────────────────────
+   NÃO EXISTE MOTOR DE CÁLCULO AQUI. Este arquivo é uma camada de composição:
+   ele arruma entradas, chama os motores que as Etapas 2 e 2.1 auditaram e
+   organiza as saídas. As duas únicas contas feitas neste arquivo são divisões
+   entre números que os motores já devolveram, e cada uma está rotulada com o
+   conceito que representa.
+
+     __3M_calcEngine  — custo, margem, break-even, ROI (Calculadora do Boi)
+     _hsDimensiona    — dimensionamento de contratos (Simulador de Hedge)
+     _veMotor         — premissas efetivas, vencimentos, séries
+
+   PREMISSAS: UM CONJUNTO SÓ. A Visão Executiva já resolve "de onde vem cada
+   campo" em `premissasEfetivas` (personalizado > Calculadora do Boi > cenário
+   padrão do card BGI × cAI). Esta camada lê de lá. Um segundo conjunto de
+   premissas seria duas respostas para a mesma pergunta, divergindo em
+   silêncio na primeira vez que alguém mexesse num.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  function ve(){ return window._veMotor || null; }
+  /* UM PARSER SÓ, E É O AUDITADO.
+     A primeira versão desta função tinha um parser pt-BR próprio que tirava
+     os pontos antes de converter — e as premissas guardam "1.55" com ponto
+     decimal. O GMD virava 155 kg/dia e o peso de abate, 16.650 kg. O número
+     era absurdo o bastante para saltar aos olhos no teste; se fosse 1,55 →
+     1550 num campo de custo, teria passado.
+     `_veMotor.num` já resolve isto desde a Etapa 4, com teste: ponto é
+     sempre separador decimal e separadores misturados são RECUSADOS em vez
+     de adivinhados. Duas interpretações de "o que é este número" num mesmo
+     painel é defeito esperando a hora. */
+  function num(v){
+    var m = ve();
+    if (m && typeof m.num === 'function') return m.num(v);
+    if (v == null || v === '') return null;
+    if (typeof v === 'number') return isFinite(v) ? v : null;
+    var s = String(v).trim();
+    if (!/^-?\d+(?:[.,]\d+)?$/.test(s)) return null;
+    var n = Number(s.replace(',', '.'));
+    return isFinite(n) ? n : null;
+  }
+
+  /* ── Premissas: a mesma fonte da Visão Executiva ───────────────────── */
+  function premissas(){
+    var m = ve();
+    if (m && typeof m.premissasEfetivas === 'function'){
+      try { return m.premissasEfetivas(); } catch(e){}
+    }
+    return { p:{}, origem:{}, falta:[], completas:false,
+             nPersonalizado:0, nCalculadora:0, nPadrao:0 };
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     1 · PESO FINAL ↔ GANHO MÉDIO DIÁRIO
+     ──────────────────────────────────────────────────────────────────────
+     O motor de custo deriva o peso de abate de `pesoEntradaKg + gmd × dias`.
+     Quem planeja um lote às vezes parte do outro lado: "quero abater a 540
+     kg em 105 dias, que ganho isso exige?". Os dois caminhos são a mesma
+     equação lida em direções diferentes — não há cálculo novo, há escolha de
+     qual variável é entrada.
+
+     O que NÃO se faz aqui: aceitar os dois como entrada. Peso final e GMD
+     informados ao mesmo tempo se contradizem na primeira divergência, e o
+     painel passaria a mostrar um peso de abate que não corresponde ao ganho
+     que ele mesmo exibe. Um é entrada, o outro é derivado e aparece marcado
+     como derivado.                                                        */
+  function reconcilia(p, modo){
+    var dias = num(p.diasCocho) || 0;
+    var pE   = num(p.pesoEntradaKg);
+    var gmd  = num(p.gmdConf);
+    var pF   = num(p.pesoFinalKg);
+    var r = { modo:(modo === 'peso' ? 'peso' : 'gmd'), dias:dias, pesoEntrada:pE,
+              gmd:null, pesoFinal:null, derivado:null, aviso:null };
+    if (pE == null || !(dias > 0)){
+      r.aviso = 'Informe peso de entrada e dias de cocho.';
+      return r;
+    }
+    if (r.modo === 'peso'){
+      if (pF == null){ r.aviso = 'Informe o peso final pretendido.'; return r; }
+      if (pF <= pE){ r.aviso = 'O peso final precisa ser maior que o de entrada.'; return r; }
+      r.pesoFinal = pF;
+      r.gmd = (pF - pE) / dias;
+      r.derivado = 'gmd';
+    } else {
+      if (gmd == null){ r.aviso = 'Informe o ganho médio diário.'; return r; }
+      r.gmd = gmd;
+      r.pesoFinal = pE + gmd * dias;
+      r.derivado = 'pesoFinal';
+    }
+    return r;
+  }
+
+  /* Devolve as premissas prontas para o motor, com o GMD que a reconciliação
+     resolveu. `pesoFinalKg` não vai para o motor: ele não conhece esse campo,
+     e mandar um campo que o motor ignora seria fingir que ele foi usado. */
+  function paraMotor(p, modo){
+    var r = reconcilia(p, modo);
+    var q = {}; Object.keys(p).forEach(function(k){ if (k !== 'pesoFinalKg') q[k] = p[k]; });
+    if (r.gmd != null && isFinite(r.gmd)) q.gmdConf = String(r.gmd);
+    return { st:q, rec:r };
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     2 · SIMULAÇÃO DO LOTE
+     ──────────────────────────────────────────────────────────────────────
+     Chama o motor auditado e acrescenta DOIS rótulos de conceito que o
+     pedido exige distinguir:
+
+       custo por arroba PRODUZIDA     — o motor já calcula: é o `cAI`,
+         custo da arroba incremental = (cmv − aquisição − financeiro da
+         reposição) ÷ (arrobas de carcaça − arrobas de entrada). Mede o que
+         custou PRODUZIR cada arroba nova, sem o preço do animal que entrou.
+
+       custo por arroba COMERCIALIZADA — custo total ÷ arrobas de carcaça.
+         Mede quanto cada arroba VENDIDA precisa pagar, e por isso inclui a
+         aquisição. É uma divisão entre dois números que o motor devolveu,
+         não uma fórmula nova.
+
+     Os dois respondem perguntas diferentes e costumam ser confundidos; é
+     por isso que o pedido manda identificar o conceito, e por isso que os
+     dois aparecem com a definição ao lado.                                */
+  function simular(p, precoVenda, modo){
+    if (typeof window.__3M_calcEngine !== 'function') return null;
+    var pm = paraMotor(p, modo);
+    var r = null;
+    try { r = window.__3M_calcEngine(pm.st, precoVenda); } catch(e){ return null; }
+    if (!r || !isFinite(r.bMB)) return null;
+
+    var arC = isFinite(r.arC) ? r.arC : null;
+    var arProduzidas = (isFinite(r.arC) && isFinite(r.arE)) ? (r.arC - r.arE) : null;
+    return {
+      motor: r, rec: pm.rec, st: pm.st, precoVenda: num(precoVenda),
+      /* conceitos rotulados */
+      custoArrobaProduzida: isFinite(r.cAI) ? r.cAI : null,
+      custoArrobaComercializada: (arC && arC > 0 && isFinite(r.cT)) ? (r.cT / arC) : null,
+      arrobasProduzidas: arProduzidas,
+      arrobasComercializadas: arC,
+      /* direto do motor, sem toque */
+      custoTotalCabeca: isFinite(r.cT) ? r.cT : null,
+      resultadoCabecaBruto: isFinite(r.mB) ? r.mB : null,
+      resultadoCabecaLiquido: isFinite(r.lL) ? r.lL : null,
+      resultadoLote: isFinite(r.lLote) ? r.lLote : null,
+      breakEvenBruto: isFinite(r.bMB) ? r.bMB : null,
+      breakEvenLiquido: isFinite(r.bLL) ? r.bLL : null,
+      margemBrutaPct: isFinite(r.mbP) ? r.mbP : null,
+      margemLiquidaPct: isFinite(r.llP) ? r.llP : null,
+      roi: isFinite(r.roi) ? r.roi : null,
+      cabecas: isFinite(r.nC) ? r.nC : null,
+      diasCiclo: isFinite(r.d) ? r.d : null,
+      pesoAbate: isFinite(r.pAb) ? r.pAb : null
+    };
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     3 · VENCIMENTOS × PERÍODO DE ABATE
+     ──────────────────────────────────────────────────────────────────────
+     Data prevista de abate = hoje + dias de ciclo. É uma projeção, e está
+     rotulada como projeção em toda parte onde aparece: o pedido manda
+     diferenciar observado de estimado, e a data de abate é o estimado mais
+     fácil de confundir com um fato.                                       */
+  function abateEm(diasCiclo){
+    var d = num(diasCiclo);
+    if (d == null || !(d > 0)) return null;
+    var hoje = new Date();
+    var alvo = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + Math.round(d));
+    return { data:alvo, k: alvo.getFullYear() * 12 + alvo.getMonth(), dias:Math.round(d) };
+  }
+
+  /* Contratos BGI vigentes, com preço e data OBSERVADOS na planilha e a
+     distância em meses até o abate projetado. */
+  function contratos(diasCiclo){
+    var m = ve(); if (!m) return [];
+    var ab = abateEm(diasCiclo);
+    return m.vigentes('BGI').map(function(sn){
+      var u = m.ultima(sn);
+      var k = m.chaveVenc(sn);
+      return { sn:sn, preco: u ? u.preco : null, data: u ? u.data : null,
+               k:k, mesesDoAbate: (ab && k != null) ? (k - ab.k) : null,
+               observado: !!u };
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     4 · RISCO DE BASE — três pernas, nenhuma presumida
+     ──────────────────────────────────────────────────────────────────────
+     O pedido é explícito: considerar praça física, referência de liquidação
+     e contrato negociado, e NÃO presumir base zero no vencimento.
+
+     É uma crença comum que o futuro converge para o físico no vencimento e
+     que, portanto, a base vai a zero. Para o BGI isso seria verdade contra o
+     INDICADOR DE LIQUIDAÇÃO, não contra a praça onde o boi é vendido: o que
+     sobra é a diferença entre a praça do produtor e o indicador, e essa não
+     tem razão nenhuma para ir a zero.
+
+     Por isso aqui a base é MEDIDA, em três pernas:
+       praça − CEPEA   quanto a sua praça paga a mais ou a menos que o
+                       indicador físico de referência;
+       CEPEA − BGI     a base clássica físico × futuro;
+       praça − BGI     a soma das duas, que é a base que de fato importa
+                       para quem vende naquela praça e trava na B3.
+
+     E a base NO VENCIMENTO é medida nos contratos que JÁ venceram, nos
+     últimos pregões de cada um. Isso não é projeção: é o que aconteceu.    */
+  function serieContrato(sn){
+    try { return (typeof window._baseSerieDiaria === 'function') ? window._baseSerieDiaria(sn) : null; }
+    catch(e){ return null; }
+  }
+  function seriePraca(chave){
+    try {
+      if (typeof window._rgSerie !== 'function') return null;
+      var s = window._rgSerie('Boi Gordo', chave);
+      if (!s || !s.obs) return null;
+      return s;
+    } catch(e){ return null; }
+  }
+  function pracas(){
+    try {
+      if (typeof window._rgPracas !== 'function') return [];
+      return window._rgPracas('Boi Gordo') || [];
+    } catch(e){ return []; }
+  }
+
+  function _estat(v){
+    if (!v.length) return null;
+    var s = v.slice().sort(function(a,b){ return a-b; });
+    var soma = 0; for (var i=0;i<v.length;i++) soma += v[i];
+    var meio = Math.floor(s.length/2);
+    return { n:v.length, media:soma/v.length,
+             mediana: s.length % 2 ? s[meio] : (s[meio-1]+s[meio])/2,
+             min:s[0], max:s[s.length-1] };
+  }
+
+  /* Base observada entre duas séries diárias, nas datas em que AS DUAS têm
+     cotação. Nunca interpola: um dia sem pregão numa das pontas não vira
+     observação inventada na outra. */
+  function _baseEntre(a, b, desdeISO){
+    if (!a || !b) return null;
+    var v = [], ult = null;
+    Object.keys(a).forEach(function(d){
+      if (desdeISO && d < desdeISO) return;
+      if (b[d] == null) return;
+      var x = a[d] - b[d];
+      if (!isFinite(x)) return;
+      v.push(x);
+      if (!ult || d > ult.data) ult = { data:d, valor:x };
+    });
+    var e = _estat(v);
+    if (!e) return null;
+    e.ultima = ult;
+    return e;
+  }
+
+  function baseObservada(chavePraca, contrato, meses){
+    var out = { praca:null, contrato:contrato || null, janelaMeses:meses || 12,
+                pracaCepea:null, cepeaBgi:null, pracaBgi:null, aviso:null };
+    var corte = new Date();
+    corte.setMonth(corte.getMonth() - (meses || 12));
+    var desde = corte.toISOString().slice(0,10);
+
+    var cepea = serieContrato('BOI GORDO');
+    if (!cepea || !Object.keys(cepea).length){ out.aviso = 'Série CEPEA indisponível.'; return out; }
+
+    if (chavePraca){
+      var sp = seriePraca(chavePraca);
+      if (sp){
+        out.praca = { chave:chavePraca, nome:sp.praca, uf:sp.uf, unidade:sp.unidade,
+                      unidadeMista: !!sp.unidadeMista };
+        out.pracaCepea = _baseEntre(sp.obs, cepea, desde);
+        if (sp.unidadeMista) out.aviso = 'Esta praça troca de unidade ao longo da série.';
+      } else {
+        out.aviso = 'Praça sem série na planilha.';
+      }
+    }
+    if (contrato){
+      var sc = serieContrato(contrato);
+      if (sc && Object.keys(sc).length){
+        out.cepeaBgi = _baseEntre(cepea, sc, desde);
+        if (out.praca){
+          var sp2 = seriePraca(chavePraca);
+          if (sp2) out.pracaBgi = _baseEntre(sp2.obs, sc, desde);
+        }
+      } else if (!out.aviso){
+        out.aviso = 'Contrato sem série na planilha.';
+      }
+    }
+    return out;
+  }
+
+  /* A BASE NO VENCIMENTO, medida nos contratos que já venceram. Para cada um,
+     a média da base nos últimos `nPregoes` pregões da série dele. */
+  function baseNoVencimento(chavePraca, nPregoes){
+    var n = nPregoes || 5;
+    var wb = window.workbook;
+    if (!wb || !wb.SheetNames) return [];
+    var cepea = serieContrato('BOI GORDO');
+    var sp = chavePraca ? seriePraca(chavePraca) : null;
+    var hojeK = new Date().getFullYear()*12 + new Date().getMonth();
+    var out = [];
+    wb.SheetNames.filter(function(sn){ return /^BGI[FGHJKMNQUVXZ]\d{2}$/.test(String(sn).trim().toUpperCase()); })
+      .forEach(function(sn){
+        var k = null;
+        try { k = window._contractMaturityKey(sn); } catch(e){}
+        if (k == null || k >= hojeK) return;              /* só os já vencidos */
+        var sc = serieContrato(sn);
+        if (!sc) return;
+        var datas = Object.keys(sc).sort();
+        if (datas.length < n) return;
+        var ult = datas.slice(-n);
+        var vC = [], vP = [];
+        ult.forEach(function(d){
+          if (cepea && cepea[d] != null) vC.push(cepea[d] - sc[d]);
+          if (sp && sp.obs && sp.obs[d] != null) vP.push(sp.obs[d] - sc[d]);
+        });
+        out.push({ sn:sn, k:k, pregoes:ult.length,
+                   fim:datas[datas.length-1],
+                   cepeaMenosBgi: _estat(vC), pracaMenosBgi: _estat(vP) });
+      });
+    out.sort(function(a,b){ return a.k - b.k; });
+    return out;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     5 · PIOR VARIAÇÃO ADVERSA OBSERVADA
+     ──────────────────────────────────────────────────────────────────────
+     Para quem VENDEU futuro, o movimento adverso é a ALTA: o ajuste diário
+     sai do caixa. Aqui não há distribuição, não há volatilidade implícita e
+     não há percentil de modelo — há a maior alta que a série daquele
+     contrato já registrou em janelas de k pregões, com a data em que
+     aconteceu e quantas janelas foram examinadas.
+
+     É um número MEDIDO. Ele não diz o que vai acontecer; diz o que já
+     aconteceu, que é a única coisa que uma série histórica pode dizer.     */
+  function piorVariacao(contrato, janelas){
+    var js = janelas || [1, 5, 21];
+    var s = serieContrato(contrato);
+    if (!s) return null;
+    var datas = Object.keys(s).sort();
+    if (datas.length < 2) return null;
+    var out = { contrato:contrato, primeiroPregao:datas[0], ultimoPregao:datas[datas.length-1],
+                nPregoes:datas.length, janelas:[] };
+    js.forEach(function(k){
+      if (datas.length <= k){ out.janelas.push({ k:k, insuficiente:true }); return; }
+      var pior = null, nJanelas = 0;
+      for (var i = k; i < datas.length; i++){
+        var de = s[datas[i-k]], para = s[datas[i]];
+        if (!(de > 0) || !(para > 0)) continue;
+        nJanelas++;
+        var alta = para - de;                       /* adverso para quem vendeu */
+        if (!pior || alta > pior.abs){
+          pior = { abs:alta, pct:(para/de - 1)*100, de:datas[i-k], ate:datas[i],
+                   precoDe:de, precoAte:para };
+        }
+      }
+      out.janelas.push({ k:k, nJanelas:nJanelas, pior:(pior && pior.abs > 0) ? pior : null });
+    });
+    return out;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     6 · ESCADA DE PROTEÇÃO — 0 / 25 / 50 / 75 / 100 %
+     ──────────────────────────────────────────────────────────────────────
+     Cada degrau é dimensionado por `_hsDimensiona`, o mesmo motor do
+     Simulador de Hedge, com o mesmo arredondamento de contrato. Nada é
+     redimensionado aqui.
+
+     A conta de resultado tem três linhas que o pedido manda separar:
+
+       resultado FÍSICO      — o boi vendido na praça, ao preço do cenário
+                               menos a base observada daquela praça;
+       resultado do DERIVATIVO — (preço travado − preço de liquidação) ×
+                               volume efetivamente travado;
+       resultado ECONÔMICO   — a soma dos dois, menos os custos operacionais
+                               do hedge.
+
+     E uma quarta linha que NÃO é resultado e é a que mais confunde:
+
+       CAIXA DO AJUSTE DIÁRIO — quanto dinheiro precisa estar disponível se
+       o preço subir contra a posição antes do vencimento. Esse dinheiro
+       volta no resultado final (a alta do futuro é compensada pelo físico
+       mais caro), mas ele precisa existir no dia em que a bolsa chamar.
+       Confundir necessidade de liquidez com prejuízo é o erro clássico de
+       quem trava preço pela primeira vez, e por isso as duas aparecem em
+       colunas separadas e com rótulos diferentes.                          */
+  var DEGRAUS = [0, 25, 50, 75, 100];
+
+  function escada(cfg){
+    /* cfg: { arrobasFisicas, precoTravado, precoCenario, baseRS, custoOpContrato,
+              arredonda, piorAjusteRS, custoArroba } */
+    if (typeof window._hsDimensiona !== 'function') return null;
+    var arr = num(cfg.arrobasFisicas);
+    var trav = num(cfg.precoTravado);
+    var cen = num(cfg.precoCenario);
+    if (arr == null || !(arr > 0) || trav == null || cen == null) return null;
+    var base = num(cfg.baseRS) || 0;
+    var custoOp = num(cfg.custoOpContrato) || 0;
+    var piorAj = num(cfg.piorAjusteRS);
+    var custoArroba = num(cfg.custoArroba);
+
+    /* O preço realizado na praça é o cenário MENOS a base observada. Base
+       positiva quer dizer praça acima do futuro; negativa, abaixo. */
+    var precoPraca = cen + base;
+
+    return DEGRAUS.map(function(pct){
+      var dim = null;
+      try {
+        dim = window._hsDimensiona({ ativo:'BGI', qtdFisica:arr, pctTrava:pct,
+                                     arredonda:(cfg.arredonda === 'baixo' ? 'baixo' : 'cima'),
+                                     estrategia:'venda_futuro', precoFuturo:trav,
+                                     custoProd:(custoArroba || 0), margemRS:0 });
+      } catch(e){ return { pct:pct, erro:String(e.message || e) }; }
+      if (!dim) return { pct:pct, erro:'dimensionamento indisponível' };
+
+      var travado = dim.qtdEfetiva || 0;
+      var residual = Math.max(0, arr - travado);
+      var excedente = dim.excedente || 0;
+
+      /* FÍSICO: todo o boi é vendido na praça, travado ou não. */
+      var recFisica = arr * precoPraca;
+      /* DERIVATIVO: ganha quem vendeu e o preço caiu; perde se subiu. */
+      var resDeriv = (trav - cen) * travado;
+      /* CUSTO OPERACIONAL do hedge, por contrato. */
+      var custoHedge = (dim.nContratos || 0) * custoOp;
+      /* ECONÔMICO combinado. */
+      var recEcon = recFisica + resDeriv - custoHedge;
+      var precoEfetivo = arr > 0 ? recEcon / arr : null;
+      /* CAIXA: só a posição travada chama ajuste. */
+      var caixa = (piorAj != null) ? Math.abs(piorAj) * travado : null;
+
+      return { pct:pct,
+               nContratos:dim.nContratos, tamanho:dim.tamanho,
+               volumeFisico:arr, volumeTravado:travado, exposicaoResidual:residual,
+               excedente:excedente, sobreprotege:!!dim.sobreprotege,
+               coberturaPct: dim.coberturaFisicaPct,
+               precoPraca:precoPraca,
+               receitaFisica:recFisica, resultadoDerivativo:resDeriv,
+               custoHedge:custoHedge, receitaEconomica:recEcon,
+               precoEfetivo:precoEfetivo,
+               caixaAjuste:caixa,
+               margemEconomica: (custoArroba != null) ? (precoEfetivo - custoArroba) * arr : null };
+    });
+  }
+
+  window._ioMotor = {
+    num:num, premissas:premissas,
+    reconcilia:reconcilia, paraMotor:paraMotor, simular:simular,
+    abateEm:abateEm, contratos:contratos,
+    pracas:pracas, baseObservada:baseObservada, baseNoVencimento:baseNoVencimento,
+    piorVariacao:piorVariacao, escada:escada, DEGRAUS:DEGRAUS
+  };
+})();
+</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   INTELIGÊNCIA OPERACIONAL DO CONFINAMENTO — telas (Etapa 6 · 13/10/2026)
+   ──────────────────────────────────────────────────────────────────────────
+   Cinco seções, todas lendo o MESMO conjunto de premissas (`ve_premissas_v1`,
+   via `_veMotor`) e os MESMOS motores (`__3M_calcEngine`, `_hsDimensiona`).
+
+     m3_4_2  Simulação do lote          Gestão do Confinamento
+     m3_4_3  Cenários                   Gestão do Confinamento
+     m3_3_8  Vencimentos × abate        Hedge e Gestão de Risco
+     m3_3_9  Escada de proteção         Hedge e Gestão de Risco
+     m3_3_10 Risco de base              Hedge e Gestão de Risco
+
+   REPRODUTIBILIDADE. Nenhuma destas telas guarda estado próprio de cálculo:
+   com as mesmas premissas e o mesmo preço, o resultado é o mesmo, porque
+   quem calcula é sempre o motor. O que cada tela guarda é escolha de
+   interface — qual contrato, qual praça, qual cenário —, e isso fica no
+   mesmo armazenamento das premissas, em chaves próprias.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  function M(){ return window._ioMotor || null; }
+  function V(){ return window._veMotor || null; }
+  function n2(v, c){ var m = V(); return m ? m.n2(v, c) : String(v); }
+  function esc(s){ var m = V(); return m ? m.esc(s) : String(s == null ? '' : s); }
+  function dBR(d){ var m = V(); return m ? m.dBR(d) : ''; }
+
+  function rs(v, c){ return (v == null || !isFinite(v)) ? '—' : 'R$ ' + n2(v, c == null ? 2 : c); }
+  function pct(v, c){ return (v == null || !isFinite(v)) ? '—' : n2(v * 100, c == null ? 1 : c) + '%'; }
+  function sinal(v){ return (v == null || !isFinite(v)) ? 'io-neu' : (v > 0 ? 'io-alta' : (v < 0 ? 'io-baixa' : 'io-neu')); }
+  function comSinal(v, c){ return (v == null || !isFinite(v)) ? '—' : (v > 0 ? '+' : '') + n2(v, c == null ? 2 : c); }
+  function insuf(txt){ return '<div class="io-insuf"><b>Dados insuficientes para análise.</b> ' + esc(txt) + '</div>'; }
+  function rotC(sn){
+    if (!sn) return '—';
+    try { if (typeof window._contractLabel === 'function') return window._contractLabel(sn); } catch(e){}
+    return sn;
+  }
+
+  /* ── Estado de interface, no mesmo armazenamento das premissas ──────── */
+  function cfg(){
+    var m = V(); if (!m) return {};
+    var p = m.premissas() || {};
+    return { modoPeso: p.ioModoPeso === 'peso' ? 'peso' : 'gmd',
+             fontePreco: p.ioFontePreco === 'fisico' ? 'fisico' : 'futuro',
+             contrato: p.ioContrato || null,
+             praca: p.ioPraca || null,
+             arredonda: p.ioArredonda === 'baixo' ? 'baixo' : 'cima',
+             custoOpContrato: p.ioCustoOpContrato || '',
+             precoLiq: p.ioPrecoLiq || '',
+             baseManual: p.ioBaseManual || '',
+             cen: p.ioCen || null };
+  }
+  function salvaCfg(chave, valor){
+    var m = V(); if (!m) return;
+    var p = m.premissas() || {};
+    if (valor == null || valor === '') delete p[chave]; else p[chave] = valor;
+    m.salvarPremissas(p);
+  }
+  function salvaCampo(k, v){
+    var m = V(); if (!m) return;
+    var p = m.premissas() || {};
+    if (v == null || String(v).trim() === '') delete p[k]; else p[k] = String(v).trim();
+    m.salvarPremissas(p);
+  }
+
+  /* Preço de venda em uso: físico CEPEA ou o contrato escolhido. Os dois são
+     OBSERVADOS na planilha; o que é estimado é o resultado que sai deles. */
+  function precoVenda(){
+    var m = V(), c = cfg();
+    if (!m) return null;
+    if (c.fontePreco === 'fisico'){
+      var u = m.ultima('BOI GORDO');
+      return u ? { preco:u.preco, data:u.data, fonte:'CEPEA — físico', aba:'BOI GORDO' } : null;
+    }
+    var sn = c.contrato;
+    var vigs = m.vigentes('BGI');
+    if (!sn || vigs.indexOf(sn) < 0) sn = vigs.length ? vigs[0] : null;
+    if (!sn) return null;
+    var uu = m.ultima(sn);
+    return uu ? { preco:uu.preco, data:uu.data, fonte:'B3 — futuro ' + rotC(sn), aba:sn } : null;
+  }
+
+  /* ── Montagem genérica de uma seção ────────────────────────────────── */
+  var montados = {};
+  function monta(sec, titulo, idCorpo){
+    if (montados[sec]) return true;
+    var slot = document.getElementById('slot_' + sec);
+    if (!slot) return false;
+    slot.insertAdjacentHTML('beforeend',
+      '<section class="card"><div class="card-title"><span class="card-title-text">'
+      + esc(titulo) + '</span></div><div id="' + idCorpo + '"></div></section>');
+    slot.addEventListener('change', aoMudar);
+    slot.addEventListener('click', aoClicar);
+    montados[sec] = true;
+    return true;
+  }
+
+  function aoMudar(ev){
+    var t = ev.target; if (!t || !t.getAttribute) return;
+    var k = t.getAttribute('data-io-cfg');
+    if (k){ salvaCfg(k, t.value); redesenhar(); return; }
+    var c = t.getAttribute('data-io-campo');
+    if (c){ salvaCampo(c, t.value); redesenhar(); return; }
+    var cc = t.getAttribute('data-io-cen');
+    if (cc){ guardaCen(t.getAttribute('data-io-cenid'), cc, t.value); renderCenarios(); return; }
+  }
+  function aoClicar(ev){
+    var t = ev.target; if (!t || !t.getAttribute) return;
+    if (t.getAttribute('data-io-acao') === 'cenPadrao'){ salvaCfg('ioCen', null); renderCenarios(); }
+  }
+  function redesenhar(){
+    try { renderSim(); }          catch(e){ console.warn('Simulação:', e); }
+    try { renderCenarios(); }     catch(e){ console.warn('Cenários:', e); }
+    try { renderVencimentos(); }  catch(e){ console.warn('Vencimentos:', e); }
+    try { renderEscada(); }       catch(e){ console.warn('Escada:', e); }
+    try { renderBase(); }         catch(e){ console.warn('Risco de base:', e); }
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     1 · SIMULAÇÃO DO LOTE — m3_4_2
+     ══════════════════════════════════════════════════════════════════════ */
+  /* O formulário sai da MESMA tabela de campos da Visão Executiva
+     (`_veCAMPOS`), acrescida do peso final e do comutador que decide quem é
+     entrada e quem é derivado. O grupo "Exposição a proteger" fica de fora:
+     ele é da tela de proteção, não da simulação de custo. */
+  function camposSim(){
+    var C = window._veCAMPOS || [];
+    return C.filter(function(G){ return G.g !== 'Exposição a proteger'; });
+  }
+  function campoIO(c, val, org){
+    var id = 'io_' + c[0], rot = esc(c[1]);
+    var selo = org ? '<em class="io-selo io-selo-' + org + '">' + (org === 'personalizado' ? 'seu' : (org === 'calculadora' ? 'calculadora' : 'padrão')) + '</em>'
+                   : '<em class="io-selo io-selo-pend">pendente</em>';
+    if (c[2] === 'sel'){
+      var ops = (c[3] || []).map(function(o){
+        return '<option value="' + esc(o[0]) + '"' + (String(val) === o[0] ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
+      }).join('');
+      return '<label class="io-campo"><span>' + rot + ' ' + selo + '</span>'
+           + '<select id="' + id + '" data-io-campo="' + esc(c[0]) + '">' + ops + '</select></label>';
+    }
+    return '<label class="io-campo"><span>' + rot + ' ' + selo + '</span>'
+         + '<input type="number" step="any" inputmode="decimal" id="' + id + '" '
+         + 'data-io-campo="' + esc(c[0]) + '" value="' + esc(val == null ? '' : val) + '"></label>';
+  }
+
+  function renderSim(){
+    if (!monta('m3_4_2', 'SIMULAÇÃO ECONÔMICA DO LOTE', 'ioSim')) return;
+    var host = document.getElementById('ioSim'); if (!host) return;
+    var mo = M(), m = V(); if (!mo || !m) return;
+    var E = mo.premissas(), c = cfg();
+    var pv = precoVenda();
+
+    /* ── Cabeça: fonte do preço e comutador peso/GMD ── */
+    var vigs = m.vigentes('BGI');
+    var topo =
+      '<div class="io-barra">'
+      + '<label class="io-campo io-campo-h"><span>Preço de venda</span>'
+      +   '<select data-io-cfg="ioFontePreco">'
+      +     '<option value="futuro"' + (c.fontePreco === 'futuro' ? ' selected' : '') + '>Futuro BGI (B3)</option>'
+      +     '<option value="fisico"' + (c.fontePreco === 'fisico' ? ' selected' : '') + '>Físico CEPEA</option>'
+      +   '</select></label>'
+      + (c.fontePreco === 'futuro'
+          ? '<label class="io-campo io-campo-h"><span>Contrato</span><select data-io-cfg="ioContrato">'
+            + vigs.map(function(sn){
+                return '<option value="' + esc(sn) + '"' + ((pv && pv.aba === sn) ? ' selected' : '') + '>' + esc(rotC(sn)) + '</option>';
+              }).join('') + '</select></label>'
+          : '')
+      + '<label class="io-campo io-campo-h"><span>Peso final</span>'
+      +   '<select data-io-cfg="ioModoPeso">'
+      +     '<option value="gmd"' + (c.modoPeso === 'gmd' ? ' selected' : '') + '>Calculado pelo GMD × dias</option>'
+      +     '<option value="peso"' + (c.modoPeso === 'peso' ? ' selected' : '') + '>Informado por mim</option>'
+      +   '</select></label>'
+      + (c.modoPeso === 'peso'
+          ? '<label class="io-campo io-campo-h"><span>Peso final (kg)</span>'
+            + '<input type="number" step="any" inputmode="decimal" data-io-campo="pesoFinalKg" '
+            + 'value="' + esc(E.p.pesoFinalKg || '') + '"></label>'
+          : '')
+      + '<div class="io-fonte">' + (pv
+          ? '<b>' + rs(pv.preco) + '/@</b> · ' + esc(pv.fonte) + ' · ' + dBR(pv.data)
+            + ' <em class="io-obs">observado</em>'
+          : 'sem preço válido na planilha') + '</div>'
+      + '</div>';
+
+    if (!pv){ host.innerHTML = topo + insuf('Nenhum preço de venda válido na planilha para a fonte escolhida.'); return; }
+
+    var S = mo.simular(E.p, pv.preco, c.modoPeso);
+    var rec = mo.reconcilia(E.p, c.modoPeso);
+
+    /* ── Formulário ── */
+    var form = camposSim().map(function(G){
+      return '<fieldset class="io-fs"><legend>' + esc(G.g) + '</legend><div class="io-campos">'
+           + G.c.filter(function(cc){ return !(c.modoPeso === 'peso' && cc[0] === 'gmdConf'); })
+                .map(function(cc){ return campoIO(cc, E.p[cc[0]], E.origem[cc[0]]); }).join('')
+           + '</div></fieldset>';
+    }).join('');
+
+    var derivado = rec.derivado === 'gmd'
+      ? '<div class="io-derivado">Ganho médio diário <b>derivado</b>: '
+        + (rec.gmd != null ? n2(rec.gmd, 3) + ' kg/dia' : '—')
+        + ' — é o que o peso final informado exige em ' + rec.dias + ' dias.</div>'
+      : '<div class="io-derivado">Peso final <b>derivado</b>: '
+        + (rec.pesoFinal != null ? n2(rec.pesoFinal, 1) + ' kg' : '—')
+        + ' — peso de entrada mais ' + (rec.gmd != null ? n2(rec.gmd, 3) : '—') + ' kg/dia por ' + rec.dias + ' dias.</div>';
+
+    if (!S){
+      host.innerHTML = topo + derivado
+        + insuf('Faltam premissas: ' + E.falta.map(function(f){ return esc(f[1]); }).join(', ')
+              + '. Nenhum resultado é apresentado enquanto faltar.')
+        + '<details class="io-det" open><summary>Premissas da operação</summary>' + form + '</details>';
+      return;
+    }
+
+    function kpi(rot, val, sub, cls){
+      return '<div class="io-kpi' + (cls ? ' ' + cls : '') + '">'
+           + '<div class="io-kpi-rot">' + rot + '</div><div class="io-kpi-val">' + val + '</div>'
+           + '<div class="io-kpi-sub">' + (sub || '') + '</div></div>';
+    }
+    var res =
+      '<div class="io-kpi-grid">'
+      + kpi('Custo total por cabeça', rs(S.custoTotalCabeca), 'CMV + despesas + tributos')
+      + kpi('Custo por @ <b>produzida</b>', rs(S.custoArrobaProduzida),
+            'arroba incremental — exclui a compra do animal · '
+            + (S.arrobasProduzidas != null ? n2(S.arrobasProduzidas, 2) + ' @ ganhas' : '—'))
+      + kpi('Custo por @ <b>comercializada</b>', rs(S.custoArrobaComercializada),
+            'custo total ÷ arrobas de carcaça — inclui a compra · '
+            + (S.arrobasComercializadas != null ? n2(S.arrobasComercializadas, 2) + ' @ vendidas' : '—'))
+      + kpi('Resultado por cabeça — bruto', rs(S.resultadoCabecaBruto),
+            'margem bruta, antes de despesas e tributos', sinal(S.resultadoCabecaBruto))
+      + kpi('Resultado por cabeça — líquido', rs(S.resultadoCabecaLiquido),
+            'depois de despesas, tributos e financeiro', sinal(S.resultadoCabecaLiquido))
+      /* O motor devolve `lLote` como lucro LÍQUIDO × cabeças. Posto ao lado de
+         uma margem BRUTA por cabeça, com lote de uma cabeça, o total parecia
+         menor que a unidade — e a primeira leitura de quem vê isso é que a
+         conta está errada. O rótulo agora diz qual dos dois ele é. */
+      + kpi('Resultado do lote — líquido', rs(S.resultadoLote, 0),
+            (S.cabecas != null ? 'líquido por cabeça × ' + n2(S.cabecas, 0) + ' cabeça(s)' : ''),
+            sinal(S.resultadoLote))
+      + kpi('Break-even — margem bruta', rs(S.breakEvenBruto), 'zera a margem bruta')
+      + kpi('Break-even — lucro líquido', rs(S.breakEvenLiquido), 'zera o lucro líquido')
+      + kpi('Margem operacional', pct(S.margemBrutaPct, 2),
+            'sobre a receita líquida · líquida ' + pct(S.margemLiquidaPct, 2), sinal(S.margemBrutaPct))
+      + kpi('ROI do ciclo', pct(S.roi, 2), 'lucro ÷ capital empregado', sinal(S.roi))
+      + kpi('Peso de abate', (S.pesoAbate != null ? n2(S.pesoAbate, 1) + ' kg' : '—'),
+            (S.diasCiclo != null ? n2(S.diasCiclo, 0) + ' dias de ciclo' : ''))
+      + '</div>';
+
+    host.innerHTML = topo + derivado + res
+      + '<div class="io-nota"><b>Os dois custos por arroba respondem perguntas diferentes.</b> '
+      + 'A <b>produzida</b> é o custo da arroba incremental (<code>cAI</code> do motor): quanto custou '
+      + 'PRODUZIR cada arroba nova, sem o preço do animal que entrou — é o número que se compara com a '
+      + 'arroba do mercado para decidir se vale engordar. A <b>comercializada</b> é o custo total '
+      + 'dividido pelas arrobas de carcaça: quanto cada arroba VENDIDA precisa pagar, incluindo a '
+      + 'aquisição — é o número que se compara com o preço de venda. Confundir os dois faz um '
+      + 'confinamento parecer bem mais barato do que é.</div>'
+      + '<div class="io-nota">Todo número acima sai de <code>__3M_calcEngine</code>, o mesmo motor da '
+      + 'Calculadora do Boi, auditado nas Etapas 2 e 2.1. Esta tela não tem fórmula financeira própria: '
+      + 'a única conta feita aqui é a divisão do custo total pelas arrobas de carcaça, rotulada acima. '
+      + 'As premissas são as mesmas da Visão Executiva e da matriz de risco — editar aqui muda lá.</div>'
+      + '<details class="io-det"><summary>Premissas da operação — '
+      + E.nPersonalizado + ' suas · ' + E.nCalculadora + ' da Calculadora · ' + E.nPadrao + ' do padrão'
+      + (E.falta.length ? ' · <b>' + E.falta.length + ' pendente(s)</b>' : '') + '</summary>'
+      + form + '</details>';
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     2 · CENÁRIOS — m3_4_3
+     ──────────────────────────────────────────────────────────────────────
+     Três colunas configuráveis. O que elas NÃO têm, de propósito:
+     probabilidade. Chamar um cenário de "20% provável" exigiria uma
+     distribuição estimada e validada, e o painel não tem uma — inventar o
+     número faria a soma dos três parecer uma esperança matemática, que é
+     exatamente a leitura errada. Aqui os três são hipóteses que o operador
+     escreve; o painel só calcula cada uma com o motor e põe lado a lado.
+
+     Campo vazio num cenário significa "igual ao cenário base". O painel não
+     preenche conservador e otimista com uma variação arbitrária: ±10% sem
+     fundamento é um número inventado com cara de análise.                 */
+  var CENS = [
+    { id:'conservador', rot:'Conservador' },
+    { id:'base',        rot:'Base' },
+    { id:'otimista',    rot:'Otimista' }
+  ];
+  var CEN_CAMPOS = [
+    ['preco',              'Preço de venda (R$/@)'],
+    ['custoArrobaEntrada', 'Custo da @ de entrada (R$)'],
+    ['gmdConf',            'GMD confinamento (kg/dia)'],
+    ['milhoSc',            'Milho na dieta (R$/saca)'],
+    ['custoDietaDia',      'Custo da dieta (R$/cab/dia)'],
+    ['diasCocho',          'Dias de cocho']
+  ];
+  function lerCen(){
+    var c = cfg();
+    var o = {};
+    try { o = c.cen ? JSON.parse(c.cen) : {}; } catch(e){ o = {}; }
+    CENS.forEach(function(x){ if (!o[x.id]) o[x.id] = {}; });
+    return o;
+  }
+  function guardaCen(cenId, campo, valor){
+    var o = lerCen();
+    if (!o[cenId]) o[cenId] = {};
+    if (valor == null || String(valor).trim() === '') delete o[cenId][campo];
+    else o[cenId][campo] = String(valor).trim();
+    salvaCfg('ioCen', JSON.stringify(o));
+  }
+
+  function renderCenarios(){
+    if (!monta('m3_4_3', 'CENÁRIOS — CONSERVADOR, BASE E OTIMISTA', 'ioCen')) return;
+    var host = document.getElementById('ioCen'); if (!host) return;
+    var mo = M(); if (!mo) return;
+    var E = mo.premissas(), c = cfg(), guardados = lerCen();
+    var pv = precoVenda();
+    if (!pv){ host.innerHTML = insuf('Sem preço de venda válido na planilha.'); return; }
+
+    /* O cenário base parte do que estiver valendo; os outros dois partem do
+       base e só mudam o que o operador escrever. */
+    function premissasDe(cenId){
+      var g = guardados[cenId] || {}, gb = guardados.base || {};
+      var p = {}; Object.keys(E.p).forEach(function(k){ p[k] = E.p[k]; });
+      ['custoArrobaEntrada','gmdConf','milhoSc','custoDietaDia','diasCocho'].forEach(function(k){
+        var v = (g[k] != null && g[k] !== '') ? g[k] : gb[k];
+        if (v != null && v !== '') p[k] = v;
+      });
+      var preco = (g.preco != null && g.preco !== '') ? mo.num(g.preco)
+                : ((gb.preco != null && gb.preco !== '') ? mo.num(gb.preco) : pv.preco);
+      return { p:p, preco:preco, herdado: !(g.preco || g.custoArrobaEntrada || g.gmdConf || g.milhoSc || g.custoDietaDia || g.diasCocho) };
+    }
+
+    var cols = CENS.map(function(x){
+      var d = premissasDe(x.id);
+      var S = mo.simular(d.p, d.preco, c.modoPeso);
+      var campos = CEN_CAMPOS.map(function(cc){
+        var g = (guardados[x.id] || {});
+        var ph = (x.id === 'base')
+          ? (cc[0] === 'preco' ? n2(pv.preco, 2) : (E.p[cc[0]] != null ? E.p[cc[0]] : ''))
+          : 'igual ao base';
+        return '<label class="io-campo"><span>' + esc(cc[1]) + '</span>'
+             + '<input type="number" step="any" inputmode="decimal" placeholder="' + esc(ph) + '" '
+             + 'data-io-cen="' + esc(cc[0]) + '" data-io-cenid="' + esc(x.id) + '" '
+             + 'value="' + esc(g[cc[0]] || '') + '"></label>';
+      }).join('');
+      var linhas = S ? [
+        ['Preço de venda', rs(d.preco), ''],
+        ['Custo total por cabeça', rs(S.custoTotalCabeca), ''],
+        ['Custo por @ produzida', rs(S.custoArrobaProduzida), ''],
+        ['Custo por @ comercializada', rs(S.custoArrobaComercializada), ''],
+        ['Break-even (margem bruta)', rs(S.breakEvenBruto), ''],
+        ['Resultado por cabeça', rs(S.resultadoCabecaBruto), sinal(S.resultadoCabecaBruto)],
+        ['Resultado do lote', rs(S.resultadoLote, 0), sinal(S.resultadoLote)],
+        ['Margem operacional', pct(S.margemBrutaPct, 2), sinal(S.margemBrutaPct)],
+        ['ROI do ciclo', pct(S.roi, 2), sinal(S.roi)]
+      ].map(function(l){
+        return '<tr><th>' + esc(l[0]) + '</th><td class="num ' + (l[2] || '') + '">' + l[1] + '</td></tr>';
+      }).join('') : '';
+      return '<div class="io-cen-col' + (x.id === 'base' ? ' io-cen-base' : '') + '">'
+        + '<div class="io-cen-tit">' + esc(x.rot)
+        + (d.herdado && x.id !== 'base' ? ' <em class="io-selo io-selo-padrao">igual ao base</em>' : '') + '</div>'
+        + '<div class="io-campos io-campos-cen">' + campos + '</div>'
+        + (S ? '<table class="io-tab-cen">' + linhas + '</table>'
+             : insuf('Premissas insuficientes para este cenário.'))
+        + '</div>';
+    }).join('');
+
+    host.innerHTML =
+      '<div class="io-cen-grid">' + cols + '</div>'
+      + '<div class="io-acoes"><button type="button" class="io-btn" data-io-acao="cenPadrao">Limpar os três cenários</button></div>'
+      + '<div class="io-nota"><b>Sem probabilidade, de propósito.</b> Atribuir chance a cada cenário '
+      + 'exigiria uma distribuição estimada e validada, que este painel não tem. Um número inventado '
+      + 'ali faria a média dos três parecer um valor esperado — e essa é a leitura que leva a decisão '
+      + 'errada. Os três são hipóteses que você escreve; o painel calcula cada uma com o mesmo motor '
+      + 'e põe lado a lado.</div>'
+      + '<div class="io-nota">Campo vazio em Conservador ou Otimista significa <b>igual ao cenário '
+      + 'base</b>. O painel não preenche os extremos com uma variação arbitrária. Todos os demais '
+      + 'parâmetros — sanidade, operacional, financeiro, rendimento, peso — são os mesmos das '
+      + 'premissas compartilhadas, para que a diferença entre as colunas seja só o que você mudou.</div>';
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     3 · VENCIMENTOS × PERÍODO DE ABATE — m3_3_8
+     ──────────────────────────────────────────────────────────────────────
+     O que é OBSERVADO: o preço de cada contrato e a data do pregão, lidos da
+     planilha. O que é ESTIMADO: tudo o que depende das premissas — custo de
+     referência, resultado por cabeça, margem e distância do break-even —, e
+     a própria data de abate, que é hoje mais os dias de ciclo.
+
+     As duas naturezas aparecem marcadas na tabela, porque misturá-las é como
+     se transforma uma projeção em promessa.                                */
+  function renderVencimentos(){
+    if (!monta('m3_3_8', 'VENCIMENTOS × PERÍODO DE ABATE', 'ioVenc')) return;
+    var host = document.getElementById('ioVenc'); if (!host) return;
+    var mo = M(), m = V(); if (!mo || !m) return;
+    var E = mo.premissas(), c = cfg();
+
+    var base = mo.simular(E.p, 1, c.modoPeso);     /* break-even não depende do preço */
+    if (!base){
+      host.innerHTML = insuf('Faltam premissas: ' + E.falta.map(function(f){ return esc(f[1]); }).join(', ')
+        + '. Os preços dos contratos continuam visíveis na seção Futuros; aqui eles só fazem sentido '
+        + 'ao lado de um custo.');
+      return;
+    }
+    var ab = mo.abateEm(base.diasCiclo);
+    var lista = mo.contratos(base.diasCiclo);
+    if (!lista.length){ host.innerHTML = insuf('Nenhum contrato BGI vigente com pregão válido.'); return; }
+
+    var linhas = lista.map(function(x){
+      if (!x.observado) return '';
+      var S = mo.simular(E.p, x.preco, c.modoPeso);
+      var dist = (base.breakEvenBruto != null) ? (x.preco - base.breakEvenBruto) : null;
+      var mm = x.mesesDoAbate;
+      var jan = (mm === 0) ? 'mês do abate'
+              : (mm > 0 ? ('+' + mm + (mm === 1 ? ' mês' : ' meses'))
+                        : (mm + (mm === -1 ? ' mês' : ' meses')));
+      return '<tr' + (mm === 0 ? ' class="io-tr-ref"' : '') + '>'
+        + '<td>' + esc(rotC(x.sn)) + '</td>'
+        + '<td class="num io-obs-c">' + rs(x.preco) + '</td>'
+        + '<td class="num io-obs-c">' + dBR(x.data) + '</td>'
+        + '<td class="num">' + esc(jan) + '</td>'
+        + '<td class="num io-est-c">' + rs(base.breakEvenBruto) + '</td>'
+        + '<td class="num io-est-c ' + sinal(dist) + '">' + (dist == null ? '—' : comSinal(dist)) + '</td>'
+        + '<td class="num io-est-c ' + sinal(S ? S.resultadoCabecaBruto : null) + '">'
+        +   (S ? rs(S.resultadoCabecaBruto) : '—') + '</td>'
+        + '<td class="num io-est-c ' + sinal(S ? S.margemBrutaPct : null) + '">'
+        +   (S ? pct(S.margemBrutaPct, 2) : '—') + '</td>'
+        + '<td class="num io-est-c ' + sinal(S ? S.resultadoLote : null) + '">'
+        +   (S ? rs(S.resultadoLote, 0) : '—') + '</td>'
+        + '</tr>';
+    }).join('');
+
+    host.innerHTML =
+      '<div class="io-barra"><div class="io-fonte">'
+      + 'Ciclo de <b>' + n2(base.diasCiclo, 0) + ' dias</b> · abate projetado para <b>'
+      + (ab ? dBR(ab.data) : '—') + '</b> <em class="io-est">estimado</em>'
+      + '</div></div>'
+      + '<div class="io-tab-wrap"><table class="io-tab"><thead><tr>'
+      + '<th>Vencimento</th>'
+      + '<th class="num">Preço (R$/@)<em class="io-obs">obs.</em></th>'
+      + '<th class="num">Pregão<em class="io-obs">obs.</em></th>'
+      + '<th class="num">Distância do abate</th>'
+      + '<th class="num">Custo de referência<em class="io-est">est.</em></th>'
+      + '<th class="num">Distância do break-even<em class="io-est">est.</em></th>'
+      + '<th class="num">Resultado por cabeça<em class="io-est">est.</em></th>'
+      + '<th class="num">Margem<em class="io-est">est.</em></th>'
+      + '<th class="num">Resultado do lote<em class="io-est">est.</em></th>'
+      + '</tr></thead><tbody>' + linhas + '</tbody></table></div>'
+      + '<div class="io-nota"><b>Observado</b> é o que está na planilha: preço de ajuste do contrato e '
+      + 'a data do pregão. <b>Estimado</b> é tudo que depende das suas premissas — o custo de '
+      + 'referência é o break-even de margem bruta do motor, que não muda com o vencimento porque não '
+      + 'depende do preço de venda. A linha destacada é o contrato cujo mês coincide com o abate '
+      + 'projetado; vender num vencimento anterior ao abate deixa um descasamento entre a liquidação '
+      + 'do contrato e a entrega do boi, e isso é decisão sua, não um erro do painel.</div>'
+      + '<div class="io-nota">A <b>data de abate é projeção</b>: hoje mais os dias de ciclo das '
+      + 'premissas. Ela não considera fila de frigorífico, chuva, nem atraso de embarque.</div>';
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     4 · ESCADA DE PROTEÇÃO — m3_3_9
+     ══════════════════════════════════════════════════════════════════════ */
+  function renderEscada(){
+    if (!monta('m3_3_9', 'ESCADA DE PROTEÇÃO — 0 A 100% DO VOLUME', 'ioEsc')) return;
+    var host = document.getElementById('ioEsc'); if (!host) return;
+    var mo = M(), m = V(); if (!mo || !m) return;
+    var E = mo.premissas(), c = cfg();
+
+    var S = mo.simular(E.p, 1, c.modoPeso);
+    if (!S){
+      host.innerHTML = insuf('Faltam premissas para saber quantas arrobas existem a proteger: '
+        + E.falta.map(function(f){ return esc(f[1]); }).join(', ') + '.');
+      return;
+    }
+    var arrobas = (S.arrobasComercializadas != null && S.cabecas != null)
+                ? S.arrobasComercializadas * S.cabecas : null;
+    if (!(arrobas > 0)){ host.innerHTML = insuf('Volume físico a proteger não pôde ser calculado.'); return; }
+
+    var vigs = m.vigentes('BGI');
+    var sn = (c.contrato && vigs.indexOf(c.contrato) >= 0) ? c.contrato : (vigs.length ? vigs[0] : null);
+    if (!sn){ host.innerHTML = insuf('Nenhum contrato BGI vigente.'); return; }
+    var u = m.ultima(sn);
+    if (!u){ host.innerHTML = insuf('Contrato sem pregão válido.'); return; }
+
+    /* Base: a observada da praça escolhida, ou a que o operador informou. */
+    var bo = mo.baseObservada(c.praca, sn, 12);
+    var baseObs = (bo && bo.pracaBgi) ? bo.pracaBgi.mediana
+                : ((bo && bo.cepeaBgi) ? bo.cepeaBgi.mediana : null);
+    var baseMan = mo.num(c.baseManual);
+    var baseUsada = (baseMan != null) ? baseMan : baseObs;
+
+    /* Preço do cenário de liquidação: o do cenário base, se houver; senão o
+       próprio preço do contrato — que equivale a supor o futuro parado. */
+    /* Preço suposto na liquidação, nesta ordem: o que o operador digitar
+       aqui, senão o cenário base, senão o próprio preço do contrato — que é
+       supor o futuro parado. A ordem importa: sem um campo próprio, a escada
+       inteira ficava com resultado zero no derivativo e parecia quebrada,
+       quando na verdade estava dizendo "se nada mudar, travar não muda
+       nada". Dizer isso é correto; deixar o operador testar outra hipótese
+       sem sair da tela é útil. Nenhum valor é sugerido: o campo nasce vazio
+       e o padrão continua sendo o preço observado. */
+    var guardados = lerCen();
+    var precoLiqMan = mo.num(c.precoLiq);
+    var precoCenBase = mo.num((guardados.base || {}).preco);
+    var precoCen, cenFonte;
+    if (precoLiqMan != null){ precoCen = precoLiqMan; cenFonte = 'informado aqui'; }
+    else if (precoCenBase != null){ precoCen = precoCenBase; cenFonte = 'cenário base'; }
+    else { precoCen = u.preco; cenFonte = 'contrato parado até o vencimento'; }
+
+    var pior = mo.piorVariacao(sn, [1, 5, 21]);
+    var j21 = pior ? (pior.janelas.filter(function(j){ return j.k === 21; })[0] || null) : null;
+    var piorAj = (j21 && j21.pior) ? j21.pior.abs : null;
+
+    var deg = mo.escada({ arrobasFisicas:arrobas, precoTravado:u.preco, precoCenario:precoCen,
+                          baseRS:baseUsada, custoOpContrato:c.custoOpContrato,
+                          arredonda:c.arredonda, piorAjusteRS:piorAj,
+                          custoArroba:S.custoArrobaComercializada });
+    if (!deg){ host.innerHTML = insuf('Dimensionamento indisponível nesta sessão.'); return; }
+
+    var pracasLista = mo.pracas();
+    var topo =
+      '<div class="io-barra">'
+      + '<label class="io-campo io-campo-h"><span>Contrato travado</span><select data-io-cfg="ioContrato">'
+      +   vigs.map(function(x){ return '<option value="' + esc(x) + '"' + (x === sn ? ' selected' : '') + '>' + esc(rotC(x)) + '</option>'; }).join('')
+      + '</select></label>'
+      + '<label class="io-campo io-campo-h"><span>Praça física</span><select data-io-cfg="ioPraca">'
+      +   '<option value="">— sem praça (base CEPEA × BGI) —</option>'
+      +   pracasLista.map(function(p){
+            return '<option value="' + esc(p.chave) + '"' + (p.chave === c.praca ? ' selected' : '') + '>'
+                 + esc(p.praca + ' / ' + p.uf) + '</option>'; }).join('')
+      + '</select></label>'
+      + '<label class="io-campo io-campo-h"><span>Preço na liquidação (R$/@)</span>'
+      +   '<input type="number" step="any" inputmode="decimal" data-io-cfg="ioPrecoLiq" '
+      +   'placeholder="' + esc(n2(u.preco, 2)) + ' (contrato parado)" '
+      +   'value="' + esc(c.precoLiq || '') + '"></label>'
+      + '<label class="io-campo io-campo-h"><span>Base (R$/@)</span>'
+      +   '<input type="number" step="any" inputmode="decimal" data-io-cfg="ioBaseManual" '
+      +   'placeholder="' + (baseObs != null ? esc(n2(baseObs, 2)) + ' observada' : 'sem base observada') + '" '
+      +   'value="' + esc(c.baseManual || '') + '"></label>'
+      + '<label class="io-campo io-campo-h"><span>Custo por contrato (R$)</span>'
+      +   '<input type="number" step="any" inputmode="decimal" data-io-cfg="ioCustoOpContrato" '
+      +   'placeholder="corretagem + emolumentos" value="' + esc(c.custoOpContrato || '') + '"></label>'
+      + '<label class="io-campo io-campo-h"><span>Arredondamento</span><select data-io-cfg="ioArredonda">'
+      +   '<option value="cima"' + (c.arredonda === 'cima' ? ' selected' : '') + '>Para cima</option>'
+      +   '<option value="baixo"' + (c.arredonda === 'baixo' ? ' selected' : '') + '>Para baixo</option>'
+      + '</select></label>'
+      + '</div>'
+      + '<div class="io-fonte">Volume físico <b>' + n2(arrobas, 1) + ' @</b> ('
+      + n2(S.cabecas, 0) + ' cab × ' + n2(S.arrobasComercializadas, 2) + ' @) · trava a <b>'
+      + rs(u.preco) + '</b> em ' + esc(rotC(sn)) + ' <em class="io-obs">observado</em> · liquidação '
+      + 'suposta a <b>' + rs(precoCen) + '</b> (' + esc(cenFonte) + ') <em class="io-est">estimado</em> · '
+      + 'base ' + (baseUsada == null ? '<b>não informada</b>' : '<b>' + comSinal(baseUsada) + ' R$/@</b>')
+      + (baseMan != null ? ' <em class="io-est">informada</em>'
+                         : (baseObs != null ? ' <em class="io-obs">mediana observada</em>' : ''))
+      + '</div>';
+
+    var linhas = deg.map(function(d){
+      if (d.erro) return '<tr><td>' + d.pct + '%</td><td colspan="9">' + esc(d.erro) + '</td></tr>';
+      return '<tr' + (d.sobreprotege ? ' class="io-tr-alerta"' : '') + '>'
+        + '<th>' + d.pct + '%</th>'
+        + '<td class="num">' + n2(d.volumeFisico, 1) + '</td>'
+        + '<td class="num">' + n2(d.volumeTravado, 1) + (d.nContratos ? ' <span class="io-min">(' + d.nContratos + ' ctr)</span>' : '') + '</td>'
+        + '<td class="num">' + n2(d.exposicaoResidual, 1) + '</td>'
+        + '<td class="num">' + rs(d.receitaFisica, 0) + '</td>'
+        + '<td class="num ' + sinal(d.resultadoDerivativo) + '">' + rs(d.resultadoDerivativo, 0) + '</td>'
+        + '<td class="num">' + (d.custoHedge ? rs(d.custoHedge, 0) : '—') + '</td>'
+        + '<td class="num ' + sinal(d.receitaEconomica) + '"><b>' + rs(d.receitaEconomica, 0) + '</b></td>'
+        + '<td class="num">' + rs(d.precoEfetivo) + '</td>'
+        + '<td class="num io-caixa">' + (d.caixaAjuste == null ? '—' : rs(d.caixaAjuste, 0)) + '</td>'
+        + '</tr>';
+    }).join('');
+
+    var caixaNota = (j21 && j21.pior)
+      ? 'A coluna de caixa usa a <b>maior alta já observada em 21 pregões</b> na série de '
+        + esc(rotC(sn)) + ': ' + rs(j21.pior.abs) + '/@ (' + n2(j21.pior.pct, 1) + '%), entre '
+        + esc(j21.pior.de) + ' e ' + esc(j21.pior.ate) + ', em ' + j21.nJanelas + ' janelas examinadas. '
+        + 'É número medido, não modelo.'
+      : 'Sem série suficiente neste contrato para medir a pior alta observada — a coluna de caixa fica vazia '
+        + 'em vez de receber uma estimativa.';
+
+    host.innerHTML = topo
+      + '<div class="io-tab-wrap"><table class="io-tab"><thead><tr>'
+      + '<th>Proteção</th><th class="num">Físico (@)</th><th class="num">Travado (@)</th>'
+      + '<th class="num">Exposição residual (@)</th><th class="num">Receita física</th>'
+      + '<th class="num">Resultado do derivativo</th><th class="num">Custo do hedge</th>'
+      + '<th class="num">Resultado econômico</th><th class="num">Preço efetivo (R$/@)</th>'
+      + '<th class="num io-caixa">Caixa do ajuste</th>'
+      + '</tr></thead><tbody>' + linhas + '</tbody></table></div>'
+      + '<div class="io-nota io-nota-forte"><b>Resultado econômico e caixa do ajuste não são a mesma '
+      + 'coisa, e confundi-los é o erro clássico de quem trava preço pela primeira vez.</b> O '
+      + 'resultado econômico é o que sobra no fim: a alta do futuro que tirou dinheiro do seu caixa '
+      + 'volta como boi mais caro na praça. O <b>caixa do ajuste</b> é quanto dinheiro precisa estar '
+      + 'disponível ANTES disso, no dia em que a bolsa chamar — e esse dinheiro precisa existir mesmo '
+      + 'que o resultado final seja bom. ' + caixaNota + '</div>'
+      + '<div class="io-nota">O dimensionamento é o do <code>_hsDimensiona</code>, o mesmo motor do '
+      + 'Simulador de Hedge, com o mesmo arredondamento de contrato (330 @ por contrato BGI). Linha '
+      + 'destacada em vermelho significa <b>sobreproteção</b>: o arredondamento para cima travou mais '
+      + 'arrobas do que você tem, e o excedente vira posição a descoberto. O preço efetivo é a receita '
+      + 'econômica dividida pelo volume físico — uma divisão entre números já calculados, não uma '
+      + 'fórmula nova.</div>';
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     5 · RISCO DE BASE — m3_3_10
+     ──────────────────────────────────────────────────────────────────────
+     Três pernas medidas, nenhuma presumida, e a prova de que a base NÃO vai
+     a zero no vencimento: os contratos que já venceram, com a base que de
+     fato vigorou nos últimos pregões de cada um.                           */
+  function linhaEstat(rot, e, nota){
+    if (!e) return '<tr><th>' + esc(rot) + '</th><td colspan="6" class="io-min">sem observação em comum</td></tr>';
+    return '<tr><th>' + esc(rot) + '</th>'
+      + '<td class="num ' + sinal(e.mediana) + '"><b>' + comSinal(e.mediana) + '</b></td>'
+      + '<td class="num ' + sinal(e.media) + '">' + comSinal(e.media) + '</td>'
+      + '<td class="num">' + comSinal(e.min) + '</td>'
+      + '<td class="num">' + comSinal(e.max) + '</td>'
+      + '<td class="num">' + e.n + '</td>'
+      + '<td class="num">' + (e.ultima ? (comSinal(e.ultima.valor) + ' <span class="io-min">' + esc(e.ultima.data) + '</span>') : '—') + '</td>'
+      + '</tr>' + (nota ? '<tr class="io-tr-nota"><td colspan="7">' + nota + '</td></tr>' : '');
+  }
+
+  function renderBase(){
+    if (!monta('m3_3_10', 'RISCO DE BASE — PRAÇA, INDICADOR E CONTRATO', 'ioBase')) return;
+    var host = document.getElementById('ioBase'); if (!host) return;
+    var mo = M(), m = V(); if (!mo || !m) return;
+    var c = cfg();
+    var vigs = m.vigentes('BGI');
+    var sn = (c.contrato && vigs.indexOf(c.contrato) >= 0) ? c.contrato : (vigs.length ? vigs[0] : null);
+    var pracasLista = mo.pracas();
+
+    var topo = '<div class="io-barra">'
+      + '<label class="io-campo io-campo-h"><span>Praça física</span><select data-io-cfg="ioPraca">'
+      +   '<option value="">— escolha a praça onde você vende —</option>'
+      +   pracasLista.map(function(p){
+            return '<option value="' + esc(p.chave) + '"' + (p.chave === c.praca ? ' selected' : '') + '>'
+                 + esc(p.praca + ' / ' + p.uf) + '</option>'; }).join('')
+      + '</select></label>'
+      + (sn ? '<label class="io-campo io-campo-h"><span>Contrato</span><select data-io-cfg="ioContrato">'
+            + vigs.map(function(x){ return '<option value="' + esc(x) + '"' + (x === sn ? ' selected' : '') + '>' + esc(rotC(x)) + '</option>'; }).join('')
+            + '</select></label>' : '')
+      + '</div>';
+
+    if (!pracasLista.length){
+      host.innerHTML = topo + insuf('A base regional não está disponível nesta planilha, então a perna '
+        + 'praça × indicador não pode ser medida. As outras duas continuam abaixo.');
+    }
+
+    var bo = mo.baseObservada(c.praca, sn, 12);
+    var nomePraca = bo.praca ? (bo.praca.nome + ' / ' + bo.praca.uf) : null;
+
+    var tab = '<div class="io-tab-wrap"><table class="io-tab"><thead><tr>'
+      + '<th>Perna da base</th><th class="num">Mediana</th><th class="num">Média</th>'
+      + '<th class="num">Mínima</th><th class="num">Máxima</th><th class="num">Pregões</th>'
+      + '<th class="num">Última</th></tr></thead><tbody>'
+      + linhaEstat(nomePraca ? (nomePraca + ' − CEPEA') : 'Praça − CEPEA', bo.pracaCepea,
+          nomePraca ? null : 'Escolha uma praça acima para medir esta perna.')
+      + linhaEstat('CEPEA − ' + (sn ? rotC(sn) : 'BGI'), bo.cepeaBgi, null)
+      + linhaEstat(nomePraca ? (nomePraca + ' − ' + rotC(sn)) : 'Praça − contrato', bo.pracaBgi,
+          'Esta é a base que importa para quem vende naquela praça e trava na B3: a soma das duas acima.')
+      + '</tbody></table></div>';
+
+    /* A prova empírica contra "base zero no vencimento". */
+    var venc = mo.baseNoVencimento(c.praca, 5);
+    var provaLinhas = venc.slice(-12).map(function(v){
+      return '<tr><td>' + esc(v.sn) + '</td>'
+        + '<td class="num io-min">' + esc(v.fim) + '</td>'
+        + '<td class="num">' + v.pregoes + '</td>'
+        + '<td class="num ' + sinal(v.cepeaMenosBgi ? v.cepeaMenosBgi.media : null) + '">'
+        +   (v.cepeaMenosBgi ? comSinal(v.cepeaMenosBgi.media) : '—') + '</td>'
+        + '<td class="num ' + sinal(v.pracaMenosBgi ? v.pracaMenosBgi.media : null) + '">'
+        +   (v.pracaMenosBgi ? comSinal(v.pracaMenosBgi.media) : '—') + '</td>'
+        + '</tr>';
+    }).join('');
+
+    var resumoProva = '';
+    var comCepea = venc.filter(function(v){ return v.cepeaMenosBgi; });
+    if (comCepea.length){
+      var abs = comCepea.map(function(v){ return Math.abs(v.cepeaMenosBgi.media); });
+      var soma = 0; abs.forEach(function(x){ soma += x; });
+      var maior = Math.max.apply(null, abs);
+      resumoProva = 'Nos <b>' + comCepea.length + '</b> contratos já vencidos com série, a base '
+        + 'CEPEA × BGI nos últimos 5 pregões foi, em módulo, <b>' + n2(soma/abs.length, 2)
+        + ' R$/@</b> em média e chegou a <b>' + n2(maior, 2) + ' R$/@</b>. '
+        + '<b>Nenhum deles fechou em zero.</b>';
+    }
+
+    host.innerHTML = topo + tab
+      + (venc.length
+          ? '<div class="io-sub">O que a base fez no vencimento — contratos já liquidados</div>'
+            + '<div class="io-tab-wrap"><table class="io-tab"><thead><tr>'
+            + '<th>Contrato</th><th class="num">Último pregão</th><th class="num">Pregões medidos</th>'
+            + '<th class="num">CEPEA − BGI</th><th class="num">Praça − BGI</th>'
+            + '</tr></thead><tbody>' + provaLinhas + '</tbody></table></div>'
+          : '')
+      + '<div class="io-nota io-nota-forte"><b>Não presuma base zero no vencimento.</b> É comum ouvir '
+      + 'que o futuro converge para o físico e que a base desaparece. Para o BGI, a convergência que '
+      + 'existe é contra o <b>indicador de liquidação</b> — não contra a praça onde o seu boi é '
+      + 'vendido. O que sobra é a diferença entre a sua praça e esse indicador, e ela não tem razão '
+      + 'nenhuma para ir a zero. ' + resumoProva + '</div>'
+      + '<div class="io-nota">Base positiva quer dizer que a ponta de cima paga mais que a de baixo. '
+      + 'Todas as observações são pareadas: só entram as datas em que <b>as duas</b> séries têm '
+      + 'cotação, e nada é interpolado — um dia sem pregão numa ponta não vira observação inventada na '
+      + 'outra. A janela é de 12 meses e o número de pregões está na tabela, para você julgar se a '
+      + 'amostra basta.</div>'
+      + '<div class="io-nota">A mediana aparece primeiro de propósito: a base tem meses atípicos, e a '
+      + 'média isolada esconde isso. As duas estão lado a lado justamente para que a diferença entre '
+      + 'elas seja visível.</div>';
+  }
+
+  /* ── Montagem das cinco cascas ─────────────────────────────────────
+     Precisa acontecer no arranque, junto com a da Visão Executiva. O filtro
+     de seções esconde o botão de qualquer seção cujo slot esteja vazio — é a
+     rede que impede um endereço que não leva a nada. Se as cascas só
+     nascessem no primeiro desenho, as cinco seções ficariam invisíveis
+     justamente por nunca terem sido desenhadas. */
+  function montarTodas(){
+    var ok = 0;
+    [['m3_4_2','SIMULAÇÃO ECONÔMICA DO LOTE','ioSim'],
+     ['m3_4_3','CENÁRIOS — CONSERVADOR, BASE E OTIMISTA','ioCen'],
+     ['m3_3_8','VENCIMENTOS × PERÍODO DE ABATE','ioVenc'],
+     ['m3_3_9','ESCADA DE PROTEÇÃO — 0 A 100% DO VOLUME','ioEsc'],
+     ['m3_3_10','RISCO DE BASE — PRAÇA, INDICADOR E CONTRATO','ioBase']
+    ].forEach(function(x){ if (monta(x[0], x[1], x[2])) ok++; });
+    return ok;
+  }
+
+  /* ── Pontos de entrada, um por seção ──────────────────────────────── */
+  window._ioMontar     = montarTodas;
+  window._ioSim        = renderSim;
+  window._ioCenarios   = renderCenarios;
+  window._ioVencimentos= renderVencimentos;
+  window._ioEscada     = renderEscada;
+  window._ioBase       = renderBase;
+})();
+</script>
+
 <script>
 /* ══════════════════════════════════════════════════════════════════════════
    NAVEGAÇÃO — colunas de atalho, aviso de universo e busca (Etapa 5.1)
@@ -25999,6 +27293,8 @@ function updatePreco() {
     return out;
   }
 
+  try { window._baseSerieDiaria = _baseSerieDiaria; } catch(e){}
+
   /* ── Decomposição da base ───────────────────────────────────────────────
      A base entre físico e futuro não é uma opinião do mercado sobre o preço
      de amanhã. Ela é, em boa parte, apenas o custo de carregar o boi até o
@@ -29161,6 +30457,8 @@ function updatePreco() {
       .map(function(k){ return { chave:k, uf:m[k].uf, praca:m[k].praca, unidade:m[k].unidade, n:m[k].n, nNd:m[k].nNd }; })
       .sort(function(a,b){ return a.uf===b.uf ? (a.praca<b.praca?-1:1) : (a.uf<b.uf?-1:1); });
   }
+
+  try { window._rgPracas = _rgPracas; window._rgSerie = _rgSerie; } catch(e){}
 
   /* Unidade dominante de um produto: a que a maioria das praças usa. É a
      referência para decidir quem entra numa agregação e quem fica de fora. */
@@ -46601,6 +47899,12 @@ function updateRelacao() {
     /* ── 4 · GESTÃO DO CONFINAMENTO ──────────────────────────────────── */
     { amb:'confin', id:'m3_4_1', nome:'Calculadora do Boi',
       dica:'Custo de produção, break-even, margem e rentabilidade do lote.' },
+    { amb:'confin', id:'m3_4_2', nome:'Simulação do lote',
+      render:['_ioSim'],
+      dica:'Custo, resultado, break-even e ROI do lote, pelo motor da Calculadora.' },
+    { amb:'confin', id:'m3_4_3', nome:'Cenários',
+      render:['_ioCenarios'],
+      dica:'Conservador, base e otimista, lado a lado. Sem probabilidade atribuída.' },
     { amb:'confin', id:'m3_3_2', nome:'Compro boi magro?',
       dica:'Reposição, frete, pedágio e preço colocado no curral.',
       render:['_m3RenderReposicao','_m3RenderPrecoColocado'] },
@@ -46628,6 +47932,15 @@ function updateRelacao() {
       render:['_opcRender'] },
     { amb:'hedge', id:'m3_3_6', nome:'Simulador de hedge',
       dica:'Volume, trava, strikes e custo cotado — a simulação do instrumento.' },
+    { amb:'hedge', id:'m3_3_8', nome:'Vencimentos × período de abate',
+      render:['_ioVencimentos'],
+      dica:'Que contrato cobre o seu abate, e o que ele deixa de margem.' },
+    { amb:'hedge', id:'m3_3_9', nome:'Escada de proteção',
+      render:['_ioEscada'],
+      dica:'0, 25, 50, 75 e 100% do volume: resultado econômico e caixa de ajuste.' },
+    { amb:'hedge', id:'m3_3_10', nome:'Risco de base',
+      render:['_ioBase'],
+      dica:'Praça, indicador de liquidação e contrato — medidos, não presumidos.' },
     { amb:'hedge', id:'m3_3_7', nome:'Outros — decisão', oculta:true },
 
     /* ── 6 · INTELIGÊNCIA E ESTUDOS ──────────────────────────────────── */
@@ -46864,6 +48177,8 @@ function updateRelacao() {
     });
     try { if (typeof window._veMontar === 'function') window._veMontar(); }
     catch(e){ console.warn('Visão Executiva — montagem:', e); }
+    try { if (typeof window._ioMontar === 'function') window._ioMontar(); }
+    catch(e){ console.warn('Inteligência operacional — montagem:', e); }
   }
 
   /* Inventário de componentes, para comparar antes e depois. Conta o que é
@@ -47204,6 +48519,8 @@ function updateRelacao() {
        acertar; nenhum cálculo muda com isto. */
     m3_3_5g:'agro', m3_3_6:'agro',
     m3_1_8:'agro',
+    m3_3_8:'agro', m3_3_9:'agro', m3_3_10:'agro',
+    m3_4_2:'agro', m3_4_3:'agro',
     m3_2_4:'macro', m3_2_5:'macro', m3_2_9:'macro'
   };
   var _M3_UNIV_ATUAL = null;
@@ -48092,14 +49409,15 @@ function updateRelacao() {
       { rot:'Energia e açúcar', secs:['m3_2_4','m3_2_5'] }
     ],
     confin: [
-      { rot:'Custo e margem', secs:['m3_4_1'] },
+      { rot:'Custo e margem', secs:['m3_4_1','m3_4_2','m3_4_3'] },
       { rot:'Reposição e logística', secs:['m3_3_2'] },
       { rot:'Decisões de compra', secs:['m3_3_3','m3_3_4'] }
     ],
     hedge: [
       { rot:'Diagnóstico', secs:['m3_3_1','m3_3_5a'] },
       { rot:'Escolha e timing', secs:['m3_3_5b','m3_3_5c','m3_3_5d','m3_3_5e'] },
-      { rot:'Posição e instrumentos', secs:['m3_3_5f','m3_3_5g','m3_3_6'] }
+      { rot:'Posição e instrumentos', secs:['m3_3_5f','m3_3_5g','m3_3_6'] },
+      { rot:'Dimensionamento e base', secs:['m3_3_8','m3_3_9','m3_3_10'] }
     ],
     estudo: [
       { rot:'Estatística e técnicos', secs:['m3_1_2','m3_1_2t'] },
