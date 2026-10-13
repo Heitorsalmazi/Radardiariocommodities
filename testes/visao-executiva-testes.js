@@ -228,14 +228,21 @@ async function abrir(b, semeia){
   ver('V6 a seção existe e está montada', V.secaoExiste && V.cards >= 7, V.cards + ' cards');
   ver('V6 o botão da seção não foi escondido por slot vazio', V.botaoVisivel);
   ver('V6 o ambiente novo está na barra', V.ambiente);
-  ver('V6 os indicadores aparecem mesmo sem premissas', V.nCards >= 9, V.nCards);
-  ver('V6 venda do boi declara a ausência de custo',
-      /Dados insuficientes para análise/.test(V.venda), V.venda.slice(0,120));
-  ver('V6 compra de insumos declara a ausência',
-      /Dados insuficientes para análise/.test(V.insumos), V.insumos.slice(0,120));
+  ver('V6 os indicadores aparecem independentemente das premissas', V.nCards >= 9, V.nCards);
+  /* ETAPA 6 — a expectativa mudou porque a ESPECIFICAÇÃO mudou. Até a
+     Etapa 4 a tela abria sem premissa nenhuma e estes dois blocos tinham de
+     declarar a ausência. Agora ela abre com o cenário de confinamento que o
+     Radar já usa, e declarar ausência com cenário carregado seria o defeito.
+     O teste da ausência não sumiu: foi para V20, que derruba o cenário
+     padrão de propósito e exige a declaração de volta. */
+  ver('V6 venda do boi traz break-even e margem com o cenário carregado',
+      !/Dados insuficientes para análise/.test(V.venda)
+        && /Break-even/.test(V.venda) && /\d+,\d{2}/.test(V.venda), V.venda.slice(0,120));
+  ver('V6 compra de insumos responde com o cenário carregado',
+      !/Dados insuficientes para análise/.test(V.insumos), V.insumos.slice(0,120));
   ver('V6 proteção declara a ausência',
       /Dados insuficientes para análise/.test(V.protecao), V.protecao.slice(0,120));
-  ver('V6 venda do boi mostra preço e data mesmo sem premissas',
+  ver('V6 venda do boi mostra preço e data da planilha',
       /\d{2}\/\d{2}\/\d{4}/.test(V.venda));
   ver('V6 todo gráfico criado foi desenhado com dados',
       V.graficos.length > 0 && V.graficos.every(g => g.pts > 0), JSON.stringify(V.graficos));
@@ -479,11 +486,334 @@ async function abrir(b, semeia){
     ver('V12 o filtro fica salvo no navegador', dep.salvo === filtro.outro, dep.salvo);
   }
 
+
+  /* ══════════════════════════════════════════════════════════════════════
+     ETAPA 6 — vencimentos casados e premissas pré-carregadas
+     ══════════════════════════════════════════════════════════════════════ */
+
+  /* ── V13 · Casamento de vencimentos ────────────────────────────────── */
+  const CAS = await D.pg.evaluate(() => {
+    const m = window._veMotor, K = n => m.chaveVenc(n);
+    const out = { linhas:[], erros:[] };
+    m.vigentes('BGI').forEach(bgi => {
+      const c = m.casaVenc('CCM', bgi), j = m.casaVenc('SJC', bgi);
+      out.linhas.push({ bgi, k:K(bgi),
+        ccm:c.aba, kc:c.aba ? K(c.aba) : null, critC:c.criterio,
+        sjc:j.aba, kj:j.aba ? K(j.aba) : null, critJ:j.criterio });
+    });
+    out.vencidosCCM = m.vigentes('CCM').filter(sn => window._isContractExpired(sn));
+    out.vencidosSJC = m.vigentes('SJC').filter(sn => window._isContractExpired(sn));
+    out.primeiroCCM = m.primeiroVigente('CCM');
+    out.primeiroSJC = m.primeiroVigente('SJC');
+    return out;
+  });
+  /* A regra inteira, linha a linha: ou o escolhido é do mesmo mês, ou é o
+     primeiro posterior, ou não existe. Nunca anterior, nunca um pulo. */
+  const regraOk = CAS.linhas.every(l => {
+    for (const [sn, k, crit] of [[l.ccm, l.kc, l.critC], [l.sjc, l.kj, l.critJ]]){
+      if (!sn){ if (crit !== 'indisponivel') return false; continue; }
+      if (crit === 'mesmo'  && k !== l.k) return false;
+      if (crit === 'posterior' && !(k > l.k)) return false;
+      if (k < l.k) return false;
+    }
+    return true;
+  });
+  ver('V13 todo par casado é do mesmo mês ou do primeiro posterior, nunca anterior',
+      regraOk, CAS.linhas.map(l => l.bgi+'→'+l.ccm+'/'+l.sjc).join(' '));
+  /* E o salto nunca passa do primeiro posterior disponível: se existe um
+     contrato entre o BGI e o escolhido, a regra errou. */
+  const semPulo = await D.pg.evaluate(C => {
+    const m = window._veMotor;
+    return C.linhas.every(l => ['CCM','SJC'].every(pre => {
+      const sn = pre === 'CCM' ? l.ccm : l.sjc;
+      if (!sn) return true;
+      const k = m.chaveVenc(sn);
+      return !m.vigentes(pre).some(o => { const ko = m.chaveVenc(o); return ko >= l.k && ko < k; });
+    }));
+  }, CAS);
+  ver('V13 nenhum vencimento intermediário foi pulado', semPulo);
+  ver('V13 nenhum contrato vencido entra na lista de casamento',
+      CAS.vencidosCCM.length === 0 && CAS.vencidosSJC.length === 0,
+      CAS.vencidosCCM.concat(CAS.vencidosSJC).join(','));
+  /* O defeito que esta etapa corrige: antes, TODO BGI devolvia o primeiro
+     vigente do milho. Se ainda devolvesse, mais de um BGI apontaria para o
+     primeiro da curva sem que o mês justificasse. */
+  ver('V13 o milho deixou de ser sempre o primeiro vigente',
+      CAS.linhas.filter(l => l.ccm === CAS.primeiroCCM).length < CAS.linhas.length,
+      CAS.linhas.filter(l => l.ccm === CAS.primeiroCCM).length + ' de ' + CAS.linhas.length
+        + ' usam ' + CAS.primeiroCCM);
+  /* Dois BGI seguidos podem cair no mesmo grão — é o calendário da B3, e a
+     tela precisa aceitar isso sem tratar como erro. */
+  const repetidos = {};
+  CAS.linhas.forEach(l => { if (l.ccm) repetidos[l.ccm] = (repetidos[l.ccm]||0)+1; });
+  ver('V13 um mesmo CCM pode servir a mais de um BGI (calendário da B3)',
+      Object.keys(repetidos).some(k => repetidos[k] > 1),
+      JSON.stringify(repetidos));
+
+  /* ── V14 · A tela usa os contratos casados ─────────────────────────── */
+  const TELA = await D.pg.evaluate(async () => {
+    /* `renderFiltro` reescreve o HTML do filtro a cada redesenho, então o
+       <select> é OUTRO elemento depois de cada troca. Guardar a referência
+       antes do laço faz as trocas seguintes acontecerem num nó solto do
+       documento, que não dispara nada — e o teste passaria a medir sempre o
+       primeiro vencimento achando que mediu todos. */
+    const opcoes = [...document.getElementById('veVencRef').options].map(o => o.value).slice(0, 5);
+    const out = { passos:[] };
+    for (const v of opcoes){
+      const sel = document.getElementById('veVencRef');
+      sel.value = v; sel.dispatchEvent(new Event('change', { bubbles:true }));
+      await new Promise(r => setTimeout(r, 1300));
+      const m = window._veMotor;
+      const c = m.casaVenc('CCM', v), j = m.casaVenc('SJC', v);
+      const itens = [...document.querySelectorAll('#veFiltro .ve-cas-item strong')].map(x => x.textContent);
+      const cards = {};
+      [...document.querySelectorAll('#veCards .ve-card')].forEach(x => {
+        const rot = ((x.querySelector('.ve-card-rot')||{}).textContent||'').trim();
+        const pe  = ((x.querySelector('.ve-card-pe') ||{}).textContent||'').trim();
+        cards[rot] = pe;
+      });
+      out.passos.push({ v, ccm:c.aba, sjc:j.aba, itens, cards,
+        kpiPreco:((document.querySelector('#veMargem .ve-kpi-val')||{}).textContent||'').trim() });
+    }
+    return out;
+  });
+  ver('V14 o painel de contratos em uso nomeia os três',
+      TELA.passos.every(p => p.itens.length === 3), JSON.stringify(TELA.passos[0]?.itens));
+  ver('V14 o CCM nomeado na tela é o que o motor casou',
+      TELA.passos.every(p => !p.ccm || p.itens[1].indexOf(p.ccm) >= 0),
+      TELA.passos.map(p => p.v+':'+p.itens[1]).join(' | '));
+  ver('V14 o SJC nomeado na tela é o que o motor casou',
+      TELA.passos.every(p => !p.sjc || p.itens[2].indexOf(p.sjc) >= 0),
+      TELA.passos.map(p => p.v+':'+p.itens[2]).join(' | '));
+  ver('V14 quando não há correspondente, a tela diz — e não cai no primeiro da curva',
+      TELA.passos.every(p => p.sjc || /sem contrato/i.test(p.itens[2])),
+      TELA.passos.filter(p => !p.sjc).map(p => p.v+':'+p.itens[2]).join(' | ') || 'todos têm par');
+  /* O card do milho futuro tem de citar o contrato casado no pé. */
+  ver('V14 o card do milho futuro cita o contrato casado',
+      TELA.passos.every(p => {
+        const pe = p.cards['Milho — futuro (CCM)'] || '';
+        return !p.ccm || pe.indexOf(p.ccm) >= 0;
+      }), TELA.passos.map(p => p.v+'→'+(p.cards['Milho — futuro (CCM)']||'')).join(' | ').slice(0,180));
+
+  /* ── V15 · Físico não depende de vencimento ────────────────────────── */
+  const FIS = {};
+  TELA.passos.forEach(p => {
+    Object.keys(p.cards).forEach(k => {
+      if (/físic|CEPEA|Paranagu/i.test(k)){ (FIS[k] = FIS[k] || []).push(p.cards[k]); }
+    });
+  });
+  const fisEstavel = await D.pg.evaluate(async () => {
+    const vals = [...document.getElementById('veVencRef').options].map(o => o.value).slice(0, 4);
+    const obs = [];
+    for (const v of vals){
+      const sel = document.getElementById('veVencRef');
+      sel.value = v; sel.dispatchEvent(new Event('change', { bubbles:true }));
+      await new Promise(r => setTimeout(r, 1200));
+      const t = {};
+      [...document.querySelectorAll('#veCards .ve-card')].forEach(x => {
+        const rot = ((x.querySelector('.ve-card-rot')||{}).textContent||'').trim();
+        if (/físic/i.test(rot)) t[rot] = ((x.querySelector('.ve-card-val')||{}).textContent||'').trim();
+      });
+      obs.push(t);
+    }
+    const chaves = Object.keys(obs[0] || {});
+    return { chaves, mudou:chaves.filter(k => obs.some(o => o[k] !== obs[0][k])), obs:obs[0] };
+  });
+  ver('V15 os preços físicos CEPEA não mudam com o vencimento futuro',
+      fisEstavel.chaves.length >= 2 && fisEstavel.mudou.length === 0,
+      fisEstavel.mudou.join(',') || JSON.stringify(fisEstavel.obs));
+
+  /* ── V16 · Premissas pré-carregadas ────────────────────────────────── */
+  const PRE = await D.pg.evaluate(async () => {
+    try { localStorage.removeItem('ve_premissas_v1'); } catch(e){}
+    window._veRender();
+    await new Promise(r => setTimeout(r, 1600));
+    const E = window._veMotor.premissasEfetivas();
+    return { completas:E.completas, nPers:E.nPersonalizado, nCalc:E.nCalculadora,
+             nPad:E.nPadrao, falta:E.falta.map(f => f[0]), temPadrao:E.temPadrao,
+             sistema:E.p.sistema, origemSistema:E.origem.sistema,
+             custoEnt:E.p.custoArrobaEntrada, origemCusto:E.origem.custoArrobaEntrada,
+             salvo:localStorage.getItem('ve_premissas_v1'),
+             kpis:[...document.querySelectorAll('#veMargem .ve-kpi-rot')].map(x => x.textContent) };
+  });
+  ver('V16 no primeiro acesso a tela abre com o cenário padrão do Radar',
+      PRE.temPadrao && PRE.nPad > 20 && PRE.sistema === 'conf',
+      PRE.nPad + ' campos do padrão · sistema ' + PRE.sistema);
+  ver('V16 e com premissas suficientes para o motor de custo', PRE.completas,
+      PRE.falta.join(','));
+  ver('V16 o custo da @ de entrada vem da reposição, não de um número inventado',
+      PRE.origemCusto === 'padrao' && parseFloat(PRE.custoEnt) > 0, PRE.custoEnt);
+  ver('V16 o cenário padrão NÃO é gravado como dado da operação',
+      !PRE.salvo || Object.keys(JSON.parse(PRE.salvo)).every(k => k.indexOf('veVenc') === 0),
+      String(PRE.salvo));
+  ver('V16 a margem do ciclo aparece sozinha, com os indicadores pedidos',
+      ['Peso projetado de abate','Arrobas comercializadas','Custo total por cabeça',
+       'Custo por arroba vendida','Break-even — margem bruta','Margem bruta por cabeça',
+       'ROI do ciclo'].every(k => PRE.kpis.indexOf(k) >= 0),
+      PRE.kpis.join(' · '));
+
+  /* ── V17 · Trocar o vencimento não mexe na operação ────────────────── */
+  const TROCA = await D.pg.evaluate(async () => {
+    const vals = [...document.getElementById('veVencRef').options].map(o => o.value).slice(0, 4);
+    const obs = [];
+    for (const v of vals){
+      const sel = document.getElementById('veVencRef');
+      sel.value = v; sel.dispatchEvent(new Event('change', { bubbles:true }));
+      await new Promise(r => setTimeout(r, 1300));
+      const k = {};
+      [...document.querySelectorAll('#veMargem .ve-kpi')].forEach(x => {
+        k[(x.querySelector('.ve-kpi-rot')||{}).textContent] = (x.querySelector('.ve-kpi-val')||{}).textContent;
+      });
+      const E = window._veMotor.premissasEfetivas();
+      obs.push({ v, preco:k['Preço de venda'], margem:k['Margem bruta por cabeça'],
+                 be:k['Break-even — margem bruta'], peso:k['Peso projetado de abate'],
+                 arrobas:k['Arrobas comercializadas'], custo:k['Custo total por cabeça'],
+                 dias:E.p.diasCocho, gmd:E.p.gmdConf, ent:E.p.custoArrobaEntrada });
+    }
+    return obs;
+  });
+  const mudou = c => TROCA.some(o => o[c] !== TROCA[0][c]);
+  ver('V17 trocar o vencimento muda o preço de venda', mudou('preco'),
+      TROCA.map(o => o.v+':'+o.preco).join(' '));
+  ver('V17 e a margem acompanha o novo preço', mudou('margem'),
+      TROCA.map(o => o.margem).join(' '));
+  ver('V17 e NÃO muda dias de cocho, GMD nem custo de entrada',
+      !mudou('dias') && !mudou('gmd') && !mudou('ent'),
+      TROCA.map(o => o.dias+'/'+o.gmd+'/'+o.ent).join(' '));
+  ver('V17 e NÃO muda peso de abate, arrobas nem custo total',
+      !mudou('peso') && !mudou('arrobas') && !mudou('custo'),
+      TROCA.map(o => o.peso+'/'+o.arrobas+'/'+o.custo).join(' '));
+  ver('V17 o break-even não depende do vencimento', !mudou('be'),
+      TROCA.map(o => o.be).join(' '));
+
+  /* ── V18 · Personalização e seleção manual ─────────────────────────── */
+  const PERS = await D.pg.evaluate(async () => {
+    const det = document.querySelector('#vePrem details'); if (det) det.open = true;
+    const el = document.getElementById('ve_diasCocho');
+    const antes = el.value;
+    el.value = String(parseFloat(antes || '105') + 35);
+    el.dispatchEvent(new Event('change', { bubbles:true }));
+    document.getElementById('veSalvar').click();
+    await new Promise(r => setTimeout(r, 1500));
+    const salvo1 = JSON.parse(localStorage.getItem('ve_premissas_v1') || '{}');
+    const sel = document.getElementById('veVencRef');
+    const outro = [...sel.options].map(o => o.value).filter(v => v !== sel.value)[0];
+    sel.value = outro; sel.dispatchEvent(new Event('change', { bubbles:true }));
+    await new Promise(r => setTimeout(r, 1400));
+    const E1 = window._veMotor.premissasEfetivas();
+    /* Agora o milho à mão. */
+    const mc = document.getElementById('veVencCCM');
+    const alvoM = [...mc.options].map(o => o.value).filter(v => v && v !== mc.value)[0];
+    mc.value = alvoM; mc.dispatchEvent(new Event('change', { bubbles:true }));
+    await new Promise(r => setTimeout(r, 1400));
+    const itensM = [...document.querySelectorAll('#veFiltro .ve-cas-item strong')].map(x => x.textContent);
+    const E2 = window._veMotor.premissasEfetivas();
+    /* E de volta ao automático. */
+    const mc2 = document.getElementById('veVencCCM');
+    mc2.value = ''; mc2.dispatchEvent(new Event('change', { bubbles:true }));
+    await new Promise(r => setTimeout(r, 1400));
+    const itensA = [...document.querySelectorAll('#veFiltro .ve-cas-item strong')].map(x => x.textContent);
+    /* Restaurar padrão. */
+    document.getElementById('veLimpar').click();
+    await new Promise(r => setTimeout(r, 1500));
+    const salvo2 = JSON.parse(localStorage.getItem('ve_premissas_v1') || '{}');
+    const E3 = window._veMotor.premissasEfetivas();
+    return { antes, salvo1:Object.keys(salvo1), diasDepois:E1.p.diasCocho,
+             origemDias:E1.origem.diasCocho, nPers1:E1.nPersonalizado,
+             alvoM, itensM, manualPreservado:E2.p.diasCocho, itensA,
+             salvo2:Object.keys(salvo2), diasRestaurado:E3.p.diasCocho,
+             origemRestaurado:E3.origem.diasCocho,
+             vencPreservado:(document.getElementById('veVencRef')||{}).value };
+  });
+  ver('V18 salvar grava só o campo editado, não o cenário padrão inteiro',
+      PERS.salvo1.filter(k => k.indexOf('veVenc') !== 0).length === 1,
+      PERS.salvo1.join(','));
+  ver('V18 a edição sobrevive à troca de vencimento',
+      PERS.origemDias === 'personalizado' && PERS.diasDepois !== PERS.antes,
+      PERS.antes + ' → ' + PERS.diasDepois + ' [' + PERS.origemDias + ']');
+  ver('V18 a escolha manual do milho é respeitada',
+      /escolhido à mão/.test(PERS.itensM[1] || '') && (PERS.itensM[1]||'').indexOf(PERS.alvoM) >= 0,
+      PERS.itensM[1]);
+  ver('V18 e o automático volta quando se pede',
+      !/escolhido à mão/.test(PERS.itensA[1] || ''), PERS.itensA[1]);
+  ver('V18 "Restaurar premissas padrão" apaga a edição e preserva o vencimento',
+      PERS.origemRestaurado === 'padrao' && PERS.diasRestaurado === PERS.antes
+        && PERS.salvo2.every(k => k.indexOf('veVenc') === 0) && !!PERS.vencPreservado,
+      PERS.diasRestaurado + ' [' + PERS.origemRestaurado + '] · guardado: ' + PERS.salvo2.join(','));
+
+  /* ── V19 · Nenhuma fórmula financeira nova ─────────────────────────── */
+  const MOTOR = await D.pg.evaluate(async () => {
+    const E = window._veMotor.premissasEfetivas();
+    const sel = document.getElementById('veVencRef');
+    const v = sel.value;
+    const u = window._veMotor.ultima(v);
+    const r = window._veMotor.custo(u.preco, E.p);
+    const direto = window.__3M_calcEngine(E.p, u.preco);
+    const k = {};
+    [...document.querySelectorAll('#veMargem .ve-kpi')].forEach(x => {
+      k[(x.querySelector('.ve-kpi-rot')||{}).textContent] = (x.querySelector('.ve-kpi-val')||{}).textContent;
+    });
+    const n = s => parseFloat(String(s||'').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',','.'));
+    return { bateMotor: Math.abs(r.bMB - direto.bMB) < 1e-9 && Math.abs(r.mB - direto.mB) < 1e-9,
+             telaBE:n(k['Break-even — margem bruta']), motorBE:direto.bMB,
+             telaMB:n(k['Margem bruta por cabeça']), motorMB:direto.mB,
+             telaCusto:n(k['Custo total por cabeça']), motorCusto:direto.cT };
+  });
+  ver('V19 a tela não recalcula: o que ela mostra é o que o calcEngine devolveu',
+      MOTOR.bateMotor
+        && Math.abs(MOTOR.telaBE - MOTOR.motorBE) < 0.01
+        && Math.abs(MOTOR.telaMB - MOTOR.motorMB) < 0.01
+        && Math.abs(MOTOR.telaCusto - MOTOR.motorCusto) < 0.01,
+      'BE ' + MOTOR.telaBE + '/' + MOTOR.motorBE.toFixed(2)
+        + ' · MB ' + MOTOR.telaMB + '/' + MOTOR.motorMB.toFixed(2)
+        + ' · custo ' + MOTOR.telaCusto + '/' + MOTOR.motorCusto.toFixed(2));
+
+
+  /* ── V20 · Sem fonte válida, a ausência é declarada ────────────────────
+     O teste que saiu de V6 volta aqui, mais exigente: derruba o cenário
+     padrão de propósito, limpa o que estiver salvo e exige que a tela diga
+     que faltam premissas — e diga QUAIS — em vez de mostrar margem de
+     enchimento. */
+  const SEM = await D.pg.evaluate(async () => {
+    const guarda = window._caiCenarioPadrao;
+    const salvo = localStorage.getItem('ve_premissas_v1');
+    try { localStorage.removeItem('ve_premissas_v1'); } catch(e){}
+    window._caiCenarioPadrao = function(){ return null; };
+    try { delete window.__CAI_CENARIO; } catch(e){ window.__CAI_CENARIO = null; }
+    window._veRender();
+    await new Promise(r => setTimeout(r, 1600));
+    const t = id => { const e = document.getElementById(id); return e ? e.textContent.replace(/\s+/g,' ') : ''; };
+    const E = window._veMotor.premissasEfetivas();
+    const out = { margem:t('veMargem'), venda:t('veVenda'), protecao:t('veProtecao'),
+                  prem:t('vePrem'), completas:E.completas, falta:E.falta.map(f => f[1]),
+                  nPad:E.nPadrao };
+    /* devolve o painel ao estado anterior */
+    window._caiCenarioPadrao = guarda;
+    if (salvo != null) localStorage.setItem('ve_premissas_v1', salvo);
+    window._veRender();
+    await new Promise(r => setTimeout(r, 1500));
+    return out;
+  });
+  ver('V20 sem cenário padrão e sem personalização, não há premissas',
+      !SEM.completas && SEM.nPad === 0 && SEM.falta.length > 0, SEM.falta.join(', '));
+  ver('V20 a margem do ciclo declara a ausência em vez de mostrar número',
+      /Dados insuficientes para análise/.test(SEM.margem) && !/R\$\s*\d/.test(SEM.margem),
+      SEM.margem.slice(0,140));
+  ver('V20 e diz exatamente o que falta',
+      SEM.falta.every(f => SEM.margem.indexOf(f) >= 0 || SEM.prem.indexOf(f) >= 0),
+      SEM.falta.join(' · '));
+  ver('V20 a venda do boi volta a declarar a ausência de custo',
+      /Dados insuficientes para análise/.test(SEM.venda), SEM.venda.slice(0,120));
+  ver('V20 a proteção também', /Dados insuficientes para análise/.test(SEM.protecao),
+      SEM.protecao.slice(0,120));
+  ver('V20 e a tela volta ao normal depois do teste',
+      await D.pg.evaluate(() => window._veMotor.premissasEfetivas().completas));
+
   await D.pg.close();
   await b.close();
 
   console.log('');
-  console.log('VISÃO EXECUTIVA — Etapa 4');
+  console.log('VISÃO EXECUTIVA — Etapas 4 e 6');
   ok.forEach(x => console.log('  ok      ' + x.nome));
   falhas.forEach(x => console.log('  FALHOU  ' + x.nome + (x.detalhe ? ' — ' + x.detalhe : '')));
   console.log('  ' + ok.length + ' passaram' + (falhas.length ? ', ' + falhas.length + ' FALHARAM' : ''));
