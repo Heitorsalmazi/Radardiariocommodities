@@ -12365,6 +12365,471 @@ window._rsiCalc = function(arr, n){
 }
 </style>
 
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   NAVEGAÇÃO HIERÁRQUICA — estilo (Etapa 5)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── O seletor de universo sai da barra ────────────────────────────────
+   Quem escolhe o universo agora é o grupo: "Mercado Agropecuário" liga o
+   agro, "Mercados & Macro" liga o macro. Deixar o seletor ao lado seria
+   pedir a mesma decisão duas vezes, em dois lugares, com chance de
+   discordarem. Os botões continuam no DOM — `_m3IrUniverso` ainda marca o
+   ativo neles e o rollback é apagar esta regra. */
+.m3-univ{ display:none !important; }
+
+/* ── Sete grupos na barra ──────────────────────────────────────────────
+   Eram três rótulos curtos; agora são sete, alguns com duas palavras. Em
+   telas médias o conjunto precisa de menos respiro por botão para caber
+   numa linha só — abaixo disso a barra quebra em duas, que é o
+   comportamento que ela já tinha. */
+@media (max-width:1180px){
+  body[data-m3-barra] .m3-amb-btn{ padding:6px 9px; }
+  body[data-m3-barra] .m3-amb-btn .m3-amb-rot{ letter-spacing:.05em; }
+}
+
+/* ── Ver também ────────────────────────────────────────────────────────
+   Visivelmente diferente de um botão de seção: ele não abre algo deste
+   grupo, ele leva embora. A seta e a linha "em <GRUPO>" dizem isso antes
+   do clique. */
+/* Atravessa as três colunas e fica embaixo de tudo: a linha tracejada
+   passa a separar "o que é deste grupo" de "o que está em outro", em vez
+   de aparecer no meio de uma coluna como se fosse mais um subgrupo. */
+/* `.m3-men-ref` TAMBÉM carrega a classe `.m3-men-g`, e a folha principal
+   do painel — que vem depois desta na cascata — dá `display:flex` a ela.
+   Com a mesma especificidade quem vem depois ganha, e os atalhos saíam
+   empilhados numa coluna só. Qualificar com as duas classes resolve sem
+   `!important` e sem depender da ordem dos blocos de estilo. */
+body[data-m3-barra] .m3-men-g.m3-men-ref{
+  grid-column:1 / -1; border-top:1px dashed #e5e7eb; margin-top:6px; padding-top:2px;
+  display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:0 14px; align-items:start;
+}
+body[data-m3-barra] .m3-men-g.m3-men-ref .m3-men-t{ grid-column:1 / -1; }
+@media (max-width:820px){
+  body[data-m3-barra] .m3-men-g.m3-men-ref{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media (max-width:560px){
+  body[data-m3-barra] .m3-men-g.m3-men-ref{ grid-template-columns:minmax(0,1fr); }
+}
+.m3-ref-btn{
+  cursor:pointer; background:none; border:0; border-left:2px solid transparent;
+  border-radius:3px; text-align:left; width:100%; padding:6px 9px;
+  font-family: var(--font-display); font-size: var(--fs-base); color:#4b5563;
+  display:flex; flex-direction:column; gap:1px;
+}
+.m3-ref-btn:hover{ background:#f9fafb; color:#111827; border-left-color:#e5e7eb; }
+.m3-ref-btn:focus-visible{ outline:2px solid var(--m3-accent); outline-offset:-2px; }
+.m3-ref-btn[disabled]{ opacity:.45; cursor:default; }
+.m3-ref-nome::after{ content:' →'; color:#9ca3af; }
+.m3-ref-onde{
+  font-size: var(--fs-micro); color:#9ca3af; text-transform:uppercase; letter-spacing:.08em;
+}
+
+/* ── Relatórios e arquivos ─────────────────────────────────────────── */
+.rel-intro{ font-size: var(--fs-base); color: var(--text-muted); line-height:1.55; margin-bottom: var(--space-4); max-width:78ch; }
+.rel-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--space-3); }
+.rel-item{
+  border:1px solid var(--border-subtle); border-radius:12px; padding:12px 14px;
+  display:flex; flex-direction:column; gap:4px; min-width:0;
+}
+.rel-rot{ font-size: var(--fs-md); font-weight:700; line-height:1.25; }
+.rel-gera{
+  font-size: var(--fs-micro); text-transform:uppercase; letter-spacing:.10em; font-weight:700;
+  color: var(--m3-accent);
+}
+.rel-oque{ font-size: var(--fs-sm); color: var(--text-muted); line-height:1.5; }
+.rel-btn{ align-self:flex-start; width:auto; padding:4px 0; margin-top:2px; color: var(--m3-accent); font-weight:700;
+          font-size: var(--fs-micro); text-transform:uppercase; letter-spacing:.06em; }
+.rel-btn:hover{ background:none; text-decoration:underline; border-left-color:transparent; }
+.rel-falta{ font-size: var(--fs-micro); color:#be123c; }
+.rel-indisponivel{ opacity:.6; }
+.rel-nota{
+  margin-top: var(--space-4); font-size: var(--fs-sm); color: var(--text-muted); line-height:1.55;
+  border-left:2px solid var(--border-strong); padding-left:10px;
+}
+</style>
+
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   NAVEGAÇÃO — correções da Etapa 5.1
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Colunas de contexto (Milho, Soja, Bezerro e boi magro) ────────────
+   Mesma gramática visual dos subgrupos de verdade — são entradas de menu,
+   não um cartaz. O que as distingue é a seta e a linha "em <GRUPO>" que
+   cada botão já carrega: antes do clique dá para ver que a análise mora
+   em outro endereço.
+
+   Diferente de `.m3-men-ref`, estas NÃO atravessam o menu inteiro: elas
+   ficam lado a lado com "Boi gordo", porque é assim que se procura — por
+   produto. Como também carregam `.m3-men-g`, valem aqui os mesmos
+   cuidados de cascata do bloco "Ver também": qualificar com as duas
+   classes para não perder da folha principal. */
+body[data-m3-barra] .m3-men-g.m3-men-ctx{
+  display:flex; flex-direction:column; min-width:0;
+}
+body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
+  content:' ·'; color:var(--m3-accent);
+}
+
+/* ── Aviso de troca de universo ────────────────────────────────────────
+   Uma linha, acima do conteúdo e abaixo da trilha, no lugar onde o olho
+   já vai procurar "onde estou". Sem ícone de alarme e sem botão de
+   fechar: ela some na navegação seguinte, porque é informação sobre o
+   salto que acabou de acontecer, não um estado pendente. */
+.m3-aviso-univ{
+  margin:0 0 var(--space-3) 0; padding:7px 11px;
+  border:1px solid var(--border-subtle); border-left:3px solid var(--m3-accent);
+  border-radius:0 8px 8px 0; background:#fffdf5;
+  font-family:var(--font-display); font-size:var(--fs-sm); line-height:1.5;
+  color:var(--text-muted);
+}
+.m3-aviso-univ b{ color:var(--text-strong, #111827); font-weight:700; }
+
+/* ── Busca: resultado que não é card ───────────────────────────────────
+   Painéis migrados da barra antiga (a Apresentação é o caso) não têm
+   `section.card`: o título deles mora em `.panel-title`. Entram no índice
+   com esta marca para que o resultado diga o que é. */
+.m3-busca-item .m3-busca-tipo{
+  font-size:var(--fs-micro); text-transform:uppercase; letter-spacing:.08em;
+  color:#9ca3af;
+}
+</style>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   NAVEGAÇÃO — colunas de atalho, aviso de universo e busca (Etapa 5.1)
+   ──────────────────────────────────────────────────────────────────────────
+   Substitui o módulo da Etapa 5 e acrescenta três coisas:
+
+   1. COLUNAS DE ATALHO NO MENU, com ativo opcional. Milho e soja ganham
+      entrada própria em Mercado Agropecuário sem que uma única série,
+      indicador ou função seja duplicada: cada entrada é um endereço —
+      seção, alvo dentro dela e, quando faz sentido, o ativo que a análise
+      precisa ter selecionado para responder sobre aquele grão.
+
+   2. AVISO DE TROCA DE UNIVERSO. Quando a navegação precisa mesmo trocar o
+      ativo, ela diz. Trocar em silêncio é o que fazia o operador perder o
+      contrato sem entender por quê.
+
+   3. BUSCA QUE ALCANÇA O QUE NASCE DEPOIS. O índice era montado uma vez, na
+      inicialização, e cards construídos em tempo de execução ficavam fora
+      dele.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  /* ── 1 · COLUNAS DE ATALHO ───────────────────────────────────────────
+     `apos` diz depois de qual subgrupo a coluna entra; sem `apos`, vai para
+     o fim. Cada item é [seção, ativo|null, alvo|null, rótulo] e `prod` leva
+     o seletor de produto da exportação junto, quando o destino é a COMEX.
+
+     REGRA DO LAR ÚNICO, INTACTA: nenhuma seção aparece duas vezes no menu
+     como seção. O que aparece aqui é ENDEREÇO — um botão que leva ao lugar
+     onde a análise já mora, às vezes com o ativo certo na mão. */
+  var COLUNAS = {
+    agro: [
+      { rot:'Milho', apos:'Boi gordo', classe:'m3-men-ctx', itens:[
+        ['m3_1_2',  'MILHO - CEPEA', null, 'Preço e momento do milho'],
+        ['m3_1_8',  '@CCM', 'chartRatioBGICCM', 'Curva CCM e relação de troca'],
+        ['m3_2_3',  null, 'chartSHMilhoDaily', 'Histórico e sazonalidade'],
+        ['m3_1_6',  null, null, 'Exportações de milho', 'milho']
+      ]},
+      { rot:'Soja', apos:'Milho', classe:'m3-men-ctx', itens:[
+        ['m3_1_2',  'SOJA - PARANAGUÁ', null, 'Preço e momento da soja'],
+        ['m3_1_8',  '@SJC', null, 'Curva de contratos SJC'],
+        ['m3_2_3',  null, 'chartCurvaVarSJC', 'Histórico e variação'],
+        ['m3_1_6',  null, null, 'Exportações de soja', 'soja']
+      ]},
+      { rot:'Bezerro e boi magro', apos:'Soja', classe:'m3-men-ctx', itens:[
+        ['m3_2_8', null, 'chartBezBoiTroca',    'Quantos bezerros paga um boi'],
+        ['m3_2_8', null, 'chartBoiMagroTroca',  'Boi gordo × boi magro'],
+        ['m3_2_2', null, null,                  'Histórico e sazonalidade'],
+        ['m3_2_7', null, null,                  'Ciclo do bezerro']
+      ]},
+      { rot:'Ver também', classe:'m3-men-ref', itens:[
+        ['m3_2_1',  null, null, 'Histórico e sazonalidade — boi'],
+        ['m3_1_2',  null, null, 'Preço e momento'],
+        ['m3_3_5b', null, null, 'Base: físico × futuro do contrato']
+      ]}
+    ],
+    macro: [
+      { rot:'Ver também', classe:'m3-men-ref', itens:[
+        ['m3_1_2',  null, null, 'Preço e momento'],
+        ['m3_1_2t', null, null, 'Indicadores técnicos de trading']
+      ]}
+    ],
+    confin: [
+      { rot:'Ver também', classe:'m3-men-ref', itens:[
+        ['m3_3_5d', null, null, 'Travar boi — a decisão econômica'],
+        ['m3_2_8',  null, null, 'Relações de troca & reposição'],
+        ['m3_0_1',  null, null, 'Visão Executiva']
+      ]}
+    ],
+    hedge: [
+      { rot:'Ver também', classe:'m3-men-ref', itens:[
+        ['m3_4_1', null, null, 'Calculadora do Boi'],
+        ['m3_1_8', null, null, 'Futuros'],
+        ['m3_0_1', null, null, 'Visão Executiva']
+      ]}
+    ],
+    estudo: [
+      { rot:'Ver também', classe:'m3-men-ref', itens:[
+        ['m3_1_3', null, null, 'Boi — mercado físico'],
+        ['m3_1_8', null, null, 'Futuros'],
+        ['m3_2_8', null, null, 'Relações de troca & reposição']
+      ]}
+    ],
+    relato: [
+      { rot:'Ver também', classe:'m3-men-ref', itens:[
+        ['m3_1_1',  null, null, 'Resumo do dia'],
+        ['m3_4_1',  null, null, 'Calculadora do Boi'],
+        ['m3_3_5a', null, null, 'Travar boi — diagnóstico'],
+        ['m3_3_5c', null, null, 'Travar boi — timing']
+      ]}
+    ]
+  };
+
+  function secao(id){ return (window._M3_ESTRUTURA || []).filter(function(s){ return s.id === id; })[0]; }
+  function nomeGrupo(id){
+    var s = secao(id); if (!s) return '';
+    var a = (window._M3_AMBIENTES || []).filter(function(x){ return x.id === s.amb; })[0];
+    return a ? a.rot : '';
+  }
+
+  /* Resolve `@CCM` e `@SJC` no primeiro vencimento vigente daquele prefixo.
+     Fixar um contrato na tabela seria escrever uma data de validade no
+     código: em três meses ele vence e o atalho leva a uma tela vazia. */
+  function resolveAtivo(v){
+    if (!v) return null;
+    if (v.charAt(0) !== '@') return v;
+    var pre = v.slice(1);
+    try {
+      if (window._veMotor && typeof window._veMotor.primeiroVigente === 'function'){
+        var r = window._veMotor.primeiroVigente(pre);
+        if (r) return r;
+      }
+    } catch(e){}
+    try { if (typeof window._m3PrimeiroVencimento === 'function') return window._m3PrimeiroVencimento(pre); } catch(e){}
+    return null;
+  }
+
+  function montarColunas(){
+    (window._M3_AMBIENTES || []).forEach(function(a){
+      var sn = document.getElementById('secnav_' + a.id);
+      if (!sn || sn.getAttribute('data-m3-colunas')) return;
+      (COLUNAS[a.id] || []).forEach(function(C){
+        var itens = (C.itens || []).filter(function(p){ return !!secao(p[0]); });
+        if (!itens.length) return;
+        var col = document.createElement('div');
+        col.className = 'm3-men-g ' + (C.classe || 'm3-men-ref');
+        var tit = document.createElement('div');
+        tit.className = 'm3-men-t'; tit.textContent = C.rot;
+        col.appendChild(tit);
+        itens.forEach(function(p){
+          var b = document.createElement('button');
+          b.type = 'button'; b.className = 'm3-ref-btn';
+          b.setAttribute('data-m3-ref', p[0]);
+          if (p[1]) b.setAttribute('data-m3-ativo', p[1]);
+          if (p[2]) b.setAttribute('data-m3-alvo', p[2]);
+          if (p[4]) b.setAttribute('data-m3-prod', p[4]);
+          var onde = nomeGrupo(p[0]);
+          b.innerHTML = '<span class="m3-ref-nome"></span><span class="m3-ref-onde"></span>';
+          b.querySelector('.m3-ref-nome').textContent = p[3];
+          /* O espaço antes de "em" não é enfeite: as duas linhas são spans
+             coladas, e sem ele o texto sai "boiem INTELIGÊNCIA" para quem
+             copia ou usa leitor de tela. */
+          b.querySelector('.m3-ref-onde').textContent = ' em ' + onde;
+          b.setAttribute('aria-label', p[3] + ' — abrir em ' + onde);
+          col.appendChild(b);
+        });
+        /* Posiciona depois do subgrupo nomeado em `apos`; sem ele, no fim. */
+        var antes = null;
+        if (C.apos){
+          var ts = sn.querySelectorAll('.m3-men-g > .m3-men-t');
+          for (var i=0;i<ts.length;i++){
+            if ((ts[i].textContent||'').trim() === C.apos){ antes = ts[i].parentElement.nextSibling; break; }
+          }
+        }
+        if (antes) sn.insertBefore(col, antes); else sn.appendChild(col);
+      });
+      sn.setAttribute('data-m3-colunas','1');
+    });
+  }
+
+  document.addEventListener('click', function(ev){
+    var b = ev.target && ev.target.closest ? ev.target.closest('[data-m3-ref]') : null;
+    if (!b) return;
+    var id = b.getAttribute('data-m3-ref');
+    var ativo = resolveAtivo(b.getAttribute('data-m3-ativo'));
+    var alvo = b.getAttribute('data-m3-alvo');
+    var prod = b.getAttribute('data-m3-prod');
+    try {
+      /* O ativo entra ANTES da navegação: trocar depois faria a seção
+         desenhar uma vez com o ativo velho e outra com o novo.
+
+         E entra pelo CAMINHO OFICIAL. A primeira versão deste trecho
+         desligava `hidden` e `disabled` da opção na mão para poder
+         selecioná-la — o que é escrever por cima do filtro de universo em
+         vez de usá-lo, exatamente a "segunda fonte de verdade" que a Etapa
+         5.1 manda evitar. Se o ativo mora no outro universo, troca-se o
+         universo; o filtro então mostra a opção por conta própria. */
+      if (ativo){
+        var ss = document.getElementById('sheetSelect');
+        var uA = window._m3UnivDoAtivo ? window._m3UnivDoAtivo(ativo) : null;
+        if (uA && document.body.getAttribute('data-m3-univ') !== uA
+               && typeof window._m3IrUniverso === 'function'){
+          /* A trava evita que o filtro de seções navegue sozinho no meio do
+             caminho: quem decide o destino é este atalho, duas linhas abaixo. */
+          try { window._M3_TROCANDO_AMB = 1; window._m3IrUniverso(uA); }
+          catch(e){ console.warn('Atalho — universo:', e); }
+          finally { window._M3_TROCANDO_AMB = 0; }
+        }
+        var op = ss && Array.prototype.filter.call(ss.options, function(o){ return o.value === ativo; })[0];
+        if (op && !op.hidden && !op.disabled){
+          ss.value = ativo;
+          ss.dispatchEvent(new Event('change', { bubbles:true }));
+        }
+      }
+      if (alvo && document.getElementById(alvo) && typeof window.m3IrAlvo === 'function') window.m3IrAlvo(id, alvo);
+      else if (typeof window.m3Ir === 'function') window.m3Ir(id);
+      /* Produto da exportação depois da navegação: o comutador precisa do
+         painel já visível para montar a sub-aba. */
+      if (prod && typeof window.switchExpSubTab === 'function'){
+        setTimeout(function(){ try { window.switchExpSubTab(prod); } catch(e){} }, 120);
+      }
+    } catch(e){ console.warn('Atalho de menu:', e); }
+  });
+
+  function esc(s){
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c];
+    });
+  }
+
+  /* ── 2 · AVISO DE TROCA DE UNIVERSO ──────────────────────────────────
+     Só aparece quando a navegação REALMENTE trocou o ativo, e diz as duas
+     pontas: o que estava selecionado e o que ficou. Some na navegação
+     seguinte — é um aviso, não um alarme que precise ser desligado. */
+  function avisarUniverso(de, para, onde, univ){
+    var tr = document.getElementById('m3Trilha');
+    if (!tr || !tr.parentElement) return;
+    var el = document.getElementById('m3AvisoUniv');
+    if (!el){
+      el = document.createElement('div');
+      el.id = 'm3AvisoUniv'; el.className = 'm3-aviso-univ';
+      el.setAttribute('role','status');
+      tr.parentElement.insertBefore(el, tr.nextSibling);
+    }
+    var txt = '<b>' + esc(onde || 'Esta análise') + '</b> trabalha com '
+            + esc(univ || 'outro conjunto de ativos') + '.';
+    if (de && para && de !== para){
+      txt += ' O ativo mudou de <b>' + esc(de) + '</b> para <b>' + esc(para)
+           + '</b> — <b>' + esc(de) + '</b> fica guardado e volta quando você '
+           + 'retornar ao grupo dele.';
+    } else if (de){
+      txt += ' <b>' + esc(de) + '</b> não é analisado aqui.';
+    }
+    el.innerHTML = txt;
+    el.style.display = '';
+  }
+  function limparAvisoUniverso(){
+    var el = document.getElementById('m3AvisoUniv');
+    if (el) el.style.display = 'none';
+  }
+  window._m3AvisoUniverso = avisarUniverso;
+  window._m3LimpaAvisoUniverso = limparAvisoUniverso;
+
+  /* ── 3 · RELATÓRIOS E ARQUIVOS ───────────────────────────────────────
+     Inventário conferido no painel em execução, não suposição: cada item
+     tem um botão que EXISTE, com o id anotado. */
+  var SAIDAS = [
+    { rot:'Apresentação de contratos futuros',
+      oque:'Monta slides dos contratos BGI escolhidos e exporta em PowerPoint ou PDF.',
+      gera:'Slides · PPTX · PDF', sec:'m3_7_1', alvo:'apresGerarBtn', aqui:true },
+    { rot:'Alertas no período',
+      oque:'A folha A4 dos alertas disparados na janela analisada.',
+      gera:'Imagem A4', sec:'m3_3_5c', alvo:'btnAlertasPNG' },
+    { rot:'Top 5 — níveis de execução',
+      oque:'A folha A4 do ranking de níveis de entrada.',
+      gera:'Imagem A4', sec:'m3_3_5c', alvo:'btnTop10PNG' },
+    { rot:'Matriz de contratos',
+      oque:'A folha A4 da matriz de risco por vencimento.',
+      gera:'Imagem A4', sec:'m3_3_5a', alvo:'btnMBMatrixExport' },
+    { rot:'Calculadora do Boi — resultado',
+      oque:'O resultado do lote em imagem vertical, para compartilhar.',
+      gera:'Imagem 9×16', sec:'m3_4_1', alvo:'bmsExportResultBtn' },
+    { rot:'Calculadora do Boi — DRE',
+      oque:'O demonstrativo completo do lote em imagem vertical.',
+      gera:'Imagem 9×16', sec:'m3_4_1', alvo:'bmsExportDreBtn' }
+  ];
+
+  var _montado = false;
+  function render(){
+    var slot = document.getElementById('slot_m3_7_1');
+    if (!slot) return;
+    if (_montado){ marcarDisponiveis(); return; }
+
+    var card = document.createElement('section');
+    card.className = 'card rel-card';
+    card.innerHTML =
+      '<div class="card-title"><span class="card-title-text">SAÍDAS DISPONÍVEIS</span></div>'
+      + '<div class="rel-intro">Esta tela não gera arquivo por conta própria: ela reúne as '
+      + 'exportações que já existem no painel, diz o que cada uma produz e leva até o botão. '
+      + 'O conteúdo exportado é sempre o da tela de origem, com os filtros que estiverem '
+      + 'valendo lá. <b>Exportação de arquivo não se confunde com exportação de commodity:</b> '
+      + 'o comércio exterior — carne, milho e soja vendidos ao exterior — mora em '
+      + 'Mercado Agropecuário › Oferta e demanda › Mercado externo.</div>'
+      + '<div class="rel-grid">'
+      + SAIDAS.map(function(s){
+          return '<div class="rel-item" data-rel-alvo="' + esc(s.alvo) + '">'
+            + '<div class="rel-rot">' + esc(s.rot) + '</div>'
+            + '<div class="rel-gera">' + esc(s.gera) + '</div>'
+            + '<div class="rel-oque">' + esc(s.oque) + '</div>'
+            + '<button type="button" class="m3-ref-btn rel-btn" data-rel-sec="' + esc(s.sec) + '" '
+            +   'data-rel-ir="' + esc(s.alvo) + '">'
+            +   (s.aqui ? 'ir para o painel abaixo' : 'abrir onde ela mora') + ' →</button>'
+            + '<div class="rel-falta"></div>'
+            + '</div>';
+        }).join('')
+      + '</div>'
+      + '<div class="rel-nota">A impressão do navegador (Ctrl+P) também funciona em qualquer '
+      + 'tela e respeita as folhas de impressão do painel. A Apresentação, logo abaixo, é a '
+      + 'única saída que monta um documento de várias páginas.</div>';
+    slot.insertBefore(card, slot.firstChild);
+
+    slot.addEventListener('click', function(ev){
+      var b = ev.target && ev.target.closest ? ev.target.closest('[data-rel-sec]') : null;
+      if (!b) return;
+      var sec = b.getAttribute('data-rel-sec'), alvo = b.getAttribute('data-rel-ir');
+      try {
+        if (alvo && document.getElementById(alvo) && typeof window.m3IrAlvo === 'function') window.m3IrAlvo(sec, alvo);
+        else if (typeof window.m3Ir === 'function') window.m3Ir(sec);
+      } catch(e){ console.warn('Relatórios — navegação:', e); }
+    });
+    _montado = true;
+    marcarDisponiveis();
+    /* Os cards acabaram de nascer: o índice da busca precisa saber. */
+    try { if (typeof window._m3ReindexaBusca === 'function') window._m3ReindexaBusca(); } catch(e){}
+  }
+
+  function marcarDisponiveis(){
+    Array.prototype.forEach.call(document.querySelectorAll('.rel-item'), function(el){
+      var alvo = el.getAttribute('data-rel-alvo');
+      var ok = !!document.getElementById(alvo);
+      el.classList.toggle('rel-indisponivel', !ok);
+      var f = el.querySelector('.rel-falta');
+      if (f) f.textContent = ok ? '' : 'Este botão não está na página nesta sessão.';
+      var b = el.querySelector('.rel-btn');
+      if (b) b.disabled = !ok;
+    });
+  }
+
+  window._m3MontaVerTambem = montarColunas;
+  window._relRender = render;
+})();
+</script>
+
 <script>
 /* ══════════════════════════════════════════════════════════════════════════
    VISÃO EXECUTIVA — motor de leitura (Etapa 4 · 12/10/2026)
@@ -45512,38 +45977,111 @@ function updateRelacao() {
 
   /* Seções da nova navegação. `render` lista os desenhadores que precisam
      rodar quando a seção aparece — no lugar do antigo switchCicloSubTab. */
+  /* ══════════════════════════════════════════════════════════════════════
+     A ÁRVORE DA NAVEGAÇÃO — Etapa 5 · 13/10/2026
+     ──────────────────────────────────────────────────────────────────────
+     Sete grupos no lugar de três ambientes. Os IDs das seções não mudaram:
+     `m3IrAlvo`, os roteiros, os atalhos da Visão Executiva e qualquer link
+     salvo continuam chegando ao mesmo lugar. O que mudou foi o endereço de
+     cada seção dentro do menu — e isso é tabela, não esqueleto.
+
+     REGRA DO LAR ÚNICO. Cada seção pertence a UM grupo. Onde um grupo
+     precisa de algo que mora em outro, entra um atalho nomeado em
+     `_M3_VERTAMBEM` que leva até lá — nunca uma segunda cópia do
+     componente. Dois lugares com o mesmo cálculo é como nascem dois
+     números para a mesma pergunta.
+
+     DUAS SEÇÕES NOVAS, NENHUMA PERDIDA:
+     · `m3_4_1` recebe a Calculadora do Boi, que dividia a antiga
+       "Ferramentas" com o Simulador de Hedge. Custo de produção e
+       dimensionamento de trava respondem a perguntas diferentes e agora
+       moram em grupos diferentes.
+     · `m3_7_1` recebe a Apresentação de Contratos Futuros — o painel que
+       gera slides, PPTX e PDF. Ele estava no documento e INALCANÇÁVEL:
+       ficou de fora da migração da Etapa 3 por ser "um modo com comutador
+       próprio", mas o único comutador que o abria era a barra antiga, que
+       a mesma etapa escondeu. Medido: percorrendo as 35 seções pela
+       navegação, ele nunca aparece.                                        */
   var _M3_ESTRUTURA = [
+    /* ── 1 · VISÃO EXECUTIVA ─────────────────────────────────────────── */
     { amb:'exec', id:'m3_0_1', nome:'Visão Executiva',
       render:['_veRender'],
       dica:'Mercado, relações de troca, margem projetada e riscos — em uma tela.' },
-
-    { amb:'mercado', id:'m3_1_1', nome:'Resumo do dia',
+    { amb:'exec', id:'m3_1_1', nome:'Resumo do dia',
       render:['renderHist7','_m3RenderTodosPaineisDecisao'],
       dica:'O que mudou desde a sessão anterior.' },
-    { amb:'mercado', id:'m3_1_2', nome:'Preço e momento',
-      render:['updateTrend','updateZScore','updateGauss','updateVolDiaria'],
-      dica:'Como o ativo selecionado está se comportando agora.' },
-    { amb:'mercado', id:'m3_1_2t', nome:'Indicadores técnicos de trading',
-      render:['updateBollinger','updateMACD','updateIFR'],
-      dica:'Bollinger, MACD e IFR. Ferramenta de trading — não é estatística econômica.' },
-    { amb:'mercado', id:'m3_1_3', nome:'Boi — mercado físico',
+
+    /* ── 2 · MERCADO AGROPECUÁRIO ────────────────────────────────────── */
+    { amb:'agro', id:'m3_1_3', nome:'Boi — mercado físico',
       dica:'Preço do físico e cobertura de compra da indústria.',
       render:['updateEscalas','updateFixedSeriesCharts'] },
-    { amb:'mercado', id:'m3_1_4', nome:'Regional',
+    { amb:'agro', id:'m3_1_4', nome:'Regional',
       dica:'A pressão está numa praça só ou já se espalhou?', render:['updateRegional'] },
-    { amb:'mercado', id:'m3_1_5', nome:'Demanda doméstica — atacado',
-      dica:'A carne sustenta o preço do boi?', render:['updateAtacado'] },
-    { amb:'mercado', id:'m3_1_6', nome:'Demanda externa — exportação',
-      dica:'Quanto o mercado externo está pagando.',
-      render:['_m3AbreExportacao','_m3RenderAtkExport'] },
-    { amb:'mercado', id:'m3_1_7', nome:'Oferta imediata × demanda',
-      render:['_m3RenderOfertaDemanda'],
-      dica:'Abate corrente contra o que a carne paga. Não é ciclo pecuário.' },
-    { amb:'mercado', id:'m3_1_8', nome:'Futuros',
+    { amb:'agro', id:'m3_2_8', nome:'Relações de troca & reposição',
+      dica:'Poder de compra do boi, custo relativo da reposição e relações com o milho.',
+      render:['_m3RenderRelacoes'] },
+    { amb:'agro', id:'m3_1_8', nome:'Futuros',
       dica:'O que o mercado precifica daqui para frente.',
       render:['updateBoiVsBGIAll','updateRatioBGICCM','updateBGICarrego'] },
-    { amb:'mercado', id:'m3_1_9', nome:'Outros — mercado', oculta:true },
+    { amb:'agro', id:'m3_1_5', nome:'Demanda doméstica — atacado',
+      dica:'A carne sustenta o preço do boi?', render:['updateAtacado'] },
+    /* "Exportação" aqui é o mercado externo — a carne brasileira vendida ao
+       exterior, pela COMEX. Não confundir com exportar arquivo, que é o
+       grupo 7. */
+    { amb:'agro', id:'m3_1_6', nome:'Demanda externa — exportação',
+      dica:'Quanto o mercado externo está pagando.',
+      render:['_m3AbreExportacao','_m3RenderAtkExport'] },
+    { amb:'agro', id:'m3_1_7', nome:'Oferta imediata × demanda',
+      render:['_m3RenderOfertaDemanda'],
+      dica:'Abate corrente contra o que a carne paga. Não é ciclo pecuário.' },
+    { amb:'agro', id:'m3_1_9', nome:'Outros — mercado', oculta:true },
 
+    /* ── 3 · MERCADOS & MACRO ────────────────────────────────────────── */
+    { amb:'macro', id:'m3_2_9', nome:'Macro e moeda',
+      dica:'Dólar, juros e o preço real do boi contra a inflação.',
+      render:['updateEconomia','updateCorrelacaoFisico','updateRatioBGIDolar','updateRatioBGIDolarCasado'] },
+    { amb:'macro', id:'m3_2_4', nome:'Açúcar', render:['updateSHAcucarFixed'] },
+    { amb:'macro', id:'m3_2_5', nome:'Etanol', render:['updateSHEtanolFixed'] },
+
+    /* ── 4 · GESTÃO DO CONFINAMENTO ──────────────────────────────────── */
+    { amb:'confin', id:'m3_4_1', nome:'Calculadora do Boi',
+      dica:'Custo de produção, break-even, margem e rentabilidade do lote.' },
+    { amb:'confin', id:'m3_3_2', nome:'Compro boi magro?',
+      dica:'Reposição, frete, pedágio e preço colocado no curral.',
+      render:['_m3RenderReposicao','_m3RenderPrecoColocado'] },
+    { amb:'confin', id:'m3_3_3', nome:'Compro bezerro?' },
+    { amb:'confin', id:'m3_3_4', nome:'Compro milho?' },
+
+    /* ── 5 · HEDGE E GESTÃO DE RISCO ─────────────────────────────────── */
+    { amb:'hedge', id:'m3_3_1', nome:'Tenho boi — vendo ou seguro?',
+      dica:'A indústria está apertada? O futuro paga o carrego? A margem fecha?' },
+    { amb:'hedge', id:'m3_3_5a', nome:'Travar boi — diagnóstico' },
+    { amb:'hedge', id:'m3_3_5b', nome:'Travar boi — escolha do vencimento',
+      render:['updateBase','updateBGIvsCAI'] },
+    { amb:'hedge', id:'m3_3_5c', nome:'Travar boi — timing',
+      dica:'Sinais e níveis de execução: quando e em que patamar entrar.' },
+    { amb:'hedge', id:'m3_3_5d', nome:'Travar boi — a decisão econômica',
+      render:['_m3RenderDecisaoEconomica'] },
+    { amb:'hedge', id:'m3_3_5e', nome:'Travar boi — validação histórica',
+      render:['updateBacktest','updateBacktestCondicional','updateBacktestAtivo'] },
+    { amb:'hedge', id:'m3_3_5f', nome:'Depois da trava',
+      render:['_trvPopularContratos','updateTravas'] },
+    /* Opções entra como irmã de "Travar boi": mesma pergunta — como proteger
+       preço — resolvida com outro instrumento. A Proteção de Margem, que
+       cruzará PUT de boi com CALL de milho, virá depois e vira a terceira. */
+    { amb:'hedge', id:'m3_3_5g', nome:'Opções — cadeia e seguro de preço',
+      render:['_opcRender'] },
+    { amb:'hedge', id:'m3_3_6', nome:'Simulador de hedge',
+      dica:'Volume, trava, strikes e custo cotado — a simulação do instrumento.' },
+    { amb:'hedge', id:'m3_3_7', nome:'Outros — decisão', oculta:true },
+
+    /* ── 6 · INTELIGÊNCIA E ESTUDOS ──────────────────────────────────── */
+    { amb:'estudo', id:'m3_1_2', nome:'Preço e momento',
+      render:['updateTrend','updateZScore','updateGauss','updateVolDiaria'],
+      dica:'Como o ativo selecionado está se comportando agora.' },
+    { amb:'estudo', id:'m3_1_2t', nome:'Indicadores técnicos de trading',
+      render:['updateBollinger','updateMACD','updateIFR'],
+      dica:'Bollinger, MACD e IFR. Ferramenta de trading — não é estatística econômica.' },
     { amb:'estudo', id:'m3_2_1', nome:'Histórico e sazonalidade — boi',
       dica:'Nível, comparação entre anos, variação e calendário.',
       render:['updateSHBoiGordoFixed','updateFixedSeriesCharts'] },
@@ -45551,56 +46089,39 @@ function updateRelacao() {
       render:['updateSHBezerroFixed'] },
     { amb:'estudo', id:'m3_2_3', nome:'Histórico e sazonalidade — grãos',
       render:['updateSHMilhoFixed','updateSHMilhoClimatico'] },
-    { amb:'estudo', id:'m3_2_4', nome:'Açúcar', render:['updateSHAcucarFixed'] },
-    { amb:'estudo', id:'m3_2_5', nome:'Etanol', render:['updateSHEtanolFixed'] },
     { amb:'estudo', id:'m3_2_6', nome:'Ciclo pecuário',
       dica:'Fundamento observado → ciclo → modelo → projeção.',
       render:['updateCicloPecuario','updateProjCiclo'] },
     { amb:'estudo', id:'m3_2_7', nome:'Ciclo do bezerro',
       render:['updateAbateIBGEFixed'] },
-    /* Nome antigo — "Economia da pecuária" — descrevia a disciplina, não o
-       que se procura. O ID interno continua `m3_2_8`: quem tiver link salvo
-       não perde o destino. */
-    { amb:'estudo', id:'m3_2_8', nome:'Relações de troca & reposição',
-      dica:'Poder de compra do boi, custo relativo da reposição e relações com o milho.',
-      render:['_m3RenderRelacoes'] },
-    { amb:'estudo', id:'m3_2_9', nome:'Macro e moeda',
-      render:['updateEconomia','updateCorrelacaoFisico','updateRatioBGIDolar','updateRatioBGIDolarCasado'] },
     { amb:'estudo', id:'m3_2_10', nome:'Estudo da cadeia',
       dica:'Transmissão e estrutura — leitura de fundo, não diária.',
       render:['_m3RenderEstudoCadeia'] },
     { amb:'estudo', id:'m3_2_11', nome:'Outros — estudo', oculta:true },
 
-    { amb:'decisao', id:'m3_3_1', nome:'Tenho boi — vendo ou seguro?',
-      dica:'A indústria está apertada? O futuro paga o carrego? A margem fecha?' },
-    { amb:'decisao', id:'m3_3_2', nome:'Compro boi magro?',
-      render:['_m3RenderReposicao','_m3RenderPrecoColocado'] },
-    { amb:'decisao', id:'m3_3_3', nome:'Compro bezerro?' },
-    { amb:'decisao', id:'m3_3_4', nome:'Compro milho?' },
-    { amb:'decisao', id:'m3_3_5a', nome:'Travar boi — diagnóstico' },
-    { amb:'decisao', id:'m3_3_5b', nome:'Travar boi — escolha do vencimento',
-      render:['updateBase','updateBGIvsCAI'] },
-    { amb:'decisao', id:'m3_3_5c', nome:'Travar boi — timing',
-      dica:'Sinais e níveis de execução: quando e em que patamar entrar.' },
-    { amb:'decisao', id:'m3_3_5d', nome:'Travar boi — a decisão econômica',
-      render:['_m3RenderDecisaoEconomica'] },
-    { amb:'decisao', id:'m3_3_5e', nome:'Travar boi — validação histórica',
-      render:['updateBacktest','updateBacktestCondicional','updateBacktestAtivo'] },
-    { amb:'decisao', id:'m3_3_5f', nome:'Depois da trava',
-      render:['_trvPopularContratos','updateTravas'] },
-    /* Opções entra como irmã de "Travar boi": mesma pergunta — como proteger
-       preço — resolvida com outro instrumento. A Proteção de Margem, que
-       cruzará PUT de boi com CALL de milho, virá depois e vira a terceira. */
-    { amb:'decisao', id:'m3_3_5g', nome:'Opções — cadeia e seguro de preço',
-      render:['_opcRender'] },
-    { amb:'decisao', id:'m3_3_6', nome:'Ferramentas' },
-    { amb:'decisao', id:'m3_3_7', nome:'Outros — decisão', oculta:true }
+    /* ── 7 · RELATÓRIOS E ARQUIVOS ───────────────────────────────────── */
+    { amb:'relato', id:'m3_7_1', nome:'Relatórios e arquivos',
+      render:['_relRender'],
+      dica:'Levar a análise para fora do painel: slides, imagem, PDF e PowerPoint.' }
   ];
+  /* `univ` liga o grupo ao universo de ativos. Entrar no grupo passa a
+     escolher o universo, em vez de o operador decidir duas vezes a mesma
+     coisa num seletor à parte. Grupo sem `univ` não mexe no que estiver
+     ligado — é o caso dos que servem aos dois. */
   var _M3_AMBIENTES = [
-    { id:'exec',    rot:'VISÃO EXECUTIVA', perg:'Como estamos agora, em uma tela?' },
-    { id:'mercado', rot:'MERCADO', perg:'O que está acontecendo agora?' },
-    { id:'estudo',  rot:'ESTUDO',  perg:'Onde estamos na história e no ciclo?' },
-    { id:'decisao', rot:'DECISÃO', perg:'Qual decisão precisa ser analisada?' }
+    { id:'exec',   rot:'VISÃO EXECUTIVA',  perg:'Como estamos agora, em uma tela?' },
+    { id:'agro',   rot:'MERCADO AGROPECUÁRIO', univ:'agro',
+      perg:'O que o boi, o bezerro e os grãos estão fazendo?' },
+    { id:'macro',  rot:'MERCADOS & MACRO', univ:'macro',
+      perg:'Dólar, juros, açúcar e etanol.' },
+    { id:'confin', rot:'CONFINAMENTO', univ:'agro',
+      perg:'Quanto custa, quanto sobra e quanto vale repor.' },
+    { id:'hedge',  rot:'HEDGE E RISCO', univ:'agro',
+      perg:'Como proteger preço e quanto já está protegido.' },
+    { id:'estudo', rot:'INTELIGÊNCIA E ESTUDOS', univ:'agro',
+      perg:'Onde estamos na história, no ciclo e na estatística.' },
+    { id:'relato', rot:'RELATÓRIOS E ARQUIVOS',
+      perg:'Levar a análise para fora do painel.' }
   ];
 
   /* ── Tabela de migração ───────────────────────────────────────────────
@@ -45718,7 +46239,8 @@ function updateRelacao() {
   var _M3_PAINEIS = {
     pagePaneExportacao:'m3_1_6',
     pagePaneHedge:'m3_3_6',        // Simulador de Hedge
-    pagePaneMargem:'m3_3_6',       // Calculadora do Boi / margem
+    pagePaneMargem:'m3_4_1',       // Calculadora do Boi / margem
+    pagePaneApresentacao:'m3_7_1', // slides, PPTX e PDF — sem rota até a Etapa 5
     pagePaneMBMatrix:'m3_3_5a',    // Gestão de Risco — matriz de contratos
     pagePaneAlertas:'m3_3_5c',
     pagePaneTop10:'m3_3_5c',   // Sinais & níveis de execução, em Timing
@@ -45726,7 +46248,10 @@ function updateRelacao() {
   };
   /* A Apresentação é um MODO de exibição, não uma área de conteúdo: fica
      fora da migração e continua acessível pelo próprio comutador. */
-  var _M3_NAO_MIGRA = { pagePaneApresentacao:1 };
+  /* Vazio desde a Etapa 5: a Apresentação passou a ter seção própria em
+     Relatórios e Arquivos. A tabela fica porque a regra continua valendo —
+     o que entrar aqui não é migrado, e precisa de outra rota. */
+  var _M3_NAO_MIGRA = {};
 
   /* Balde por ambiente de origem, para o que a tabela não reconhecer. */
   var _M3_BALDE = { Ativos:'m3_1_9', Ciclo:'m3_2_11', Tecnico:'m3_1_9', Projecao:'m3_2_11',
@@ -45917,7 +46442,18 @@ function updateRelacao() {
      ativo, porque um bloco pode esvaziar por seleção, não só por migração. */
   function _m3LimpaOrfaos(){
     Array.prototype.forEach.call(document.querySelectorAll('.panel-block'), function(bl){
-      var vivos = Array.prototype.filter.call(bl.querySelectorAll('section.card'), function(c){
+      var cards = bl.querySelectorAll('section.card');
+      if (!cards.length){
+        /* Nunca teve card: não é órfão, é outra coisa. Se tem com que
+           interagir — campo, botão, gráfico ou tabela —, é um painel de
+           controles e fica. Se não tem nada disso, é cabeçalho solto e some,
+           que era a intenção original da regra. */
+        var _conteudo = bl.querySelector('input,select,textarea,button,[id^="chart"],table');
+        bl.setAttribute('data-m3-orfao', _conteudo ? '0' : '1');
+        bl.style.display = _conteudo ? '' : 'none';
+        return;
+      }
+      var vivos = Array.prototype.filter.call(cards, function(c){
         return c.style.display !== 'none' && !c.hasAttribute('data-m3-cabecalho');
       }).length;
       bl.setAttribute('data-m3-orfao', vivos? '0':'1');
@@ -46097,12 +46633,22 @@ function updateRelacao() {
   /* Seções por universo. O que não estiver listado vale para os dois — é o
      caso do que é do painel e não do ativo. */
   var _M3_SEC_UNIV = {
+    m3_4_1:'agro',
     m3_1_3:'agro', m3_1_4:'agro', m3_1_5:'agro', m3_1_6:'agro', m3_1_7:'agro',
     m3_2_1:'agro', m3_2_2:'agro', m3_2_3:'agro', m3_2_6:'agro', m3_2_7:'agro',
     m3_2_8:'agro', m3_2_10:'agro',
     m3_3_1:'agro', m3_3_2:'agro', m3_3_3:'agro', m3_3_4:'agro',
     m3_3_5a:'agro', m3_3_5b:'agro', m3_3_5c:'agro', m3_3_5d:'agro',
     m3_3_5e:'agro', m3_3_5f:'agro',
+    /* ETAPA 5.1 — "Opções" e "Ferramentas" operam instrumentos agro: a
+       cadeia de opções é de BGI e o Simulador de Hedge dimensiona BGI, CCM
+       e SOJA. Estavam sem marca, e sem marca significa "serve aos dois
+       universos" — com o dólar ligado, Hedge e Gestão de Risco parecia
+       atender ao macro, e a regra de reserva (E51.4) concluía que não
+       precisava trocar nada. Marcar o que é verdade é o que faz a regra
+       acertar; nenhum cálculo muda com isto. */
+    m3_3_5g:'agro', m3_3_6:'agro',
+    m3_1_8:'agro',
     m3_2_4:'macro', m3_2_5:'macro', m3_2_9:'macro'
   };
   var _M3_UNIV_ATUAL = null;
@@ -46116,12 +46662,46 @@ function updateRelacao() {
       var v=(o.value||'').toUpperCase(); return re.test(v);
     });
   }
+  /* ETAPA 5.1 — A QUE UNIVERSO PERTENCE UM ATIVO.
+     Os atalhos de milho e soja precisam selecionar 'MILHO - CEPEA' e
+     'SOJA - PARANAGUÁ', que são do agro. Clicados a partir do macro, a
+     opção está escondida pelo filtro de universo. A primeira versão do
+     atalho desligava `hidden` e `disabled` na mão — isto é escrever por
+     cima do filtro em vez de usá-lo, e cria a segunda fonte de verdade que
+     esta etapa manda eliminar. Com esta função o atalho troca o universo
+     pelo caminho oficial e o filtro mostra a opção por conta própria.
+     Lê das duas tabelas que já existem: os nomes de `_M3_UNIV.familias` e
+     os prefixos de contrato de `_m3AtivosDoUniverso`. */
+  function _m3UnivDoAtivo(v){
+    var V=String(v||'').toUpperCase();
+    if(!V) return null;
+    for(var u in _M3_UNIV){
+      if(!Object.prototype.hasOwnProperty.call(_M3_UNIV,u)) continue;
+      var fam=_M3_UNIV[u].familias||[];
+      for(var i=0;i<fam.length;i++){
+        var at=fam[i].ativos||[];
+        for(var j=0;j<at.length;j++){
+          var a=String(at[j].v||'').toUpperCase();
+          if(a===V) return u;
+          /* '@DOL' na tabela é atalho para "o vencimento vigente do DOL":
+             DOLX26 pertence ao mesmo universo que ele. */
+          if(a.charAt(0)==='@' && V.indexOf(a.slice(1))===0) return u;
+        }
+      }
+    }
+    if(/^(DOL|WDO|DI1|ETH|ACU|ICF)/.test(V)) return 'macro';
+    if(/^(BGI|CCM|SJC)/.test(V)) return 'agro';
+    return null;
+  }
+  try { window._m3UnivDoAtivo=_m3UnivDoAtivo; } catch(e){}
+
   function _m3PrimeiroVencimento(pref){
     var op=_m3AtivosDoUniverso('macro').concat(_m3AtivosDoUniverso('agro'))
             .filter(function(o){ return (o.value||'').toUpperCase().indexOf(pref)===0
                                      && o.getAttribute('data-expired')!=='1'; });
     return op.length? op[0].value : null;
   }
+  try { window._m3PrimeiroVencimento=_m3PrimeiroVencimento; } catch(e){}
 
   /* ══════════════════════════════════════════════════════════════════════
      TRILHO LATERAL — a navegação desce para a esquerda
@@ -46217,6 +46797,8 @@ function updateRelacao() {
     document.addEventListener('keydown', function(ev){ if(ev.key==='Escape') fecha(); });
 
     try { _m3AgrupaMenu(); } catch(e){ console.warn('Agrupamento do menu:', e); }
+    try { if (window._m3MontaVerTambem) window._m3MontaVerTambem(); }
+    catch(e){ console.warn('Ver também:', e); }
     try { _m3SelosEscopo(); } catch(e){ console.warn('Selos de escopo:', e); }
     try { _m3OrdenaBlocos(); } catch(e){ console.warn('Blocos por escopo:', e); }
     try { document.body.setAttribute('data-m3-barra','1'); } catch(e){}
@@ -46385,9 +46967,11 @@ function updateRelacao() {
         if(sc && sc.style.display!=='none') sc.style.display='none';
       }
     });
-    /* Se a seção aberta saiu do ar, abre a primeira do ambiente que ficou. */
+    /* Se a seção aberta saiu do ar, abre a primeira do ambiente que ficou.
+       Durante uma troca de grupo isto não roda: quem escolhe a seção é
+       `_m3IrAmbiente`, logo depois, e abrir uma aqui só faria desenhar duas. */
     var amb=_M3_AMB.atual;
-    if(!amb) return;
+    if(!amb || window._M3_TROCANDO_AMB) return;
     var abertas=Array.prototype.filter.call(
       document.querySelectorAll('#amb_'+amb+' .m3-sec'), function(s){ return s.style.display!=='none'; });
     if(abertas.length) return;
@@ -46425,7 +47009,21 @@ function updateRelacao() {
     [/trav/i, 'trava hedge b3 proteger vender futuro contrato'],
     [/backtest|compensou|naquele dia/i, 'backtest histórico validação trava compensou'],
     [/atacado|carca[çc]a|traseiro|dianteiro|ponta de agulha/i, 'carne atacado corte carcaça frigorífico demanda'],
-    [/exporta/i, 'exportação externa embarque fob china porto demanda externa'],
+    /* ETAPA 5.1 — COMÉRCIO EXTERIOR. "COMEX" é como o operador chama o
+       módulo, e nenhum título de card tem a palavra. Os termos de comércio
+       exterior entram junto: carne bovina, país de destino, preço médio.
+       Nada aqui tem relação com gerar arquivo. */
+    [/exporta/i, 'exportação externa embarque fob china porto demanda externa '
+               + 'comex comércio exterior mercado externo carne bovina milho soja '
+               + 'volume valor preço médio país de destino destino embarcado'],
+    /* ETAPA 5.1 — GERAÇÃO DE ARQUIVO. O inverso: aqui é arquivo, e NÃO é
+       comércio exterior. A separação é proposital. */
+    [/sa[íi]das dispon|apresenta[çc][ãa]o de contratos/i,
+     'pdf pptx powerpoint slides imagem png arquivo exportar relatório impressão baixar'],
+    /* ETAPA 5.1 — "break-even" com hífen não casa com quem digita
+       "breakeven". As duas formas entram. */
+    [/calculadora do boi/i,
+     'custo de produção breakeven break-even margem rentabilidade roi lote confinamento dre'],
     [/abate de f[êe]meas|ciclo pecu/i, 'ciclo fêmeas matriz retenção descarte estrutural'],
     [/base regional|pra[çc]a/i, 'praça regional base desconto sp diferença local'],
     [/prazo de pagamento/i, 'prazo pagamento capital de giro dias à vista financeiro'],
@@ -46438,6 +47036,24 @@ function updateRelacao() {
     [/premiumiza|pr[êe]mio dentro/i, 'prêmio corte traseiro valor relativo mix']
   ];
   var _M3_INDICE = null;
+
+  /* ETAPA 5.1 — IMPRESSÃO DO ÍNDICE.
+     O índice era montado UMA vez, no arranque, e quem nascia depois ficava
+     de fora para sempre. Medido no painel em execução: 154 entradas, e
+     buscar "saídas" ou "apresentação" devolvia zero resultado — o card
+     "SAÍDAS DISPONÍVEIS" de Relatórios é montado quando a tela é aberta, e
+     o painel da Apresentação não tem `section.card` nenhum.
+     A correção não é uma busca nova: é o índice saber quando está velho.
+     Conta os cards e os blocos de painel; se a conta mudou, remonta na
+     próxima consulta. Uma contagem de nós por tecla digitada é barata — a
+     alternativa seria remontar o índice inteiro, que não é. */
+  function _m3ImpressaoIndice(){
+    try {
+      return document.querySelectorAll('section.card').length + ':'
+           + document.querySelectorAll('.panel-block').length;
+    } catch(e){ return ''; }
+  }
+  var _M3_IDX_IMPR = null;
 
   function _m3MontaIndice(){
     var idx=[];
@@ -46458,14 +47074,58 @@ function updateRelacao() {
                    pill:pill? pill.textContent.trim() : '',
                    busca:_m3Norm(nome+' '+(pill?pill.textContent:'')+' '+alias+' '+s.nome) });
       });
+      /* ETAPA 5.1 — PAINEL QUE NÃO É CARD. Os painéis que vieram da barra
+         antiga guardam o título em `.panel-title`, não em `.card-title-text`:
+         a Apresentação de Contratos Futuros é o caso, e por isso ela era
+         inalcançável pela busca mesmo tendo endereço desde a Etapa 5. Só
+         entram os blocos que não contêm card — um bloco COM cards já está
+         representado pelos cards dele, e indexar os dois devolveria o mesmo
+         destino duas vezes, que é a duplicação que esta etapa proíbe. */
+      Array.prototype.forEach.call(slot.querySelectorAll('.panel-block'), function(bl){
+        if(bl.querySelector('section.card')) return;
+        if(bl.getAttribute('data-m3-orfao')==='1') return;
+        var t=bl.querySelector('.panel-title'); if(!t) return;
+        var nome=t.textContent.trim();
+        if(!nome) return;
+        if(idx.some(function(e){ return e.nome===nome && e.sec===s.id; })) return;
+        if(!bl.id) bl.id = 'm3blk_'+idx.length;
+        var alias='';
+        _M3_ALIAS.forEach(function(a){ if(a[0].test(nome)) alias += ' '+a[1]; });
+        var sub=bl.querySelector('.panel-subtitle');
+        idx.push({ id:bl.id, nome:nome, sec:s.id, secNome:s.nome,
+                   amb:s.amb, ambRot:amb?amb.rot:'',
+                   univ:_M3_SEC_UNIV[s.id]||null, pill:'', bloco:true,
+                   busca:_m3Norm(nome+' '+(sub?sub.textContent:'')+' '+alias+' '+s.nome) });
+      });
+      /* ETAPA 5.1 — PISO DO ÍNDICE. Se a seção não contribuiu com nada —
+         painel de marcação própria (a Calculadora do Boi e a matriz de
+         contratos são os dois casos medidos) ou card que só nasce quando a
+         tela é aberta —, ela entra pelo nome. É um piso, não uma duplicata:
+         assim que os cards aparecem, a impressão muda, o índice remonta e
+         a entrada de seção sai de cena, substituída pelos cards dela.
+         Seção oculta (os três baldes "Outros") fica fora: não tem endereço
+         no menu, e resultado de busca que não abre nada é pior que nenhum. */
+      if(!s.oculta && !idx.some(function(e){ return e.sec===s.id; })){
+        var aliasS='';
+        _M3_ALIAS.forEach(function(a){ if(a[0].test(s.nome)) aliasS += ' '+a[1]; });
+        idx.push({ id:'sec_'+s.id, nome:s.nome, sec:s.id, secNome:s.nome,
+                   amb:s.amb, ambRot:amb?amb.rot:'',
+                   univ:_M3_SEC_UNIV[s.id]||null, pill:'', secao:true,
+                   busca:_m3Norm(s.nome+' '+(s.dica||'')+' '+aliasS) });
+      }
     });
     _M3_INDICE=idx;
+    _M3_IDX_IMPR=_m3ImpressaoIndice();
     return idx;
   }
+  /* Chamado por quem monta cards em tempo de execução (a tela de Relatórios
+     é a primeira). Não remonta na hora: invalida, e a próxima busca paga. */
+  function _m3ReindexaBusca(){ _M3_INDICE=null; _M3_IDX_IMPR=null; }
+  try { window._m3ReindexaBusca=_m3ReindexaBusca; } catch(e){}
   function _m3Norm(s){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
 
   function _m3Buscar(q){
-    if(!_M3_INDICE) _m3MontaIndice();
+    if(!_M3_INDICE || _M3_IDX_IMPR!==_m3ImpressaoIndice()) _m3MontaIndice();
     var termos=_m3Norm(q).split(/\s+/).filter(Boolean);
     if(!termos.length) return [];
     return _M3_INDICE.map(function(it){
@@ -46525,11 +47185,14 @@ function updateRelacao() {
   function m3IrAlvo(secId, alvoId){
     var s=_M3_ESTRUTURA.filter(function(x){ return x.id===secId; })[0];
     if(!s) return;
-    /* Se a seção pertence ao outro universo, troca o universo antes — senão
-       a navegação levaria a uma seção que o filtro acabou de esconder. */
-    var dono=_M3_SEC_UNIV[secId];
-    if(dono && dono!==_M3_UNIV_ATUAL) _m3IrUniverso(dono);
-    _m3IrAmbiente(s.amb);
+    /* ETAPA 5.1 — a troca de universo saiu daqui. Esta função tinha a sua
+       própria cópia da regra ("se a seção é do outro universo, troca") e
+       `_m3IrAmbiente` tinha outra, mais forte, que rodava logo depois e
+       desfazia o resultado: duas fontes de verdade para o mesmo filtro, que
+       é exatamente o que a Etapa 5.1 manda eliminar. Agora decide uma só —
+       `_m3IrAmbiente`, que recebe a seção de destino, guarda o ativo do
+       universo que sai e avisa na tela quando a troca acontece. */
+    _m3IrAmbiente(s.amb, secId);
     _m3IrSecao(s.amb, secId);
     _m3DoisQuadros(function(){
       var el=alvoId? document.getElementById(alvoId) : document.getElementById('sec_'+secId);
@@ -46838,21 +47501,59 @@ function updateRelacao() {
      A lista abaixo é orientação de agrupamento, não de conteúdo: qualquer
      seção que não apareça aqui continua no menu, no grupo final. Nenhuma
      seção é escondida por não ter sido citada. */
+  /* Subgrupos de cada grupo. É o segundo nível da hierarquia e ele vive
+     DENTRO do menu suspenso, com um título por bloco — em vez de uma
+     terceira barra na tela, que em celular já não caberia.
+
+     Seção que não apareça aqui não some: `_m3AgrupaMenu` junta as que
+     sobraram num bloco final. A tabela orienta o agrupamento, não decide
+     quem existe. */
   var _M3_GRUPOS_MENU = {
-    mercado: [
-      { rot:'Leitura rápida', secs:['m3_1_1','m3_1_2','m3_1_2t'] },
-      { rot:'Físico & demanda', secs:['m3_1_3','m3_1_4','m3_1_5','m3_1_6','m3_1_7'] },
-      { rot:'Curva', secs:['m3_1_8'] }
+    exec: [
+      { rot:'Panorama', secs:['m3_0_1','m3_1_1'] }
+    ],
+    agro: [
+      { rot:'Boi gordo', secs:['m3_1_3','m3_1_4'] },
+      /* ETAPA 5.1 — "Relações de troca & reposição" (m3_2_8) sai de debaixo
+         do rótulo "Bezerro e boi magro" e vem para cá. Ela responde boi ×
+         bezerro, boi × boi magro E boi × milho: anunciá-la só como reposição
+         escondia metade do que ela faz, e deixava a relação de troca com o
+         milho sem endereço visível. Bezerro e boi magro não saem do menu —
+         voltam como coluna de atalho (E51.5), com endereço para os gráficos
+         de dentro desta mesma seção. Nenhuma série foi duplicada: é o mesmo
+         m3_2_8, no mesmo lugar, com outro nome em cima. */
+      { rot:'Futuros e relações de troca', secs:['m3_1_8','m3_2_8'] },
+      /* Oferta e demanda vira dois subgrupos, porque são dois mercados.
+         MERCADO EXTERNO É COMÉRCIO EXTERIOR: carne, milho e soja vendidos
+         ao exterior, com volumes, valores, preços médios, países de destino,
+         séries históricas e indicadores COMEX. Não tem relação nenhuma com
+         gerar arquivo — gerar PDF, PPTX e imagem mora em "Relatórios e
+         Arquivos", e são coisas independentes. */
+      { rot:'Oferta e demanda — mercado interno', secs:['m3_1_5','m3_1_7'] },
+      { rot:'Oferta e demanda — mercado externo', secs:['m3_1_6'] }
+    ],
+    macro: [
+      { rot:'Câmbio e juros', secs:['m3_2_9'] },
+      { rot:'Energia e açúcar', secs:['m3_2_4','m3_2_5'] }
+    ],
+    confin: [
+      { rot:'Custo e margem', secs:['m3_4_1'] },
+      { rot:'Reposição e logística', secs:['m3_3_2'] },
+      { rot:'Decisões de compra', secs:['m3_3_3','m3_3_4'] }
+    ],
+    hedge: [
+      { rot:'Diagnóstico', secs:['m3_3_1','m3_3_5a'] },
+      { rot:'Escolha e timing', secs:['m3_3_5b','m3_3_5c','m3_3_5d','m3_3_5e'] },
+      { rot:'Posição e instrumentos', secs:['m3_3_5f','m3_3_5g','m3_3_6'] }
     ],
     estudo: [
-      { rot:'Histórico', secs:['m3_2_1','m3_2_2','m3_2_3','m3_2_4','m3_2_5'] },
-      { rot:'Ciclos', secs:['m3_2_6','m3_2_7'] },
-      { rot:'Relações', secs:['m3_2_8','m3_2_9','m3_2_10'] }
+      { rot:'Estatística e técnicos', secs:['m3_1_2','m3_1_2t'] },
+      { rot:'Séries históricas e sazonalidade', secs:['m3_2_1','m3_2_2','m3_2_3'] },
+      { rot:'Ciclos e projeção', secs:['m3_2_6','m3_2_7'] },
+      { rot:'Estrutura da cadeia', secs:['m3_2_10'] }
     ],
-    decisao: [
-      { rot:'Compra / venda', secs:['m3_3_1','m3_3_2','m3_3_3','m3_3_4'] },
-      { rot:'Hedge', secs:['m3_3_5a','m3_3_5b','m3_3_5c','m3_3_5d','m3_3_5e','m3_3_5f'] },
-      { rot:'Ferramentas', secs:['m3_3_6'] }
+    relato: [
+      { rot:'Saídas', secs:['m3_7_1'] }
     ]
   };
 
@@ -47102,7 +47803,25 @@ function updateRelacao() {
     try { document.documentElement.scrollTop = 0; document.body.scrollTop = 0; } catch(e){}
   }
 
-  function _m3IrAmbiente(amb){
+  /* ETAPA 5.1 — O GRUPO APARECE NESTE UNIVERSO?
+     Verdadeiro se existe pelo menos uma seção do grupo com conteúdo e que
+     o universo atual não esconde. É o que separa "o grupo não serve para
+     este ativo" de "o grupo serve, só não é a especialidade dele" — e é a
+     única pergunta que autoriza trocar o universo no clique em um grupo. */
+  function _m3GrupoServeUniverso(amb, u){
+    for(var i=0;i<_M3_ESTRUTURA.length;i++){
+      var s=_M3_ESTRUTURA[i];
+      if(s.amb!==amb || s.oculta) continue;
+      var sl=_m3Slot(s.id);
+      if(!(sl && sl.children.length)) continue;
+      var dono=_M3_SEC_UNIV[s.id];
+      if(!dono || dono===u) return true;
+    }
+    return false;
+  }
+  try { window._m3GrupoServeUniverso=_m3GrupoServeUniverso; } catch(e){}
+
+  function _m3IrAmbiente(amb, secAlvo){
     _M3_AMBIENTES.forEach(function(a){
       var p=document.getElementById('amb_'+a.id);
       if(p) p.style.display = (a.id===amb)?'':'none';
@@ -47119,15 +47838,114 @@ function updateRelacao() {
     });
     _M3_AMB.atual=amb;
     try { localStorage.setItem('m3_amb', amb); } catch(e){}
+    /* ETAPA 5 — entrar no grupo escolhe o universo de ativos. Antes era
+       decisão à parte, num seletor que dizia a mesma coisa que o grupo: com
+       "Mercado Agropecuário" aberto e o universo em macro, a tela ficava
+       sem seção nenhuma e sem explicação. Grupo sem `univ` não mexe no que
+       estiver ligado — é o caso da Visão Executiva e dos Relatórios, que
+       servem aos dois.
+       A trava `_M3_TROCANDO_AMB` evita que `_m3FiltraSecoes`, chamado lá
+       dentro, abra uma seção pelo caminho: quem decide qual abrir é o fim
+       desta função, e sem a trava a navegação desenhava duas seções a cada
+       troca de grupo. */
+    /* ETAPA 5.1 — O UNIVERSO DO GRUPO É RESERVA, NÃO ORDEM.
+       A Etapa 5 trocava o universo sempre que o grupo declarasse um
+       diferente do que estava ligado. Medido no painel em execução: com
+       DOLX26 selecionado, abrir "Indicadores técnicos" devolvia BOI GORDO;
+       o mesmo com DI1F27 e com ETHZ26. E "Preço e momento" e "Indicadores
+       técnicos" analisam o ativo QUE ESTIVER selecionado, qualquer que seja
+       ele — trocar ali não era filtrar, era descartar a escolha que o
+       operador tinha acabado de fazer.
+
+       A regra agora tem dois casos:
+         · COM seção de destino — troca só se AQUELA seção pertencer ao
+           outro universo em `_M3_SEC_UNIV`. Quem decide é o destino pedido,
+           não o grupo onde ele mora;
+         · SEM seção de destino (clique no botão do grupo) — troca só se
+           NADA do grupo aparecer no universo que está ligado, que era o
+           defeito original da Etapa 5: grupo aberto e tela vazia.
+
+       E quando a troca acontece, ela é ANUNCIADA na tela. Trocar o ativo em
+       silêncio é o que fazia o operador perder o contrato sem entender por
+       quê. Nunca, em nenhum caminho, um contrato de dólar é substituído por
+       boi gordo sem aviso. */
+    var _gA=_M3_AMBIENTES.filter(function(a){ return a.id===amb; })[0];
+    var _uA=_M3_UNIV_ATUAL;
+    var _destU=null;
+    if(secAlvo){
+      var _donoS=_M3_SEC_UNIV[secAlvo];
+      if(_donoS && _donoS!==_uA) _destU=_donoS;
+    } else if(_gA && _gA.univ && _gA.univ!==_uA && !_m3GrupoServeUniverso(amb,_uA)){
+      _destU=_gA.univ;
+    }
+    if(_destU){
+      /* MEMÓRIA DE ATIVO POR UNIVERSO. Trocar de universo troca a lista de
+         ativos, e o seletor caía no primeiro da lista nova. Quem estava em
+         BGIZ26, passava pelo macro para ver o dólar e voltava, era devolvido
+         a BOI GORDO — perder a seleção ao atravessar um grupo é o tipo de
+         coisa que faz desconfiar da navegação inteira. Guarda o ativo do
+         universo que sai e devolve o do universo que entra, se ele ainda
+         estiver disponível. */
+      var _ativoAntes=null;
+      try {
+        var _ssA=document.getElementById('sheetSelect');
+        window._M3_ULT_ATIVO = window._M3_ULT_ATIVO || {};
+        if(_ssA && _ssA.value){
+          _ativoAntes=_ssA.value;
+          if(_uA) window._M3_ULT_ATIVO[_uA]=_ssA.value;
+        }
+      } catch(e){}
+      try { window._M3_TROCANDO_AMB=1; _m3IrUniverso(_destU); }
+      catch(e){ console.warn('Universo do grupo:', e); }
+      finally { window._M3_TROCANDO_AMB=0; }
+      try {
+        var _ssB=document.getElementById('sheetSelect');
+        var _antB=(window._M3_ULT_ATIVO||{})[_destU];
+        if(_ssB && _antB && _ssB.value!==_antB){
+          var _okB=Array.prototype.some.call(_ssB.options, function(o){
+            return o.value===_antB && !o.hidden && !o.disabled; });
+          if(_okB){ _ssB.value=_antB; _ssB.dispatchEvent(new Event('change',{bubbles:true})); }
+        }
+      } catch(e){}
+      /* O aviso só vale se o ativo REALMENTE mudou. Quando a memória por
+         universo devolve o mesmo contrato, não houve perda a explicar. */
+      try {
+        var _ssC=document.getElementById('sheetSelect');
+        var _depois=_ssC? _ssC.value : null;
+        var _sObj=secAlvo? _M3_ESTRUTURA.filter(function(x){ return x.id===secAlvo; })[0] : null;
+        var _onde=_sObj? _sObj.nome : (_gA? _gA.rot : '');
+        var _rotU=(_M3_UNIV[_destU]||{}).rot || _destU;
+        if(window._m3AvisoUniverso && _ativoAntes && _depois && _ativoAntes!==_depois)
+          window._m3AvisoUniverso(_ativoAntes, _depois, _onde, _rotU);
+        else if(window._m3LimpaAvisoUniverso) window._m3LimpaAvisoUniverso();
+      } catch(e){}
+    } else {
+      try { if(window._m3LimpaAvisoUniverso) window._m3LimpaAvisoUniverso(); } catch(e){}
+    }
     /* Volta para a última seção usada naquele ambiente; se não houver, a
        primeira que tenha conteúdo. Abrir numa seção vazia seria pior que
        ignorar a memória. */
     var alvo=null;
     try { alvo=localStorage.getItem('m3_sec_'+amb); } catch(e){}
+    /* ETAPA 5.1 — as candidatas respeitam o universo. Antes a lista olhava
+       só "tem conteúdo"; com a regra de reserva o universo pode continuar no
+       macro dentro de um grupo agro, e a seção lembrada podia estar escondida
+       pelo filtro. Abri-la deixava o botão apagado na barra e o conteúdo
+       solto na tela. */
+    var _uF=_M3_UNIV_ATUAL||'agro';
     var disp=_M3_ESTRUTURA.filter(function(s){
-      var sl=_m3Slot(s.id); return s.amb===amb && sl && sl.children.length; });
+      var sl=_m3Slot(s.id);
+      if(!(s.amb===amb && sl && sl.children.length)) return false;
+      var d=_M3_SEC_UNIV[s.id];
+      return !d || d===_uF;
+    });
     if(!disp.length) return;
-    if(!alvo || !disp.some(function(s){ return s.id===alvo; })) alvo=disp[0].id;
+    /* Destino pedido ganha da memória: quem clicou num atalho ou num
+       resultado de busca quer AQUELA seção, não a última visitada. Sem isto
+       a função abria a lembrada e quem chamou abria a pedida logo depois —
+       duas seções desenhadas por navegação. */
+    if(secAlvo && disp.some(function(s){ return s.id===secAlvo; })) alvo=secAlvo;
+    else if(!alvo || !disp.some(function(s){ return s.id===alvo; })) alvo=disp[0].id;
     _m3IrSecao(amb, alvo);
   }
   function _m3Trilha(amb, secId){
@@ -47147,7 +47965,7 @@ function updateRelacao() {
   function m3Ir(secId){
     var s=_M3_ESTRUTURA.filter(function(x){ return x.id===secId; })[0];
     if(!s) return;
-    _m3IrAmbiente(s.amb); _m3IrSecao(s.amb, secId);
+    _m3IrAmbiente(s.amb, secId); _m3IrSecao(s.amb, secId);
     _m3AoTopo();
   }
   try { window.m3Ir=m3Ir; } catch(e){}
@@ -56425,6 +57243,48 @@ function render(){
   var FF_A = 'Inter, system-ui, sans-serif';
   var APRES_CFG = {displayModeBar:false, responsive:true};
 
+  /* ── ETAPA 5.1 · As três auxiliares que faltavam ─────────────────────
+     Mesma semântica da `_fmtDate` que vive na IIFE do Top 10 — dd/mm/aaaa,
+     travessão quando não há data. Não é cópia por preguiça: exportar a de
+     lá para o escopo global para usar aqui amarraria dois módulos que não
+     têm relação, e qualquer mudança no Top 10 passaria a mexer na
+     Apresentação. */
+  function _fmtDate(d){
+    if(!d) return '—';
+    try{
+      var dd = String(d.getDate()).padStart(2,'0');
+      var mm = String(d.getMonth()+1).padStart(2,'0');
+      return dd + '/' + mm + '/' + d.getFullYear();
+    }catch(e){ return '—'; }
+  }
+  /* Duas casas. Devolve travessão em vez de "NaN" quando o valor não é
+     número: slide com "NaN" é pior que slide com lacuna assumida. */
+  function fmt2(v){
+    var n = (typeof v === 'number') ? v : parseFloat(v);
+    return isFinite(n) ? n.toFixed(2) : '—';
+  }
+  /* ALTURA EXPLÍCITA NOS CONTÊINERES DE GRÁFICO.
+     Só esta chamada e o comentário acima dela existiam. O slide tem
+     `aspect-ratio:16/9`, o corpo é `flex:1` e os contêineres são células
+     de grade: a altura deles é calculada pelo navegador e o Plotly deveria
+     conseguir medi-la. "Deveria" é o problema — o próprio comentário do
+     módulo fala de "resíduo de 0px", e um Plotly que mede zero desenha um
+     gráfico vazio sem reclamar. Fixar em pixel o que o navegador ACABOU de
+     calcular tira a dúvida: mede, e só escreve se mediu algo.
+     Não inventa altura: contêiner que mede zero é deixado como está, para
+     o passe de `Plotly.Plots.resize` que vem depois ter a chance de
+     corrigir — e para o defeito continuar visível, se ainda houver. */
+  function _fixChartHeights(container){
+    if(!container) return 0;
+    var n = 0;
+    Array.prototype.forEach.call(container.querySelectorAll('.apres-chart-wrap'), function(w){
+      var h = 0;
+      try { h = w.getBoundingClientRect().height; } catch(e){}
+      if (h > 1){ w.style.height = Math.round(h) + 'px'; n++; }
+    });
+    return n;
+  }
+
   // ── Base layout Plotly ──────────────────────────────────────
   var _BASE_LAYOUT = {
     paper_bgcolor:'transparent', plot_bgcolor:'transparent',
@@ -56942,9 +57802,12 @@ function render(){
     var gb  = document.getElementById('apresGerarBtn');
     var pb  = document.getElementById('apresPptxBtn');
     var prb = document.getElementById('apresPrintBtn');
-    if(gb)  gb.addEventListener('click', gerarApresentacao);
-    if(pb)  pb.addEventListener('click', exportarPPTX);
-    if(prb) prb.addEventListener('click', function(){ window.print(); });
+    /* ETAPA 5.1 — os três `addEventListener` que estavam aqui saíram:
+       os botões já têm `onclick` na marcação, e dois manipuladores por
+       botão rodavam a ação duas vezes. As três variáveis acima ficam
+       porque documentam quais botões este módulo governa, e porque a
+       próxima mão a mexer aqui precisa ver que elas existem. */
+    void gb; void pb; void prb;
 
     var tabBtn = document.querySelector('.page-tab-btn[data-page-tab="apresentacao"]');
     if(tabBtn) tabBtn.addEventListener('click', function(){
