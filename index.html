@@ -8902,14 +8902,19 @@ header{
     </section>
 
     <section class="card">
-      <div class="card-title"><span class="card-title-text">VACA × BOI — DESCONTO DA VACA POR PRAÇA</span><button type="button" class="info-btn" aria-label="Ajuda: desconto da vaca" data-tooltip="Vaca gorda dividida pelo boi gordo na mesma praça e data. O desconto é estrutural; o que informa é a posição dele contra os dois anos da própria praça — percentil, média e faixa. Correlação e beta em variação mensal. Fonte: CEPEA/ESALQ.">ⓘ</button></div>
-      <div class="pill">A vaca está barata contra o boi nesta praça — ou só parece?</div>
+      <div class="card-title"><span class="card-title-text">FÊMEA × BOI — DESCONTO DA VACA E DA NOVILHA POR PRAÇA</span><button type="button" class="info-btn" aria-label="Ajuda: desconto da fêmea" data-tooltip="Fêmea gorda dividida pelo boi gordo na mesma praça e data. A vaca é curva do CEPEA desde 01/08/2024; a novilha é ponto da coleta própria, porque o CEPEA não cota novilha. O desconto é estrutural — o que informa é a posição dele contra a própria história da praça. Fonte: CEPEA/ESALQ e coleta própria do Radar.">ⓘ</button></div>
+      <div class="pill">A fêmea está barata contra o boi nesta praça — ou só parece?</div>
       <div class="explain">
         <span class="ex-tag">O que mede</span>
-        <b>vaca ÷ boi − 1</b>, na mesma praça e na mesma data, com a média da janela em
-        tracejado. O desconto é estrutural — a vaca rende menos carcaça e sai mais leve —,
+        <b>fêmea ÷ boi − 1</b>, na mesma praça e na mesma data, com a média da janela em
+        tracejado. O desconto é estrutural — a fêmea rende menos carcaça e sai mais leve —,
         então o que informa não é o desconto: é onde ele está contra a própria história da
         praça. Série do CEPEA desde 01/08/2024: dá percentil, não dá ciclo pecuário.
+        <span class="ex-tag">Por que a novilha é ponto</span>
+        O CEPEA não cota novilha gorda. Ela vem da <b>coleta própria</b>, de duas leituras em
+        três praças, e aparece como losango sobre a curva — duas leituras não fazem série. O
+        círculo vazado é a vaca da mesma coleta: a distância dele até a curva mede o viés
+        entre as duas fontes, que o ponto da novilha carrega junto.
       </div>
       <div id="femDKpis" class="vol-kpis"></div>
       <div id="chartFemDesconto" class="chart-container" style="height:560px"></div>
@@ -48873,13 +48878,25 @@ function updateRelacao() {
      que o card de conferência usa, e devolve `null` quando não há par: é o
      caso de Barretos, que não tem praça equivalente no CEPEA regional. O
      card diz isso em vez de emprestar a praça vizinha. */
+  /* O seletor de praça guarda coisas diferentes conforme a categoria: na
+     vaca, a chave do CEPEA; na novilha e em "ambas", o rótulo da coleta
+     própria ("SP Araçatuba"). Quem pede a chave do CEPEA precisa da
+     tradução nos DOIS casos — e enquanto "ambas" ficou de fora, o card de
+     desconto recebia "SP Araçatuba" como se fosse chave do CEPEA, não
+     achava série nenhuma e ficava em branco. */
   function _femPracaSel(){
     var el = document.getElementById('femVPraca');
     var v = el && el.value ? el.value : null;
     if (!v) return null;
-    if (_femCatSel() !== 'novilha') return v;
+    if (_femCatSel() === 'vaca') return v;
     var rot = _FEM_PAR_CEPEA[v] || null;
     return rot ? _femChavePorRotulo(rot) : null;
+  }
+  /* O rótulo cru do seletor, para quem precisa dizer QUAL praça ficou sem
+     par em vez de mostrar uma mensagem genérica. */
+  function _femRotuloPracaSel(){
+    var el = document.getElementById('femVPraca');
+    return (el && el.value) ? el.value : null;
   }
 
   /* Preenche o seletor de praça com as praças que cotam vaca gorda em R$/@.
@@ -48910,6 +48927,58 @@ function updateRelacao() {
   }
 
   /* ── ① O DESCONTO DA VACA SOBRE O BOI GORDO ──────────────────────────── */
+  /* ── A NOVILHA NESTE CARD: PONTO DE COLETA, NÃO CURVA ────────────────
+     O desconto da vaca é curva porque o CEPEA regional cota vaca e boi na
+     mesma praça desde 01/08/2024. A novilha gorda não existe no CEPEA: ela
+     vem da coleta própria, que tem duas leituras e três praças. Desenhar
+     duas leituras como linha seria fingir série onde há fotografia, então a
+     novilha entra como ponto sobre a curva da vaca — no mesmo eixo, na mesma
+     data, contra o mesmo boi.
+
+     O BOI É O DO CEPEA, e isso tem consequência. A coleta própria não cota
+     macho, então a razão novilha ÷ boi mistura duas fontes. Para o leitor
+     ver o tamanho dessa mistura, o card desenha também a VACA DA COLETA
+     contra o mesmo boi: a distância entre esse ponto e a curva do CEPEA no
+     mesmo dia é exatamente o viés entre as duas fontes. Com ele à vista, o
+     ponto da novilha se lê com a régua certa. */
+  function _femColetaDesconto(P){
+    var A = _femTab('femeasAbate');
+    if (!A || !A.dados || !A.dados.length) return null;
+    var alvo = P.uf + '/' + P.praca, praca = null;
+    Object.keys(_FEM_PAR_CEPEA).forEach(function(k){
+      if (_FEM_PAR_CEPEA[k] === alvo) praca = k;
+    });
+    if (!praca) return null;
+    var cV = null, cN = null;
+    A.series.forEach(function(c){
+      if (c.indexOf(praca) < 0) return;
+      if (/^vaca/i.test(c)) cV = c; else if (/^novilha/i.test(c)) cN = c;
+    });
+    if (!cN) return null;
+    /* Sem pregão do boi na data da coleta, usa-se o último anterior — e a
+       data usada vai no hover, para a defasagem não ficar escondida. */
+    function boiEm(dt){
+      var k = null;
+      for (var i = 0; i < P.n; i++){ if (P.datas[i] <= dt) k = i; else break; }
+      if (k == null) return null;
+      /* Dez dias de folga, a mesma tolerância que a variação interanual usa.
+         Além disso não é defasagem de coleta, é outro mercado: o ponto some
+         em vez de virar um número com cara de atual. */
+      var _dif = (new Date(dt) - new Date(P.datas[k])) / 86400000;
+      if (!(_dif >= 0 && _dif <= 10)) return null;
+      return { boi:P.boi[k], data:P.datas[k] };
+    }
+    var pts = [];
+    A.dados.forEach(function(L){
+      var n = L[cN]; if (!(n > 0)) return;
+      var e = boiEm(L.data); if (!e) return;
+      var v = cV ? L[cV] : null;
+      pts.push({ data:L.data, boiData:e.data, boi:e.boi, nov:n, vaca:(v>0?v:null),
+                 dNov:n/e.boi - 1, dVaca:(v>0) ? v/e.boi - 1 : null });
+    });
+    return pts.length ? { praca:praca, pts:pts, aba:A.aba, n:A.n } : null;
+  }
+
   function _femDescontoCard(){
     var cid='chartFemDesconto', ctx='chartFemDescontoContext';
     var kEl=document.getElementById('femDKpis'), tEl=document.getElementById('femDRank');
@@ -48920,7 +48989,23 @@ function updateRelacao() {
     }
     _femPopulaPracas();
     var chave = _femPracaSel();
-    if (!chave) { limpar('A aba <b>CEPEA REGIONAL</b> não trouxe vaca gorda em R$/@.'); return; }
+    if (!chave) {
+      var _rot = _femRotuloPracaSel();
+      if (_femCatSel() !== 'vaca' && _rot && !_FEM_PAR_CEPEA[_rot]){
+        var _com = [];
+        Object.keys(_FEM_PAR_CEPEA).forEach(function(k){ if (_FEM_PAR_CEPEA[k]) _com.push(k); });
+        /* Barretos cai aqui. O desconto precisa do boi gordo da MESMA praça
+           e a coleta própria não cota macho; sem par no CEPEA não há
+           denominador. Emprestar o boi da praça vizinha resolveria o card e
+           estragaria o número, então o card diz o que falta. */
+        limpar('<b>' + _rot + '</b> não tem praça equivalente no CEPEA regional, e o '
+             + 'desconto precisa do boi gordo da mesma praça — a coleta própria não cota '
+             + 'macho. Com coleta e par no CEPEA: <b>' + _com.join('</b>, <b>') + '</b>.');
+      } else {
+        limpar('A aba <b>CEPEA REGIONAL</b> não trouxe vaca gorda em R$/@.');
+      }
+      return;
+    }
     var P = _femPares(chave);
     if (!P || P.n < 30) { limpar('Menos de 30 pregões com boi e vaca na mesma data nesta praça.'); return; }
 
@@ -48950,7 +49035,7 @@ function updateRelacao() {
        `_corPorEntidade` só recolore traço que já tem cor sólida, então quem
        não declara cor fica fora do sistema de identidade e aparece em azul
        genérico. O nome começa pela entidade — é o que a regra de cor lê. */
-    renderPlot(cid, [
+    var _tr = [
       { x:d, y:desc.map(function(v){ return v*100; }), type:'scatter', mode:'lines',
         name:'Vaca gorda ÷ boi gordo',
         line:{ color:_COR_ENT_FEMEA, width:_LARG.principal },
@@ -48959,25 +49044,75 @@ function updateRelacao() {
         name:'Média da janela',
         line:{ color:_PAL.referencia, width:_LARG.referencia, dash:'dash' },
         hoverinfo:'skip' }
-    ], { _no_title:true, _sem_titulo:true, yaxis:{ title:'Desconto da vaca sobre o boi (%)', ticksuffix:'%' },
+    ];
+
+    var CO = _femColetaDesconto(P);
+    if (CO){
+      var _ptsJ = CO.pts.filter(function(q){ return q.data >= J.de; });
+      if (_ptsJ.length){
+        /* Losango cheio para a novilha, círculo vazado para a vaca da mesma
+           coleta: duas categorias de fêmea de abate, nenhuma variante da
+           outra — a mesma regra do card de prêmio. */
+        _tr.push({ x:_ptsJ.map(function(q){ return q.data; }),
+          y:_ptsJ.map(function(q){ return q.dNov*100; }),
+          type:'scatter', mode:'markers', name:'Novilha gorda ÷ boi · coleta própria',
+          customdata:_ptsJ.map(function(q){ return [q.nov, q.boi, q.boiData]; }),
+          marker:{ color:_COR_ENT_FEMEA, size:11, symbol:'diamond',
+                   line:{ color:'#ffffff', width:1.5 } },
+          hovertemplate:_femHover('%',
+            'novilha R$ %{customdata[0]:,.2f}/@ · boi R$ %{customdata[1]:,.2f}/@ de %{customdata[2]}') });
+        var _comV = _ptsJ.filter(function(q){ return q.dVaca != null; });
+        if (_comV.length)
+          _tr.push({ x:_comV.map(function(q){ return q.data; }),
+            y:_comV.map(function(q){ return q.dVaca*100; }),
+            type:'scatter', mode:'markers', name:'Vaca gorda ÷ boi · coleta própria',
+            customdata:_comV.map(function(q){ return [q.vaca, q.boi, q.boiData]; }),
+            marker:{ color:'rgba(0,0,0,0)', size:10, symbol:'circle',
+                     line:{ color:_COR_ENT_FEMEA, width:2 } },
+            hovertemplate:_femHover('%',
+              'vaca R$ %{customdata[0]:,.2f}/@ · boi R$ %{customdata[1]:,.2f}/@ de %{customdata[2]}') });
+      }
+    }
+
+    renderPlot(cid, _tr,
+       { _no_title:true, _sem_titulo:true,
+         yaxis:{ title:'Desconto da fêmea sobre o boi (%)', ticksuffix:'%' },
          xaxis:{ title:'' }, showlegend:true });
 
+    var _uNov = (CO && CO.pts.length) ? CO.pts[CO.pts.length-1] : null;
     if (kEl){
       kEl.innerHTML =
         /* TETO DE QUATRO. Seis indicadores numa régua de 1440 px deixam cada
            um com 230 px e fazem a linha disputar com o gráfico. Spread e
            correlação saem daqui e continuam na leitura, onde cabem numa
            frase. */
-        _rgKpi('VACA GORDA', 'R$ '+_pcN(P.vaca[P.n-1]), P.uf+'/'+P.praca+' · '+P.datas[P.n-1]) +
+        /* Na categoria novilha, a primeira tira é a novilha: quem escolheu
+           a categoria não quer abrir o card e ler o preço da vaca. */
+        (_femCatSel() === 'novilha' && _uNov
+          ? _rgKpi('NOVILHA GORDA', 'R$ '+_pcN(_uNov.nov),
+                   (CO ? CO.praca : P.uf+'/'+P.praca) + ' · ' + _uNov.data)
+          : _rgKpi('VACA GORDA', 'R$ '+_pcN(P.vaca[P.n-1]), P.uf+'/'+P.praca+' · '+P.datas[P.n-1])) +
         _rgKpi('BOI GORDO', 'R$ '+_pcN(P.boi[P.n-1]), 'spread R$ '+_pcN(spr[spr.length-1])+'/@') +
         /* SEM VEREDITO DE COR. `is-down` pintaria de vermelho um desconto
            maior que a média — e desconto maior é bom para quem compra a
            fêmea e ruim para quem vende. O card não sabe de que lado o
            leitor está, então informa a posição e não emite julgamento;
            quem decide é o percentil ao lado, que é número. */
-        _rgKpi('DESCONTO', _pcPct(atual*100, 2), 'média da janela '+_pcPct(med*100,2)) +
-        _rgKpi('PERCENTIL', pct==null?'–':_pcN(pct,0)+'%',
-               'faixa '+_pcPct(mn*100,2)+' a '+_pcPct(mx*100,2)) ;
+        /* A quarta tira muda de assunto quando há novilha na praça: o
+           percentil desce para a linha de apoio do desconto e o lugar vai
+           para a categoria que o card passou a cobrir. Sem coleta na praça,
+           a régua volta a ser a de antes. */
+        (function(){
+          var tVaca = _rgKpi('DESCONTO DA VACA', _pcPct(atual*100, 2),
+                'média da janela ' + _pcPct(med*100,2)
+                + (_uNov ? ' · percentil ' + (pct==null?'–':_pcN(pct,0)+'%') : ''));
+          if (!_uNov)
+            return tVaca + _rgKpi('PERCENTIL', pct==null?'–':_pcN(pct,0)+'%',
+                                  'faixa '+_pcPct(mn*100,2)+' a '+_pcPct(mx*100,2));
+          var tNov = _rgKpi('DESCONTO DA NOVILHA', _pcPct(_uNov.dNov*100, 2),
+                'coleta própria de ' + _uNov.data + ' · boi de ' + _uNov.boiData);
+          return (_femCatSel() === 'novilha') ? (tNov + tVaca) : (tVaca + tNov);
+        })() ;
     }
 
     /* O RANKING DAS PRAÇAS, que é a pergunta de quem compra: onde a fêmea
@@ -49007,8 +49142,8 @@ function updateRelacao() {
         return h + '</tbody></table>';
       };
       tEl.innerHTML = linhas.length
-        ? tabela(linhas.slice(0,5), 'FÊMEA MAIS BARATA CONTRA A PRÓPRIA HISTÓRIA')
-          + tabela(linhas.slice(-5).reverse(), 'FÊMEA MAIS CARA CONTRA A PRÓPRIA HISTÓRIA')
+        ? tabela(linhas.slice(0,5), 'VACA MAIS BARATA CONTRA A PRÓPRIA HISTÓRIA — 27 PRAÇAS DO CEPEA')
+          + tabela(linhas.slice(-5).reverse(), 'VACA MAIS CARA CONTRA A PRÓPRIA HISTÓRIA — 27 PRAÇAS DO CEPEA')
         : '';
     }
 
@@ -49019,12 +49154,47 @@ function updateRelacao() {
                    + _pcN(pct,0) + '% da janela — perto do menor desconto do período.'
        : 'O desconto está no meio da faixa da janela (percentil ' + _pcN(pct,0) + '%).');
 
+    /* A FRASE DA NOVILHA, quando há coleta na praça. Sai do mesmo ponto que
+       o gráfico desenha, inclusive o viés entre fontes: se a vaca da coleta
+       cai longe da curva do CEPEA no mesmo dia, o leitor precisa saber antes
+       de comparar as duas categorias. */
+    var txtNov = '';
+    if (_uNov){
+      txtNov = ' A <b>novilha gorda</b> da coleta própria, em ' + _uNov.data
+        + ', sai a R$ ' + _pcN(_uNov.nov) + '/@ — desconto de <b>'
+        + _pcPct(_uNov.dNov*100,2) + '</b> contra o mesmo boi, '
+        + (_uNov.dVaca != null
+            ? 'enquanto a vaca da mesma coleta fica em ' + _pcPct(_uNov.dVaca*100,2)
+              + ': ' + _femPP((_uNov.dNov - _uNov.dVaca)*100) + ' de diferença entre as '
+              + 'duas categorias no mesmo dia e na mesma praça.'
+            : 'sem vaca na mesma coleta para comparar.');
+      if (_uNov.dVaca != null){
+        var _vies = (_uNov.dVaca - atual) * 100;
+        txtNov += ' O círculo vazado é a vaca da coleta contra a curva do CEPEA: '
+          + (Math.abs(_vies) < 0.5
+              ? 'as duas fontes praticamente coincidem no período.'
+              : 'a coleta está ' + _femPP(_vies) + ' da curva, e é esse o tamanho do '
+                + 'viés entre fontes que o ponto da novilha carrega junto.');
+      }
+    }
+
+    var txtVaca = 'Em <b>' + P.uf+'/'+P.praca + '</b>, a vaca gorda vale R$ '
+      + _pcN(P.vaca[P.n-1]) + '/@ contra R$ ' + _pcN(P.boi[P.n-1])
+      + '/@ do boi — desconto de <b>' + _pcPct(atual*100,2) + '</b>, contra média de '
+      + _pcPct(med*100,2) + ' em ' + desc.length + ' pregões. ' + ondeEsta;
+    /* Quem escolheu a categoria novilha lê a novilha primeiro: a vaca vira
+       o parágrafo de referência, não a manchete. */
     _exSet(ctx, _exLeitura(
-      'Em <b>' + P.uf+'/'+P.praca + '</b>, a vaca gorda vale R$ ' + _pcN(P.vaca[P.n-1])
-      + '/@ contra R$ ' + _pcN(P.boi[P.n-1]) + '/@ do boi — desconto de <b>'
-      + _pcPct(atual*100,2) + '</b>, contra média de ' + _pcPct(med*100,2)
-      + ' em ' + desc.length + ' pregões. ' + ondeEsta,
-      'Correlação e beta são calculados em <b>variação mensal</b>: na diária a '
+      (_femCatSel() === 'novilha' && txtNov)
+        ? (txtNov.replace(/^ /, '') + ' ' + txtVaca)
+        : (txtVaca + txtNov),
+      (CO ? 'A novilha não existe no CEPEA regional: ela vem da coleta própria (aba '
+          + CO.aba + ', ' + CO.n + ' leitura' + (CO.n===1?'':'s') + '), e por isso aparece '
+          + 'como ponto e não como curva. O boi do denominador é o do CEPEA na mesma praça, '
+          + 'porque a coleta não cota macho. '
+        : 'Esta praça não tem coleta própria de novilha gorda — a cobertura é '
+          + Object.keys(_FEM_PAR_CEPEA).join(', ') + '. ')
+      + 'Correlação e beta são calculados em <b>variação mensal</b>: na diária a '
       + 'correlação desta praça é ' + (rD==null?'–':_pcN(rD,2)) + ' e na mensal '
       + (rM==null?'–':_pcN(rM,2)) + '. Os levantamentos do CEPEA não são '
       + 'simultâneos entre praças e produtos, e em frequência diária o que se '
@@ -49396,13 +49566,21 @@ function updateRelacao() {
     } else if (cat === 'novilha'){
       var T = _femTab('femeasAbate');
       if (T){
+        /* Barretos continua na lista — preço e posição da novilha não
+           dependem do boi —, mas não abre a categoria: o card de desconto
+           precisa do par no CEPEA e abrir justamente na única praça sem par
+           é dar as boas-vindas com uma mensagem de erro. O padrão é a
+           primeira praça com par; sem nenhuma, a primeira da lista. */
+        var _prim = null;
         T.series.forEach(function(c){
           var m = c.match(/^Novilha gorda\s+(.*?)\s*\(/i);
           if (!m) return;
           var rot = m[1].trim();
           html += '<option value="' + rot + '">' + rot + '</option>';
-          if (!padrao) padrao = rot;
+          if (!_prim) _prim = rot;
+          if (!padrao && _FEM_PAR_CEPEA[rot]) padrao = rot;
         });
+        if (!padrao) padrao = _prim;
       }
     } else {
       var ps = [];
