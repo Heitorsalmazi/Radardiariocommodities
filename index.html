@@ -8772,6 +8772,115 @@ header{
       <div id="chartAtkFemeasContext" class="chart-context"></div>
     </section>
 
+    <!-- ═══════════════════════════════════════════════════════════════════
+         FÊMEAS — ABATE E REPOSIÇÃO                     Etapa 6 · 20/10/2026
+         ═══════════════════════════════════════════════════════════════════
+         Quatro cards. Os três primeiros compartilham o seletor de praça do
+         primeiro: a pergunta "a fêmea está barata aqui?" não muda de praça
+         entre um card e o outro. A migração manda esta seção para `m3_1_10`
+         pelos ids dos gráficos (ver `_M3_POR_GRAFICO`).                    -->
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">VACA × BOI — Desconto da Fêmea por Praça</span><button type="button" class="info-btn" aria-label="Ajuda: desconto da fêmea" data-tooltip="Vaca gorda dividida pelo boi gordo na mesma praça e data. O desconto é estrutural; o que informa é a posição dele contra os dois anos da própria praça — percentil, média e faixa. Correlação e beta em variação mensal. Fonte: CEPEA/ESALQ.">ⓘ</button></div>
+      <div class="pill">A vaca está barata contra o boi nesta praça — ou só parece?</div>
+      <div class="explain">
+        <span class="ex-tag">O que o gráfico mede</span>
+        <b>vaca ÷ boi − 1</b>, na mesma praça e na mesma data, com a média da janela em
+        tracejado. O desconto da fêmea é estrutural — ela rende menos carcaça e sai mais leve —,
+        então o número que informa não é o desconto em si: é onde ele está <b>contra a própria
+        história daquela praça</b>.
+        <span class="ex-tag">Por que mensal e não diário</span>
+        A correlação vaca × boi em variação diária fica entre 0,22 e 0,66; em mensal, entre
+        0,87 e 0,99. Os levantamentos do CEPEA não são simultâneos entre produtos e cada praça
+        informa no seu ritmo — em frequência diária o que se mede é a coleta, não o mercado.
+        <span class="ex-tag">Limite</span>
+        A série começa em <b>01/08/2024</b>: dois anos. Dá para percentil e para correlação
+        mensal; <b>não dá</b> para ciclo pecuário, que leva de seis a dez anos.
+      </div>
+      <div class="bgi-ctrl">
+        <span class="bgi-lbl">Praça</span>
+        <select id="femPraca" class="bgi-sel" title="Praça do CEPEA regional usada nos três primeiros cards. Só praças que cotam vaca gorda em R$/@."></select>
+        <span class="bgi-lbl" style="margin-left:8px">Período</span>
+        <select id="femPeriodo" class="bgi-sel" title="Janela de calendário para média, faixa, percentil e correlação.">
+          <option value="6">Últimos 6 meses</option>
+          <option value="12">Últimos 12 meses</option>
+          <option value="24" selected>Últimos 24 meses</option>
+          <option value="0">Série inteira</option>
+        </select>
+      </div>
+      <div id="femDKpis" class="vol-kpis"></div>
+      <div id="chartFemDesconto" class="chart-container" style="height:420px"></div>
+      <div id="femDRank"></div>
+      <div id="chartFemDescontoContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">VACA × BGI — A Base, Decomposta</span><button type="button" class="info-btn" aria-label="Ajuda: base da fêmea" data-tooltip="Não existe futuro de fêmea. A distância entre a vaca e o BGI é a soma de duas coisas: a base do boi (físico contra futuro) e o desconto de gênero (vaca contra boi). O card separa as duas porque só a base fecha no vencimento.">ⓘ</button></div>
+      <div class="pill">Do que a vaca está longe do futuro: da base ou do gênero?</div>
+      <div class="explain">
+        <span class="ex-tag">Por que decompor</span>
+        <b>Não existe futuro de fêmea.</b> O BGI é contrato de boi gordo, então "vaca menos
+        futuro" soma duas coisas que se movem por motivos diferentes: a <b>base</b> (boi físico
+        contra o futuro do boi — frete, escala, prazo da indústria) e o <b>desconto de gênero</b>
+        (vaca contra o boi da mesma praça — oferta de fêmea e ciclo).
+        <span class="ex-tag">O que isso muda na prática</span>
+        Duas praças chegam à mesma soma por caminhos opostos: uma com base de R$ −40 e gênero de
+        R$ −12, outra com base de R$ −11 e gênero de R$ −39. Quem trava preço precisa saber qual
+        das duas pernas está aberta — a base fecha no vencimento, o gênero não.
+      </div>
+      <div class="bgi-ctrl">
+        <span class="bgi-lbl">Contrato</span>
+        <select id="femBgi" class="bgi-sel" title="Vencimentos BGI em aberto. O mais próximo vem selecionado."></select>
+        <span class="bgi-lbl" style="margin-left:8px">Praça: a do card acima</span>
+      </div>
+      <div id="femBKpis" class="vol-kpis"></div>
+      <div id="chartFemBase" class="chart-container" style="height:400px"></div>
+      <div id="chartFemBaseContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">REPOSIÇÃO DE FÊMEA — Quantas Arrobas de Vaca Paga Cada Categoria</span><button type="button" class="info-btn" aria-label="Ajuda: relação de troca da fêmea" data-tooltip="Preço por cabeça dividido pela arroba da vaca gorda, nas oito categorias da coleta própria — Nelore e Mestiça, da desmama à vaca boiadeira. Ao lado, o bezerro macho do CEPEA na mesma praça, para a comparação que decide retenção.">ⓘ</button></div>
+      <div class="pill">Quantas arrobas de vaca gorda custa cada categoria de reposição?</div>
+      <div class="explain">
+        <span class="ex-tag">A conta</span>
+        <b>R$/cabeça ÷ R$/@ da vaca gorda.</b> É a decisão de retenção posta em arrobas: vender a
+        vaca e comprar a bezerra, ou ficar com ela. O peso de cada categoria sai do rótulo da
+        própria planilha — 330, 270, 210 e 180 kg na Nelore; 315, 255, 195 e 165 kg na Mestiça.
+        <span class="ex-tag">A escada por idade</span>
+        Por cabeça a desmama é a mais barata; <b>por arroba de peso vivo é a mais cara</b>. A
+        diferença entre as duas leituras é a curva de valorização que o criador compra.
+        <span class="ex-tag">Fonte e limite</span>
+        As oito categorias vêm da <b>coleta própria</b> do Radar — não é CEPEA e não deve ser
+        lida como tal. A série começou em 16/10/2026: enquanto houver menos de dez leituras,
+        nenhuma média, faixa ou correlação é calculada aqui.
+      </div>
+      <div id="femTKpis" class="vol-kpis"></div>
+      <div id="chartFemTroca" class="chart-container" style="height:400px"></div>
+      <div id="chartFemTrocaContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">NOVILHA × VACA — Prêmio da Novilha e Conferência entre Fontes</span><button type="button" class="info-btn" aria-label="Ajuda: prêmio da novilha" data-tooltip="Novilha gorda contra vaca gorda na mesma praça, em R$/@ e em percentual. A vaca aparece por dois caminhos independentes — CEPEA e coleta própria — e a diferença entre eles é mostrada, não escolhida em silêncio.">ⓘ</button></div>
+      <div class="pill">Quanto a novilha paga acima da vaca — e as duas coletas batem?</div>
+      <div class="explain">
+        <span class="ex-tag">O prêmio da novilha</span>
+        Novilha gorda contra vaca gorda na mesma praça, em R$/@ e em percentual. A novilha rende
+        mais carcaça e tem acabamento melhor; o tamanho do prêmio diz quanto o frigorífico está
+        disposto a pagar por isso agora.
+        <span class="ex-tag">Duas fontes, conferidas</span>
+        A vaca gorda chega por dois caminhos independentes: o CEPEA regional e a coleta própria.
+        O card mostra <b>a diferença entre as duas</b> para a mesma praça e data. Escolher uma
+        sem dizer qual seria o começo de dois números para a mesma pergunta.
+        <span class="ex-tag">Limite</span>
+        Série em formação. Com duas leituras, qualquer correlação sai 1 e não significa nada —
+        por isso aqui só aparecem níveis e spread do dia, com a contagem de leituras à vista.
+      </div>
+      <div id="femNKpis" class="vol-kpis"></div>
+      <div id="chartFemNovilha" class="chart-container" style="height:380px"></div>
+      <div id="chartFemNovilhaContext" class="chart-context"></div>
+    </section>
+
+
     <section class="card panel-block-head">
       <div class="card-title"><span class="card-title-text">⑤ A CASCATA DE REPASSE</span></div>
     </section>
@@ -16557,6 +16666,7 @@ function _pngNome(txt){
      contexto e rótulo na ponta da linha.                                */
   var _COR_ENT_BOI    = '#0d9488';   /* o que a 3M vende: arroba         */
   var _COR_ENT_REPO   = '#b45309';   /* o que a 3M compra: reposição     */
+  var _COR_ENT_FEMEA  = '#be123c';   /* vaca, novilha, bezerra, desmama  */
   var _COR_ENT_INSUMO = '#6250d6';   /* insumo e terceira medida         */
   function _entNorm(s){
     return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
@@ -16574,6 +16684,13 @@ function _pngNome(txt){
      soja, onde os dois aparecem juntos.
      A ordem importa: "boi magro" tem de ser testado antes de "boi". */
   var _ENTIDADES = [
+    /* A FÊMEA É UMA QUARTA ENTIDADE. Ela não é boi — pintá-la de verde-azulado
+       faria a vaca desaparecer dentro do boi no único gráfico onde os dois
+       precisam ser lidos separados, que é o do desconto. E não é reposição:
+       a bezerra divide figura com o bezerro no card de relação de troca, e
+       uma cor só não separaria nada. Vem primeiro porque "bezerra" tem de ser
+       testada antes de qualquer regra que comece por "bezerr". */
+    { cor: _COR_ENT_FEMEA,  re: /^(vaca|novilha|femea|bezerra|desmama|matriz)\b/ },
     { cor: _COR_ENT_REPO,   re: /^(bezerro|reposicao|soja|sjc)\b/ },
     { cor: _COR_ENT_INSUMO, re: /^(boi magro|magro|milho|curva ccm|ccm|cambio|dolar)\b/ },
     { cor: _COR_ENT_BOI,    re: /^(boi gordo|boi|arroba|vivo sp)\b/ }
@@ -18506,6 +18623,25 @@ function toNum(v){
       'ABATE - IBGE',
       'ABATE NACIONAL IBGE',
       'ABATE IBGE NACIONAL'
+    ],
+    /* COLETA PRÓPRIA DE FÊMEAS — 16/10/2026.
+       Duas abas novas da planilha. Entram AQUI, e não no seletor de
+       contratos, porque são fonte do painel e não ativo negociável: sem
+       registro, apareceriam na lista de ativos e os cards de contrato
+       pediriam delas colunas de Zscore, MACD e IFR que elas não têm. */
+    femeasAbate: [
+      'FÊMEAS - ABATE',
+      'FEMEAS - ABATE',
+      'FÊMEAS ABATE',
+      'FEMEAS ABATE',
+      'FÊMEAS – ABATE'
+    ],
+    femeasReposicao: [
+      'FÊMEAS - REPOSIÇÃO',
+      'FEMEAS - REPOSICAO',
+      'FÊMEAS REPOSIÇÃO',
+      'FEMEAS REPOSICAO',
+      'FÊMEAS – REPOSIÇÃO'
     ]
   };
 
@@ -47855,6 +47991,656 @@ function updateRelacao() {
        próprio", mas o único comutador que o abria era a barra antiga, que
        a mesma etapa escondeu. Medido: percorrendo as 35 seções pela
        navegação, ele nunca aparece.                                        */
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     FÊMEAS — ABATE E REPOSIÇÃO                              Etapa 6 · 20/10/2026
+     ═══════════════════════════════════════════════════════════════════════
+
+     O Radar já tinha fêmea em três lugares: o KPI de participação no abate,
+     o card de pressão de fêmeas (`chartAtkFemeas`) e a Vaca Gorda como
+     produto de primeira classe no módulo regional. O que não tinha era a
+     seção que junta preço, desconto, base e reposição — e não tinha as duas
+     abas novas da coleta.
+
+     DUAS FONTES, DECLARADAS SEPARADAMENTE. A vaca gorda chega por dois
+     caminhos independentes: o CEPEA regional (28 praças, série desde
+     01/08/2024) e a coleta própria das abas `FÊMEAS - ABATE` e
+     `FÊMEAS - REPOSIÇÃO` (3 praças de abate e 8 categorias de reposição,
+     iniciadas em 16/10/2026). Elas NÃO são somadas nem misturadas: cada
+     card diz de onde veio o número, e o card 4 mostra a diferença entre as
+     duas para a mesma praça e data em vez de escondê-la.
+
+     O QUE A JANELA PERMITE. A estatística de dispersão — média, faixa,
+     percentil, correlação, beta — só aparece onde há série: a vaca gorda do
+     CEPEA tem 26 meses e 252 pregões. As séries novas têm as leituras que
+     têm, e o número delas está na tela. Abaixo de `_FEM_MIN_N` nenhum
+     coeficiente é calculado: com duas leituras, qualquer correlação sai 1 e
+     não significa nada. É a mesma regra do card de cascata — estrutura
+     pronta, coeficiente só quando o histórico permitir calibrar.
+
+     NADA DE ÍNDICE COMPOSTO. Somar desconto, base e relação de troca num
+     "índice de atratividade da fêmea" exigiria pesos, e peso exige
+     calibração contra histórico que não existe. Os componentes ficam lado a
+     lado, cada um na sua unidade.                                          */
+
+  var _FEM_MIN_N = 10;                 /* pregões mínimos para coeficiente */
+
+  /* O HOVER DA CASA. `_applyHoverTemplates` monta este mesmo formato sozinho
+     — mas só para as unidades que ele conhece, e as unidades daqui (ponto
+     percentual, arroba de vaca) não estão na tabela dele. Então o formato é
+     repetido aqui com a unidade certa, em vez de deixar o gráfico cair no
+     "R$/@" do spec de preço, que é o padrão de quem não declara nada. */
+  function _femHover(unidade, detalhe){
+    return "<span class='hover-label'>%{fullData.name}</span>: "
+         + "<b>%{y:,.2f}</b> " + unidade
+         + (detalhe ? "<br>" + detalhe : "") + "<extra></extra>";
+  }
+  var _FEM_KG_ARROBA = 15;             /* uma arroba de carcaça = 15 kg     */
+
+  /* As três praças da coleta própria, e a praça do CEPEA equivalente quando
+     existe. Barretos não tem praça própria no CEPEA regional — fica sem par,
+     e isso é dito, não contornado com a praça "mais parecida". */
+  var _FEM_PAR_CEPEA = {
+    'SP Barretos':    null,
+    'SP Araçatuba':   'SP/Araçatuba',
+    'MS Três Lagoas': 'MS/Três Lagoas'
+  };
+
+  /* ── Leitura das duas abas novas ─────────────────────────────────────── */
+  function _femTab(chave){
+    var nome = findSheetByAliases(GLOBAL_FIXED_SHEETS[chave]);
+    if (!nome || !window.workbook || !workbook.Sheets[nome]) return null;
+    var linhas = parseSheet(nome) || [];
+    if (!linhas.length) return null;
+    /* A primeira coluna é a data, com qualquer rótulo. As demais são séries,
+       e o rótulo delas carrega a unidade entre parênteses — é o rótulo que
+       manda, não a posição: inserir uma coluna na planilha não pode trocar
+       o significado de um número na tela. */
+    var cols = Object.keys(linhas[0]);
+    var cData = null;
+    for (var i=0;i<cols.length;i++){
+      if (/^data/i.test(cols[i])) { cData = cols[i]; break; }
+    }
+    if (cData == null) cData = cols[0];
+    var series = cols.filter(function(c){ return c !== cData; });
+    var dados = [];
+    linhas.forEach(function(r){
+      var d = _rgData(r[cData]); if (!d) return;
+      var o = { data:d };
+      series.forEach(function(c){
+        var v = Number(r[c]);
+        if (isFinite(v) && v > 0) o[c] = v;
+      });
+      dados.push(o);
+    });
+    dados.sort(function(a,b){ return a.data < b.data ? -1 : 1; });
+    return { aba:nome, series:series, dados:dados, n:dados.length,
+             ultima:dados.length ? dados[dados.length-1] : null };
+  }
+
+  /* ── A série de uma praça, do CEPEA, só em R$/@ ──────────────────────── */
+  function _femSerieCepea(produto, chave){
+    var s = null;
+    try { s = _rgSerie(produto, chave, null); } catch(e){ return null; }
+    if (!s || s.unidade !== 'R$/@') return null;
+    return s;
+  }
+
+  /* Pares (boi, vaca) na MESMA data. Sem isto a conta compararia o boi de
+     terça com a vaca de quinta e chamaria a diferença de desconto. */
+  function _femPares(chave){
+    var B = _femSerieCepea('Boi Gordo', chave), V = _femSerieCepea('Vaca Gorda', chave);
+    if (!B || !V) return null;
+    var d = [], b = [], v = [];
+    for (var i=0;i<V.datas.length;i++){
+      var dt = V.datas[i], pb = B.obs[dt], pv = V.obs[dt];
+      if (!(pb > 0) || !(pv > 0)) continue;
+      d.push(dt); b.push(pb); v.push(pv);
+    }
+    return d.length ? { datas:d, boi:b, vaca:v, praca:V.praca, uf:V.uf, n:d.length } : null;
+  }
+
+  /* Média mensal — a frequência em que esta cadeia aparece. Em variação
+     diária a correlação vaca × boi fica entre 0,22 e 0,66; em mensal, entre
+     0,87 e 0,99. O movimento diário é ruído de coleta: os levantamentos não
+     são simultâneos e cada praça informa no seu ritmo. */
+  function _femMensal(datas, vals){
+    var acc = {};
+    for (var i=0;i<datas.length;i++){
+      var k = datas[i].slice(0,7);
+      if (!acc[k]) acc[k] = { s:0, n:0 };
+      acc[k].s += vals[i]; acc[k].n++;
+    }
+    var ks = Object.keys(acc).sort(), m = [];
+    ks.forEach(function(k){ m.push(acc[k].s/acc[k].n); });
+    return { meses:ks, valores:m };
+  }
+  function _femVar(a){
+    var v = [];
+    for (var i=1;i<a.length;i++) if (a[i-1] > 0 && a[i] > 0) v.push(a[i]/a[i-1] - 1);
+    return v;
+  }
+  function _femCorr(x, y){
+    var n = Math.min(x.length, y.length); if (n < 3) return null;
+    var mx=0, my=0, i;
+    for (i=0;i<n;i++){ mx+=x[i]; my+=y[i]; } mx/=n; my/=n;
+    var sxy=0, sxx=0, syy=0;
+    for (i=0;i<n;i++){ var a=x[i]-mx, b=y[i]-my; sxy+=a*b; sxx+=a*a; syy+=b*b; }
+    return (sxx>0 && syy>0) ? sxy/Math.sqrt(sxx*syy) : null;
+  }
+  function _femBeta(x, y){      /* y = alfa + beta·x */
+    var n = Math.min(x.length, y.length); if (n < 3) return null;
+    var mx=0, my=0, i;
+    for (i=0;i<n;i++){ mx+=x[i]; my+=y[i]; } mx/=n; my/=n;
+    var sxy=0, sxx=0;
+    for (i=0;i<n;i++){ sxy+=(x[i]-mx)*(y[i]-my); sxx+=(x[i]-mx)*(x[i]-mx); }
+    if (!(sxx>0)) return null;
+    var r = _femCorr(x,y);
+    return { beta:sxy/sxx, r2:(r==null?null:r*r), n:n };
+  }
+  function _femPercentil(arr, v){
+    if (!arr.length) return null;
+    var c = 0;
+    for (var i=0;i<arr.length;i++) if (arr[i] <= v) c++;
+    return c/arr.length*100;
+  }
+  function _femJanela(id, datas){
+    var el = document.getElementById(id);
+    var meses = el ? parseInt(el.value, 10) : 24;
+    if (!isFinite(meses) || meses <= 0) return { de:datas[0], rot:'série inteira' };
+    var fim = new Date(datas[datas.length-1] + 'T00:00:00');
+    fim.setMonth(fim.getMonth() - meses);
+    return { de: fim.toISOString().slice(0,10), rot:'últimos '+meses+' meses' };
+  }
+  function _femPracaSel(){
+    var el = document.getElementById('femPraca');
+    return el && el.value ? el.value : null;
+  }
+
+  /* Preenche o seletor de praça com as praças que cotam vaca gorda em R$/@.
+     As que cotam em R$/kg (RS) ficam fora: o desconto sairia comparando
+     unidades diferentes. */
+  function _femPopulaPracas(){
+    var el = document.getElementById('femPraca');
+    if (!el || el.getAttribute('data-pronto') === '1') return;
+    var ps = [];
+    try { ps = _rgPracas('Vaca Gorda') || []; } catch(e){ ps = []; }
+    ps = ps.filter(function(p){ return p.unidade === 'R$/@'; });
+    if (!ps.length) return;
+    var pref = ['SP/Presidente Prudente','SP/Araçatuba'];
+    var html = '';
+    ps.forEach(function(p){
+      html += '<option value="'+p.chave+'">'+p.uf+'/'+p.praca+'</option>';
+    });
+    el.innerHTML = html;
+    for (var i=0;i<pref.length;i++){
+      for (var j=0;j<ps.length;j++){
+        if (ps[j].uf+'/'+ps[j].praca === pref[i]) { el.value = ps[j].chave; i = 99; break; }
+      }
+    }
+    el.setAttribute('data-pronto','1');
+  }
+
+  /* ── ① O DESCONTO DA FÊMEA SOBRE O BOI GORDO ─────────────────────────── */
+  function _femDescontoCard(){
+    var cid='chartFemDesconto', ctx='chartFemDescontoContext';
+    var kEl=document.getElementById('femDKpis'), tEl=document.getElementById('femDRank');
+    function limpar(msg){
+      renderPlot(cid,[],{_no_title:true});
+      if(kEl) kEl.innerHTML=''; if(tEl) tEl.innerHTML='';
+      _exSet(ctx,'<div class="rb-vazio">'+msg+'</div>');
+    }
+    _femPopulaPracas();
+    var chave = _femPracaSel();
+    if (!chave) { limpar('A aba <b>CEPEA REGIONAL</b> não trouxe vaca gorda em R$/@.'); return; }
+    var P = _femPares(chave);
+    if (!P || P.n < 30) { limpar('Menos de 30 pregões com boi e vaca na mesma data nesta praça.'); return; }
+
+    var J = _femJanela('femPeriodo', P.datas);
+    var d=[], desc=[], spr=[];
+    for (var i=0;i<P.n;i++){
+      if (P.datas[i] < J.de) continue;
+      d.push(P.datas[i]);
+      desc.push(P.vaca[i]/P.boi[i] - 1);
+      spr.push(P.boi[i] - P.vaca[i]);
+    }
+    if (desc.length < 10) { limpar('Só '+desc.length+' pregões na janela <b>'+J.rot+'</b>.'); return; }
+
+    var atual = desc[desc.length-1], med = 0, mn = desc[0], mx = desc[0];
+    for (i=0;i<desc.length;i++){ med += desc[i]; if(desc[i]<mn) mn=desc[i]; if(desc[i]>mx) mx=desc[i]; }
+    med /= desc.length;
+    var pct = _femPercentil(desc, atual);
+
+    /* Correlação e beta na frequência mensal, com a diária ao lado para o
+       leitor ver por que a mensal é a que vale. */
+    var mB = _femMensal(P.datas, P.boi), mV = _femMensal(P.datas, P.vaca);
+    var vB = _femVar(mB.valores), vV = _femVar(mV.valores);
+    var rM = _femCorr(vB, vV), bM = _femBeta(vB, vV);
+    var rD = _femCorr(_femVar(P.boi), _femVar(P.vaca));
+
+    /* Cor, largura e hover saem da paleta da casa, não do padrão do Plotly:
+       `_corPorEntidade` só recolore traço que já tem cor sólida, então quem
+       não declara cor fica fora do sistema de identidade e aparece em azul
+       genérico. O nome começa pela entidade — é o que a regra de cor lê. */
+    renderPlot(cid, [
+      { x:d, y:desc.map(function(v){ return v*100; }), type:'scatter', mode:'lines',
+        name:'Vaca gorda ÷ boi gordo',
+        line:{ color:_COR_ENT_FEMEA, width:_LARG.principal },
+        hovertemplate:_femHover('%') },
+      { x:[d[0], d[d.length-1]], y:[med*100, med*100], type:'scatter', mode:'lines',
+        name:'Média da janela',
+        line:{ color:_PAL.referencia, width:_LARG.referencia, dash:'dash' },
+        hoverinfo:'skip' }
+    ], { _no_title:true, yaxis:{ title:'Desconto da vaca sobre o boi (%)', ticksuffix:'%' },
+         xaxis:{ title:'' }, showlegend:true });
+
+    if (kEl){
+      kEl.innerHTML =
+        _rgKpi('VACA GORDA', 'R$ '+_pcN(P.vaca[P.n-1]), P.uf+'/'+P.praca+' · '+P.datas[P.n-1]) +
+        _rgKpi('BOI GORDO', 'R$ '+_pcN(P.boi[P.n-1]), 'mesma praça, mesma data') +
+        _rgKpi('SPREAD', 'R$ '+_pcN(spr[spr.length-1]), 'boi − vaca, por arroba') +
+        /* SEM VEREDITO DE COR. `is-down` pintaria de vermelho um desconto
+           maior que a média — e desconto maior é bom para quem compra a
+           fêmea e ruim para quem vende. O card não sabe de que lado o
+           leitor está, então informa a posição e não emite julgamento;
+           quem decide é o percentil ao lado, que é número. */
+        _rgKpi('DESCONTO', _pcPct(atual*100, 2), 'média da janela '+_pcPct(med*100,2)) +
+        _rgKpi('PERCENTIL', pct==null?'–':_pcN(pct,0)+'%',
+               'faixa '+_pcPct(mn*100,2)+' a '+_pcPct(mx*100,2)) +
+        _rgKpi('CORR. MENSAL', rM==null?'–':_pcN(rM,2),
+               (bM?'beta '+_pcN(bM.beta,2)+' · ':'')+vV.length+' meses') ;
+    }
+
+    /* O RANKING DAS PRAÇAS, que é a pergunta de quem compra: onde a fêmea
+       está barata CONTRA A PRÓPRIA HISTÓRIA, não contra a praça vizinha. */
+    if (tEl){
+      var linhas = [];
+      var todas = [];
+      try { todas = _rgPracas('Vaca Gorda') || []; } catch(e){}
+      todas.forEach(function(p){
+        if (p.unidade !== 'R$/@') return;
+        var Q = _femPares(p.chave); if (!Q || Q.n < 30) return;
+        var dd = [], i2;
+        for (i2=0;i2<Q.n;i2++) if (Q.datas[i2] >= J.de) dd.push(Q.vaca[i2]/Q.boi[i2] - 1);
+        if (dd.length < 10) return;
+        var m2=0; for (i2=0;i2<dd.length;i2++) m2+=dd[i2]; m2/=dd.length;
+        linhas.push({ praca:Q.uf+'/'+Q.praca, atual:dd[dd.length-1], media:m2,
+                      pct:_femPercentil(dd, dd[dd.length-1]), n:dd.length });
+      });
+      linhas.sort(function(a,b){ return a.pct - b.pct; });
+      var tabela = function(sub, titulo){
+        var h = '<div class="rb-head">'+titulo+'</div><table class="pc-tab"><thead><tr>'
+              + '<th>praça</th><th>desconto hoje</th><th>média da janela</th><th>percentil</th></tr></thead><tbody>';
+        sub.forEach(function(l){
+          h += '<tr><td>'+l.praca+'</td><td>'+_pcPct(l.atual*100,2)+'</td><td>'
+             + _pcPct(l.media*100,2)+'</td><td>'+_pcN(l.pct,0)+'%</td></tr>';
+        });
+        return h + '</tbody></table>';
+      };
+      tEl.innerHTML = linhas.length
+        ? tabela(linhas.slice(0,5), 'FÊMEA MAIS BARATA CONTRA A PRÓPRIA HISTÓRIA')
+          + tabela(linhas.slice(-5).reverse(), 'FÊMEA MAIS CARA CONTRA A PRÓPRIA HISTÓRIA')
+        : '';
+    }
+
+    var ondeEsta = pct == null ? '' :
+      (pct <= 25 ? 'A fêmea está <b>barata</b> contra o boi nesta praça: desconto no percentil '
+                   + _pcN(pct,0) + '% da janela.'
+       : pct >= 75 ? 'A fêmea está <b>cara</b> contra o boi nesta praça: desconto no percentil '
+                   + _pcN(pct,0) + '% da janela — perto do menor desconto do período.'
+       : 'O desconto está no meio da faixa da janela (percentil ' + _pcN(pct,0) + '%).');
+
+    _exSet(ctx, _exLeitura(
+      'Em <b>' + P.uf+'/'+P.praca + '</b>, a vaca gorda vale R$ ' + _pcN(P.vaca[P.n-1])
+      + '/@ contra R$ ' + _pcN(P.boi[P.n-1]) + '/@ do boi — desconto de <b>'
+      + _pcPct(atual*100,2) + '</b>, contra média de ' + _pcPct(med*100,2)
+      + ' em ' + desc.length + ' pregões. ' + ondeEsta,
+      'Correlação e beta são calculados em <b>variação mensal</b>: na diária a '
+      + 'correlação desta praça é ' + (rD==null?'–':_pcN(rD,2)) + ' e na mensal '
+      + (rM==null?'–':_pcN(rM,2)) + '. Os levantamentos do CEPEA não são '
+      + 'simultâneos entre praças e produtos, e em frequência diária o que se '
+      + 'mede é o ritmo da coleta. Fonte: CEPEA/ESALQ, aba CEPEA REGIONAL — '
+      + 'série desde ' + P.datas[0] + '.'));
+  }
+
+  /* ── ② A BASE, DECOMPOSTA ───────────────────────────────────────────── */
+  function _femBaseCard(){
+    var cid='chartFemBase', ctx='chartFemBaseContext';
+    var kEl=document.getElementById('femBKpis');
+    function limpar(msg){
+      renderPlot(cid,[],{_no_title:true});
+      if(kEl) kEl.innerHTML='';
+      _exSet(ctx,'<div class="rb-vazio">'+msg+'</div>');
+    }
+    _femPopulaPracas();
+    var chave = _femPracaSel();
+    var P = chave ? _femPares(chave) : null;
+    if (!P) { limpar('Sem boi e vaca na mesma praça para decompor a base.'); return; }
+
+    /* O CONTRATO. A base é contra o vencimento mais próximo que ainda não
+       venceu — e o seletor existe porque o mês seguinte responde outra
+       pergunta: quem vende daqui a 40 dias não compara com o que vence em
+       dez. */
+    var sel = document.getElementById('femBgi');
+    var contratos = [];
+    try {
+      var hoje = new Date().toISOString().slice(0,10).slice(0,7);
+      (window.workbook && workbook.SheetNames ? workbook.SheetNames : []).forEach(function(n){
+        if (!/^BGI[FGHJKMNQUVXZ]\d\d$/.test(n)) return;
+        var venc = _femVencBgi(n);
+        if (venc && venc >= hoje) contratos.push({ nome:n, venc:venc });
+      });
+      contratos.sort(function(a,b){ return a.venc < b.venc ? -1 : 1; });
+    } catch(e){}
+    if (!contratos.length) { limpar('Nenhum contrato BGI em aberto na planilha.'); return; }
+    if (sel && sel.getAttribute('data-pronto') !== '1'){
+      var h='';
+      contratos.slice(0,6).forEach(function(c){ h += '<option value="'+c.nome+'">'+c.nome+' · '+c.venc+'</option>'; });
+      sel.innerHTML = h; sel.setAttribute('data-pronto','1');
+    }
+    var alvo = (sel && sel.value) ? sel.value : contratos[0].nome;
+    var F = _femBgiSerie(alvo);
+    if (!F) { limpar('A aba <b>'+alvo+'</b> não trouxe fechamento.'); return; }
+
+    var d=[], base=[], genero=[], soma=[];
+    for (var i=0;i<P.n;i++){
+      var dt=P.datas[i], f=F.obs[dt];
+      if (!(f>0)) continue;
+      d.push(dt);
+      base.push(P.boi[i] - f);
+      genero.push(P.vaca[i] - P.boi[i]);
+      soma.push(P.vaca[i] - f);
+    }
+    if (!d.length) { limpar('Nenhuma data com físico e futuro juntos em '+alvo+'.'); return; }
+    var u = d.length-1;
+
+    /* Boi na cor do boi, vaca na cor da fêmea, e a soma em grafite — que é a
+       cor de agregado na paleta. Se a soma se chamasse "vaca …" ela puxaria o
+       rosa também, duas séries ficariam com a mesma cor e o sistema de
+       identidade desistiria das duas. */
+    renderPlot(cid, [
+      { x:d, y:base, type:'scatter', mode:'lines',
+        name:'Boi gordo − futuro (base)',
+        line:{ color:_COR_ENT_BOI, width:_LARG.destaque },
+        hovertemplate:_femHover('R$/@') },
+      { x:d, y:genero, type:'scatter', mode:'lines',
+        name:'Vaca gorda − boi gordo (gênero)',
+        line:{ color:_COR_ENT_FEMEA, width:_LARG.destaque },
+        hovertemplate:_femHover('R$/@') },
+      { x:d, y:soma, type:'scatter', mode:'lines',
+        name:'Soma — vaca contra o futuro',
+        line:{ color:_PAL.referencia, width:_LARG.principal },
+        hovertemplate:_femHover('R$/@') }
+    ], { _no_title:true, yaxis:{ title:'Diferença contra o futuro (R$/@)' },
+         showlegend:true });
+
+    if (kEl){
+      kEl.innerHTML =
+        _rgKpi('BOI FÍSICO', 'R$ '+_pcN(P.boi[P.n-1]), P.uf+'/'+P.praca) +
+        _rgKpi('VACA GORDA', 'R$ '+_pcN(P.vaca[P.n-1]), 'mesma praça') +
+        _rgKpi('FUTURO '+alvo, 'R$ '+_pcN(F.obs[d[u]]), 'fechamento de '+d[u]) +
+        _rgKpi('BASE', 'R$ '+_pcN(base[u]), 'boi físico − futuro') +
+        _rgKpi('GÊNERO', 'R$ '+_pcN(genero[u]), 'vaca − boi físico') +
+        _rgKpi('SOMA', 'R$ '+_pcN(soma[u]), 'vaca − futuro · '+_pcPct(soma[u]/F.obs[d[u]]*100,2)+' do futuro');
+    }
+
+    _exSet(ctx, _exLeitura(
+      'Contra o <b>'+alvo+'</b>, a vaca de '+P.uf+'/'+P.praca+' está R$ '
+      + _pcN(Math.abs(soma[u])) + '/@ ' + (soma[u]<0?'abaixo':'acima')
+      + ' do futuro. Desse total, R$ ' + _pcN(Math.abs(base[u])) + ' é <b>base</b> — '
+      + 'o físico do boi contra o futuro do boi — e R$ ' + _pcN(Math.abs(genero[u]))
+      + ' é <b>desconto de gênero</b>, a vaca contra o boi da mesma praça.',
+      'O BGI é contrato de <b>boi gordo</b>: não existe futuro de fêmea. Por isso '
+      + '"base da vaca" é a soma de duas coisas que se movem por motivos '
+      + 'diferentes — a base responde a frete, escala e prazo da indústria; o '
+      + 'gênero responde a oferta de fêmea e ao ciclo. Juntas num número só, '
+      + 'uma esconde a outra: há praça com base de R$ −40 e gênero de R$ −12, e '
+      + 'outra com base de R$ −11 e gênero de R$ −39, com a mesma soma.'));
+  }
+
+  /* Vencimento do contrato pelo código do mês — a mesma tabela do resto do
+     painel, sem recalcular nada. */
+  function _femVencBgi(nome){
+    var m = { F:'01', G:'02', H:'03', J:'04', K:'05', M:'06',
+              N:'07', Q:'08', U:'09', V:'10', X:'11', Z:'12' };
+    var mm = m[nome.charAt(3)], aa = nome.slice(4);
+    if (!mm || aa.length !== 2) return null;
+    return '20'+aa+'-'+mm;
+  }
+  function _femBgiSerie(nome){
+    if (!window.workbook || !workbook.Sheets[nome]) return null;
+    var linhas = parseSheet(nome) || [];
+    if (!linhas.length) return null;
+    var cols = Object.keys(linhas[0]);
+    var cD = cols[0], cV = null;
+    for (var i=1;i<cols.length;i++){
+      if (/pre|fech|ajust|valor/i.test(cols[i])) { cV = cols[i]; break; }
+    }
+    if (!cV) cV = cols[1];
+    var obs = {}, n = 0;
+    linhas.forEach(function(r){
+      var d = _rgData(r[cD]), v = Number(r[cV]);
+      if (!d || !isFinite(v) || v <= 0) return;
+      obs[d] = v; n++;
+    });
+    return n ? { obs:obs, n:n } : null;
+  }
+
+  /* ── ③ RELAÇÃO DE TROCA DA FÊMEA ────────────────────────────────────── */
+  function _femTrocaCard(){
+    var cid='chartFemTroca', ctx='chartFemTrocaContext';
+    var kEl=document.getElementById('femTKpis');
+    function limpar(msg){
+      renderPlot(cid,[],{_no_title:true});
+      if(kEl) kEl.innerHTML='';
+      _exSet(ctx,'<div class="rb-vazio">'+msg+'</div>');
+    }
+    var R = _femTab('femeasReposicao');
+    if (!R || !R.ultima) { limpar('A planilha não trouxe a aba <b>FÊMEAS - REPOSIÇÃO</b>.'); return; }
+    _femPopulaPracas();
+    var chave = _femPracaSel();
+    var V = chave ? _femSerieCepea('Vaca Gorda', chave) : null;
+    if (!V) { limpar('Sem vaca gorda em R$/@ na praça escolhida para converter em arrobas.'); return; }
+    var arroba = V.valores[V.valores.length-1], dataV = V.datas[V.datas.length-1];
+
+    /* Nelore e Mestiça lado a lado, na ordem da escada de idade. O peso sai
+       do próprio rótulo da coluna: é dado da planilha, não premissa daqui. */
+    var cat = [], nel = [], mes = [], rotulos = [];
+    R.series.forEach(function(c){
+      var preco = R.ultima[c]; if (!(preco > 0)) return;
+      var kg = (c.match(/(\d{2,4})\s*kg/i) || [])[1];
+      /* O RÓTULO DO EIXO PERDE O PESO, DE PROPÓSITO. A Nelore de vaca
+         boiadeira tem 330 kg e a Mestiça 315: mantendo o peso no rótulo, as
+         duas viram categorias diferentes e `barmode:'group'` não tem o que
+         agrupar — saem oito colunas soltas em vez de quatro pares, que é
+         justamente a comparação que o card existe para fazer. O peso vai
+         para o hover, onde não atrapalha o pareamento. */
+      var nome = c.replace(/\s*\(R\$\/cabeça\)\s*/i,'')
+                  .replace(/^(Nelore|Mestiça)\s*/i,'')
+                  .replace(/\s*\d{2,4}\s*kg\s*/i,'').trim();
+      var raca = /^mesti/i.test(c) ? 'mes' : 'nel';
+      if (rotulos.indexOf(nome) < 0) rotulos.push(nome);
+      cat.push({ raca:raca, nome:nome, preco:preco, kg:kg?Number(kg):null,
+                 arrobas:preco/arroba });
+    });
+    if (!cat.length) { limpar('A aba de reposição não trouxe preço nenhum.'); return; }
+    var dNel = [], dMes = [];
+    rotulos.forEach(function(nome){
+      var a = null, b = null;
+      cat.forEach(function(c){ if (c.nome===nome){ if(c.raca==='nel') a=c; else b=c; } });
+      nel.push(a ? a.arrobas : null);
+      mes.push(b ? b.arrobas : null);
+      /* O peso e o preço por cabeça viajam no hover: é o que o rótulo do
+         eixo deixou de carregar para as barras poderem parear. */
+      dNel.push(a ? [a.kg, a.preco] : [null, null]);
+      dMes.push(b ? [b.kg, b.preco] : [null, null]);
+    });
+
+    /* Mesma família em dois tons, como a régua de vencimentos faz: Nelore e
+       Mestiça são a mesma categoria em padrões raciais diferentes, não duas
+       entidades. Tom cheio e tom claro do âmbar da reposição. */
+    renderPlot(cid, [
+      { x:rotulos, y:nel, type:'bar', name:'Nelore', customdata:dNel,
+        marker:{ color:_COR_ENT_REPO },
+        hovertemplate:_femHover('@ de vaca gorda',
+          '%{customdata[0]} kg · R$ %{customdata[1]:,.2f}/cab') },
+      { x:rotulos, y:mes, type:'bar', name:'Mestiça', customdata:dMes,
+        marker:{ color:'rgba(180,83,9,0.45)' },
+        hovertemplate:_femHover('@ de vaca gorda',
+          '%{customdata[0]} kg · R$ %{customdata[1]:,.2f}/cab') }
+    ], { _no_title:true, barmode:'group',
+         yaxis:{ title:'Arrobas de vaca gorda por cabeça' }, showlegend:true });
+
+    /* O macho no mesmo lugar, para a comparação que decide retenção. */
+    /* O bezerro é R$/cabeça, então não passa por `_femSerieCepea`, que só
+       devolve série em R$/@. Vem direto do regional. */
+    var bzArr = null, bzVal = null;
+    try {
+      var s = _rgSerie('Bezerro', chave, null);
+      if (s && s.unidade === 'R$/cabeça' && s.valores.length){
+        bzVal = s.valores[s.valores.length-1]; bzArr = bzVal/arroba;
+      }
+    } catch(e){}
+
+    var bezerraNel = null;
+    cat.forEach(function(c){ if (c.raca==='nel' && /bezerra/i.test(c.nome)) bezerraNel = c; });
+
+    if (kEl){
+      kEl.innerHTML =
+        _rgKpi('VACA GORDA', 'R$ '+_pcN(arroba), V.uf+'/'+V.praca+' · '+dataV+' · CEPEA') +
+        (bezerraNel ? _rgKpi('BEZERRA NELORE', _pcN(bezerraNel.arrobas,2)+' @',
+            'R$ '+_pcN(bezerraNel.preco)+'/cab'+(bezerraNel.kg?' · '+bezerraNel.kg+' kg':'')) : '') +
+        (bzArr != null ? _rgKpi('BEZERRO MACHO', _pcN(bzArr,2)+' @',
+            'R$ '+_pcN(bzVal)+'/cab · CEPEA') : '') +
+        (bezerraNel && bzArr != null ? _rgKpi('FÊMEA ÷ MACHO',
+            _pcN(bezerraNel.arrobas/bzArr*100,1)+'%',
+            'em arrobas de vaca gorda') : '') +
+        _rgKpi('LEITURAS', String(R.n), R.n < _FEM_MIN_N ? 'série em formação' : 'série própria');
+    }
+
+    _exSet(ctx, _exLeitura(
+      'Com a vaca gorda a R$ ' + _pcN(arroba) + '/@ em ' + V.uf+'/'+V.praca + ', '
+      + (bezerraNel ? 'uma bezerra Nelore'
+          + (bezerraNel.kg?' de '+bezerraNel.kg+' kg':'') + ' custa <b>'
+          + _pcN(bezerraNel.arrobas,2) + ' arrobas</b>' : 'a reposição de fêmea sai')
+      + (bzArr != null && bezerraNel
+          ? ', contra ' + _pcN(bzArr,2) + ' arrobas do bezerro macho do CEPEA na mesma praça.'
+          : '.')
+      + ' A escada de arrobas por categoria é a curva de valorização por idade: '
+      + 'a desmama custa menos por cabeça e <b>mais por arroba de peso vivo</b>.',
+      'As oito categorias vêm da <b>coleta própria</b> do Radar (aba '
+      + 'FÊMEAS - REPOSIÇÃO), iniciada em ' + R.dados[0].data + ' — '
+      + R.n + ' leitura(s). Não é série do CEPEA e não deve ser lida como tal. '
+      + 'A arroba de referência é do CEPEA, e a conversão R$/cabeça ÷ R$/@ supõe '
+      + 'que a vaca gorda é o ativo que se vende para comprar a reposição; quem '
+      + 'vende boi usa a arroba do boi, e o número muda.'));
+  }
+
+  /* ── ④ NOVILHA × VACA, E AS DUAS CONTRA O BOI ───────────────────────── */
+  function _femNovilhaCard(){
+    var cid='chartFemNovilha', ctx='chartFemNovilhaContext';
+    var kEl=document.getElementById('femNKpis');
+    function limpar(msg){
+      renderPlot(cid,[],{_no_title:true});
+      if(kEl) kEl.innerHTML='';
+      _exSet(ctx,'<div class="rb-vazio">'+msg+'</div>');
+    }
+    var A = _femTab('femeasAbate');
+    if (!A || !A.ultima) { limpar('A planilha não trouxe a aba <b>FÊMEAS - ABATE</b>.'); return; }
+    var L = A.ultima;
+
+    var pracas = [], vaca = [], novilha = [], premio = [];
+    Object.keys(_FEM_PAR_CEPEA).forEach(function(p){
+      var v = null, n = null;
+      A.series.forEach(function(c){
+        if (c.indexOf(p) < 0) return;
+        if (/^vaca/i.test(c)) v = L[c];
+        else if (/^novilha/i.test(c)) n = L[c];
+      });
+      if (!(v > 0) || !(n > 0)) return;
+      pracas.push(p); vaca.push(v); novilha.push(n); premio.push(n/v - 1);
+    });
+    if (!pracas.length) { limpar('A aba de abate não trouxe vaca e novilha na mesma praça.'); return; }
+
+    renderPlot(cid, [
+      { x:pracas, y:vaca, type:'bar', name:'Vaca gorda',
+        marker:{ color:_COR_ENT_FEMEA },
+        hovertemplate:_femHover('R$/@') },
+      { x:pracas, y:novilha, type:'bar', name:'Novilha gorda',
+        marker:{ color:'rgba(190,18,60,0.45)' },
+        hovertemplate:_femHover('R$/@') }
+    ], { _no_title:true, barmode:'group',
+         yaxis:{ title:'Preço da arroba (R$/@)' }, showlegend:true });
+
+    /* CONFERÊNCIA ENTRE AS DUAS FONTES. A mesma vaca gorda, na mesma praça e
+       na mesma data, por dois caminhos independentes. A diferença aparece —
+       esconder seria escolher uma fonte sem dizer. */
+    var conf = [];
+    pracas.forEach(function(p, i){
+      var alvo = _FEM_PAR_CEPEA[p]; if (!alvo) return;
+      var achou = null;
+      try {
+        (_rgPracas('Vaca Gorda')||[]).forEach(function(q){
+          if (q.uf+'/'+q.praca === alvo) achou = q.chave;
+        });
+      } catch(e){}
+      if (!achou) return;
+      var S = _femSerieCepea('Vaca Gorda', achou); if (!S) return;
+      var dC = S.datas[S.datas.length-1], vC = S.valores[S.valores.length-1];
+      conf.push({ praca:p, propria:vaca[i], cepea:vC, dataC:dC,
+                  dif:vaca[i]/vC - 1, mesmaData:(dC === L.data) });
+    });
+
+    if (kEl){
+      var h = '';
+      pracas.forEach(function(p, i){
+        h += _rgKpi(p.toUpperCase(), _pcPct(premio[i]*100,2),
+          'novilha R$ '+_pcN(novilha[i])+' · vaca R$ '+_pcN(vaca[i]));
+      });
+      h += _rgKpi('LEITURAS', String(A.n), A.n < _FEM_MIN_N ? 'série em formação' : 'série própria');
+      kEl.innerHTML = h;
+    }
+
+    var txtConf = conf.length
+      ? conf.map(function(c){
+          return c.praca + ': coleta própria R$ ' + _pcN(c.propria) + ' contra CEPEA R$ '
+               + _pcN(c.cepea) + ' (' + _pcPct(c.dif*100,2) + ')'
+               + (c.mesmaData ? '' : ', CEPEA de ' + c.dataC);
+        }).join('; ') + '.'
+      : 'Nenhuma das praças da coleta própria tem par no CEPEA regional para conferir.';
+
+    _exSet(ctx, _exLeitura(
+      'A novilha gorda paga prêmio sobre a vaca em todas as praças coletadas: '
+      + pracas.map(function(p,i){ return p + ' ' + _pcPct(premio[i]*100,2); }).join(', ')
+      + '. Leitura de <b>' + L.data + '</b>.',
+      'Fonte: coleta própria do Radar (aba FÊMEAS - ABATE), ' + A.n + ' leitura(s) desde '
+      + A.dados[0].data + '. Sem janela não há média, faixa nem correlação — '
+      + 'abaixo de ' + _FEM_MIN_N + ' pregões nenhum coeficiente é calculado aqui, '
+      + 'porque com duas leituras qualquer correlação sai 1 e não significa nada. '
+      + 'Conferência entre fontes: ' + txtConf
+      + ' Barretos não tem praça equivalente no CEPEA regional e fica sem par.'));
+  }
+
+  /* ── O desenhador da seção ──────────────────────────────────────────── */
+  function _femRender(){
+    [['desconto',_femDescontoCard], ['base',_femBaseCard],
+     ['troca',_femTrocaCard], ['novilha',_femNovilhaCard]
+    ].forEach(function(par){
+      try { par[1](); } catch(e){ console.warn('Fêmeas — '+par[0]+':', e); }
+    });
+  }
+  try { window._femRender = _femRender; } catch(e){}
+
+  /* Cada card lê os próprios controles, como no regional e no atacado. */
+  document.addEventListener('DOMContentLoaded', function(){
+    ['femPraca','femPeriodo','femBgi'].forEach(function(id){
+      var el = document.getElementById(id); if (!el) return;
+      el.addEventListener('change', function(){
+        try { _femRender(); } catch(e){ console.warn('Fêmeas ('+id+'):', e); }
+      });
+    });
+  });
+
   var _M3_ESTRUTURA = [
     /* ── 1 · VISÃO EXECUTIVA ─────────────────────────────────────────── */
     { amb:'exec', id:'m3_0_1', nome:'Visão Executiva',
@@ -47887,6 +48673,15 @@ function updateRelacao() {
     { amb:'agro', id:'m3_1_7', nome:'Oferta imediata × demanda',
       render:['_m3RenderOfertaDemanda'],
       dica:'Abate corrente contra o que a carne paga. Não é ciclo pecuário.' },
+    /* FÊMEAS — 20/10/2026. Lar único: preço, desconto, base e reposição da
+       fêmea moram aqui. A PRESSÃO de fêmeas no abate continua em
+       "Oferta imediata × demanda", que é onde a pergunta de oferta vive —
+       o card não foi copiado, e a dica abaixo diz onde ele está. */
+    { amb:'agro', id:'m3_1_10', nome:'Fêmeas — abate e reposição',
+      render:['_femRender'],
+      dica:'Desconto da vaca sobre o boi, base decomposta, relação de troca da '
+         + 'fêmea e prêmio da novilha. A participação de fêmeas no abate está '
+         + 'em Oferta imediata × demanda.' },
     { amb:'agro', id:'m3_1_9', nome:'Outros — mercado', oculta:true },
 
     /* ── 3 · MERCADOS & MACRO ────────────────────────────────────────── */
@@ -48013,6 +48808,8 @@ function updateRelacao() {
     chartSpdMemoria:'m3_1_5', chartSpdQuem:'m3_1_5', chartSpdSazonal:'m3_1_5',
     chartAtkExport:'m3_1_6',
     chartAtkAbate:'m3_1_7', chartAtkFemeas:'m3_1_7',
+    chartFemDesconto:'m3_1_10', chartFemBase:'m3_1_10',
+    chartFemTroca:'m3_1_10', chartFemNovilha:'m3_1_10',
     chartBoiVsBGIAll:'m3_1_8', chartRatioBGICCM:'m3_1_8', chartBGICarrego:'m3_1_8',
     // ── ESTUDO ──────────────────────────────────────────────────────────
     chartSHBoiGordoAnnual:'m3_2_1', chartSHBoiGordoYoY:'m3_2_1',
