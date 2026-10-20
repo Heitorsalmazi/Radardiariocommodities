@@ -6289,6 +6289,13 @@ header{
       <div class="bgi-ctrl">
       <span class="bgi-lbl">Praça</span>
       <select id="bmgPraca" class="bgi-sel" title="Praça usada nas duas pontas. A opção padrão usa a média das praças que cotam boi gordo e boi magro."></select>
+        <span class="bgi-lbl" style="margin-left:14px">Scot</span>
+        <select id="bmgScotRaca" class="bgi-sel" title="A Scot entra COMO PONTO sobre a série do CEPEA, não no lugar dela: a apuração da Scot começou agora e trocar a fonte deixaria o gráfico vazio.">
+          <option value="" selected>não mostrar</option>
+          <option value="Nelore">Nelore</option>
+          <option value="Mestiço">Mestiço</option>
+        </select>
+        <select id="bmgScotUf" class="bgi-sel" title="Estado da apuração da Scot. A geografia da Scot é o estado; a do CEPEA é a praça, então o ponto é posicionado pela UF escolhida aqui, não pela praça do card."></select>
       </div>
       <div id="bmgKpis" class="vol-kpis"></div>
       <div id="chartBoiMagroTroca" class="chart-container"></div>
@@ -6320,10 +6327,56 @@ header{
         <span id="bmgPesoArroba" style="font-size: var(--fs-sm);color:#374151;font-weight:600;margin-left:8px">= 12,5 @</span>
         <span class="bgi-lbl" style="margin-left:14px">Praça</span>
         <select id="bmgAgPraca" class="bgi-sel" title="Praça usada nas duas pontas. O padrão usa a média das praças que cotam boi gordo e boi magro."></select>
+        <span class="bgi-lbl" style="margin-left:14px">Scot</span>
+        <select id="bmgAgScotRaca" class="bgi-sel" title="A Scot entra como ponto sobre a série do CEPEA. O ágio da Scot é calculado pela MESMA conta deste card, com o preço e o peso que a Scot declara.">
+          <option value="" selected>não mostrar</option>
+          <option value="Nelore">Nelore</option>
+          <option value="Mestiço">Mestiço</option>
+        </select>
+        <select id="bmgAgScotUf" class="bgi-sel" title="Estado da apuração da Scot. A geografia da Scot é o estado; a do CEPEA é a praça, então o ponto é posicionado pela UF escolhida aqui, não pela praça do card."></select>
       </div>
       <div id="bmgAgKpis" class="vol-kpis"></div>
       <div id="chartBoiMagroAgio" class="chart-container"></div>
       <div id="chartBoiMagroAgioContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">REPOSIÇÃO SCOT — A ESCADA POR CATEGORIA E UF</span><button type="button" class="info-btn" aria-label="Ajuda: escada da Scot" data-tooltip="Apuração da Scot Consultoria para macho de reposição: quatro categorias com peso declarado, por UF e por raça, em R$ por cabeça, R$ por quilo vivo ou arrobas de boi gordo. Garrote e Desmama não existem na apuração regional do CEPEA.">ⓘ</button></div>
+      <div class="pill">Quatro categorias, dezesseis estados — e duas que o CEPEA não cota</div>
+      <div class="explain">
+        <span class="ex-tag">O que esta fonte acrescenta</span>
+        A apuração regional do CEPEA traz <b>duas</b> categorias de macho — bezerro e boi magro —
+        sem separar raça e sem declarar peso. A Scot traz <b>quatro</b> — boi magro, garrote,
+        bezerro e desmama —, separa <b>Nelore e Mestiço</b>, declara o <b>peso</b> de cada uma e
+        já publica a <b>troca em arroba</b>. Garrote e desmama não aparecem em nenhum outro
+        lugar do painel.
+        <span class="ex-tag">As três métricas</span>
+        <b>R$/cabeça</b> é o cheque que sai. <b>R$/kg vivo</b> é a comparação justa entre
+        categorias de pesos diferentes. <b>Arrobas de boi gordo</b> é a relação de troca — quanto
+        da arroba que você vende custa a entrada. As duas primeiras o painel calcula do preço e
+        do peso; a terceira é a que a <b>própria Scot apura</b>, e não a que o Radar deriva.
+        <span class="ex-tag">Limite</span>
+        A geografia da Scot é o <b>estado</b>, não a praça: um número por UF, não por região de
+        compra — não dá para casar linha a linha com as 28 praças do CEPEA regional. A coleta
+        é recente: a data da apuração e o número de leituras aparecem na leitura abaixo do
+        gráfico, e enquanto for uma, isto é uma fotografia, sem média nem faixa.
+      </div>
+      <div class="bgi-ctrl">
+        <span class="bgi-lbl">Raça</span>
+        <select id="scotRaca" class="bgi-sel" title="Nelore e Mestiço são apurados em abas separadas, com pesos diferentes por categoria."></select>
+        <span class="bgi-lbl" style="margin-left:8px">Métrica</span>
+        <select id="scotMetrica" class="bgi-sel" title="R$/cabeça é o desembolso; R$/kg vivo compara categorias de pesos diferentes; arrobas é a relação de troca apurada pela Scot.">
+          <option value="kg" selected>R$ por quilo vivo</option>
+          <option value="cab">R$ por cabeça</option>
+          <option value="arroba">Arrobas de boi gordo</option>
+        </select>
+        <span class="bgi-lbl" style="margin-left:8px">Ordenar por</span>
+        <select id="scotCategoria" class="bgi-sel" title="Categoria usada para ordenar os estados e para os indicadores do topo."></select>
+      </div>
+      <div id="scotKpis" class="vol-kpis"></div>
+      <div id="chartScotEscada" class="chart-container" style="height:460px"></div>
+      <div id="scotTab"></div>
+      <div id="chartScotEscadaContext" class="chart-context"></div>
     </section>
 
     <section class="card">
@@ -7321,6 +7374,15 @@ header{
           Não é margem — não há custo de pasto, sanidade ou tempo nesta conta. E não depende de
           converter o bezerro para arroba: aqui é dinheiro contra dinheiro. A única premissa é o
           <b>peso de abate de referência, 20 arrobas</b>; quem abate em 18 ou 22 tem outro número.
+        </div>
+        <div class="bgi-ctrl">
+        <span class="bgi-lbl" style="margin-left:14px">Scot</span>
+        <select id="bzbScotRaca" class="bgi-sel" title="A Scot entra como ponto sobre a série do CEPEA. O bezerro da Scot tem peso declarado; o do CEPEA, não.">
+          <option value="" selected>não mostrar</option>
+          <option value="Nelore">Nelore</option>
+          <option value="Mestiço">Mestiço</option>
+        </select>
+        <select id="bzbScotUf" class="bgi-sel" title="Estado da apuração da Scot. A geografia da Scot é o estado; a do CEPEA é a praça, então o ponto é posicionado pela UF escolhida aqui, não pela praça do card."></select>
         </div>
         <div id="chartBezBoiTroca" class="chart-container"></div>
         <div id="chartBezBoiTrocaContext" class="chart-context"></div>
@@ -8788,12 +8850,12 @@ header{
          pelos ids dos gráficos (ver `_M3_POR_GRAFICO`).                    -->
 
     <section class="card">
-      <div class="card-title"><span class="card-title-text">VACA × BOI — Desconto da Fêmea por Praça</span><button type="button" class="info-btn" aria-label="Ajuda: desconto da fêmea" data-tooltip="Vaca gorda dividida pelo boi gordo na mesma praça e data. O desconto é estrutural; o que informa é a posição dele contra os dois anos da própria praça — percentil, média e faixa. Correlação e beta em variação mensal. Fonte: CEPEA/ESALQ.">ⓘ</button></div>
+      <div class="card-title"><span class="card-title-text">VACA × BOI — Desconto da Vaca por Praça</span><button type="button" class="info-btn" aria-label="Ajuda: desconto da vaca" data-tooltip="Vaca gorda dividida pelo boi gordo na mesma praça e data. O desconto é estrutural; o que informa é a posição dele contra os dois anos da própria praça — percentil, média e faixa. Correlação e beta em variação mensal. Fonte: CEPEA/ESALQ.">ⓘ</button></div>
       <div class="pill">A vaca está barata contra o boi nesta praça — ou só parece?</div>
       <div class="explain">
         <span class="ex-tag">O que o gráfico mede</span>
         <b>vaca ÷ boi − 1</b>, na mesma praça e na mesma data, com a média da janela em
-        tracejado. O desconto da fêmea é estrutural — ela rende menos carcaça e sai mais leve —,
+        tracejado. O desconto da vaca é estrutural — ela rende menos carcaça e sai mais leve —,
         então o número que informa não é o desconto em si: é onde ele está <b>contra a própria
         história daquela praça</b>.
         <span class="ex-tag">Por que mensal e não diário</span>
@@ -8861,6 +8923,15 @@ header{
         lida como tal. A série começou em 16/10/2026: enquanto houver menos de dez leituras,
         nenhuma média, faixa ou correlação é calculada aqui.
       </div>
+      <div class="bgi-ctrl">
+        <span class="bgi-lbl">Referência macho</span>
+        <select id="femTFonte" class="bgi-sel" title="De onde vem o bezerro macho usado na comparação. O CEPEA cota por praça e não declara peso; a Scot cota por estado e declara. Este card é transversal — compara categorias num dia —, então a troca de fonte é de verdade, não uma sobreposição.">
+          <option value="cepea" selected>CEPEA — bezerro da praça</option>
+          <option value="Nelore">Scot — bezerro Nelore</option>
+          <option value="Mestiço">Scot — bezerro Mestiço</option>
+        </select>
+        <select id="femTUf" class="bgi-sel" title="Estado da apuração da Scot." style="display:none"></select>
+      </div>
       <div id="femTKpis" class="vol-kpis"></div>
       <div id="chartFemTroca" class="chart-container" style="height:400px"></div>
       <div id="chartFemTrocaContext" class="chart-context"></div>
@@ -8888,21 +8959,43 @@ header{
     </section>
 
     <section class="card">
-      <div class="card-title"><span class="card-title-text">VACA GORDA — PREÇO, MÉDIAS MÓVEIS E FAIXA</span><button type="button" class="info-btn" aria-label="Ajuda: preço da vaca gorda" data-tooltip="Série diária da vaca gorda na praça escolhida, com médias móveis de 21, 63 e 126 pregões e a faixa da janela. Mesma leitura que o boi gordo recebe, aplicada à fêmea.">ⓘ</button></div>
-      <div class="pill">A vaca como ativo: onde o preço está contra o próprio ritmo</div>
+      <div class="card-title"><span class="card-title-text">FÊMEA DE ABATE — PREÇO, MÉDIAS MÓVEIS E FAIXA</span><button type="button" class="info-btn" aria-label="Ajuda: preço da fêmea de abate" data-tooltip="Série diária da vaca gorda na praça escolhida, com médias móveis de 21, 63 e 126 pregões e a faixa da janela. Mesma leitura que o boi gordo recebe, aplicada à fêmea.">ⓘ</button></div>
+      <div class="pill">Vaca ou novilha como ativo: onde o preço está contra o próprio ritmo</div>
       <div class="explain">
         <span class="ex-tag">O que o gráfico mede</span>
-        O preço diário da <b>vaca gorda</b> na praça escolhida, com três médias móveis —
+        O preço diário da <b>categoria escolhida</b> na praça escolhida, com três médias móveis —
         <b>21</b> pregões (um mês), <b>63</b> (um trimestre) e <b>126</b> (um semestre). Preço acima
         das três é mercado comprador sustentado; abaixo das três, vendedor. O cruzamento da
         curta com a longa é o sinal que o painel já usa no boi.
-        <span class="ex-tag">Praça e período</span>
-        Os dois seletores do topo desta seção governam todos os cards: trocar a praça ou a
-        janela repinta tudo junto, para que nenhum número da tela fique de outra praça.
+        <span class="ex-tag">Categoria, praça e período</span>
+        Os três seletores acima governam <b>os quatro cards deste bloco</b> — preço, posição,
+        variação interanual e volatilidade. <b>Vaca e novilha são dois produtos</b>, com
+        mercados e preços próprios, e nenhum número desta tela mistura as duas.
+        <span class="ex-tag">De onde vem cada categoria</span>
+        O CEPEA regional <b>não cota novilha</b>: os 26 meses de série existem só para a vaca.
+        A novilha vem da <b>coleta própria</b>, em três praças, iniciada em 16/10/2026 — o
+        número de leituras aparece na tela, e os cards que precisam de série dizem isso em vez
+        de abrir vazios.
         <span class="ex-tag">Limite</span>
         A série do CEPEA regional começa em <b>01/08/2024</b>. A média de 126 pregões só
         aparece depois de 126 leituras na praça — onde não houver, a linha simplesmente
         não é desenhada, em vez de começar numa média de três dias.
+      </div>
+      <div class="bgi-ctrl">
+        <span class="bgi-lbl">Categoria de abate</span>
+        <select id="femVCat" class="bgi-sel" title="Vaca e novilha são dois produtos com mercados próprios. A categoria escolhida vale para os quatro cards deste bloco.">
+          <option value="vaca" selected>Vaca gorda</option>
+          <option value="novilha">Novilha gorda</option>
+        </select>
+        <span class="bgi-lbl" style="margin-left:8px">Praça</span>
+        <select id="femVPraca" class="bgi-sel" title="As praças mudam com a categoria: a vaca vem do CEPEA regional (28 praças) e a novilha da coleta própria (3 praças)."></select>
+        <span class="bgi-lbl" style="margin-left:8px">Período</span>
+        <select id="femVPeriodo" class="bgi-sel" title="Janela de calendário dos quatro cards deste bloco.">
+          <option value="6">Últimos 6 meses</option>
+          <option value="12">Últimos 12 meses</option>
+          <option value="24" selected>Últimos 24 meses</option>
+          <option value="0">Série inteira</option>
+        </select>
       </div>
       <div id="femPrecoKpis" class="vol-kpis"></div>
       <div id="chartFemPreco" class="chart-container" style="height:420px"></div>
@@ -8910,7 +9003,7 @@ header{
     </section>
 
     <section class="card">
-      <div class="card-title"><span class="card-title-text">VACA GORDA — ONDE O PREÇO ESTÁ NA PRÓPRIA HISTÓRIA</span><button type="button" class="info-btn" aria-label="Ajuda: posição estatística da vaca" data-tooltip="Preço da vaca gorda contra a média da janela e as bandas de um e dois desvios-padrão, com percentil e z-score. É a mesma leitura estatística que o boi gordo tem no painel.">ⓘ</button></div>
+      <div class="card-title"><span class="card-title-text">FÊMEA DE ABATE — ONDE O PREÇO ESTÁ NA PRÓPRIA HISTÓRIA</span><button type="button" class="info-btn" aria-label="Ajuda: posição estatística da fêmea" data-tooltip="Preço da vaca gorda contra a média da janela e as bandas de um e dois desvios-padrão, com percentil e z-score. É a mesma leitura estatística que o boi gordo tem no painel.">ⓘ</button></div>
       <div class="pill">Caro ou barato contra a própria história, não contra o vizinho</div>
       <div class="explain">
         <span class="ex-tag">Como ler</span>
@@ -8923,7 +9016,7 @@ header{
         poucos dias extremos, o percentil pode estar em 90% com z-score em 1,2.
         <span class="ex-tag">Limite</span>
         Média e desvio pressupõem uma distribuição estável na janela. Numa alta de tendência
-        — que é o caso do boi e da vaca em 2026 — o preço fica muito tempo acima da média
+        — que é o caso do boi e da fêmea em 2026 — o preço fica muito tempo acima da média
         sem que isso signifique exagero: é a média que está correndo atrás.
       </div>
       <div id="femPosicaoKpis" class="vol-kpis"></div>
@@ -8932,12 +9025,12 @@ header{
     </section>
 
     <section class="card">
-      <div class="card-title"><span class="card-title-text">VACA GORDA — VARIAÇÃO INTERANUAL CONTRA O BOI</span><button type="button" class="info-btn" aria-label="Ajuda: variação interanual" data-tooltip="Variação do preço contra o mesmo dia de doze meses atrás, para vaca e boi na mesma praça. Compara o ritmo das duas pontas sem o efeito de nível.">ⓘ</button></div>
+      <div class="card-title"><span class="card-title-text">FÊMEA DE ABATE — VARIAÇÃO INTERANUAL CONTRA O BOI</span><button type="button" class="info-btn" aria-label="Ajuda: variação interanual" data-tooltip="Variação do preço contra o mesmo dia de doze meses atrás, para vaca e boi na mesma praça. Compara o ritmo das duas pontas sem o efeito de nível.">ⓘ</button></div>
       <div class="pill">A fêmea subiu mais ou menos que o macho no ano?</div>
       <div class="explain">
         <span class="ex-tag">O que o gráfico mede</span>
-        Para cada data, o preço contra o <b>mesmo período de doze meses antes</b> — vaca e boi
-        na mesma praça. É a leitura que tira o nível da conta: duas séries com preços muito
+        Para cada data, o preço contra o <b>mesmo período de doze meses antes</b> — a fêmea
+        escolhida e o boi na mesma praça. É a leitura que tira o nível da conta: duas séries com preços muito
         diferentes passam a ser comparáveis pelo ritmo.
         <span class="ex-tag">Por que importa para a 3M</span>
         Fêmea subindo mais que macho é sinal de <b>retenção</b>: o produtor segura a matriz e
@@ -8955,21 +9048,21 @@ header{
     </section>
 
     <section class="card">
-      <div class="card-title"><span class="card-title-text">VACA GORDA — VOLATILIDADE CONTRA O BOI</span><button type="button" class="info-btn" aria-label="Ajuda: volatilidade" data-tooltip="Desvio-padrão dos retornos diários em janela móvel de 21 pregões, anualizado em 252. Mede o tamanho típico da oscilação, não a direção.">ⓘ</button></div>
+      <div class="card-title"><span class="card-title-text">FÊMEA DE ABATE — VOLATILIDADE CONTRA O BOI</span><button type="button" class="info-btn" aria-label="Ajuda: volatilidade" data-tooltip="Desvio-padrão dos retornos diários em janela móvel de 21 pregões, anualizado em 252. Mede o tamanho típico da oscilação, não a direção.">ⓘ</button></div>
       <div class="pill">Qual das duas pontas balança mais — e quanto</div>
       <div class="explain">
         <span class="ex-tag">O que o gráfico mede</span>
-        O <b>desvio-padrão dos retornos diários</b> em janela móvel de 21 pregões, anualizado
-        por √252. É o tamanho típico da oscilação em um ano, não a direção dela: volatilidade
+        O <b>desvio-padrão dos retornos diários</b> da categoria escolhida em janela móvel de 21
+        pregões, anualizado por √252. É o tamanho típico da oscilação em um ano, não a direção dela: volatilidade
         alta não quer dizer preço caindo.
         <span class="ex-tag">Para que serve</span>
-        A vaca costuma oscilar mais que o boi — mercado mais fino, menos praças cotando, lote
-        menor. Saber <b>quanto mais</b> é o que separa "a vaca caiu" de "a vaca fez o que a
+        A fêmea costuma oscilar mais que o boi — mercado mais fino, menos praças cotando, lote
+        menor. A novilha, mais fina ainda. Saber <b>quanto mais</b> é o que separa "a vaca caiu" de "a vaca fez o que a
         vaca faz". Quem trava preço de fêmea sem olhar isto dimensiona errado.
         <span class="ex-tag">Limite</span>
         Volatilidade histórica, não implícita: ela descreve o que já aconteceu nos últimos 21
-        pregões. Não existe opção de vaca gorda na B3, então não há volatilidade implícita
-        para comparar.
+        pregões. Não existe opção de fêmea na B3 — nem de vaca nem de novilha —, então não há
+        volatilidade implícita para comparar.
       </div>
       <div id="femVolKpis" class="vol-kpis"></div>
       <div id="chartFemVol" class="chart-container" style="height:400px"></div>
@@ -16926,6 +17019,19 @@ function _pngNome(txt){
   var _COR_ENT_REPO   = '#b45309';   /* o que a 3M compra: reposição     */
   var _COR_ENT_FEMEA  = '#be123c';   /* vaca, novilha, bezerra, desmama  */
   var _COR_ENT_INSUMO = '#6250d6';   /* insumo e terceira medida         */
+  /* A NOVILHA NÃO É UMA VARIANTE DA VACA — é outro produto, com mercado e
+     preço próprios: na coleta de 20/10/2026, em SP, novilha a R$ 366/@
+     contra R$ 351 da vaca. Ela vinha desenhada num TOM mais claro do rosa
+     da fêmea, e tom é o recurso que este arquivo usa para variante da mesma
+     coisa (Nelore e Mestiça). Dizia, sem querer, que a diferença é de grau.
+
+     E uma quinta cor de entidade não é saída: o validador de paleta já
+     reprova a quinta contra alguma das quatro, em claro e escuro. A
+     separação certa é de FORMA — a novilha fica com a cor da fêmea e um
+     traço próprio: tracejado nas linhas, hachura nas barras. Forma
+     sobrevive a daltonismo e a impressão em preto e branco; tom não. */
+  var _TRACO_NOVILHA = 'dash';       /* line.dash   nas séries           */
+  var _HACH_NOVILHA  = '/';          /* marker.pattern.shape nas barras  */
   function _entNorm(s){
     return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
            .replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
@@ -16953,7 +17059,19 @@ function _pngNome(txt){
     { cor: _COR_ENT_INSUMO, re: /^(boi magro|magro|milho|curva ccm|ccm|cambio|dolar)\b/ },
     { cor: _COR_ENT_BOI,    re: /^(boi gordo|boi|arroba|vivo sp)\b/ }
   ];
+  /* GRÁFICOS ONDE A IDENTIDADE POR ENTIDADE NÃO SE APLICA.
+     A regra de cor lê o NOME do traço, e existem cards em que os traços são
+     uma FAMÍLIA ORDENADA e não entidades diferentes. A escada de reposição
+     da Scot mostra boi magro, garrote, bezerro e desmama do mais pesado ao
+     mais leve — quatro categorias do MESMO macho de reposição. Medido em
+     20/10/2026, a regra aplicada ali pintava "Boi Magro" com o roxo de
+     insumo e "Desmama" com o rosa de fêmea — uma desmama macho de rosa —,
+     e com isso destruía a ordenação, que é o conteúdo do gráfico.
+     A palavra sozinha não decide a entidade: desmama é fêmea na aba de
+     fêmeas e macho na aba de machos. Quem decide é o card. */
+  var _SEM_ENTIDADE = { chartScotEscada:1 };
   function _corPorEntidade(chartId, traces){
+    if (_SEM_ENTIDADE[chartId]) return traces;
     if (!Array.isArray(traces) || traces.length < 2) return traces;
     var alvo = traces.map(function(t){
       if (!t || !t.name) return null;
@@ -18900,6 +19018,26 @@ function toNum(v){
       'FÊMEAS REPOSIÇÃO',
       'FEMEAS REPOSICAO',
       'FÊMEAS – REPOSIÇÃO'
+    ],
+    /* REPOSIÇÃO SCOT — MACHOS, 20/10/2026.
+       Mesma razão das abas de fêmeas: o classificador do seletor de
+       contratos casa qualquer nome que contenha REPOSICAO com o grupo
+       agro, e sem registro aqui as duas abas apareceriam como ativos
+       negociáveis — com os cards de contrato pedindo delas Z-score,
+       MACD e IFR, que uma tabela de UF por categoria não tem. */
+    scotNelore: [
+      'MACHOS NELORE - REPOSIÇÃO',
+      'MACHOS NELORE - REPOSICAO',
+      'MACHOS NELORE REPOSIÇÃO',
+      'MACHOS NELORE REPOSICAO',
+      'MACHOS NELORE – REPOSIÇÃO'
+    ],
+    scotMestico: [
+      'MACHOS MESTIÇO - REPOSIÇÃO',
+      'MACHOS MESTICO - REPOSICAO',
+      'MACHOS MESTIÇO REPOSIÇÃO',
+      'MACHOS MESTICO REPOSICAO',
+      'MACHOS MESTIÇO – REPOSIÇÃO'
     ]
   };
 
@@ -23424,6 +23562,25 @@ function updatePreco() {
            line:{ color:'#dc2626', width:1.2, dash:'dot' } }]
       : [];
 
+    /* O PONTO DA SCOT. Mesma conta do card: o peso de abate de referência
+       dividido pelas arrobas de boi gordo que a Scot diz que a cabeça do
+       bezerro custa. A série do card é MENSAL e o ponto é de um dia — ele
+       cai no mês da apuração, que é onde ele pertence. O bezerro da Scot
+       tem peso declarado (240 kg no Nelore, 205 no Mestiço); o do CEPEA
+       regional não tem, e é por isso que os dois não têm de coincidir. */
+    var _scotPt = [];
+    try {
+      var _sc = _scotCtrl('bzbScot');
+      if (_sc){
+        var _o = _sc.R.porUF[_sc.uf] && _sc.R.porUF[_sc.uf]['Bezerro'];
+        if (_o && _o.arroba > 0 && _sc.R.data){
+          _scotPt = [ _scotTraco(new Date(_sc.R.data + 'T00:00:00'), pb / _o.arroba,
+            'Scot · ' + _sc.raca + ' · ' + _sc.uf,
+            'bezerro de ' + _o.kg + ' kg a ' + _pcN(_o.arroba,2) + ' @ (apuração da Scot)'
+            + '<br>R$ ' + _pcN(_o.cab,2) + '/cabeça · ' + _femDtBr(_sc.R.data)) ];
+        }
+      }
+    } catch(e){ console.warn('Scot sobre bezerro × boi:', e); }
     renderPlot(chartId, [
       { x:pts.map(function(o){ return _bezMesData(o.k); }), y:cab,
         type:'scatter', mode:'lines', name:'Bezerros por boi vendido',
@@ -23432,7 +23589,7 @@ function updatePreco() {
         hovertemplate:'%{x|%b/%Y}<br><b>%{y:.2f} bezerros</b> por boi vendido'
                      +'<br>boi de '+pb+'@ a R$ %{customdata[2]:,.2f}/@ = R$ %{customdata[0]:,.0f}'
                      +'<br>bezerro R$ %{customdata[1]:,.0f}/cabeça<extra></extra>' }
-    ], {
+    ].concat(_scotPt), {
       height:_EXP_ALT, margin:{ l:70, r:26, t:64, b:52 }, hovermode:'x unified',
       xaxis:{ tickformat:'%Y', automargin:true },
       yaxis:{ title:{ text:'bezerros comprados por boi de '+pb+'@ vendido', standoff:6 }, automargin:true },
@@ -23448,7 +23605,8 @@ function updatePreco() {
           xref:'paper', yref:'paper', x:0, y:1.02, xanchor:'left', yanchor:'bottom',
           showarrow:false, font:{ size:10, color:'#6b7280' } }
       ],
-      showlegend:false
+      /* a legenda só aparece quando há ponto da Scot para nomear */
+      showlegend:_scotPt.length>0
     });
 
     var pos = (atual.bezerros>=Q.p75) ? 'no quarto mais favorável da história para quem repõe'
@@ -23665,6 +23823,25 @@ function updatePreco() {
           fillcolor:'rgba(124,58,237,0.16)', showlegend:false, hoverinfo:'skip' }
       ];
     }
+    /* O PONTO DA SCOT, quando o operador pede. A conta é a mesma do card,
+       só que com o número da Scot: a Scot publica quantas ARROBAS de boi
+       gordo custa a cabeça do boi magro, e o card mede quantas CABEÇAS de
+       boi magro um boi vendido paga — então é o peso de abate de
+       referência dividido pela arroba da Scot. Nenhuma premissa nova: as
+       duas pontas da divisão já estavam na tela. */
+    var _scotPt = [];
+    try {
+      var _sc = _scotCtrl('bmgScot');
+      if (_sc){
+        var _o = _sc.R.porUF[_sc.uf] && _sc.R.porUF[_sc.uf]['Boi Magro'];
+        if (_o && _o.arroba > 0){
+          _scotPt = [ _scotTraco(_rgDt(_sc.R.data), pb / _o.arroba,
+            'Scot · ' + _sc.raca + ' · ' + _sc.uf,
+            'boi magro de ' + _o.kg + ' kg a ' + _pcN(_o.arroba,2) + ' @ (apuração da Scot)'
+            + '<br>R$ ' + _pcN(_o.cab,2) + '/cabeça · ' + _femDtBr(_sc.R.data)) ];
+        }
+      }
+    } catch(e){ console.warn('Scot sobre troca boi × magro:', e); }
     renderPlot(chartId, _faixa.concat([
       { x:pts.map(function(o){ return _rgDt(o.d); }), y:cab,
         type:'scatter', mode:'lines', name:'Bois magros por boi vendido',
@@ -23674,7 +23851,7 @@ function updatePreco() {
                      +'<br>boi de '+pb+'@ a R$ %{customdata[2]:,.2f}/@ = R$ %{customdata[0]:,.0f}'
                      +'<br>boi magro R$ %{customdata[1]:,.0f}/cabeça'
                      +(M.nPracas>1?'<br>%{customdata[3]} praças com as duas no dia':'')+'<extra></extra>' }
-    ]), {
+    ]).concat(_scotPt), {
       height:_EXP_ALT, margin:{ l:70, r:26, t:64, b:52 }, hovermode:'x unified',
       xaxis:{ automargin:true },
       yaxis:{ title:{ text:'bois magros comprados por boi de '+pb+'@ vendido', standoff:6 }, automargin:true },
@@ -23691,7 +23868,8 @@ function updatePreco() {
           xref:'paper', yref:'paper', x:0, y:1.02, xanchor:'left', yanchor:'bottom',
           showarrow:false, font:{ size:10, color:'#6b7280' } }
       ],
-      showlegend:false
+      /* a legenda só aparece quando há ponto da Scot para nomear */
+      showlegend:_scotPt.length>0
     });
 
     _seloAmostra(chartId, pts.length, pts[0].d, pts[pts.length-1].d);
@@ -23825,6 +24003,32 @@ function updatePreco() {
     var ag=linhas.map(function(o){ return o.agio; });
     var Q=_bezQuartis(ag), atual=linhas[linhas.length-1];
     var xs=linhas.map(function(o){ return _rgDt(o.d); });
+    /* O PONTO DA SCOT. A conta é a DESTE card, não uma segunda definição:
+       o card converte peso vivo em arroba dividindo por 30 — 375 kg vivos
+       = 12,5 @, o que embute rendimento de carcaça de 50% —, e o ponto da
+       Scot usa EXATAMENTE o mesmo divisor sobre o peso que a Scot declara.
+       Dividir por 15 daria arroba VIVA e produziria um ágio de −42% onde o
+       card mostra +16%: o mesmo nome para duas contas diferentes, que é o
+       defeito que este painel existe para não ter. Muda a fonte do preço,
+       não o método.
+       A Scot também publica a própria relação em @, apurada contra a
+       referência dela de boi gordo; esse número vai no hover, nomeado, em
+       vez de ser misturado ao do card. */
+    var _scotPt = [];
+    try {
+      var _sc = _scotCtrl('bmgAgScot');
+      if (_sc){
+        var _o = _sc.R.porUF[_sc.uf] && _sc.R.porUF[_sc.uf]['Boi Magro'];
+        if (_o && _o.cab > 0 && _o.kg > 0 && atual.boi > 0){
+          var _arrS = _o.cab / (_o.kg / 30);
+          _scotPt = [ _scotTraco(xs[xs.length-1], 100*(_arrS/atual.boi - 1),
+            'Scot · ' + _sc.raca + ' · ' + _sc.uf,
+            'R$ ' + _pcN(_o.cab,2) + '/cabeça · ' + _o.kg + ' kg = ' + _pcN(_o.kg/30,2) + ' @'
+            + '<br>@ do magro R$ ' + _pcN(_arrS,2) + ' contra @ do boi R$ ' + _pcN(atual.boi,2)
+            + '<br>a própria Scot apura ' + _pcN(_o.arroba,2) + ' @ de troca · ' + _femDtBr(_sc.R.data)) ];
+        }
+      }
+    } catch(e){ console.warn('Scot sobre ágio do magro:', e); }
     renderPlot(chartId, [
       { x:xs, y:ag, type:'scatter', mode:'lines', name:'ágio da @ do magro',
         line:{ width:2.2, color:'#b45309' },
@@ -23835,8 +24039,10 @@ function updatePreco() {
       { x:[xs[xs.length-1]], y:[atual.agio], type:'scatter', mode:'markers', showlegend:false,
         marker:{ size:11, color: atual.agio>=0?'#b45309':'#0f766e', line:{color:'#fff',width:2} },
         hovertemplate:'hoje %{y:.1f}%<extra></extra>' }
-    ], {
-      height:_EXP_ALT, margin:{ l:64, r:26, t:64, b:52 }, hovermode:'x unified', showlegend:false,
+    ].concat(_scotPt), {
+      height:_EXP_ALT, margin:{ l:64, r:26, t:64, b:52 }, hovermode:'x unified',
+      /* a legenda só aparece quando há ponto da Scot para nomear */
+      showlegend:_scotPt.length>0,
       xaxis:{ automargin:true },
       yaxis:{ title:{ text:'ágio da @ do magro sobre a do boi (%)', standoff:6 },
               zeroline:true, zerolinecolor:'#111827', automargin:true },
@@ -48271,6 +48477,319 @@ function updateRelacao() {
        a mesma etapa escondeu. Medido: percorrendo as 35 seções pela
        navegação, ele nunca aparece.                                        */
 
+
+  /* ══════════════════════════════════════════════════════════════════════
+     REPOSIÇÃO SCOT — a segunda fonte de macho                 20/10/2026
+     ══════════════════════════════════════════════════════════════════════
+     O Radar lia reposição de macho de um lugar só: a apuração regional do
+     CEPEA, que traz bezerro e boi magro por praça, sem raça e sem peso. A
+     Scot entra como SEGUNDA FONTE, não como substituta — e a diferença
+     entre as duas é estrutural, não de nível:
+
+       · geografia  — CEPEA é PRAÇA (28), Scot é UF (16 Nelore, 14 Mestiço);
+       · categorias — CEPEA tem 2, Scot tem 4 (garrote e desmama só aqui);
+       · raça       — CEPEA não separa, Scot separa;
+       · peso       — CEPEA não declara, Scot declara;
+       · histórico  — CEPEA tem 26 meses diários, Scot tem o que já coletou.
+
+     POR ISSO NENHUM CARD TROCA UMA PELA OUTRA SEM DIZER. Onde o card
+     desenha série no tempo, a Scot entra POR CIMA da série do CEPEA, como
+     ponto de referência datado — trocar a fonte ali deixaria o gráfico
+     vazio e pareceria defeito. Onde o card é transversal (compara
+     categorias ou praças num dia), a troca de fonte é de verdade.
+
+     A ARROBA DA SCOT É DELA. A coluna `(@)` de cada categoria é a relação
+     de troca que a própria Scot apura. O Radar NÃO a recalcula: mostrar o
+     número da fonte e o número derivado como se fossem o mesmo é o começo
+     de duas verdades para a mesma pergunta. Onde o painel precisar da sua
+     própria conta, ela aparece ao lado, nomeada.                          */
+
+  var _SCOT_RACAS = [ { chave:'scotNelore', rot:'Nelore' },
+                      { chave:'scotMestico', rot:'Mestiço' } ];
+  var _SCOT_CACHE = null;
+
+  function _scotBase(){
+    if (_SCOT_CACHE) return _SCOT_CACHE;
+    if (!window.workbook || !workbook.Sheets) return null;
+    var out = { racas: [], porRaca: {} };
+    _SCOT_RACAS.forEach(function(R){
+      var nome = null;
+      try { nome = findSheetByAliases(GLOBAL_FIXED_SHEETS[R.chave]); } catch(e){}
+      if (!nome || !workbook.Sheets[nome]) return;
+      var linhas = parseSheet(nome) || [];
+      if (!linhas.length) return;
+      var cols = Object.keys(linhas[0]);
+      /* As colunas vêm em pares: "<Categoria> <peso>kg (R$/cabeça)" e o
+         "(@)" correspondente. O rótulo é que manda — a posição não. */
+      var cats = [], vistos = {};
+      cols.forEach(function(c){
+        var m = c.match(/^(.*?)\s*(\d{2,4})\s*kg\s*\(R\$\/cabe[çc]a\)\s*$/i);
+        if (!m) return;
+        var nomeCat = m[1].trim(), kg = Number(m[2]);
+        if (vistos[nomeCat]) return;
+        var colArroba = null;
+        cols.forEach(function(c2){
+          var m2 = c2.match(/^(.*?)\s*(\d{2,4})\s*kg\s*\(@\)\s*$/i);
+          if (m2 && m2[1].trim() === nomeCat) colArroba = c2;
+        });
+        vistos[nomeCat] = 1;
+        cats.push({ nome:nomeCat, kg:kg, colCab:c, colArroba:colArroba });
+      });
+      if (!cats.length) return;
+      cats.sort(function(a,b){ return b.kg - a.kg; });       /* escada: pesado → leve */
+
+      var porUF = {}, ufs = [], datas = {};
+      linhas.forEach(function(r){
+        var uf = String(r['UF'] || '').trim().toUpperCase();
+        if (!uf || uf === 'UF') return;
+        var iso = _rgData(r['Data']); if (iso) datas[iso] = 1;
+        if (!porUF[uf]) { porUF[uf] = {}; ufs.push(uf); }
+        cats.forEach(function(k){
+          var cab = Number(r[k.colCab]);
+          var arr = k.colArroba ? Number(r[k.colArroba]) : NaN;
+          if (!isFinite(cab) || cab <= 0) return;
+          porUF[uf][k.nome] = { cab:cab, arroba:isFinite(arr)?arr:null, kg:k.kg,
+                                porKg: cab / k.kg };
+        });
+      });
+      if (!ufs.length) return;
+      ufs.sort();
+      var ds = Object.keys(datas).sort();
+      out.racas.push(R.rot);
+      out.porRaca[R.rot] = { aba:nome, cats:cats, ufs:ufs, porUF:porUF,
+                             data: ds.length ? ds[ds.length-1] : null,
+                             nLeituras: ds.length };
+    });
+    if (!out.racas.length) return null;
+    _SCOT_CACHE = out;
+    return out;
+  }
+  try { window._scotBase = _scotBase; } catch(e){}
+
+  /* O que a Scot diz para uma UF, numa raça e categoria. `null` quando não
+     há apuração — Mestiço não cobre RS e SC, e isso aparece como ausência,
+     não como zero. */
+  function _scotValor(raca, uf, categoria){
+    var B = _scotBase(); if (!B || !B.porRaca[raca]) return null;
+    var u = B.porRaca[raca].porUF[String(uf||'').toUpperCase()];
+    return (u && u[categoria]) ? u[categoria] : null;
+  }
+  try { window._scotValor = _scotValor; } catch(e){}
+  /* A categoria da Scot equivalente ao produto do CEPEA regional, para os
+     cards que vão mostrar as duas lado a lado. Garrote e desmama não têm
+     equivalente — e é justamente por isso que elas valem a pena. */
+  var _SCOT_EQUIV = { 'Boi Magro':'Boi Magro', 'Bezerro':'Bezerro' };
+
+  function _scotPopula(){
+    var B = _scotBase(); if (!B) return;
+    var sr = document.getElementById('scotRaca');
+    if (sr && !sr.options.length){
+      B.racas.forEach(function(r){ sr.appendChild(new Option(r, r)); });
+      sr.selectedIndex = 0;
+    }
+    var raca = sr && sr.value ? sr.value : B.racas[0];
+    var sc = document.getElementById('scotCategoria');
+    if (sc){
+      var atual = sc.value;
+      var cats = B.porRaca[raca].cats.map(function(k){ return k.nome; });
+      if (sc.getAttribute('data-raca') !== raca){
+        sc.innerHTML = '';
+        cats.forEach(function(c){ sc.appendChild(new Option(c, c)); });
+        sc.setAttribute('data-raca', raca);
+        /* Mantém a categoria escolhida ao trocar de raça, quando ela existe
+           nas duas — trocar de raça não deve perder o recorte. */
+        if (atual && cats.indexOf(atual) >= 0) sc.value = atual;
+        else sc.selectedIndex = Math.min(2, cats.length - 1);   /* bezerro */
+      }
+    }
+  }
+
+  var _SCOT_MET = {
+    kg:     { campo:'porKg',  rot:'R$ por quilo vivo',       eixo:'Preço por quilo vivo (R$/kg)', hov:'R$/kg vivo', casas:2 },
+    cab:    { campo:'cab',    rot:'R$ por cabeça',           eixo:'Preço por cabeça (R$)',        hov:'R$/cabeça',  casas:0 },
+    arroba: { campo:'arroba', rot:'Arrobas de boi gordo',    eixo:'Arrobas de boi gordo por cabeça (@)', hov:'@', casas:2 }
+  };
+
+  function _scotEscadaCard(){
+    var cid = 'chartScotEscada', ctx = 'chartScotEscadaContext';
+    var kEl = document.getElementById('scotKpis'), tEl = document.getElementById('scotTab');
+    function limpar(msg){
+      try { renderPlot(cid, [], { _no_title:true }); } catch(e){}
+      if (kEl) kEl.innerHTML = '';
+      if (tEl) tEl.innerHTML = '';
+      _exSet(ctx, _exLeitura(msg));
+    }
+    var B = _scotBase();
+    if (!B) { limpar('A planilha não trouxe as abas <b>MACHOS NELORE - REPOSIÇÃO</b> e <b>MACHOS MESTIÇO - REPOSIÇÃO</b>.'); return; }
+    _scotPopula();
+    var raca = (document.getElementById('scotRaca')||{}).value || B.racas[0];
+    var R = B.porRaca[raca];
+    if (!R) { limpar('Raça sem apuração na base.'); return; }
+    var metKey = (document.getElementById('scotMetrica')||{}).value || 'kg';
+    var MET = _SCOT_MET[metKey] || _SCOT_MET.kg;
+    var catRef = (document.getElementById('scotCategoria')||{}).value || R.cats[0].nome;
+
+    /* Ordena os estados pela categoria de referência: a pergunta é onde
+       ela está mais barata, e ordem alfabética não responde isso. */
+    var ufs = R.ufs.slice().filter(function(u){
+      return R.porUF[u] && Object.keys(R.porUF[u]).length;
+    });
+    function val(u, c){
+      var o = R.porUF[u] && R.porUF[u][c];
+      if (!o) return null;
+      var v = o[MET.campo];
+      return (v == null || !isFinite(v)) ? null : v;
+    }
+    ufs.sort(function(a,b){
+      var va = val(a, catRef), vb = val(b, catRef);
+      if (va == null) return 1; if (vb == null) return -1;
+      return va - vb;
+    });
+
+    var cores = [_COR_ENT_REPO, 'rgba(180,83,9,0.72)', 'rgba(180,83,9,0.50)', 'rgba(180,83,9,0.30)'];
+    var traces = R.cats.map(function(k, i){
+      return { x: ufs, y: ufs.map(function(u){ return val(u, k.nome); }),
+               type:'bar', name: k.nome + ' (' + k.kg + ' kg)',
+               marker:{ color: cores[i % cores.length] },
+               customdata: ufs.map(function(u){
+                 var o = R.porUF[u] && R.porUF[u][k.nome];
+                 return o ? [o.cab, o.porKg, o.arroba == null ? 0 : o.arroba] : [0,0,0];
+               }),
+               hovertemplate: "<span class='hover-label'>%{fullData.name}</span>: <b>%{y:,." + MET.casas + "f}</b> "
+                            + MET.hov + "<br>R$ %{customdata[0]:,.2f}/cab · R$ %{customdata[1]:,.2f}/kg"
+                            + " · %{customdata[2]:,.2f} @<extra>%{x}</extra>" };
+    });
+    if (!traces.length) { limpar('A apuração desta raça não trouxe categoria nenhuma.'); return; }
+    renderPlot(cid, traces, { _no_title:true, barmode:'group',
+      yaxis:{ title: MET.eixo }, xaxis:{ title:'Estado — ordenado por ' + catRef },
+      showlegend:true });
+
+    var comRef = ufs.filter(function(u){ return val(u, catRef) != null; });
+    var barata = comRef[0], cara = comRef[comRef.length-1];
+    var vB = barata ? val(barata, catRef) : null, vC = cara ? val(cara, catRef) : null;
+    /* A escada por quilo: a mais leve contra a mais pesada, na mesma UF. */
+    var leve = R.cats[R.cats.length-1], pesada = R.cats[0];
+    var esc = null, ufEsc = barata;
+    if (ufEsc){
+      var a = R.porUF[ufEsc][leve.nome], b = R.porUF[ufEsc][pesada.nome];
+      if (a && b && b.porKg) esc = (a.porKg / b.porKg - 1) * 100;
+    }
+    if (kEl){
+      kEl.innerHTML =
+        _rgKpi('MAIS BARATA', vB == null ? '–' : _pcN(vB, MET.casas), (barata||'–') + ' · ' + catRef) +
+        _rgKpi('MAIS CARA',   vC == null ? '–' : _pcN(vC, MET.casas), (cara||'–') + ' · ' + catRef) +
+        _rgKpi('DIFERENÇA', (vB == null || vC == null || !vB) ? '–' : _pcPct((vC/vB - 1)*100, 1),
+               comRef.length + ' estados com apuração') +
+        _rgKpi('ESCADA', esc == null ? '–' : _pcPct(esc, 1),
+               leve.nome + ' contra ' + pesada.nome + ' por quilo, em ' + (ufEsc||'–'));
+    }
+    if (tEl){
+      var h = '<div class="rb-head">' + raca.toUpperCase() + ' — ' + MET.rot.toUpperCase()
+            + ' · APURAÇÃO DE ' + _femDtBr(R.data) + '</div><table class="pc-tab"><thead><tr><th>UF</th>';
+      R.cats.forEach(function(k){ h += '<th>' + k.nome + '<br>' + k.kg + ' kg</th>'; });
+      h += '</tr></thead><tbody>';
+      ufs.forEach(function(u){
+        h += '<tr><td><b>' + u + '</b></td>';
+        R.cats.forEach(function(k){
+          var v = val(u, k.nome);
+          h += '<td>' + (v == null ? '–' : _pcN(v, MET.casas)) + '</td>';
+        });
+        h += '</tr>';
+      });
+      tEl.innerHTML = h + '</tbody></table>';
+    }
+
+    var outra = B.racas.filter(function(r){ return r !== raca; })[0];
+    var cmp = '';
+    if (outra && B.porRaca[outra] && barata){
+      var o = B.porRaca[outra].porUF[barata] && B.porRaca[outra].porUF[barata][catRef];
+      var m = R.porUF[barata][catRef];
+      if (o && m && o[MET.campo]) {
+        cmp = ' Na mesma UF, o ' + outra + ' sai a ' + _pcN(o[MET.campo], MET.casas)
+            + ' — ' + _pcPct((m[MET.campo]/o[MET.campo] - 1)*100, 1) + ' contra o ' + raca + '.';
+      }
+    }
+    _exSet(ctx, _exLeitura(
+      'Em <b>' + raca + '</b>, na apuração de <b>' + _femDtBr(R.data) + '</b>, a categoria <b>'
+      + catRef + '</b> sai mais barata em <b>' + (barata||'–') + '</b> ('
+      + (vB==null?'–':_pcN(vB, MET.casas)) + ' ' + MET.hov + ') e mais cara em <b>'
+      + (cara||'–') + '</b> (' + (vC==null?'–':_pcN(vC, MET.casas)) + ') — '
+      + ((vB&&vC)?_pcPct((vC/vB-1)*100,1):'–') + ' entre as pontas, em ' + comRef.length
+      + ' estados.' + cmp,
+      'Fonte: Scot Consultoria, abas ' + R.aba + ' e a do Mestiço, <b>' + R.nLeituras
+      + '</b> leitura' + (R.nLeituras === 1 ? '' : 's') + '. A geografia é o <b>estado</b>, '
+      + 'não a praça: não dá para casar linha a linha com as 28 praças do CEPEA regional. '
+      + 'A coluna de arroba é a <b>relação de troca apurada pela própria Scot</b> — o Radar '
+      + 'não a recalcula. R$/kg vivo é preço da cabeça dividido pelo peso declarado na '
+      + 'planilha; nenhum rendimento de carcaça é suposto.'));
+  }
+
+  /* ── A SCOT SOBRE A SÉRIE DO CEPEA ────────────────────────────────────
+     Nos cards que desenham série no tempo, a Scot não substitui o CEPEA:
+     ela entra como PONTO DATADO por cima. Trocar a fonte ali deixaria o
+     gráfico vazio — a apuração da Scot tem os dias que tem — e um gráfico
+     vazio parece defeito, não escassez de dado.
+
+     O par de seletores de cada card é independente do seletor de praça
+     dele, de propósito: a geografia da Scot é o ESTADO e a do CEPEA é a
+     PRAÇA, e fingir que "SP/Presidente Prudente" e "SP" são a mesma coisa
+     seria casar duas malhas que não casam. Quem diz a UF é o operador. */
+  function _scotCtrl(pref){
+    var sr = document.getElementById(pref+'Raca'), su = document.getElementById(pref+'Uf');
+    if (!sr || !su) return null;
+    var B = _scotBase(); if (!B) { sr.disabled = true; return null; }
+    var raca = sr.value || '';
+    if (!raca){ su.style.display = 'none'; return null; }
+    su.style.display = '';
+    var R = B.porRaca[raca]; if (!R) return null;
+    if (su.getAttribute('data-raca') !== raca){
+      var ant = su.value;
+      su.innerHTML = '';
+      R.ufs.forEach(function(u){ su.appendChild(new Option(u, u)); });
+      su.setAttribute('data-raca', raca);
+      su.value = (R.ufs.indexOf(ant) >= 0) ? ant : (R.ufs.indexOf('SP') >= 0 ? 'SP' : R.ufs[0]);
+    }
+    return { raca:raca, uf:su.value, R:R };
+  }
+  /* O traço do ponto. Losango vazado: forma diferente de tudo que a série
+     usa, para ninguém confundir uma leitura de outra fonte com um pregão
+     da série. */
+  function _scotTraco(x, y, rot, detalhe){
+    return { x:[x], y:[y], type:'scatter', mode:'markers', name:rot,
+             showlegend:true,
+             marker:{ symbol:'diamond-open', size:13, color:_PAL.referencia,
+                      line:{ color:_PAL.referencia, width:2.2 } },
+             hovertemplate:'<b>'+rot+'</b><br>%{y:,.2f}'+(detalhe?('<br>'+detalhe):'')+'<extra></extra>' };
+  }
+
+  function _scotRender(){
+    try { _scotEscadaCard(); } catch(e){ console.warn('Reposição Scot:', e); }
+  }
+  try { window._scotRender = _scotRender; } catch(e){}
+  document.addEventListener('change', function(ev){
+    var t = ev.target;
+    if (!t) return;
+    if (['scotRaca','scotMetrica','scotCategoria'].indexOf(t.id) >= 0){
+      if (t.id === 'scotRaca'){
+        var sc = document.getElementById('scotCategoria');
+        if (sc) sc.setAttribute('data-raca', '');      /* força repovoar */
+      }
+      _scotRender();
+      return;
+    }
+    /* Os seletores de sobreposição vivem em três cards da mesma seção e
+       repintam só ela. Trocar a raça obriga a refazer a lista de UFs: o
+       Mestiço não cobre RS nem SC. */
+    if (/^(bmgScot|bmgAgScot|bzbScot)(Raca|Uf)$/.test(t.id)){
+      if (/Raca$/.test(t.id)){
+        var su = document.getElementById(t.id.replace(/Raca$/, 'Uf'));
+        if (su) su.setAttribute('data-raca', '');
+      }
+      try { if (typeof window._m3RenderRelacoes === 'function') window._m3RenderRelacoes(); }
+      catch(e){ console.warn('Sobreposição Scot:', e); }
+    }
+  });
+
   /* ═══════════════════════════════════════════════════════════════════════
      FÊMEAS — ABATE E REPOSIÇÃO                              Etapa 6 · 20/10/2026
      ═══════════════════════════════════════════════════════════════════════
@@ -48460,7 +48979,7 @@ function updateRelacao() {
     el.setAttribute('data-pronto','1');
   }
 
-  /* ── ① O DESCONTO DA FÊMEA SOBRE O BOI GORDO ─────────────────────────── */
+  /* ── ① O DESCONTO DA VACA SOBRE O BOI GORDO ──────────────────────────── */
   function _femDescontoCard(){
     var cid='chartFemDesconto', ctx='chartFemDescontoContext';
     var kEl=document.getElementById('femDKpis'), tEl=document.getElementById('femDRank');
@@ -48773,13 +49292,45 @@ function updateRelacao() {
     /* O macho no mesmo lugar, para a comparação que decide retenção. */
     /* O bezerro é R$/cabeça, então não passa por `_femSerieCepea`, que só
        devolve série em R$/@. Vem direto do regional. */
-    var bzArr = null, bzVal = null;
-    try {
-      var s = _rgSerie('Bezerro', chave, null);
-      if (s && s.unidade === 'R$/cabeça' && s.valores.length){
-        bzVal = s.valores[s.valores.length-1]; bzArr = bzVal/arroba;
+    /* A FONTE DO MACHO É ESCOLHA DO OPERADOR. Este card é transversal —
+       compara categorias num mesmo dia —, então trocar a fonte aqui é uma
+       troca de verdade, não uma sobreposição: não há série para esvaziar.
+       A diferença entre as duas é real e fica declarada no rótulo: o
+       bezerro do CEPEA é por PRAÇA e sem peso declarado; o da Scot é por
+       ESTADO e com peso. */
+    var bzArr = null, bzVal = null, bzFonte = 'CEPEA', bzDet = '';
+    var _fo = document.getElementById('femTFonte');
+    var _fu = document.getElementById('femTUf');
+    var _fonte = _fo && _fo.value ? _fo.value : 'cepea';
+    if (_fonte !== 'cepea'){
+      if (_fu){
+        _fu.style.display = '';
+        var _B = _scotBase();
+        var _R = _B && _B.porRaca[_fonte];
+        if (_R && _fu.getAttribute('data-raca') !== _fonte){
+          var _ant = _fu.value;
+          _fu.innerHTML = '';
+          _R.ufs.forEach(function(u){ _fu.appendChild(new Option(u, u)); });
+          _fu.setAttribute('data-raca', _fonte);
+          _fu.value = (_R.ufs.indexOf(_ant) >= 0) ? _ant
+                      : (_R.ufs.indexOf(V.uf) >= 0 ? V.uf : _R.ufs[0]);
+        }
+        var _o = _R && _R.porUF[_fu.value] && _R.porUF[_fu.value]['Bezerro'];
+        if (_o && _o.cab > 0){
+          bzVal = _o.cab; bzArr = bzVal / arroba;
+          bzFonte = 'Scot · ' + _fonte + ' · ' + _fu.value;
+          bzDet = ' · ' + _o.kg + ' kg';
+        }
       }
-    } catch(e){}
+    } else {
+      if (_fu) _fu.style.display = 'none';
+      try {
+        var s = _rgSerie('Bezerro', chave, null);
+        if (s && s.unidade === 'R$/cabeça' && s.valores.length){
+          bzVal = s.valores[s.valores.length-1]; bzArr = bzVal/arroba;
+        }
+      } catch(e){}
+    }
 
     var bezerraNel = null;
     cat.forEach(function(c){ if (c.raca==='nel' && /bezerra/i.test(c.nome)) bezerraNel = c; });
@@ -48790,7 +49341,7 @@ function updateRelacao() {
         (bezerraNel ? _rgKpi('BEZERRA NELORE', _pcN(bezerraNel.arrobas,2)+' @',
             'R$ '+_pcN(bezerraNel.preco)+'/cab'+(bezerraNel.kg?' · '+bezerraNel.kg+' kg':'')) : '') +
         (bzArr != null ? _rgKpi('BEZERRO MACHO', _pcN(bzArr,2)+' @',
-            'R$ '+_pcN(bzVal)+'/cab · CEPEA') : '') +
+            'R$ '+_pcN(bzVal)+'/cab'+bzDet+' · '+bzFonte) : '') +
         (bezerraNel && bzArr != null ? _rgKpi('FÊMEA ÷ MACHO',
             _pcN(bezerraNel.arrobas/bzArr*100,1)+'%',
             'em arrobas de vaca gorda') : '') +
@@ -48803,7 +49354,8 @@ function updateRelacao() {
           + (bezerraNel.kg?' de '+bezerraNel.kg+' kg':'') + ' custa <b>'
           + _pcN(bezerraNel.arrobas,2) + ' arrobas</b>' : 'a reposição de fêmea sai')
       + (bzArr != null && bezerraNel
-          ? ', contra ' + _pcN(bzArr,2) + ' arrobas do bezerro macho do CEPEA na mesma praça.'
+          ? ', contra ' + _pcN(bzArr,2) + ' arrobas do bezerro macho ('
+            + (bzFonte === 'CEPEA' ? 'CEPEA, mesma praça' : bzFonte + bzDet) + ').'
           : '.')
       + ' A escada de arrobas por categoria é a curva de valorização por idade: '
       + 'a desmama custa menos por cabeça e <b>mais por arroba de peso vivo</b>.',
@@ -48845,8 +49397,12 @@ function updateRelacao() {
       { x:pracas, y:vaca, type:'bar', name:'Vaca gorda',
         marker:{ color:_COR_ENT_FEMEA },
         hovertemplate:_femHover('R$/@') },
+      /* Mesma cor da fêmea, hachura própria: as duas são fêmea de abate e
+         nenhuma é variante da outra. Ver `_HACH_NOVILHA`. */
       { x:pracas, y:novilha, type:'bar', name:'Novilha gorda',
-        marker:{ color:'rgba(190,18,60,0.45)' },
+        marker:{ color:_COR_ENT_FEMEA,
+                 pattern:{ shape:_HACH_NOVILHA, size:5, solidity:0.35,
+                           fgcolor:'#ffffff', bgcolor:_COR_ENT_FEMEA } },
         hovertemplate:_femHover('R$/@') }
     ], { _no_title:true, barmode:'group',
          yaxis:{ title:'Preço da arroba (R$/@)' }, showlegend:true });
@@ -48974,25 +49530,127 @@ function updateRelacao() {
     }
     return out;
   }
-  /* A série da vaca e a do boi na praça escolhida, recortadas na janela e
-     emparelhadas por data — a mesma disciplina do card de desconto. */
+  /* ── O BLOCO DE VENDA, POR CATEGORIA ──────────────────────────────────
+     Vaca e novilha são dois produtos. A fonte de cada uma é diferente, e a
+     diferença é estrutural, não de nível:
+
+       · VACA    — CEPEA regional, 28 praças, diária desde 01/08/2024;
+       · NOVILHA — coleta própria (`FÊMEAS - ABATE`), 3 praças, 16/10/2026.
+
+     O CEPEA não cota novilha. Então o bloco não finge que cota: trocar a
+     categoria troca a FONTE e a lista de praças junto, e os cards que
+     precisam de série dizem quantas leituras têm. Enquanto a coleta for
+     curta, a estrutura fica pronta e enche sozinha.                      */
+  function _femCatSel(){
+    var el = document.getElementById('femVCat');
+    return (el && el.value) ? el.value : 'vaca';
+  }
+  function _femChavePorRotulo(rot){
+    var ps = [];
+    try { ps = _rgPracas('Vaca Gorda') || []; } catch(e){}
+    for (var i = 0; i < ps.length; i++){
+      if (ps[i].uf + '/' + ps[i].praca === rot) return ps[i].chave;
+    }
+    return null;
+  }
+  /* As praças do bloco mudam com a categoria. O seletor guarda em
+     `data-cat` para qual categoria foi montado e só se refaz quando ela
+     muda — assim trocar de período não perde a praça escolhida. */
+  function _femPopulaPracasBloco(){
+    var el = document.getElementById('femVPraca'); if (!el) return;
+    var cat = _femCatSel();
+    if (el.getAttribute('data-cat') === cat) return;
+    var html = '', padrao = null;
+    if (cat === 'novilha'){
+      var T = _femTab('femeasAbate');
+      if (T){
+        T.series.forEach(function(c){
+          var m = c.match(/^Novilha gorda\s+(.*?)\s*\(/i);
+          if (!m) return;
+          var rot = m[1].trim();
+          html += '<option value="' + rot + '">' + rot + '</option>';
+          if (!padrao) padrao = rot;
+        });
+      }
+    } else {
+      var ps = [];
+      try { ps = _rgPracas('Vaca Gorda') || []; } catch(e){}
+      ps = ps.filter(function(p){ return p.unidade === 'R$/@'; });
+      ps.forEach(function(p){
+        html += '<option value="' + p.chave + '">' + p.uf + '/' + p.praca + '</option>';
+        if (p.uf + '/' + p.praca === 'SP/Presidente Prudente') padrao = p.chave;
+      });
+      if (!padrao && ps.length) padrao = ps[0].chave;
+    }
+    el.innerHTML = html;
+    if (padrao) el.value = padrao;
+    el.setAttribute('data-cat', cat);
+  }
+
   function _femBloco(){
-    var chave = _femPracaSel(); if (!chave) return null;
-    var P = _femPares(chave);
+    _femPopulaPracasBloco();
+    var cat = _femCatSel();
+    var sel = document.getElementById('femVPraca');
+    var escolha = sel && sel.value ? sel.value : null;
+    if (!escolha) return null;
+
+    if (cat === 'novilha'){
+      var T = _femTab('femeasAbate'); if (!T) return null;
+      var colN = null;
+      T.series.forEach(function(c){
+        if (new RegExp('^Novilha gorda\\s+' + escolha.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*\\(', 'i').test(c)) colN = c;
+      });
+      if (!colN) return null;
+      var dN = [], vN = [];
+      T.dados.forEach(function(r){
+        var v = r[colN];
+        if (v > 0) { dN.push(r.data); vN.push(v); }
+      });
+      if (!dN.length) return null;
+      /* O boi de referência vem do CEPEA da praça equivalente, declarado.
+         Barretos não tem par no CEPEA regional e fica sem boi — o card diz
+         isso em vez de emprestar o boi da praça vizinha. */
+      var rotCepea = _FEM_PAR_CEPEA[escolha] || null;
+      var chaveB = rotCepea ? _femChavePorRotulo(rotCepea) : null;
+      var bN = dN.map(function(){ return null; });
+      if (chaveB){
+        var SB = _femSerieCepea('Boi Gordo', chaveB);
+        if (SB) bN = dN.map(function(d){ return SB.obs[d] != null ? SB.obs[d] : null; });
+      }
+      var JN = _femJanela('femVPeriodo', dN);
+      return { cat:'novilha', catRot:'Novilha gorda', fonte:'coleta própria (' + T.aba + ')',
+               chave:escolha, rot:escolha, parCepea:rotCepea,
+               datas:dN, serie:vN, boi:bN, n:dN.length, janela:JN,
+               todasDatas:dN, todasSerie:vN, todasBoi:bN,
+               curta:true };
+    }
+
+    var P = _femPares(escolha);
     if (!P || P.n < _FEM_MIN_N) return null;
-    var J = _femJanela('femPeriodo', P.datas);
+    var J = _femJanela('femVPeriodo', P.datas);
     var d = [], v = [], b = [];
     for (var i = 0; i < P.n; i++){
       if (P.datas[i] < J.de) continue;
       d.push(P.datas[i]); v.push(P.vaca[i]); b.push(P.boi[i]);
     }
     if (d.length < _FEM_MIN_N) return null;
-    return { chave:chave, uf:P.uf, praca:P.praca, rot:P.uf+'/'+P.praca,
-             datas:d, vaca:v, boi:b, n:d.length, janela:J,
+    return { cat:'vaca', catRot:'Vaca gorda', fonte:'CEPEA regional',
+             chave:escolha, uf:P.uf, praca:P.praca, rot:P.uf+'/'+P.praca, parCepea:null,
+             datas:d, serie:v, boi:b, n:d.length, janela:J,
              /* a série inteira fica à mão: a variação interanual precisa de
                 doze meses ANTES do começo da janela para existir no início
                 dela. Recortar antes de calcular esvaziaria o primeiro ano. */
-             todasDatas:P.datas, todasVaca:P.vaca, todasBoi:P.boi };
+             todasDatas:P.datas, todasSerie:P.vaca, todasBoi:P.boi,
+             curta:false };
+  }
+  /* A mensagem única de série curta, para os quatro cards não inventarem
+     cada um a sua. */
+  function _femAvisoCurto(B, oQue){
+    return 'A <b>' + B.catRot.toLowerCase() + '</b> em <b>' + B.rot + '</b> tem <b>'
+         + B.n + '</b> leitura' + (B.n === 1 ? '' : 's') + ' na ' + B.fonte
+         + ' — a coleta começou em 16/10/2026. ' + oQue
+         + ' O CEPEA regional não cota novilha, então não há série longa para emprestar: '
+         + 'este card enche sozinho conforme a coleta roda.';
   }
   function _femX(datas){ return datas.map(function(s){ return new Date(s + 'T00:00:00'); }); }
 
@@ -49005,12 +49663,16 @@ function updateRelacao() {
       _exSet(ctx, _exLeitura(msg));
     }
     var B = _femBloco();
-    if (!B) { limpar('Escolha uma praça com série de vaca gorda em R$/@.'); return; }
+    if (!B) { limpar('Escolha uma categoria e uma praça com cotação em R$/@.'); return; }
     var x = _femX(B.datas);
-    var mm21 = _femMM(B.vaca, 21), mm63 = _femMM(B.vaca, 63), mm126 = _femMM(B.vaca, 126);
+    var mm21 = _femMM(B.serie, 21), mm63 = _femMM(B.serie, 63), mm126 = _femMM(B.serie, 126);
+    /* A novilha leva a cor da fêmea e o traço próprio — ver `_TRACO_NOVILHA`:
+       ela não é uma variante da vaca, é outro produto. */
+    var linhaCat = { color:_COR_ENT_FEMEA, width:_LARG.principal };
+    if (B.cat === 'novilha') linhaCat.dash = _TRACO_NOVILHA;
     var traces = [
-      { x:x, y:B.vaca, type:'scatter', mode:'lines', name:'Vaca gorda',
-        line:{ color:_COR_ENT_FEMEA, width:_LARG.principal },
+      { x:x, y:B.serie, type:'scatter', mode:(B.n < 30 ? 'lines+markers' : 'lines'),
+        name:B.catRot, line:linhaCat, marker:{ size:7, color:_COR_ENT_FEMEA },
         hovertemplate:_femHover('R$/@') }
     ];
     [[mm21,'Média 21 pregões',_PAL.destaque,_LARG.destaque,'solid'],
@@ -49023,9 +49685,9 @@ function updateRelacao() {
         hovertemplate:_femHover('R$/@') });
     });
     renderPlot(cid, traces, { _no_title:true,
-      yaxis:{ title:'Vaca gorda ('+B.rot+') — R$/@' }, xaxis:{ title:'' }, showlegend:true });
+      yaxis:{ title:B.catRot+' ('+B.rot+') — R$/@' }, xaxis:{ title:'' }, showlegend:true });
 
-    var ult = B.vaca[B.n-1];
+    var ult = B.serie[B.n-1];
     var u21 = mm21[B.n-1], u63 = mm63[B.n-1], u126 = mm126[B.n-1];
     var dist = (u126 != null && u126) ? (ult/u126 - 1)*100 : null;
     if (kEl){
@@ -49044,17 +49706,22 @@ function updateRelacao() {
        : 'As médias estão <b>embaralhadas</b> — mercado lateral ou em mudança de direção.')
       : '';
     _exSet(ctx, _exLeitura(
-      'Em <b>' + B.rot + '</b>, a vaca gorda fechou a <b>R$ ' + _pcN(ult) + '/@</b> em '
-      + _femDtBr(B.datas[B.n-1]) + ', contra ' + (u21==null?'–':'R$ '+_pcN(u21)) + ' de média mensal e '
-      + (u63==null?'–':'R$ '+_pcN(u63)) + ' de trimestral. ' + ordem,
-      'Fonte: CEPEA/ESALQ, aba CEPEA REGIONAL. Janela <b>' + B.janela.rot + '</b>, '
-      + B.n + ' pregões com cotação nesta praça. As médias móveis contam PREGÕES com '
-      + 'cotação, não dias de calendário: numa praça que cota três vezes por semana, a '
-      + 'média de 21 pregões cobre cerca de sete semanas.'));
+      'Em <b>' + B.rot + '</b>, a ' + B.catRot.toLowerCase() + ' fechou a <b>R$ ' + _pcN(ult)
+      + '/@</b> em ' + _femDtBr(B.datas[B.n-1])
+      + (u21 == null ? '.' : ', contra ' + 'R$ '+_pcN(u21) + ' de média mensal e '
+         + (u63==null?'–':'R$ '+_pcN(u63)) + ' de trimestral.') + ' ' + ordem,
+      B.curta
+        ? _femAvisoCurto(B, 'Com esse número de leituras nenhuma média móvel é calculada — '
+            + 'média de 21 pregões sobre duas cotações não é média de nada.')
+        : 'Fonte: CEPEA/ESALQ, aba CEPEA REGIONAL. Janela <b>' + B.janela.rot + '</b>, '
+          + B.n + ' pregões com cotação nesta praça. As médias móveis contam PREGÕES com '
+          + 'cotação, não dias de calendário: numa praça que cota três vezes por semana, a '
+          + 'média de 21 pregões cobre cerca de sete semanas.'));
   }
 
   function _femKpiVaca(ult, B){
-    return _rgKpi('VACA GORDA', 'R$ '+_pcN(ult), B.rot + ' · ' + _femDtBr(B.datas[B.n-1]));
+    return _rgKpi(B.catRot.toUpperCase(), 'R$ '+_pcN(ult),
+                  B.rot + ' · ' + _femDtBr(B.datas[B.n-1]));
   }
   function _femDtBr(iso){
     var p = String(iso||'').split('-');
@@ -49070,14 +49737,32 @@ function updateRelacao() {
       _exSet(ctx, _exLeitura(msg));
     }
     var B = _femBloco();
-    if (!B) { limpar('Escolha uma praça com série de vaca gorda em R$/@.'); return; }
+    if (!B) { limpar('Escolha uma categoria e uma praça com cotação em R$/@.'); return; }
+    if (B.n < _FEM_MIN_N){
+      try { renderPlot(cid, [{ x:_femX(B.datas), y:B.serie, type:'scatter',
+        mode:'lines+markers', name:B.catRot,
+        line:{ color:_COR_ENT_FEMEA, width:_LARG.principal,
+               dash:(B.cat==='novilha'?_TRACO_NOVILHA:'solid') },
+        marker:{ size:7, color:_COR_ENT_FEMEA }, hovertemplate:_femHover('R$/@') }],
+        { _no_title:true, yaxis:{ title:B.catRot+' ('+B.rot+') — R$/@' }, showlegend:true }); } catch(e){}
+      if (kEl) kEl.innerHTML = _femKpiVaca(B.serie[B.n-1], B)
+        + _rgKpi('PERCENTIL','–','precisa de '+_FEM_MIN_N+' leituras')
+        + _rgKpi('Z-SCORE','–','precisa de '+_FEM_MIN_N+' leituras')
+        + _rgKpi('LEITURAS', String(B.n), 'na '+B.fonte);
+      _exSet(ctx, _exLeitura(
+        'A série tem <b>' + B.n + '</b> leitura' + (B.n===1?'':'s') + ' — não dá para dizer se o '
+        + 'preço está caro ou barato contra a própria história, porque história ainda não há.',
+        _femAvisoCurto(B, 'Percentil, média e desvio exigem pelo menos ' + _FEM_MIN_N
+          + ' leituras: com duas, qualquer percentil sai 0% ou 100% e não significa nada.')));
+      return;
+    }
     var x = _femX(B.datas);
-    var med = _femMedia(B.vaca), dp = _femDesvio(B.vaca, med);
+    var med = _femMedia(B.serie), dp = _femDesvio(B.serie, med);
     if (med == null || dp == null || !dp) { limpar('A janela não tem dispersão para calcular média e desvio.'); return; }
-    var ult = B.vaca[B.n-1];
+    var ult = B.serie[B.n-1];
     var z = (ult - med) / dp;
-    var pct = _femPercentil(B.vaca, ult);
-    var mn = Math.min.apply(null, B.vaca), mx = Math.max.apply(null, B.vaca);
+    var pct = _femPercentil(B.serie, ult);
+    var mn = Math.min.apply(null, B.serie), mx = Math.max.apply(null, B.serie);
     /* As cinco retas de referência têm a mesma forma e diferem só em cor,
        rótulo e tracejado. `reta` devolve o traço pronto em vez de repetir
        cinco vezes o mesmo literal. As duas de baixo saem da legenda: "±1
@@ -49093,9 +49778,11 @@ function updateRelacao() {
       reta(med,        'Média da janela', _PAL.referencia, _LARG.referencia, 'solid'),
       reta(med - dp,   '±1 desvio',  _PAL.banda1, _LARG.banda, 'dash', false),
       reta(med - 2*dp, '±2 desvios', _PAL.banda2, _LARG.banda, 'dot',  false),
-      { x:x, y:B.vaca, type:'scatter', mode:'lines', name:'Vaca gorda',
-        line:{ color:_COR_ENT_FEMEA, width:_LARG.principal }, hovertemplate:_femHover('R$/@') }
-    ], { _no_title:true, yaxis:{ title:'Vaca gorda ('+B.rot+') — R$/@' },
+      { x:x, y:B.serie, type:'scatter', mode:'lines', name:B.catRot,
+        line:{ color:_COR_ENT_FEMEA, width:_LARG.principal,
+               dash:(B.cat==='novilha'?_TRACO_NOVILHA:'solid') },
+        hovertemplate:_femHover('R$/@') }
+    ], { _no_title:true, yaxis:{ title:B.catRot+' ('+B.rot+') — R$/@' },
          xaxis:{ title:'' }, showlegend:true });
 
     if (kEl){
@@ -49110,9 +49797,9 @@ function updateRelacao() {
       : pct <= 10 ? 'O preço está no <b>fundo</b> da janela: só ' + _pcN(pct,0) + '% dos pregões ficaram abaixo dele.'
       : 'O preço está no percentil ' + _pcN(pct,0) + '% da janela.';
     _exSet(ctx, _exLeitura(
-      'Em <b>' + B.rot + '</b>, a vaca a <b>R$ ' + _pcN(ult) + '/@</b> está a <b>'
-      + _pcN(z,2) + ' desvios</b> da média de R$ ' + _pcN(med) + ' da janela '
-      + B.janela.rot + '. ' + onde,
+      'Em <b>' + B.rot + '</b>, a ' + B.catRot.toLowerCase() + ' a <b>R$ ' + _pcN(ult)
+      + '/@</b> está a <b>' + _pcN(z,2) + ' desvios</b> da média de R$ ' + _pcN(med)
+      + ' da janela ' + B.janela.rot + '. ' + onde,
       'Média e desvio calculados sobre os ' + B.n + ' pregões da janela nesta praça, não '
       + 'sobre a série inteira: trocar o período no seletor muda a referência, e é essa a '
       + 'intenção. Num mercado em tendência o preço fica muito tempo de um lado da média — '
@@ -49128,10 +49815,10 @@ function updateRelacao() {
       _exSet(ctx, _exLeitura(msg));
     }
     var B = _femBloco();
-    if (!B) { limpar('Escolha uma praça com série de vaca gorda em R$/@.'); return; }
+    if (!B) { limpar('Escolha uma categoria e uma praça com cotação em R$/@.'); return; }
     /* Calculado sobre a série INTEIRA e recortado depois: a variação de hoje
        precisa do preço de doze meses atrás, que pode estar fora da janela. */
-    var yV = _femYoY(B.todasDatas, B.todasVaca), yB = _femYoY(B.todasDatas, B.todasBoi);
+    var yV = _femYoY(B.todasDatas, B.todasSerie), yB = _femYoY(B.todasDatas, B.todasBoi);
     var d = [], v = [], b = [];
     for (var i = 0; i < B.todasDatas.length; i++){
       if (B.todasDatas[i] < B.janela.de) continue;
@@ -49140,15 +49827,24 @@ function updateRelacao() {
     }
     var comV = v.filter(function(z){ return z != null; });
     if (comV.length < _FEM_MIN_N){
-      limpar('Só ' + comV.length + ' pregões com doze meses de histórico atrás nesta praça. '
-           + 'A série do CEPEA regional começa em 01/08/2024, então a variação interanual '
-           + 'nasce em agosto de 2025.');
+      try { renderPlot(cid, [], { _no_title:true }); } catch(e){}
+      if (kEl) kEl.innerHTML = '';
+      _exSet(ctx, _exLeitura(
+        B.curta
+          ? 'A <b>' + B.catRot.toLowerCase() + '</b> não tem doze meses de série: a variação '
+            + 'interanual nasce quando a coleta completar um ano.'
+          : 'Só ' + comV.length + ' pregões com doze meses de histórico atrás nesta praça.',
+        B.curta
+          ? _femAvisoCurto(B, 'Comparar com "doze meses antes" exige que esses doze meses existam.')
+          : 'A série do CEPEA regional começa em 01/08/2024, então a variação interanual '
+            + 'nasce em agosto de 2025.'));
       return;
     }
     var x = _femX(d);
     renderPlot(cid, [
-      { x:x, y:v, type:'scatter', mode:'lines', name:'Vaca gorda',
-        line:{ color:_COR_ENT_FEMEA, width:_LARG.principal }, connectgaps:false,
+      { x:x, y:v, type:'scatter', mode:'lines', name:B.catRot,
+        line:{ color:_COR_ENT_FEMEA, width:_LARG.principal,
+               dash:(B.cat==='novilha'?_TRACO_NOVILHA:'solid') }, connectgaps:false,
         hovertemplate:_femHover('%') },
       { x:x, y:b, type:'scatter', mode:'lines', name:'Boi gordo',
         line:{ color:_COR_ENT_BOI, width:_LARG.destaque }, connectgaps:false,
@@ -49165,7 +49861,7 @@ function updateRelacao() {
     var dif = (uV != null && uB != null) ? uV - uB : null;
     if (kEl){
       kEl.innerHTML =
-        _rgKpi('VACA — 12 MESES', uV == null ? '–' : _pcPct(uV,1), B.rot) +
+        _rgKpi(B.catRot.toUpperCase() + ' — 12 MESES', uV == null ? '–' : _pcPct(uV,1), B.rot) +
         _rgKpi('BOI — 12 MESES', uB == null ? '–' : _pcPct(uB,1), 'mesma praça') +
         _rgKpi('DIFERENÇA', dif == null ? '–' : _femPP(dif), 'vaca menos boi') +
         _rgKpi('PREGÕES', comV.length + ' de ' + d.length, 'com par de doze meses atrás');
@@ -49175,7 +49871,7 @@ function updateRelacao() {
       : dif < -1 ? 'A fêmea subiu <b>menos</b> que o macho no ano — o sinal que acompanha <b>descarte</b> de fêmea no abate.'
       : 'As duas pontas andaram praticamente <b>juntas</b> no ano.';
     _exSet(ctx, _exLeitura(
-      'Em <b>' + B.rot + '</b>, a vaca gorda está ' + (uV==null?'–':_pcPct(uV,1))
+      'Em <b>' + B.rot + '</b>, a ' + B.catRot.toLowerCase() + ' está ' + (uV==null?'–':_pcPct(uV,1))
       + ' contra doze meses atrás e o boi ' + (uB==null?'–':_pcPct(uB,1))
       + ', uma diferença de ' + (dif==null?'–':_femPP(dif)) + ' entre as duas pontas. '
       + leitura,
@@ -49195,14 +49891,24 @@ function updateRelacao() {
       _exSet(ctx, _exLeitura(msg));
     }
     var B = _femBloco();
-    if (!B) { limpar('Escolha uma praça com série de vaca gorda em R$/@.'); return; }
+    if (!B) { limpar('Escolha uma categoria e uma praça com cotação em R$/@.'); return; }
     var JAN = 21;
-    if (B.n < JAN + 5) { limpar('Só ' + B.n + ' pregões na janela — a volatilidade de 21 pregões precisa de mais.'); return; }
-    var vV = _femVolMovel(B.vaca, JAN), vB = _femVolMovel(B.boi, JAN);
+    if (B.n < JAN + 5){
+      try { renderPlot(cid, [], { _no_title:true }); } catch(e){}
+      if (kEl) kEl.innerHTML = '';
+      _exSet(ctx, _exLeitura(
+        'Só <b>' + B.n + '</b> leitura' + (B.n===1?'':'s') + ' nesta janela — a volatilidade de '
+        + JAN + ' pregões precisa de pelo menos ' + (JAN+5) + '.',
+        B.curta ? _femAvisoCurto(B, 'Desvio-padrão de retornos exige retornos, e dois preços dão um só.')
+                : 'Escolha uma janela maior ou uma praça que cote com mais frequência.'));
+      return;
+    }
+    var vV = _femVolMovel(B.serie, JAN), vB = _femVolMovel(B.boi, JAN);
     var x = _femX(B.datas);
     renderPlot(cid, [
-      { x:x, y:vV, type:'scatter', mode:'lines', name:'Vaca gorda',
-        line:{ color:_COR_ENT_FEMEA, width:_LARG.principal }, connectgaps:false,
+      { x:x, y:vV, type:'scatter', mode:'lines', name:B.catRot,
+        line:{ color:_COR_ENT_FEMEA, width:_LARG.principal,
+               dash:(B.cat==='novilha'?_TRACO_NOVILHA:'solid') }, connectgaps:false,
         hovertemplate:_femHover('% a.a.') },
       { x:x, y:vB, type:'scatter', mode:'lines', name:'Boi gordo',
         line:{ color:_COR_ENT_BOI, width:_LARG.destaque }, connectgaps:false,
@@ -49217,18 +49923,19 @@ function updateRelacao() {
     var pct = (uV != null && limpos.length >= _FEM_MIN_N) ? _femPercentil(limpos, uV) : null;
     if (kEl){
       kEl.innerHTML =
-        _rgKpi('VOL. DA VACA', uV == null ? '–' : _pcN(uV,1)+'%', '21 pregões, anualizada') +
+        _rgKpi('VOL. DA ' + (B.cat==='novilha'?'NOVILHA':'VACA'),
+               uV == null ? '–' : _pcN(uV,1)+'%', '21 pregões, anualizada') +
         _rgKpi('VOL. DO BOI', uB == null ? '–' : _pcN(uB,1)+'%', 'mesma praça, mesma janela') +
         _rgKpi('RAZÃO', razao == null ? '–' : _pcN(razao,2)+'×', 'quanto a vaca balança a mais') +
         _rgKpi('PERCENTIL DA VOL.', pct == null ? '–' : _pcN(pct,0)+'%', 'contra a própria janela');
     }
     var leitura = razao == null ? ''
-      : razao > 1.15 ? 'A vaca está oscilando <b>' + _pcN(razao,2) + '×</b> o boi: mercado mais fino, movimento maior pelo mesmo motivo.'
-      : razao < 0.85 ? 'A vaca está oscilando <b>menos</b> que o boi nesta janela — incomum, e vale olhar se a praça teve poucos negócios.'
+      : razao > 1.15 ? 'A ' + B.catRot.toLowerCase() + ' está oscilando <b>' + _pcN(razao,2) + '×</b> o boi: mercado mais fino, movimento maior pelo mesmo motivo.'
+      : razao < 0.85 ? 'A ' + B.catRot.toLowerCase() + ' está oscilando <b>menos</b> que o boi nesta janela — incomum, e vale olhar se a praça teve poucos negócios.'
       : 'As duas pontas estão oscilando praticamente <b>no mesmo tamanho</b>.';
     _exSet(ctx, _exLeitura(
       'Em <b>' + B.rot + '</b>, a volatilidade de 21 pregões está em <b>'
-      + (uV==null?'–':_pcN(uV,1)+'%') + ' ao ano</b> na vaca contra '
+      + (uV==null?'–':_pcN(uV,1)+'%') + ' ao ano</b> na ' + B.catRot.toLowerCase() + ' contra '
       + (uB==null?'–':_pcN(uB,1)+'%') + ' no boi. ' + leitura,
       'Desvio-padrão dos retornos diários na janela de 21 pregões, multiplicado por √252. '
       + 'É volatilidade <b>histórica</b>: descreve o que aconteceu, não o que o mercado '
@@ -49484,9 +50191,20 @@ function updateRelacao() {
 
   /* Cada card lê os próprios controles, como no regional e no atacado. */
   document.addEventListener('DOMContentLoaded', function(){
-    ['femPraca','femPeriodo','femBgi','femMatrizRef'].forEach(function(id){
+    ['femPraca','femPeriodo','femBgi','femMatrizRef',
+     'femVCat','femVPraca','femVPeriodo','femTFonte','femTUf'].forEach(function(id){
       var el = document.getElementById(id); if (!el) return;
       el.addEventListener('change', function(){
+        /* Trocar a categoria troca a FONTE, e com ela a lista de praças:
+           o seletor precisa se refazer antes do primeiro card ler dele. */
+        if (id === 'femVCat'){
+          var pv = document.getElementById('femVPraca');
+          if (pv) pv.setAttribute('data-cat','');
+        }
+        if (id === 'femTFonte'){
+          var fu = document.getElementById('femTUf');
+          if (fu) fu.setAttribute('data-raca','');
+        }
         try { _femRender(); } catch(e){ console.warn('Fêmeas ('+id+'):', e); }
       });
     });
@@ -50258,6 +50976,7 @@ function updateRelacao() {
     chartProjCiclo:'m3_2_6', chartProjSenoide:'m3_2_6', chartProjAnual:'m3_2_6',
     chartSHBoiMilhoTroca:'m3_2_8', chartBezBoiTroca:'m3_2_8', chartBezAgioHist:'m3_2_8',
     chartBoiMagroTroca:'m3_2_8', chartBoiMagroAgio:'m3_2_8', chartAgio:'m3_2_8',
+    chartScotEscada:'m3_2_8',
     chartEcoComparativo:'m3_2_9', chartEcoBoiJuros:'m3_2_9', chartEcoYoY:'m3_2_9',
     chartEcoJuroReal:'m3_2_9',
     chartBGIDolar:'m3_2_9', chartBGIDolarCasado:'m3_2_9',
@@ -51786,7 +52505,7 @@ function updateRelacao() {
        só eram desenhados pela série histórica do bezerro, em outra seção. */
     ['_renderBoiMagroTroca','_renderBoiMagroAgio',
      '_renderBezBoiTroca','_renderBezAgioHist',
-     'updateMagroVariacao'].forEach(function(f){
+     'updateMagroVariacao','_scotRender'].forEach(function(f){
       try { if(typeof window[f]==='function') window[f](); }
       catch(e){ console.warn(f+':', e); }
     });
