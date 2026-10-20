@@ -10482,6 +10482,16 @@ header{
                   <div id="bmsCustoCalcDia" style="font-size: var(--fs-lg);font-weight:900;color:#0f766e">--</div>
                 </div>
               </div>
+              <!-- Política de compra do milho: o preço acima passa a ter origem -->
+              <div style="margin-top:10px;border-top:1px solid #e5e7eb;padding-top:9px">
+                <label class="bms-label" title="O motor aplica um preço de milho a todos os dias de cocho. A política define qual preço é esse: o físico de hoje, para quem compra tudo no início, ou a curva CCM ponderada pelos meses de consumo, para quem compra conforme consome.">🌽 Política de compra do milho</label>
+                <select id="bmsMilhoPol" class="bms-input">
+                  <option value="">— Manual (preço digitado) —</option>
+                  <option value="fis">Físico — tudo no início (CEPEA)</option>
+                  <option value="curva">Conforme consome — curva CCM</option>
+                </select>
+                <div id="bmsMilhoPolDica" style="font-size: var(--fs-micro);color:#6b7280;margin-top:5px;line-height:1.45">Escolha uma política para o Radar calcular o preço do milho a partir do CEPEA e da curva CCM.</div>
+              </div>
             </div>
           </div>
           <button class="bms-next-btn" data-next="custos">Próximo: Custos →</button>
@@ -11710,6 +11720,178 @@ body[data-asel-agro="0"] #panelRatioBGICCM {
       }catch(e){return null;}
     }
 
+    /* ══════════════════════════════════════════════════════════════════
+       MILHO — A POLÍTICA DE COMPRA ENTRA NO PREÇO
+       ──────────────────────────────────────────────────────────────────
+       O motor de custo recebe UM preço de milho e o aplica a todos os dias
+       de cocho. Isso é correto para quem comprou tudo no início, e errado
+       para quem compra conforme consome: a curva do CCM hoje sobe de
+       novembro a março, e um lote que atravessa esses meses paga preços
+       diferentes a cada compra. A política não muda o motor — ela muda o
+       preço que entra nele, e o preço passa a dizer de onde veio.
+
+       DUAS POLÍTICAS, NÃO TRÊS. "Travar hoje em futuros" e "comprar
+       conforme consome pela curva" dão o MESMO número: travar cada mês no
+       contrato daquele mês é exatamente pagar a curva. Oferecer as duas
+       como opções distintas seria mostrar dois nomes para uma conta só.
+       A terceira possibilidade real — travar o volume inteiro num único
+       vencimento — é outra operação, e não está aqui.
+
+       OS JUROS JÁ SÃO DO MOTOR. `__3M_calcEngine` cobra juros sobre a
+       nutrição inteira desde o dia zero (fD = bD × df × jm, auditado na
+       Etapa 2). Quem compra tudo no início já paga esse custo de capital
+       ali. Somar aqui um segundo carrego seria cobrar duas vezes pelo
+       mesmo dinheiro parado — então estas políticas devolvem preço de
+       milho puro, e a convenção de financiamento continua sendo a do
+       motor, igual para as duas. Para quem compra conforme consome, essa
+       convenção cobra juros de um pagamento que ainda não aconteceu: o
+       número sai conservador, e a dica da tela diz isso.             */
+
+    function _mlhUltimo(aba){
+      var wb=window.workbook; if(!wb||!wb.Sheets||!wb.Sheets[aba])return null;
+      try{
+        var rows=XLSX.utils.sheet_to_json(wb.Sheets[aba],{defval:null,raw:true});
+        var pr=null,dt=null;
+        for(var i=0;i<rows.length;i++){
+          var v=rows[i]["Preço"]; if(v==null)v=rows[i]["Preço/@"];
+          if(v!=null&&!isNaN(parseFloat(v))){pr=parseFloat(v);dt=rows[i]["Data"];}
+        }
+        return pr==null?null:{preco:pr,data:dt};
+      }catch(e){return null;}
+    }
+
+    /* Os vencimentos CCM que ainda dá para negociar, do mais curto ao mais
+       longo, cada um com a última cotação. Vencido não entra: travar preço
+       num contrato liquidado não existe. */
+    function _mlhCurva(){
+      var wb=window.workbook; if(!wb||!wb.SheetNames)return [];
+      var h=new Date(),kH=h.getFullYear()*12+h.getMonth(),out=[];
+      wb.SheetNames.forEach(function(nome){
+        var u=nome.trim().toUpperCase();
+        if(u.indexOf("CCM")!==0)return;
+        var k=(typeof _contractMaturityKey==="function")?_contractMaturityKey(u):null;
+        if(k==null||k<kH)return;
+        var ult=_mlhUltimo(nome);
+        if(ult&&ult.preco>0)out.push({nome:nome,k:k,preco:ult.preco});
+      });
+      out.sort(function(a,b){return a.k-b.k;});
+      return out;
+    }
+
+    /* A BASE. O CCM é Campinas; o milho do confinamento é comprado onde ele
+       está. A diferença entre o físico CEPEA de hoje e o primeiro CCM
+       vigente é a melhor medida disponível dessa distância sem pedir mais
+       um número ao operador — e ela se aplica a todos os vencimentos,
+       porque a curva informa o carrego, não a base regional. */
+    function _mlhBase(curva){
+      var fis=_mlhUltimo("MILHO - CEPEA");
+      if(!fis||!curva.length)return null;
+      return {valor:fis.preco-curva[0].preco,fisico:fis.preco,
+              primeiro:curva[0].nome,ccm:curva[0].preco,data:fis.data};
+    }
+
+    /* Quantos dias de consumo caem em cada mês do calendário, a partir de
+       hoje. O motor trata o consumo como uniforme por dia — mesma média de
+       peso vivo, mesmo percentual —, então o peso de cada mês é o número de
+       dias que o lote passa nele. */
+    function _mlhCalendario(dias){
+      if(!(dias>0))return [];
+      var d=new Date(),mapa={},ordem=[];
+      for(var i=0;i<dias;i++){
+        var k=d.getFullYear()*12+d.getMonth();
+        if(!mapa[k]){mapa[k]={k:k,dias:0};ordem.push(k);}
+        mapa[k].dias++;
+        d.setDate(d.getDate()+1);
+      }
+      return ordem.map(function(k){return mapa[k];});
+    }
+
+    var _MLH_MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+    function _mlhRotMes(k){ return _MLH_MES[k%12]+"/"+String(Math.floor(k/12)).slice(-2); }
+
+    /* O preço de cada política. Devolve sempre o porquê junto do número:
+       um preço de milho que apareceu sozinho no campo é um preço que
+       ninguém consegue conferir. */
+    function _mlhPolitica(pol){
+      if(pol!=="fis"&&pol!=="curva")return null;
+      var curva=_mlhCurva(), base=_mlhBase(curva);
+      var fis=_mlhUltimo("MILHO - CEPEA");
+
+      if(pol==="fis"){
+        if(!fis)return {erro:"A planilha não trouxe o milho físico do CEPEA."};
+        return {preco:fis.preco,
+                detalhe:"Milho físico CEPEA de "+_fmtDataBR(fis.data)+", aplicado a todos os dias de cocho. "
+                       +"Os juros sobre esse capital já são cobrados pelo motor, desde o primeiro dia."};
+      }
+
+      var dias=pN(val("bmsDiasCocho"));
+      if(!(dias>0))return {erro:"Informe os dias no cocho — sem período não há calendário de consumo."};
+      if(!curva.length)return {erro:"Nenhum vencimento CCM vigente na planilha."};
+      if(!base)return {erro:"Sem o milho físico do CEPEA não dá para medir a base contra Campinas."};
+
+      var cal=_mlhCalendario(dias), soma=0, usados=[], extrapolou=false;
+      cal.forEach(function(m){
+        var c=null;
+        for(var i=0;i<curva.length;i++){ if(curva[i].k>=m.k){c=curva[i];break;} }
+        /* Consumo além do último vencimento negociado: usa o mais longo que
+           existe e avisa, em vez de inventar a continuação da curva. */
+        if(!c){c=curva[curva.length-1];extrapolou=true;}
+        var pm=c.preco+base.valor;
+        soma+=pm*m.dias;
+        usados.push({mes:_mlhRotMes(m.k),dias:m.dias,contrato:c.nome,preco:pm});
+      });
+      var medio=soma/dias;
+      var det="Média ponderada pelos dias de consumo em cada mês, "
+            +"sobre a curva CCM mais a base de R$ "+_mlhN(base.valor)+"/sc "
+            +"(CEPEA R$ "+_mlhN(base.fisico)+" − "+base.primeiro+" R$ "+_mlhN(base.ccm)+"). "
+            +usados.map(function(u){return u.mes+" "+u.dias+"d · "+u.contrato+" R$ "+_mlhN(u.preco);}).join(" · ")+".";
+      if(extrapolou) det+=" Parte do período vai além do último vencimento negociado e usa o mais longo da curva.";
+      det+=" O motor financia a dieta inteira desde o dia zero, então nesta política os juros saem conservadores.";
+      return {preco:medio,detalhe:det};
+    }
+
+    /* Sinal de menos tipográfico, o mesmo do resto do painel: o hífen do
+       teclado encolhe ao lado do algarismo e uma base negativa passa por
+       positiva na leitura rápida. */
+    function _mlhN(v){
+      if(v==null||!isFinite(v))return "–";
+      return (v<0?"−":"")+Math.abs(v).toFixed(2).replace(".",",");
+    }
+    /* A planilha devolve data como serial do Excel quando lida com raw:true
+       — foi assim que a dica chegou a dizer "CEPEA de 46314". A conversão é
+       a mesma de `_rgData`, a função que o resto do painel usa. */
+    function _fmtDataBR(d){
+      if(d==null)return "—";
+      if(d instanceof Date)return ("0"+d.getDate()).slice(-2)+"/"+("0"+(d.getMonth()+1)).slice(-2)+"/"+d.getFullYear();
+      if(typeof d==="number"&&isFinite(d)){
+        var dt=new Date(Date.UTC(1899,11,30)+d*86400000);
+        return ("0"+dt.getUTCDate()).slice(-2)+"/"+("0"+(dt.getUTCMonth()+1)).slice(-2)+"/"+dt.getUTCFullYear();
+      }
+      var s=String(d);
+      var m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if(m)return m[3]+"/"+m[2]+"/"+m[1];
+      var br=s.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+      return br?s.slice(0,10):s;
+    }
+
+    /* Aplica a política escolhida ao campo do milho. O campo continua sendo
+       a única entrada do motor — a política escreve nele, como o seletor de
+       contrato BGI escreve no preço da arroba. */
+    var _mlhAplicando=false;
+    function aplicaPoliticaMilho(){
+      var sel=g("bmsMilhoPol"), dica=g("bmsMilhoPolDica");
+      if(!sel)return;
+      var pol=sel.value;
+      if(!pol){ if(dica)dica.textContent="Escolha uma política para o Radar calcular o preço do milho a partir do CEPEA e da curva CCM."; return; }
+      var r=_mlhPolitica(pol);
+      if(!r||r.erro){ if(dica)dica.textContent=(r&&r.erro)||"Não foi possível calcular esta política."; return; }
+      _mlhAplicando=true;
+      g("bmsMilhoSc").value=r.preco.toFixed(2);
+      _mlhAplicando=false;
+      if(dica)dica.textContent="R$ "+_mlhN(r.preco)+"/sc · "+r.detalhe;
+      liveCalc();
+    }
+
     // ── Navegação ─────────────────────────────────────
     function switchSec(sec){
       document.querySelectorAll(".bms-sec-btn").forEach(function(b){
@@ -11780,6 +11962,26 @@ body[data-asel-agro="0"] #panelRatioBGICCM {
     // Dieta modo
     g("bmsDietaModo").addEventListener("change",function(){updateDietaUI();liveCalc();});
 
+    /* A política do milho. Trocar a política recalcula; trocar os dias de
+       cocho muda o calendário de consumo e por isso recalcula também — um
+       preço ponderado por um período que já não é o do lote seria um número
+       velho com cara de atual. */
+    (function(){
+      var sel=g("bmsMilhoPol"); if(!sel)return;
+      sel.addEventListener("change",aplicaPoliticaMilho);
+      var dc=g("bmsDiasCocho");
+      if(dc) dc.addEventListener("input",function(){ if(sel.value==="curva") aplicaPoliticaMilho(); });
+      /* Digitar o preço à mão desliga a política: o campo volta a ser do
+         operador, como no seletor de contrato BGI. */
+      var mi=g("bmsMilhoSc");
+      if(mi) mi.addEventListener("input",function(){
+        if(_mlhAplicando||!sel.value)return;
+        sel.value="";
+        var d=g("bmsMilhoPolDica");
+        if(d) d.textContent="Preço digitado à mão — a política foi desligada.";
+      });
+    })();
+
     // Todos os inputs → liveCalc
     document.querySelectorAll("#bmsCalcRoot input.bms-input, #bmsCalcRoot select.bms-input").forEach(function(el){
       el.addEventListener("input",liveCalc);
@@ -11804,6 +12006,11 @@ body[data-asel-agro="0"] #panelRatioBGICCM {
       });
       document.querySelectorAll("#bmsCalcRoot select.bms-input").forEach(function(el){el.selectedIndex=0;});
       g("bmsPrecoArroba").value="";g("bmsBgiContrato").value="";g("bmsBgiUltimo").textContent="";
+      /* O seletor já volta ao índice zero com os outros selects; a dica não,
+         e uma dica de política antiga embaixo de um campo vazio descreve um
+         cálculo que não existe mais. */
+      var _dm=g("bmsMilhoPolDica");
+      if(_dm)_dm.textContent="Escolha uma política para o Radar calcular o preço do milho a partir do CEPEA e da curva CCM.";
       bmsSp="";bmsSistema="pasto";
       document.querySelector('input[name="bmsSistema"][value="pasto"]').checked=true;
       document.querySelectorAll(".bms-sys-option").forEach(function(l){l.classList.remove("active");});
