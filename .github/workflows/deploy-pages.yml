@@ -131,6 +131,11 @@ jobs:
           done
           [ "$faltou" -eq 0 ]
 
+      - name: Validar apresentação e fórmulas
+        run: |
+          node testes/financeiro-testes.js --sem-navegador
+          node testes/refinamentos-testes.js
+
       - name: Configurar Pages
         uses: actions/configure-pages@v5
 
