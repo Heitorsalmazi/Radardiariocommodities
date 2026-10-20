@@ -2006,6 +2006,13 @@ header{
   font-family:var(--font-display); font-size: var(--fs-sm); color:#374151;
   border:1px solid #d1d5db; border-radius:5px; padding:3px 7px;
   background:#f9fafb; cursor:pointer;
+  /* A folha global dá `width:100%` a todo <select> da página — regra certa
+     para os formulários em `.controls-grid`, errada aqui: a barra de
+     controles é `display:flex` justamente para caber numa linha, e com os
+     seletores esticados cada um ia para uma linha própria, com o rótulo
+     solto em cima. Medido em 20/10/2026: 1330 px de largura por seletor e a
+     barra com 87 px de altura onde deviam caber 28. */
+  width:auto; max-width:100%;
 }
 .bgi-ctrl .bgi-sel:focus{ outline:none; border-color:#0f766e; }
 .bgi-ctrl #bgiMultiFancy{ min-width:186px; max-width:260px; }
@@ -5766,7 +5773,7 @@ header{
     <div>
       <h1>BMS Agrobrasil — Radar Diário de Mercado</h1>
       <div class="report-pills"><span class="report-pill" id="metaModoPill">DIÁRIO</span><span class="report-pill report-pill-soft" id="metaAtivoPill">Boi / B3</span></div>
-      <p>Painel interno de análise quantitativa: curvas de contratos futuros, alertas técnicos, ranking estatístico, radar de 7 pregões e gestão de risco — Boi Gordo (BGI), Milho (CCM) e Soja (SJC).</p>
+      <p id="hdrDescricao">Painel interno de análise quantitativa: curvas de contratos futuros, alertas técnicos, ranking estatístico, radar de 7 pregões e gestão de risco — Boi Gordo (BGI), Milho (CCM) e Soja (SJC).</p>
 
     </div>
   </div>
@@ -8878,6 +8885,248 @@ header{
       <div id="femNKpis" class="vol-kpis"></div>
       <div id="chartFemNovilha" class="chart-container" style="height:380px"></div>
       <div id="chartFemNovilhaContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">VACA GORDA — PREÇO, MÉDIAS MÓVEIS E FAIXA</span><button type="button" class="info-btn" aria-label="Ajuda: preço da vaca gorda" data-tooltip="Série diária da vaca gorda na praça escolhida, com médias móveis de 21, 63 e 126 pregões e a faixa da janela. Mesma leitura que o boi gordo recebe, aplicada à fêmea.">ⓘ</button></div>
+      <div class="pill">A vaca como ativo: onde o preço está contra o próprio ritmo</div>
+      <div class="explain">
+        <span class="ex-tag">O que o gráfico mede</span>
+        O preço diário da <b>vaca gorda</b> na praça escolhida, com três médias móveis —
+        <b>21</b> pregões (um mês), <b>63</b> (um trimestre) e <b>126</b> (um semestre). Preço acima
+        das três é mercado comprador sustentado; abaixo das três, vendedor. O cruzamento da
+        curta com a longa é o sinal que o painel já usa no boi.
+        <span class="ex-tag">Praça e período</span>
+        Os dois seletores do topo desta seção governam todos os cards: trocar a praça ou a
+        janela repinta tudo junto, para que nenhum número da tela fique de outra praça.
+        <span class="ex-tag">Limite</span>
+        A série do CEPEA regional começa em <b>01/08/2024</b>. A média de 126 pregões só
+        aparece depois de 126 leituras na praça — onde não houver, a linha simplesmente
+        não é desenhada, em vez de começar numa média de três dias.
+      </div>
+      <div id="femPrecoKpis" class="vol-kpis"></div>
+      <div id="chartFemPreco" class="chart-container" style="height:420px"></div>
+      <div id="chartFemPrecoContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">VACA GORDA — ONDE O PREÇO ESTÁ NA PRÓPRIA HISTÓRIA</span><button type="button" class="info-btn" aria-label="Ajuda: posição estatística da vaca" data-tooltip="Preço da vaca gorda contra a média da janela e as bandas de um e dois desvios-padrão, com percentil e z-score. É a mesma leitura estatística que o boi gordo tem no painel.">ⓘ</button></div>
+      <div class="pill">Caro ou barato contra a própria história, não contra o vizinho</div>
+      <div class="explain">
+        <span class="ex-tag">Como ler</span>
+        A linha grafite é a <b>média da janela</b>; as faixas são <b>um</b> e <b>dois desvios-padrão</b>.
+        Preço fora da faixa de dois desvios é raro por construção — acontece em cerca de 5%
+        dos pregões —, então vale como alerta, não como regra.
+        <span class="ex-tag">Percentil e z-score dizem coisas diferentes</span>
+        O <b>percentil</b> é posição: quantos pregões da janela ficaram abaixo do preço de hoje.
+        O <b>z-score</b> é distância: quantos desvios o preço está da média. Num mercado com
+        poucos dias extremos, o percentil pode estar em 90% com z-score em 1,2.
+        <span class="ex-tag">Limite</span>
+        Média e desvio pressupõem uma distribuição estável na janela. Numa alta de tendência
+        — que é o caso do boi e da vaca em 2026 — o preço fica muito tempo acima da média
+        sem que isso signifique exagero: é a média que está correndo atrás.
+      </div>
+      <div id="femPosicaoKpis" class="vol-kpis"></div>
+      <div id="chartFemPosicao" class="chart-container" style="height:420px"></div>
+      <div id="chartFemPosicaoContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">VACA GORDA — VARIAÇÃO INTERANUAL CONTRA O BOI</span><button type="button" class="info-btn" aria-label="Ajuda: variação interanual" data-tooltip="Variação do preço contra o mesmo dia de doze meses atrás, para vaca e boi na mesma praça. Compara o ritmo das duas pontas sem o efeito de nível.">ⓘ</button></div>
+      <div class="pill">A fêmea subiu mais ou menos que o macho no ano?</div>
+      <div class="explain">
+        <span class="ex-tag">O que o gráfico mede</span>
+        Para cada data, o preço contra o <b>mesmo período de doze meses antes</b> — vaca e boi
+        na mesma praça. É a leitura que tira o nível da conta: duas séries com preços muito
+        diferentes passam a ser comparáveis pelo ritmo.
+        <span class="ex-tag">Por que importa para a 3M</span>
+        Fêmea subindo mais que macho é sinal de <b>retenção</b>: o produtor segura a matriz e
+        a oferta de abate encolhe. Fêmea subindo menos é <b>descarte</b>: entra fêmea no abate,
+        a oferta cresce e pressiona a arroba. O número aqui não prova o ciclo, mas é onde ele
+        aparece primeiro.
+        <span class="ex-tag">Limite</span>
+        Com a série começando em 01/08/2024, a variação interanual só existe a partir de
+        agosto de 2025. Cada ponto casa com a leitura mais próxima de doze meses antes,
+        aceitando até <b>dez dias</b> de diferença — fora disso o ponto fica vazio.
+      </div>
+      <div id="femYoYKpis" class="vol-kpis"></div>
+      <div id="chartFemYoY" class="chart-container" style="height:400px"></div>
+      <div id="chartFemYoYContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">VACA GORDA — VOLATILIDADE CONTRA O BOI</span><button type="button" class="info-btn" aria-label="Ajuda: volatilidade" data-tooltip="Desvio-padrão dos retornos diários em janela móvel de 21 pregões, anualizado em 252. Mede o tamanho típico da oscilação, não a direção.">ⓘ</button></div>
+      <div class="pill">Qual das duas pontas balança mais — e quanto</div>
+      <div class="explain">
+        <span class="ex-tag">O que o gráfico mede</span>
+        O <b>desvio-padrão dos retornos diários</b> em janela móvel de 21 pregões, anualizado
+        por √252. É o tamanho típico da oscilação em um ano, não a direção dela: volatilidade
+        alta não quer dizer preço caindo.
+        <span class="ex-tag">Para que serve</span>
+        A vaca costuma oscilar mais que o boi — mercado mais fino, menos praças cotando, lote
+        menor. Saber <b>quanto mais</b> é o que separa "a vaca caiu" de "a vaca fez o que a
+        vaca faz". Quem trava preço de fêmea sem olhar isto dimensiona errado.
+        <span class="ex-tag">Limite</span>
+        Volatilidade histórica, não implícita: ela descreve o que já aconteceu nos últimos 21
+        pregões. Não existe opção de vaca gorda na B3, então não há volatilidade implícita
+        para comparar.
+      </div>
+      <div id="femVolKpis" class="vol-kpis"></div>
+      <div id="chartFemVol" class="chart-container" style="height:400px"></div>
+      <div id="chartFemVolContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">REPOSIÇÃO DE FÊMEA — ÁGIO POR CATEGORIA</span><button type="button" class="info-btn" aria-label="Ajuda: ágio por categoria" data-tooltip="Preço por quilo vivo de cada categoria da coleta de reposição, Nelore e Mestiça lado a lado, e o ágio de cada uma sobre a vaca boiadeira da mesma raça. Tudo em peso vivo: nenhum rendimento de carcaça é suposto.">ⓘ</button></div>
+      <div class="pill">Quanto mais leve o animal, mais caro o quilo — quanto mais</div>
+      <div class="explain">
+        <span class="ex-tag">O que o gráfico mede</span>
+        As barras são o <b>preço por quilo vivo</b> de cada categoria: preço da cabeça dividido
+        pelo peso que está no próprio rótulo da planilha. A linha é o <b>ágio</b> de cada
+        categoria sobre a <b>vaca boiadeira da mesma raça</b>, que é a mais pesada da escada.
+        <span class="ex-tag">Por que por quilo e não por arroba</span>
+        A arroba é unidade de <b>carcaça</b>, e converter peso vivo em carcaça exige supor um
+        rendimento. Rendimento varia com categoria, raça, acabamento e frigorífico — supor um
+        número único transformaria a comparação numa premissa disfarçada de dado. Por quilo
+        vivo, os dois lados da divisão vêm da planilha.
+        <span class="ex-tag">Limite</span>
+        A coleta de <b>FÊMEAS - REPOSIÇÃO</b> começou em <b>16/10/2026</b>. O número de leituras
+        que sustenta o card está na tela; enquanto for uma, isto é uma <b>fotografia</b>, não uma
+        série — não há média, faixa nem percentil, e não vai haver até a coleta acumular meses.
+      </div>
+      <div id="femAgioKpis" class="vol-kpis"></div>
+      <div id="chartFemAgio" class="chart-container" style="height:440px"></div>
+      <div id="femAgioTab"></div>
+      <div id="chartFemAgioContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">REPOSIÇÃO DE FÊMEA — RELAÇÃO DE TROCA ENTRE CATEGORIAS</span><button type="button" class="info-btn" aria-label="Ajuda: relação de troca" data-tooltip="Quantas cabeças da categoria da coluna uma cabeça da categoria da linha compra, aos preços da última coleta. Acima de 1, a linha vale mais; abaixo, vale menos.">ⓘ</button></div>
+      <div class="pill">Uma vaca boiadeira compra quantas bezerras — e o contrário</div>
+      <div class="explain">
+        <span class="ex-tag">Como ler</span>
+        Cada célula responde: <b>uma cabeça da linha compra quantas cabeças da coluna</b>. A
+        diagonal é 1 por construção. Acima de 1 significa que a categoria da linha vale mais
+        que a da coluna; abaixo de 1, menos.
+        <span class="ex-tag">Para que serve</span>
+        É a conta de quem troca dentro do próprio rebanho: descartar matriz para comprar
+        bezerra, subir de desmama para novilha, trocar Mestiça por Nelore. A relação de troca
+        não depende do nível de preço — ela não muda se tudo subir junto, e é por isso que ela
+        informa quando o preço em reais já não informa.
+        <span class="ex-tag">Limite</span>
+        Fotografia da última coleta, em preço por cabeça. Não entra frete, comissão, prazo de
+        pagamento nem diferença de idade até o abate — a troca é de <b>preço</b>, não de
+        resultado econômico. O resultado do lote mora na Calculadora do Boi.
+      </div>
+      <div class="bgi-ctrl">
+        <span class="bgi-lbl">Vendendo uma cabeça de</span>
+        <select id="femMatrizRef" class="bgi-sel" title="Categoria de referência: a barra mostra quantas cabeças de cada outra categoria uma cabeça desta compra."></select>
+      </div>
+      <div id="femMatrizKpis" class="vol-kpis"></div>
+      <div id="chartFemMatriz" class="chart-container" style="height:460px"></div>
+      <div id="femMatrizTab"></div>
+      <div id="chartFemMatrizContext" class="chart-context"></div>
+    </section>
+
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">DI1 — ESTRUTURA A TERMO DA CURVA</span><button type="button" class="info-btn" aria-label="Ajuda: curva de juros" data-tooltip="Taxa implícita de cada vencimento do DI1 da B3, em % ao ano, lida no mesmo dia. A curva de hoje aparece contra ela mesma há 21, 63 e 252 pregões — é o que mostra se o mercado mudou de ideia sobre o custo do dinheiro.">ⓘ</button></div>
+      <div class="pill">Quanto o mercado cobra para emprestar em cada prazo — e o que mudou</div>
+      <div class="explain">
+        <span class="ex-tag">O que o gráfico mede</span>
+        Cada ponto é um <b>vencimento do DI1</b> e a altura é a taxa que o mercado negociou
+        naquele dia para aquele prazo. Ligados, os pontos formam a <b>estrutura a termo</b>:
+        a resposta do mercado à pergunta "quanto custa o dinheiro daqui até lá".
+        <span class="ex-tag">Por que comparar com o passado</span>
+        O nível da curva sozinho diz pouco. O que informa é o <b>deslocamento</b>: curva inteira
+        para cima significa custo de capital maior para todo mundo; só a ponta curta subindo
+        significa aperto de curto prazo; só a longa subindo significa prêmio de risco maior.
+        <span class="ex-tag">Limite</span>
+        Taxa implícita de negociação, não projeção da BMS. O eixo horizontal é a
+        <b>data de vencimento</b> — os contratos do DI1 liquidam no primeiro dia útil do mês
+        de vencimento, e é essa data que está no eixo.
+      </div>
+      <div id="jurCurvaKpis" class="vol-kpis"></div>
+      <div id="chartJurCurva" class="chart-container" style="height:420px"></div>
+      <div id="chartJurCurvaContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">DI1 — QUANTO CADA VÉRTICE ANDOU</span><button type="button" class="info-btn" aria-label="Ajuda: deslocamento da curva" data-tooltip="Diferença em pontos percentuais entre a taxa de hoje e a de 21 e 63 pregões atrás, vencimento por vencimento. Barra positiva = abertura (juro maior); negativa = fechamento.">ⓘ</button></div>
+      <div class="pill">A curva abriu ou fechou — e em que parte dela</div>
+      <div class="explain">
+        <span class="ex-tag">Como ler</span>
+        Barra para cima é <b>abertura</b>: aquele prazo ficou mais caro. Para baixo é
+        <b>fechamento</b>. O que interessa não é o sinal isolado, é o <b>desenho</b>: barras
+        maiores na ponta curta e menores na longa indicam aperto temporário; o contrário
+        indica que o mercado remarcou o prazo longo.
+        <span class="ex-tag">Por que 21 e 63 pregões</span>
+        Um mês e um trimestre de pregões. São os horizontes em que uma decisão de compra de
+        boi magro ou de trava de preço ainda está em aberto — abaixo disso é ruído, acima
+        disso a decisão já foi tomada.
+        <span class="ex-tag">Unidade</span>
+        <b>Ponto percentual</b>, não por cento. Sair de 14,00% para 14,50% é +0,50 p.p.
+      </div>
+      <div id="chartJurDesloc" class="chart-container" style="height:400px"></div>
+      <div id="chartJurDeslocContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">JUROS × BOI — a arroba contra o custo do dinheiro</span><button type="button" class="info-btn" aria-label="Ajuda: juros contra boi" data-tooltip="Preço do boi gordo físico (CEPEA, R$/@) contra a taxa do vencimento de DI1 escolhido, no mesmo eixo de tempo. A correlação é calculada em variação mensal.">ⓘ</button></div>
+      <div class="pill">O dinheiro encarecendo move a arroba? Quanto?</div>
+      <div class="explain">
+        <span class="ex-tag">O que o gráfico mede</span>
+        Duas séries no mesmo tempo: o <b>boi gordo físico</b> em R$/@ e a <b>taxa do vencimento
+        escolhido</b> em % a.a. Elas não dividem eixo — unidades diferentes não se comparam
+        na altura, se comparam no movimento.
+        <span class="ex-tag">Por que correlação mensal</span>
+        Em frequência diária o que domina é ruído de pregão nos dois lados. Em mensal
+        sobra o que importa para quem decide confinar: o custo de carregar capital por
+        meses contra o preço que a arroba vai pagar.
+        <span class="ex-tag">Limite</span>
+        Correlação não é causa. O juro e a arroba respondem aos mesmos choques — câmbio,
+        safra, atividade — e o coeficiente mede o quanto andaram juntos, não quem puxou quem.
+      </div>
+      <div class="bgi-ctrl">
+        <span class="bgi-lbl">Vencimento do DI1</span>
+        <select id="jurVertice" class="bgi-sel" title="Vencimento do DI1 usado na comparação. O padrão é o vértice mais próximo de 12 meses."></select>
+        <span class="bgi-lbl" style="margin-left:8px">Período</span>
+        <select id="jurJanela" class="bgi-sel" title="Janela de calendário para o gráfico e para a correlação.">
+          <option value="6">Últimos 6 meses</option>
+          <option value="12" selected>Últimos 12 meses</option>
+          <option value="24">Últimos 24 meses</option>
+          <option value="0">Série inteira</option>
+        </select>
+      </div>
+      <div id="jurBoiKpis" class="vol-kpis"></div>
+      <div id="chartJurBoi" class="chart-container" style="height:560px"></div>
+      <div id="chartJurBoiContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">CARREGO — o futuro do boi paga o custo do dinheiro?</span><button type="button" class="info-btn" aria-label="Ajuda: carrego implícito" data-tooltip="Para cada vencimento do BGI: quanto o futuro paga acima do boi à vista, anualizado em 252 dias úteis, contra a taxa do DI1 no mesmo prazo. A diferença é o carrego líquido em pontos percentuais.">ⓘ</button></div>
+      <div class="pill">O prêmio do futuro cobre o juro do período — ou não</div>
+      <div class="explain">
+        <span class="ex-tag">A conta</span>
+        <b>Carrego implícito</b> = (futuro ÷ à vista) elevado a 252/du, menos 1 — o prêmio do
+        contrato transformado em taxa anual, com <b>du</b> = dias úteis daqui até o vencimento.
+        Ao lado, a taxa do DI1 interpolada <b>no mesmo prazo</b>. A terceira série é a
+        diferença: carrego menos juro.
+        <span class="ex-tag">Para que serve</span>
+        Diferença positiva significa que o futuro está pagando mais do que custa financiar a
+        arroba até lá — o mercado remunera quem carrega o boi. Negativa significa que travar
+        preço naquele vencimento embute custo de capital não coberto.
+        <span class="ex-tag">O que a conta NÃO inclui</span>
+        Nutrição, mão de obra, sanidade, morte e o custo da margem de garantia. É o carrego
+        <b>financeiro</b> do preço, não o custo de produção do lote — esse mora na
+        Calculadora do Boi. Dias úteis contam só sábados e domingos: sem o calendário de
+        feriados da B3, o <b>du</b> fica alguns dias otimista no longo. Vencimentos a menos
+        de <b>21 dias úteis</b> ficam fora do gráfico: anualizar o prêmio de duas semanas
+        transforma o ruído de dois pregões em dezenas de pontos percentuais.
+      </div>
+      <div id="jurCarregoKpis" class="vol-kpis"></div>
+      <div id="chartJurCarrego" class="chart-container" style="height:560px"></div>
+      <div id="chartJurCarregoContext" class="chart-context"></div>
     </section>
 
 
@@ -16106,12 +16355,21 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
       }
       const pillAtivo = document.getElementById('metaAtivoPill');
       if(pillAtivo){
-        pillAtivo.textContent = futSel?.value ? `B3: ${futSel.value}` : 'Boi / B3';
+        /* Sem contrato futuro escolhido, a pílula caía num literal: dizia
+           "Boi / B3" mesmo com o painel inteiro em açúcar, etanol ou dólar.
+           O rótulo passa a seguir o universo ligado. */
+        const _uP = (document.body.getAttribute('data-m3-univ') || window._M3_UNIV_ATUAL || 'agro');
+        pillAtivo.textContent = futSel?.value
+          ? `B3: ${futSel.value}`
+          : (_uP === 'macro' ? 'Macro / B3' : 'Boi / B3');
       }
     }catch(e){
       // silencioso: metadados são auxiliares
     }
   }
+  /* Exposta porque a troca de universo precisa repintar a pílula e a
+     descrição, e ela vive noutro bloco de script. */
+  try { window.updateHeaderMeta = updateHeaderMeta; } catch(e){}
 
   
   // =========================
@@ -45409,6 +45667,13 @@ function updateAbateFemeasMTFixed() {
       annotations:annotations,
       font:{family:'Montserrat,sans-serif'}
     };
+    /* Este gráfico é SEMPRE boi contra dólar, qualquer que seja o ativo no
+       seletor — e o título do card já diz isso. Sem `_no_title`, `renderPlot`
+       colava o contrato selecionado no fim: "— AÇÚCAR" sobre onze
+       vencimentos de BGI com o painel no macro, "— BOI GORDO" num gráfico
+       que não mudaria se o contrato fosse outro. É a mesma regra que as
+       séries históricas já seguem. */
+    layout._no_title = true;
     renderPlot(chartId, traces, layout);
   }
 
@@ -45731,6 +45996,13 @@ function updateAbateFemeasMTFixed() {
     };
 
     // Selecionado por último para ficar acima dos demais
+    /* Este gráfico é SEMPRE boi contra dólar, qualquer que seja o ativo no
+       seletor — e o título do card já diz isso. Sem `_no_title`, `renderPlot`
+       colava o contrato selecionado no fim: "— AÇÚCAR" sobre onze
+       vencimentos de BGI com o painel no macro, "— BOI GORDO" num gráfico
+       que não mudaria se o contrato fosse outro. É a mesma regra que as
+       séries históricas já seguem. */
+    layout._no_title = true;
     renderPlot(chartId, _todosTraces.concat([trace]), layout);
   }
 
@@ -45993,6 +46265,13 @@ function updateAbateFemeasMTFixed() {
              range:yRange},
       legend:{orientation:'h',y:-0.42,x:0,font:{size:10,color:'#374151'},bgcolor:'rgba(0,0,0,0)'}
     };
+    /* Este gráfico é SEMPRE boi contra dólar, qualquer que seja o ativo no
+       seletor — e o título do card já diz isso. Sem `_no_title`, `renderPlot`
+       colava o contrato selecionado no fim: "— AÇÚCAR" sobre onze
+       vencimentos de BGI com o painel no macro, "— BOI GORDO" num gráfico
+       que não mudaria se o contrato fosse outro. É a mesma regra que as
+       séries históricas já seguem. */
+    layout._no_title = true;
     renderPlot(chartId, traces, layout);
   }
 
@@ -48622,9 +48901,581 @@ function updateRelacao() {
   }
 
   /* ── O desenhador da seção ──────────────────────────────────────────── */
+
+  /* ── ⑤ A VACA COMO ATIVO: PREÇO E MÉDIAS ────────────────────────────
+     O pedido foi explícito: "análise de mercado da venda com indicadores
+     próprios igual o boi gordo". O boi tem preço, médias, percentil,
+     z-score, variação interanual e volatilidade. A vaca passa a ter os
+     mesmos seis, calculados pelas mesmas contas — não por funções novas
+     paralelas, mas pelas que já existem aqui, agora aplicadas à série da
+     fêmea.
+
+     POR QUE A VACA DO CEPEA E NÃO A DA COLETA PRÓPRIA. A aba
+     `FÊMEAS - ABATE` tem uma leitura (16/10/2026). Média móvel de 21
+     pregões sobre uma leitura não é média de nada. A série que sustenta
+     este bloco é a do CEPEA regional: 28 praças, diária, desde 01/08/2024.
+     Quando a coleta própria tiver meses, ela entra como segunda fonte —
+     declarada, não somada.                                               */
+
+  function _femPP(v){
+    if (v == null || !isFinite(v)) return '–';
+    return (v >= 0 ? '+' : '−') + _pcN(Math.abs(v), 2) + ' p.p.';
+  }
+  function _femMM(vals, n){
+    var out = [], soma = 0;
+    for (var i = 0; i < vals.length; i++){
+      soma += vals[i];
+      if (i >= n) soma -= vals[i - n];
+      out.push(i >= n - 1 ? soma / n : null);
+    }
+    return out;
+  }
+  function _femMedia(a){
+    var s = 0, n = 0;
+    for (var i = 0; i < a.length; i++) if (a[i] != null && isFinite(a[i])) { s += a[i]; n++; }
+    return n ? s / n : null;
+  }
+  function _femDesvio(a, m){
+    var s = 0, n = 0;
+    if (m == null) m = _femMedia(a);
+    if (m == null) return null;
+    for (var i = 0; i < a.length; i++) if (a[i] != null && isFinite(a[i])) { s += (a[i]-m)*(a[i]-m); n++; }
+    return n > 1 ? Math.sqrt(s / (n - 1)) : null;
+  }
+  /* Volatilidade móvel: desvio dos retornos diários na janela, anualizado
+     por √252. Mesma definição do card de volatilidade do boi. */
+  function _femVolMovel(vals, n){
+    var r = _femVar(vals), out = [null];
+    for (var i = 0; i < r.length; i++){
+      if (i < n - 1) { out.push(null); continue; }
+      var jan = r.slice(i - n + 1, i + 1).filter(function(v){ return v != null && isFinite(v); });
+      if (jan.length < n) { out.push(null); continue; }
+      var d = _femDesvio(jan, null);
+      out.push(d == null ? null : d * Math.sqrt(252) * 100);
+    }
+    return out;
+  }
+  /* Variação contra doze meses antes. Casa pela DATA, não pelo índice: as
+     praças do CEPEA não cotam todos os dias e contar 252 posições para trás
+     cairia em meses diferentes conforme a praça. Aceita até dez dias de
+     folga; fora disso o ponto fica vazio em vez de casar com o mês errado. */
+  function _femYoY(datas, vals){
+    var ms = datas.map(function(d){ return new Date(d + 'T00:00:00').getTime(); });
+    var out = [], TOL = 10 * 86400000, j = 0;
+    for (var i = 0; i < datas.length; i++){
+      var alvo = ms[i] - 365 * 86400000;
+      while (j + 1 < ms.length && ms[j + 1] <= alvo) j++;
+      var melhor = null, dist = Infinity, k;
+      for (k = Math.max(0, j - 2); k <= Math.min(ms.length - 1, j + 2); k++){
+        var d2 = Math.abs(ms[k] - alvo);
+        if (d2 < dist) { dist = d2; melhor = k; }
+      }
+      out.push((melhor != null && dist <= TOL && vals[melhor]) ? (vals[i] / vals[melhor] - 1) * 100 : null);
+    }
+    return out;
+  }
+  /* A série da vaca e a do boi na praça escolhida, recortadas na janela e
+     emparelhadas por data — a mesma disciplina do card de desconto. */
+  function _femBloco(){
+    var chave = _femPracaSel(); if (!chave) return null;
+    var P = _femPares(chave);
+    if (!P || P.n < _FEM_MIN_N) return null;
+    var J = _femJanela('femPeriodo', P.datas);
+    var d = [], v = [], b = [];
+    for (var i = 0; i < P.n; i++){
+      if (P.datas[i] < J.de) continue;
+      d.push(P.datas[i]); v.push(P.vaca[i]); b.push(P.boi[i]);
+    }
+    if (d.length < _FEM_MIN_N) return null;
+    return { chave:chave, uf:P.uf, praca:P.praca, rot:P.uf+'/'+P.praca,
+             datas:d, vaca:v, boi:b, n:d.length, janela:J,
+             /* a série inteira fica à mão: a variação interanual precisa de
+                doze meses ANTES do começo da janela para existir no início
+                dela. Recortar antes de calcular esvaziaria o primeiro ano. */
+             todasDatas:P.datas, todasVaca:P.vaca, todasBoi:P.boi };
+  }
+  function _femX(datas){ return datas.map(function(s){ return new Date(s + 'T00:00:00'); }); }
+
+  function _femPrecoCard(){
+    var cid = 'chartFemPreco', ctx = 'chartFemPrecoContext';
+    var kEl = document.getElementById('femPrecoKpis');
+    function limpar(msg){
+      try { renderPlot(cid, [], { _no_title:true }); } catch(e){}
+      if (kEl) kEl.innerHTML = '';
+      _exSet(ctx, _exLeitura(msg));
+    }
+    var B = _femBloco();
+    if (!B) { limpar('Escolha uma praça com série de vaca gorda em R$/@.'); return; }
+    var x = _femX(B.datas);
+    var mm21 = _femMM(B.vaca, 21), mm63 = _femMM(B.vaca, 63), mm126 = _femMM(B.vaca, 126);
+    var traces = [
+      { x:x, y:B.vaca, type:'scatter', mode:'lines', name:'Vaca gorda',
+        line:{ color:_COR_ENT_FEMEA, width:_LARG.principal },
+        hovertemplate:_femHover('R$/@') }
+    ];
+    [[mm21,'Média 21 pregões',_PAL.destaque,_LARG.destaque,'solid'],
+     [mm63,'Média 63 pregões',_PAL.apoio,_LARG.apoio,'dash'],
+     [mm126,'Média 126 pregões',_PAL.referencia,_LARG.referencia,'dot']
+    ].forEach(function(t){
+      if (!t[0].some(function(v){ return v != null; })) return;
+      traces.push({ x:x, y:t[0], type:'scatter', mode:'lines', name:t[1],
+        line:{ color:t[2], width:t[3], dash:t[4] }, connectgaps:false,
+        hovertemplate:_femHover('R$/@') });
+    });
+    renderPlot(cid, traces, { _no_title:true,
+      yaxis:{ title:'Vaca gorda ('+B.rot+') — R$/@' }, xaxis:{ title:'' }, showlegend:true });
+
+    var ult = B.vaca[B.n-1];
+    var u21 = mm21[B.n-1], u63 = mm63[B.n-1], u126 = mm126[B.n-1];
+    var dist = (u126 != null && u126) ? (ult/u126 - 1)*100 : null;
+    if (kEl){
+      kEl.innerHTML =
+        _femKpiVaca(ult, B) +
+        _rgKpi('MÉDIA 21', u21 == null ? '–' : 'R$ '+_pcN(u21),
+               u21 == null ? 'janela curta demais' : (ult >= u21 ? 'preço acima' : 'preço abaixo')) +
+        _rgKpi('MÉDIA 63', u63 == null ? '–' : 'R$ '+_pcN(u63),
+               u63 == null ? 'janela curta demais' : (ult >= u63 ? 'preço acima' : 'preço abaixo')) +
+        _rgKpi('CONTRA A MÉDIA 126', dist == null ? '–' : _pcPct(dist,1),
+               u126 == null ? 'precisa de 126 pregões' : 'R$ '+_pcN(u126)+' de média semestral');
+    }
+    var ordem = (u21 != null && u63 != null && u126 != null)
+      ? (u21 > u63 && u63 > u126 ? 'As três médias estão <b>ordenadas para cima</b> (21 &gt; 63 &gt; 126): tendência de alta sustentada.'
+       : u21 < u63 && u63 < u126 ? 'As três médias estão <b>ordenadas para baixo</b> (21 &lt; 63 &lt; 126): tendência de baixa sustentada.'
+       : 'As médias estão <b>embaralhadas</b> — mercado lateral ou em mudança de direção.')
+      : '';
+    _exSet(ctx, _exLeitura(
+      'Em <b>' + B.rot + '</b>, a vaca gorda fechou a <b>R$ ' + _pcN(ult) + '/@</b> em '
+      + _femDtBr(B.datas[B.n-1]) + ', contra ' + (u21==null?'–':'R$ '+_pcN(u21)) + ' de média mensal e '
+      + (u63==null?'–':'R$ '+_pcN(u63)) + ' de trimestral. ' + ordem,
+      'Fonte: CEPEA/ESALQ, aba CEPEA REGIONAL. Janela <b>' + B.janela.rot + '</b>, '
+      + B.n + ' pregões com cotação nesta praça. As médias móveis contam PREGÕES com '
+      + 'cotação, não dias de calendário: numa praça que cota três vezes por semana, a '
+      + 'média de 21 pregões cobre cerca de sete semanas.'));
+  }
+
+  function _femKpiVaca(ult, B){
+    return _rgKpi('VACA GORDA', 'R$ '+_pcN(ult), B.rot + ' · ' + _femDtBr(B.datas[B.n-1]));
+  }
+  function _femDtBr(iso){
+    var p = String(iso||'').split('-');
+    return p.length === 3 ? (p[2]+'/'+p[1]+'/'+p[0]) : (iso||'–');
+  }
+
+  function _femPosicaoCard(){
+    var cid = 'chartFemPosicao', ctx = 'chartFemPosicaoContext';
+    var kEl = document.getElementById('femPosicaoKpis');
+    function limpar(msg){
+      try { renderPlot(cid, [], { _no_title:true }); } catch(e){}
+      if (kEl) kEl.innerHTML = '';
+      _exSet(ctx, _exLeitura(msg));
+    }
+    var B = _femBloco();
+    if (!B) { limpar('Escolha uma praça com série de vaca gorda em R$/@.'); return; }
+    var x = _femX(B.datas);
+    var med = _femMedia(B.vaca), dp = _femDesvio(B.vaca, med);
+    if (med == null || dp == null || !dp) { limpar('A janela não tem dispersão para calcular média e desvio.'); return; }
+    var ult = B.vaca[B.n-1];
+    var z = (ult - med) / dp;
+    var pct = _femPercentil(B.vaca, ult);
+    var mn = Math.min.apply(null, B.vaca), mx = Math.max.apply(null, B.vaca);
+    /* As cinco retas de referência têm a mesma forma e diferem só em cor,
+       rótulo e tracejado. `reta` devolve o traço pronto em vez de repetir
+       cinco vezes o mesmo literal. As duas de baixo saem da legenda: "±1
+       desvio" aparecendo duas vezes não acrescenta nada. */
+    function reta(v, nome, cor, larg, tracejado, naLegenda){
+      return { x:[x[0], x[x.length-1]], y:[v, v], type:'scatter', mode:'lines',
+               name:nome, line:{ color:cor, width:larg, dash:tracejado },
+               showlegend:naLegenda !== false, hoverinfo:'skip' };
+    }
+    renderPlot(cid, [
+      reta(med + 2*dp, '±2 desvios', _PAL.banda2, _LARG.banda, 'dot'),
+      reta(med + dp,   '±1 desvio',  _PAL.banda1, _LARG.banda, 'dash'),
+      reta(med,        'Média da janela', _PAL.referencia, _LARG.referencia, 'solid'),
+      reta(med - dp,   '±1 desvio',  _PAL.banda1, _LARG.banda, 'dash', false),
+      reta(med - 2*dp, '±2 desvios', _PAL.banda2, _LARG.banda, 'dot',  false),
+      { x:x, y:B.vaca, type:'scatter', mode:'lines', name:'Vaca gorda',
+        line:{ color:_COR_ENT_FEMEA, width:_LARG.principal }, hovertemplate:_femHover('R$/@') }
+    ], { _no_title:true, yaxis:{ title:'Vaca gorda ('+B.rot+') — R$/@' },
+         xaxis:{ title:'' }, showlegend:true });
+
+    if (kEl){
+      kEl.innerHTML =
+        _femKpiVaca(ult, B) +
+        _rgKpi('PERCENTIL', pct == null ? '–' : _pcN(pct,0)+'%', 'da janela '+B.janela.rot) +
+        _rgKpi('Z-SCORE', _pcN(z,2), 'desvios da média de R$ '+_pcN(med)) +
+        _rgKpi('FAIXA', 'R$ '+_pcN(mn,0)+' a '+_pcN(mx,0), B.n+' pregões · desvio R$ '+_pcN(dp));
+    }
+    var onde = pct == null ? ''
+      : pct >= 90 ? 'O preço está no <b>topo</b> da janela: ' + _pcN(pct,0) + '% dos pregões ficaram abaixo dele.'
+      : pct <= 10 ? 'O preço está no <b>fundo</b> da janela: só ' + _pcN(pct,0) + '% dos pregões ficaram abaixo dele.'
+      : 'O preço está no percentil ' + _pcN(pct,0) + '% da janela.';
+    _exSet(ctx, _exLeitura(
+      'Em <b>' + B.rot + '</b>, a vaca a <b>R$ ' + _pcN(ult) + '/@</b> está a <b>'
+      + _pcN(z,2) + ' desvios</b> da média de R$ ' + _pcN(med) + ' da janela '
+      + B.janela.rot + '. ' + onde,
+      'Média e desvio calculados sobre os ' + B.n + ' pregões da janela nesta praça, não '
+      + 'sobre a série inteira: trocar o período no seletor muda a referência, e é essa a '
+      + 'intenção. Num mercado em tendência o preço fica muito tempo de um lado da média — '
+      + 'o z-score mede distância, não exagero.'));
+  }
+
+  function _femYoYCard(){
+    var cid = 'chartFemYoY', ctx = 'chartFemYoYContext';
+    var kEl = document.getElementById('femYoYKpis');
+    function limpar(msg){
+      try { renderPlot(cid, [], { _no_title:true }); } catch(e){}
+      if (kEl) kEl.innerHTML = '';
+      _exSet(ctx, _exLeitura(msg));
+    }
+    var B = _femBloco();
+    if (!B) { limpar('Escolha uma praça com série de vaca gorda em R$/@.'); return; }
+    /* Calculado sobre a série INTEIRA e recortado depois: a variação de hoje
+       precisa do preço de doze meses atrás, que pode estar fora da janela. */
+    var yV = _femYoY(B.todasDatas, B.todasVaca), yB = _femYoY(B.todasDatas, B.todasBoi);
+    var d = [], v = [], b = [];
+    for (var i = 0; i < B.todasDatas.length; i++){
+      if (B.todasDatas[i] < B.janela.de) continue;
+      if (yV[i] == null && yB[i] == null) continue;
+      d.push(B.todasDatas[i]); v.push(yV[i]); b.push(yB[i]);
+    }
+    var comV = v.filter(function(z){ return z != null; });
+    if (comV.length < _FEM_MIN_N){
+      limpar('Só ' + comV.length + ' pregões com doze meses de histórico atrás nesta praça. '
+           + 'A série do CEPEA regional começa em 01/08/2024, então a variação interanual '
+           + 'nasce em agosto de 2025.');
+      return;
+    }
+    var x = _femX(d);
+    renderPlot(cid, [
+      { x:x, y:v, type:'scatter', mode:'lines', name:'Vaca gorda',
+        line:{ color:_COR_ENT_FEMEA, width:_LARG.principal }, connectgaps:false,
+        hovertemplate:_femHover('%') },
+      { x:x, y:b, type:'scatter', mode:'lines', name:'Boi gordo',
+        line:{ color:_COR_ENT_BOI, width:_LARG.destaque }, connectgaps:false,
+        hovertemplate:_femHover('%') },
+      { x:[x[0], x[x.length-1]], y:[0,0], type:'scatter', mode:'lines', name:'Zero',
+        line:{ color:_PAL.referencia, width:_LARG.banda, dash:'dash' },
+        showlegend:false, hoverinfo:'skip' }
+    ], { _no_title:true, yaxis:{ title:'Variação contra 12 meses antes (%)', ticksuffix:'%' },
+         xaxis:{ title:'' }, showlegend:true });
+
+    var uV = null, uB = null, j;
+    for (j = v.length-1; j >= 0; j--) if (v[j] != null) { uV = v[j]; break; }
+    for (j = b.length-1; j >= 0; j--) if (b[j] != null) { uB = b[j]; break; }
+    var dif = (uV != null && uB != null) ? uV - uB : null;
+    if (kEl){
+      kEl.innerHTML =
+        _rgKpi('VACA — 12 MESES', uV == null ? '–' : _pcPct(uV,1), B.rot) +
+        _rgKpi('BOI — 12 MESES', uB == null ? '–' : _pcPct(uB,1), 'mesma praça') +
+        _rgKpi('DIFERENÇA', dif == null ? '–' : _femPP(dif), 'vaca menos boi') +
+        _rgKpi('PREGÕES', comV.length + ' de ' + d.length, 'com par de doze meses atrás');
+    }
+    var leitura = dif == null ? ''
+      : dif > 1 ? 'A fêmea subiu <b>mais</b> que o macho no ano — o sinal que acompanha <b>retenção</b> de matriz.'
+      : dif < -1 ? 'A fêmea subiu <b>menos</b> que o macho no ano — o sinal que acompanha <b>descarte</b> de fêmea no abate.'
+      : 'As duas pontas andaram praticamente <b>juntas</b> no ano.';
+    _exSet(ctx, _exLeitura(
+      'Em <b>' + B.rot + '</b>, a vaca gorda está ' + (uV==null?'–':_pcPct(uV,1))
+      + ' contra doze meses atrás e o boi ' + (uB==null?'–':_pcPct(uB,1))
+      + ', uma diferença de ' + (dif==null?'–':_femPP(dif)) + ' entre as duas pontas. '
+      + leitura,
+      'Cada ponto casa com a leitura mais próxima de 365 dias antes, aceitando até dez dias '
+      + 'de folga; sem par dentro da tolerância o ponto fica vazio e a linha é interrompida '
+      + 'em vez de ligar por cima do buraco. O sinal de retenção ou descarte aqui é '
+      + 'indicativo: quem mede o ciclo é a participação de fêmeas no abate, em Oferta '
+      + 'imediata × demanda.'));
+  }
+
+  function _femVolCard(){
+    var cid = 'chartFemVol', ctx = 'chartFemVolContext';
+    var kEl = document.getElementById('femVolKpis');
+    function limpar(msg){
+      try { renderPlot(cid, [], { _no_title:true }); } catch(e){}
+      if (kEl) kEl.innerHTML = '';
+      _exSet(ctx, _exLeitura(msg));
+    }
+    var B = _femBloco();
+    if (!B) { limpar('Escolha uma praça com série de vaca gorda em R$/@.'); return; }
+    var JAN = 21;
+    if (B.n < JAN + 5) { limpar('Só ' + B.n + ' pregões na janela — a volatilidade de 21 pregões precisa de mais.'); return; }
+    var vV = _femVolMovel(B.vaca, JAN), vB = _femVolMovel(B.boi, JAN);
+    var x = _femX(B.datas);
+    renderPlot(cid, [
+      { x:x, y:vV, type:'scatter', mode:'lines', name:'Vaca gorda',
+        line:{ color:_COR_ENT_FEMEA, width:_LARG.principal }, connectgaps:false,
+        hovertemplate:_femHover('% a.a.') },
+      { x:x, y:vB, type:'scatter', mode:'lines', name:'Boi gordo',
+        line:{ color:_COR_ENT_BOI, width:_LARG.destaque }, connectgaps:false,
+        hovertemplate:_femHover('% a.a.') }
+    ], { _no_title:true, yaxis:{ title:'Volatilidade anualizada (%)', ticksuffix:'%' },
+         xaxis:{ title:'' }, showlegend:true });
+
+    function ultimo(a){ for (var i=a.length-1;i>=0;i--) if (a[i]!=null) return a[i]; return null; }
+    var uV = ultimo(vV), uB = ultimo(vB);
+    var razao = (uV != null && uB) ? uV/uB : null;
+    var limpos = vV.filter(function(z){ return z != null; });
+    var pct = (uV != null && limpos.length >= _FEM_MIN_N) ? _femPercentil(limpos, uV) : null;
+    if (kEl){
+      kEl.innerHTML =
+        _rgKpi('VOL. DA VACA', uV == null ? '–' : _pcN(uV,1)+'%', '21 pregões, anualizada') +
+        _rgKpi('VOL. DO BOI', uB == null ? '–' : _pcN(uB,1)+'%', 'mesma praça, mesma janela') +
+        _rgKpi('RAZÃO', razao == null ? '–' : _pcN(razao,2)+'×', 'quanto a vaca balança a mais') +
+        _rgKpi('PERCENTIL DA VOL.', pct == null ? '–' : _pcN(pct,0)+'%', 'contra a própria janela');
+    }
+    var leitura = razao == null ? ''
+      : razao > 1.15 ? 'A vaca está oscilando <b>' + _pcN(razao,2) + '×</b> o boi: mercado mais fino, movimento maior pelo mesmo motivo.'
+      : razao < 0.85 ? 'A vaca está oscilando <b>menos</b> que o boi nesta janela — incomum, e vale olhar se a praça teve poucos negócios.'
+      : 'As duas pontas estão oscilando praticamente <b>no mesmo tamanho</b>.';
+    _exSet(ctx, _exLeitura(
+      'Em <b>' + B.rot + '</b>, a volatilidade de 21 pregões está em <b>'
+      + (uV==null?'–':_pcN(uV,1)+'%') + ' ao ano</b> na vaca contra '
+      + (uB==null?'–':_pcN(uB,1)+'%') + ' no boi. ' + leitura,
+      'Desvio-padrão dos retornos diários na janela de 21 pregões, multiplicado por √252. '
+      + 'É volatilidade <b>histórica</b>: descreve o que aconteceu, não o que o mercado '
+      + 'espera. Não existe opção de vaca gorda na B3, então não há implícita para comparar.'));
+  }
+
+
+  /* ── ⑥ REPOSIÇÃO: ÁGIO POR CATEGORIA E TROCA ENTRE CATEGORIAS ───────
+     O pedido foi "ágio por categoria, relação de troca entre categorias".
+     As duas contas são TRANSVERSAIS: comparam categorias no mesmo dia, e
+     por isso funcionam já na primeira leitura da coleta — ao contrário de
+     curva, média e percentil, que precisam de meses.
+
+     O QUE NÃO SE SUPÕE AQUI. Peso vivo não vira arroba de carcaça neste
+     card. O rendimento de carcaça muda com categoria, raça, acabamento e
+     frigorífico; fixar um número transformaria uma premissa em dado e
+     contaminaria todas as comparações de uma vez. O ágio é por QUILO VIVO,
+     onde os dois lados da divisão saem da planilha, e a troca é por
+     CABEÇA, onde não há conversão nenhuma.                                */
+
+  /* As oito colunas da aba, lidas com raça, categoria e peso separados.
+     O peso sai do rótulo — é dado da planilha, não premissa daqui. */
+  function _femCategorias(){
+    var R = _femTab('femeasReposicao');
+    if (!R || !R.ultima) return null;
+    var cat = [];
+    R.series.forEach(function(c){
+      var preco = R.ultima[c];
+      if (!(preco > 0)) return;
+      var kg = (c.match(/(\d{2,4})\s*kg/i) || [])[1];
+      if (!kg) return;
+      var nome = c.replace(/\s*\(R\$\/cabeça\)\s*/i, '')
+                  .replace(/^(Nelore|Mestiça)\s*/i, '')
+                  .replace(/\s*\d{2,4}\s*kg\s*/i, '').trim();
+      cat.push({ raca: /^mesti/i.test(c) ? 'Mestiça' : 'Nelore', nome: nome,
+                 preco: preco, kg: Number(kg), porKg: preco / Number(kg) });
+    });
+    if (!cat.length) return null;
+    /* Ordem da escada: do mais pesado ao mais leve, que é como o mercado
+       lê a categoria. Dentro do mesmo peso, Nelore antes de Mestiça. */
+    cat.sort(function(a, b){ return b.kg - a.kg || (a.raca < b.raca ? -1 : 1); });
+    return { aba: R.aba, n: R.n, data: R.ultima.data, cat: cat,
+             rotulos: cat.filter(function(c){ return c.raca === 'Nelore'; })
+                         .map(function(c){ return c.nome; }) };
+  }
+  function _femRef(C, raca){
+    /* A referência do ágio é a categoria mais pesada da mesma raça. */
+    var r = null;
+    C.cat.forEach(function(c){ if (c.raca === raca && (!r || c.kg > r.kg)) r = c; });
+    return r;
+  }
+
+  function _femAgioCard(){
+    var cid = 'chartFemAgio', ctx = 'chartFemAgioContext';
+    var kEl = document.getElementById('femAgioKpis');
+    var tEl = document.getElementById('femAgioTab');
+    function limpar(msg){
+      try { renderPlot(cid, [], { _no_title:true }); } catch(e){}
+      if (kEl) kEl.innerHTML = '';
+      if (tEl) tEl.innerHTML = '';
+      _exSet(ctx, _exLeitura(msg));
+    }
+    var C = _femCategorias();
+    if (!C) { limpar('A planilha não trouxe a aba <b>FÊMEAS - REPOSIÇÃO</b> com preço e peso.'); return; }
+
+    var rotulos = C.rotulos.slice();
+    /* Se alguma categoria só existe numa das raças, ela entra assim mesmo —
+       o rótulo vem da união, não da Nelore. */
+    C.cat.forEach(function(c){ if (rotulos.indexOf(c.nome) < 0) rotulos.push(c.nome); });
+
+    function serie(raca){
+      var ref = _femRef(C, raca);
+      var y = [], cd = [], ag = [];
+      rotulos.forEach(function(nome){
+        var achou = null;
+        C.cat.forEach(function(c){ if (c.raca === raca && c.nome === nome) achou = c; });
+        y.push(achou ? achou.porKg : null);
+        cd.push(achou ? [achou.kg, achou.preco] : [null, null]);
+        ag.push((achou && ref && ref.porKg) ? (achou.porKg / ref.porKg - 1) * 100 : null);
+      });
+      return { y: y, cd: cd, ag: ag, ref: ref };
+    }
+    var N = serie('Nelore'), M = serie('Mestiça');
+    var traces = [
+      { x: rotulos, y: N.y, type: 'bar', name: 'Nelore — R$/kg vivo', customdata: N.cd,
+        marker: { color: _COR_ENT_FEMEA },
+        hovertemplate: _femHover('R$/kg vivo', '%{customdata[0]} kg · R$ %{customdata[1]:,.2f}/cab') },
+      { x: rotulos, y: M.y, type: 'bar', name: 'Mestiça — R$/kg vivo', customdata: M.cd,
+        marker: { color: 'rgba(190,18,60,0.45)' },
+        hovertemplate: _femHover('R$/kg vivo', '%{customdata[0]} kg · R$ %{customdata[1]:,.2f}/cab') },
+      { x: rotulos, y: N.ag, type: 'scatter', mode: 'lines+markers', yaxis: 'y2',
+        name: 'Ágio sobre a vaca boiadeira (Nelore)',
+        line: { color: _PAL.referencia, width: _LARG.referencia },
+        marker: { size: 6, color: _PAL.referencia },
+        hovertemplate: _femHover('%', 'contra a categoria mais pesada da raça') }
+    ];
+    renderPlot(cid, traces, { _no_title:true, barmode:'group',
+      yaxis:  { title:'Preço por quilo vivo (R$/kg)' },
+      yaxis2: { title:'Ágio sobre a mais pesada (%)', overlaying:'y', side:'right',
+                ticksuffix:'%', showgrid:false, zeroline:true },
+      xaxis:  { title:'Categoria' }, showlegend:true });
+
+    var caras = C.cat.slice().sort(function(a, b){ return b.porKg - a.porKg; });
+    var maisCara = caras[0], maisBarata = caras[caras.length - 1];
+    var refN = _femRef(C, 'Nelore'), refM = _femRef(C, 'Mestiça');
+    var dif = (refN && refM && refM.porKg) ? (refN.porKg / refM.porKg - 1) * 100 : null;
+    if (kEl){
+      kEl.innerHTML =
+        _rgKpi('QUILO MAIS CARO', 'R$ ' + _pcN(maisCara.porKg),
+               maisCara.raca + ' ' + maisCara.nome + ' · ' + maisCara.kg + ' kg') +
+        _rgKpi('QUILO MAIS BARATO', 'R$ ' + _pcN(maisBarata.porKg),
+               maisBarata.raca + ' ' + maisBarata.nome + ' · ' + maisBarata.kg + ' kg') +
+        _rgKpi('ESCADA', _pcPct((maisCara.porKg / maisBarata.porKg - 1) * 100, 1),
+               'da ponta leve à ponta pesada') +
+        _rgKpi('NELORE × MESTIÇA', dif == null ? '–' : _pcPct(dif, 1),
+               'vaca boiadeira, por quilo');
+    }
+    if (tEl){
+      var h = '<div class="rb-head">PREÇO, PESO E ÁGIO — COLETA DE ' + _femDtBr(C.data) + '</div>'
+            + '<table class="pc-tab"><thead><tr><th>categoria</th><th>peso</th>'
+            + '<th>R$/cabeça</th><th>R$/kg vivo</th><th>ágio sobre a mais pesada</th></tr></thead><tbody>';
+      C.cat.forEach(function(c){
+        var ref = _femRef(C, c.raca);
+        var a = (ref && ref.porKg) ? (c.porKg / ref.porKg - 1) * 100 : null;
+        h += '<tr><td>' + c.raca + ' ' + c.nome + '</td><td>' + c.kg + ' kg</td><td>R$ '
+           + _pcN(c.preco) + '</td><td>R$ ' + _pcN(c.porKg) + '</td><td>'
+           + (a == null ? '–' : _pcPct(a, 1)) + '</td></tr>';
+      });
+      tEl.innerHTML = h + '</tbody></table>';
+    }
+    _exSet(ctx, _exLeitura(
+      'Na coleta de <b>' + _femDtBr(C.data) + '</b>, o quilo mais caro é o da <b>'
+      + maisCara.raca + ' ' + maisCara.nome + '</b> (R$ ' + _pcN(maisCara.porKg)
+      + '/kg, ' + maisCara.kg + ' kg) e o mais barato o da <b>' + maisBarata.raca + ' '
+      + maisBarata.nome + '</b> (R$ ' + _pcN(maisBarata.porKg) + '/kg). Entre as duas pontas há '
+      + _pcPct((maisCara.porKg / maisBarata.porKg - 1) * 100, 1) + '.'
+      + (dif == null ? '' : ' Na vaca boiadeira, o quilo Nelore está ' + _pcPct(dif, 1)
+                          + ' contra o Mestiço.'),
+      'Fonte: ' + C.aba + ', <b>' + C.n + '</b> leitura' + (C.n === 1 ? '' : 's') + ' desde '
+      + '16/10/2026. ' + (C.n < 10
+        ? 'Com esta quantidade de leituras não existe média, faixa nem percentil — o card é uma fotografia do dia e passa a ter história quando a coleta acumular meses.'
+        : 'A estatística de dispersão entra quando a série justificar.')
+      + ' Tudo em peso vivo: nenhum rendimento de carcaça é suposto, e por isso os números '
+      + 'não se comparam diretamente com a arroba do boi gordo.'));
+  }
+
+  function _femMatrizCard(){
+    var cid = 'chartFemMatriz', ctx = 'chartFemMatrizContext';
+    var kEl = document.getElementById('femMatrizKpis');
+    var tEl = document.getElementById('femMatrizTab');
+    function limpar(msg){
+      try { renderPlot(cid, [], { _no_title:true }); } catch(e){}
+      if (kEl) kEl.innerHTML = '';
+      if (tEl) tEl.innerHTML = '';
+      _exSet(ctx, _exLeitura(msg));
+    }
+    var C = _femCategorias();
+    if (!C) { limpar('A planilha não trouxe a aba <b>FÊMEAS - REPOSIÇÃO</b> com preço e peso.'); return; }
+    var rot = C.cat.map(function(c){ return c.raca.slice(0,3) + '. ' + c.nome; });
+    var z = [], i, j;
+    for (i = 0; i < C.cat.length; i++){
+      var linha = [];
+      for (j = 0; j < C.cat.length; j++) linha.push(C.cat[i].preco / C.cat[j].preco);
+      z.push(linha);
+    }
+    /* A MATRIZ INTEIRA FICA NA TABELA; O GRÁFICO MOSTRA UMA LINHA DELA.
+       A primeira versão desenhava as 64 células num heatmap, e com oito
+       rótulos longos nos dois eixos nada ficava legível: os nomes do eixo
+       esquerdo saíam cortados e os de baixo se atropelavam com o título.
+       A tabela logo abaixo já é a matriz completa e se lê melhor que
+       qualquer mapa de cor — então o gráfico passa a responder a pergunta
+       que se faz de fato, uma categoria por vez, com a referência à
+       escolha do operador. */
+    var selR = document.getElementById('femMatrizRef');
+    if (selR && !selR.options.length){
+      rot.forEach(function(r, k){ selR.appendChild(new Option(r, String(k))); });
+      selR.selectedIndex = 0;
+    }
+    var iRef = selR ? (parseInt(selR.value, 10) || 0) : 0;
+    if (!(iRef >= 0 && iRef < C.cat.length)) iRef = 0;
+    var ref = C.cat[iRef];
+    var outros = [], valores = [], detalhe = [];
+    for (j = 0; j < C.cat.length; j++){
+      if (j === iRef) continue;
+      outros.push(rot[j]);
+      valores.push(z[iRef][j]);
+      detalhe.push([C.cat[j].kg, C.cat[j].preco]);
+    }
+    renderPlot(cid, [
+      { x: outros, y: valores, type: 'bar', name: 'Cabeças compradas', customdata: detalhe,
+        marker: { color: _COR_ENT_FEMEA },
+        hovertemplate: _femHover('cabeças', '%{customdata[0]} kg · R$ %{customdata[1]:,.2f}/cab') },
+      { x: [outros[0], outros[outros.length-1]], y: [1, 1], type: 'scatter', mode: 'lines',
+        name: 'Troca de um por um',
+        line: { color: _PAL.referencia, width: _LARG.referencia, dash: 'dash' },
+        hoverinfo: 'skip' }
+    ], { _no_title:true,
+      yaxis: { title: 'Cabeças por uma ' + rot[iRef] },
+      xaxis: { title: 'Categoria comprada' }, showlegend: true });
+
+    var pesada = C.cat[0], leve = C.cat[C.cat.length - 1];
+    var nelBez = null, nelVaca = null;
+    C.cat.forEach(function(c){
+      if (c.raca === 'Nelore' && /bezerra/i.test(c.nome)) nelBez = c;
+      if (c.raca === 'Nelore' && /boiadeira/i.test(c.nome)) nelVaca = c;
+    });
+    if (kEl){
+      kEl.innerHTML =
+        _rgKpi('MAIS CARA', 'R$ ' + _pcN(pesada.preco, 0), pesada.raca + ' ' + pesada.nome + ' · ' + pesada.kg + ' kg') +
+        _rgKpi('MAIS BARATA', 'R$ ' + _pcN(leve.preco, 0), leve.raca + ' ' + leve.nome + ' · ' + leve.kg + ' kg') +
+        _rgKpi('TROCA DAS PONTAS', _pcN(pesada.preco / leve.preco, 2) + '×',
+               'cabeças da mais barata por uma da mais cara') +
+        _rgKpi((nelVaca && nelBez) ? 'VACA → BEZERRA' : 'CATEGORIAS',
+               (nelVaca && nelBez) ? _pcN(nelVaca.preco / nelBez.preco, 2) + '×' : String(C.cat.length),
+               (nelVaca && nelBez) ? 'bezerras Nelore por uma boiadeira' : 'na coleta');
+    }
+    if (tEl){
+      var h = '<div class="rb-head">UMA CABEÇA DA LINHA COMPRA QUANTAS DA COLUNA — '
+            + _femDtBr(C.data) + '</div><table class="pc-tab"><thead><tr><th></th>';
+      rot.forEach(function(r){ h += '<th>' + r + '</th>'; });
+      h += '</tr></thead><tbody>';
+      for (i = 0; i < C.cat.length; i++){
+        h += '<tr><td><b>' + rot[i] + '</b></td>';
+        for (j = 0; j < C.cat.length; j++) h += '<td>' + _pcN(z[i][j], 2) + '</td>';
+        h += '</tr>';
+      }
+      tEl.innerHTML = h + '</tbody></table>';
+    }
+    _exSet(ctx, _exLeitura(
+      'Aos preços de <b>' + _femDtBr(C.data) + '</b>, uma <b>' + pesada.raca + ' ' + pesada.nome
+      + '</b> (R$ ' + _pcN(pesada.preco, 0) + ') compra <b>' + _pcN(pesada.preco / leve.preco, 2)
+      + ' cabeças</b> de <b>' + leve.raca + ' ' + leve.nome + '</b> (R$ ' + _pcN(leve.preco, 0) + ').'
+      + ((nelVaca && nelBez) ? ' Dentro do Nelore, uma vaca boiadeira vale '
+          + _pcN(nelVaca.preco / nelBez.preco, 2) + ' bezerras.' : ''),
+      'A relação de troca é razão de preço por cabeça: ela não muda se todas as categorias '
+      + 'subirem na mesma proporção, e é por isso que continua informando quando o preço em '
+      + 'reais já não informa. Fonte: ' + C.aba + ', ' + C.n + ' leitura'
+      + (C.n === 1 ? '' : 's') + '. Não entram frete, comissão, prazo de pagamento nem o '
+      + 'tempo até o abate — a troca é de preço, não de resultado.'));
+  }
+
   function _femRender(){
     [['desconto',_femDescontoCard], ['base',_femBaseCard],
-     ['troca',_femTrocaCard], ['novilha',_femNovilhaCard]
+     ['troca',_femTrocaCard], ['novilha',_femNovilhaCard],
+     ['preço',_femPrecoCard], ['posição',_femPosicaoCard],
+     ['interanual',_femYoYCard], ['volatilidade',_femVolCard],
+     ['ágio',_femAgioCard], ['matriz',_femMatrizCard]
     ].forEach(function(par){
       try { par[1](); } catch(e){ console.warn('Fêmeas — '+par[0]+':', e); }
     });
@@ -48633,12 +49484,575 @@ function updateRelacao() {
 
   /* Cada card lê os próprios controles, como no regional e no atacado. */
   document.addEventListener('DOMContentLoaded', function(){
-    ['femPraca','femPeriodo','femBgi'].forEach(function(id){
+    ['femPraca','femPeriodo','femBgi','femMatrizRef'].forEach(function(id){
       var el = document.getElementById(id); if (!el) return;
       el.addEventListener('change', function(){
         try { _femRender(); } catch(e){ console.warn('Fêmeas ('+id+'):', e); }
       });
     });
+  });
+
+
+  /* ══════════════════════════════════════════════════════════════════════
+     JUROS FUTUROS (DI1) — a curva, o deslocamento e o custo do dinheiro
+     ══════════════════════════════════════════════════════════════════════
+     A base já trazia 47 vencimentos de DI1 e o painel não desenhava nenhum:
+     juros existia só como item do seletor de contratos. Quem abria
+     "Mercados & Macro" via três telas de boi contra inflação e nenhuma
+     leitura do custo do dinheiro.
+
+     QUATRO LEITURAS, NESTA ORDEM. A curva (onde está o custo em cada
+     prazo), o deslocamento (o que mudou e em que parte da curva), o juro
+     contra a arroba (se o custo do dinheiro move o preço que a 3M vende) e
+     o carrego (se o prêmio do futuro de boi cobre o juro do período). As
+     três primeiras são descritivas; a quarta é a única que vira decisão —
+     e por isso é a que declara em letra o que a conta não inclui.
+
+     NADA DE PROJEÇÃO. A taxa implícita é preço negociado, não previsão da
+     BMS. O painel mostra o que o mercado cobrou, com a data da leitura ao
+     lado; não existe aqui nenhum modelo de Selic futura.
+
+     UNIDADE: PONTO PERCENTUAL. Toda diferença entre taxas aparece em p.p.,
+     nunca em "%", porque 14,00% → 14,50% é +0,50 p.p. e +3,57% ao mesmo
+     tempo — e os dois números dizem coisas diferentes.                    */
+
+  /* O HOVER DA CASA, com a unidade de taxa, que não está na tabela de
+     `_applyHoverTemplates`. Mesmo formato do módulo de fêmeas. */
+  function _jurHover(unidade, detalhe){
+    return "<span class='hover-label'>%{fullData.name}</span>: "
+         + "<b>%{y:,.2f}</b> " + unidade
+         + (detalhe ? "<br>" + detalhe : "") + "<extra></extra>";
+  }
+  function _jurPP(v){
+    if (v == null || !isFinite(v)) return '–';
+    return (v >= 0 ? '+' : '−') + _pcN(Math.abs(v), 2) + ' p.p.';
+  }
+  var _JUR_MES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  function _jurRotVenc(k){ return _JUR_MES[k % 12] + '/' + String(Math.floor(k/12)).slice(-2); }
+  function _jurDtBr(iso){
+    if (!iso) return '–';
+    var p = String(iso).split('-');
+    return p.length === 3 ? (p[2] + '/' + p[1] + '/' + p[0]) : iso;
+  }
+  /* O DI1 da B3 liquida no PRIMEIRO dia útil do mês de vencimento — ao
+     contrário do BGI, que liquida no último. Usar o dia 15 como todo mundo
+     usava jogaria cada vértice meio mês para a frente no eixo, e a
+     interpolação do carrego herdaria o erro. */
+  function _jurPrimeiroDiaUtil(ano, mes){
+    var d = new Date(ano, mes, 1);
+    while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1);
+    return d;
+  }
+  function _jurVencData(k){ return _jurPrimeiroDiaUtil(Math.floor(k/12), k % 12); }
+  /* Dias úteis entre duas datas, contando só a semana. Sem o calendário de
+     feriados da B3 o número fica alguns dias otimista — está dito na tela. */
+  function _jurDU(a, b){
+    if (!a || !b) return null;
+    var d = new Date(a.getFullYear(), a.getMonth(), a.getDate()), n = 0;
+    var fim = new Date(b.getFullYear(), b.getMonth(), b.getDate());
+    while (d < fim){ d.setDate(d.getDate() + 1); var w = d.getDay(); if (w !== 0 && w !== 6) n++; }
+    return n;
+  }
+
+  /* ── A base de DI1, lida uma vez ─────────────────────────────────────── */
+  var _JUR_CACHE = null;
+  function _jurBase(){
+    if (_JUR_CACHE) return _JUR_CACHE;
+    if (!window.workbook || !workbook.SheetNames) return null;
+    var contratos = [];
+    workbook.SheetNames.forEach(function(n){
+      var nome = String(n).trim().toUpperCase();
+      if (!/^DI1[FGHJKMNQUVXZ]\d{2}$/.test(nome)) return;
+      var k = null;
+      try { k = _contractMaturityKey(nome); } catch(e){}
+      if (k == null) return;
+      try { if (_isContractExpired(nome)) return; } catch(e){}
+      var linhas = parseSheet(n) || [];
+      if (!linhas.length) return;
+      /* A coluna de taxa é encontrada pelo rótulo, não pela posição:
+         inserir uma coluna na planilha não pode trocar o significado. */
+      var col = null, cols = Object.keys(linhas[0]);
+      for (var i = 0; i < cols.length; i++) if (/taxa/i.test(cols[i])) { col = cols[i]; break; }
+      if (!col) return;
+      var mapa = {}, datas = [];
+      linhas.forEach(function(r){
+        var iso = _rgData(r['Data']), v = Number(r[col]);
+        if (!iso || !isFinite(v)) return;
+        if (mapa[iso] == null) datas.push(iso);
+        mapa[iso] = v;
+      });
+      if (!datas.length) return;
+      datas.sort();
+      contratos.push({ nome: nome, k: k, mapa: mapa, datas: datas, venc: _jurVencData(k) });
+    });
+    if (!contratos.length) return null;
+    contratos.sort(function(a, b){ return a.k - b.k; });
+    var todas = {};
+    contratos.forEach(function(c){ c.datas.forEach(function(d){ todas[d] = 1; }); });
+    _JUR_CACHE = { contratos: contratos, calendario: Object.keys(todas).sort() };
+    return _JUR_CACHE;
+  }
+  /* Taxa do contrato na data pedida, ou na última anterior — desde que essa
+     última não esteja velha demais. Sem o piso, um contrato que parou de
+     negociar devolveria a cotação de meses atrás como se fosse de hoje. */
+  function _jurTaxaEm(c, iso, isoMin){
+    var ds = c.datas, lo = 0, hi = ds.length - 1, achou = null;
+    while (lo <= hi){
+      var m = (lo + hi) >> 1;
+      if (ds[m] <= iso){ achou = ds[m]; lo = m + 1; } else hi = m - 1;
+    }
+    if (achou == null) return null;
+    if (isoMin && achou < isoMin) return null;
+    return c.mapa[achou];
+  }
+  /* A curva inteira numa data: um ponto por vencimento vigente. */
+  function _jurCurvaEm(B, idx){
+    if (idx < 0 || idx >= B.calendario.length) return null;
+    var iso = B.calendario[idx];
+    var isoMin = B.calendario[Math.max(0, idx - 5)];
+    var pts = [];
+    B.contratos.forEach(function(c){
+      var v = _jurTaxaEm(c, iso, isoMin);
+      if (v == null) return;
+      pts.push({ k: c.k, nome: c.nome, venc: c.venc, taxa: v });
+    });
+    return pts.length >= 3 ? { iso: iso, pts: pts } : null;
+  }
+  /* Taxa interpolada em uma data qualquer, linear no tempo entre os dois
+     vértices que a cercam. Fora das pontas, devolve a ponta — extrapolar
+     curva de juros é inventar número. */
+  function _jurTaxaNoPrazo(curva, data){
+    var p = curva.pts;
+    if (!p.length) return null;
+    var t = data.getTime();
+    if (t <= p[0].venc.getTime()) return p[0].taxa;
+    if (t >= p[p.length - 1].venc.getTime()) return p[p.length - 1].taxa;
+    for (var i = 1; i < p.length; i++){
+      var t0 = p[i - 1].venc.getTime(), t1 = p[i].venc.getTime();
+      if (t >= t0 && t <= t1){
+        if (t1 === t0) return p[i].taxa;
+        var w = (t - t0) / (t1 - t0);
+        return p[i - 1].taxa + w * (p[i].taxa - p[i - 1].taxa);
+      }
+    }
+    return null;
+  }
+
+  /* ── ① A CURVA ──────────────────────────────────────────────────────── */
+  function _jurCurvaCard(){
+    var cid = 'chartJurCurva', ctx = 'chartJurCurvaContext';
+    var kEl = document.getElementById('jurCurvaKpis');
+    function limpar(msg){
+      try { renderPlot(cid, [], { _no_title: true }); } catch(e){}
+      if (kEl) kEl.innerHTML = '';
+      _exSet(ctx, _exLeitura(msg));
+    }
+    var B = _jurBase();
+    if (!B) { limpar('Não encontrei contratos de DI1 vigentes na base publicada.'); return; }
+    var N = B.calendario.length;
+    var comps = [
+      { n: 0,   rot: 'Hoje',             cor: _PAL.principal, larg: _LARG.principal,  dash: 'solid'   },
+      { n: 21,  rot: 'Há 21 pregões',    cor: _PAL.destaque,  larg: _LARG.destaque,   dash: 'dot'     },
+      { n: 63,  rot: 'Há 63 pregões',    cor: _PAL.apoio,     larg: _LARG.apoio,      dash: 'dash'    },
+      { n: 252, rot: 'Há 252 pregões',   cor: _PAL.neutro,    larg: _LARG.historico,  dash: 'dashdot' }
+    ];
+    var traces = [], curvas = {};
+    comps.forEach(function(cp){
+      var C = _jurCurvaEm(B, N - 1 - cp.n);
+      if (!C) return;
+      curvas[cp.n] = C;
+      traces.push({
+        x: C.pts.map(function(p){ return p.venc; }),
+        y: C.pts.map(function(p){ return p.taxa; }),
+        type: 'scatter', mode: (cp.n === 0 ? 'lines+markers' : 'lines'),
+        name: cp.rot + ' (' + _jurDtBr(C.iso) + ')',
+        line: { color: cp.cor, width: cp.larg, dash: cp.dash },
+        marker: { size: 5, color: cp.cor },
+        hovertemplate: _jurHover('% a.a.', 'vencimento %{x|%b/%Y}')
+      });
+    });
+    if (!traces.length || !curvas[0]) { limpar('Não há pregões suficientes na base para desenhar a curva.'); return; }
+
+    var hoje = curvas[0].pts, curto = hoje[0], longo = hoje[hoje.length - 1];
+    var incl = longo.taxa - curto.taxa;
+    var desl21 = null;
+    if (curvas[21]){
+      var m = {}, soma = 0, cnt = 0;
+      curvas[21].pts.forEach(function(p){ m[p.k] = p.taxa; });
+      hoje.forEach(function(p){ if (m[p.k] != null){ soma += p.taxa - m[p.k]; cnt++; } });
+      if (cnt) desl21 = soma / cnt;
+    }
+    renderPlot(cid, traces, {
+      _no_title: true,
+      yaxis: { title: 'Taxa implícita (% a.a.)', ticksuffix: '%' },
+      /* Este eixo é VENCIMENTO, não a linha do tempo da cotação: "30d / 90d /
+         6m / 1a" cortaria a curva pelo prazo do contrato, não pelo período
+         observado — a mesma razão pela qual o card de ágio desliga os botões. */
+      xaxis: { title: 'Vencimento do contrato', rangeselector: { visible: false } },
+      showlegend: true
+    });
+
+    if (kEl){
+      kEl.innerHTML =
+        _rgKpi('PONTA CURTA', _pcN(curto.taxa, 2) + '%', curto.nome + ' · venc. ' + _jurRotVenc(curto.k)) +
+        _rgKpi('PONTA LONGA', _pcN(longo.taxa, 2) + '%', longo.nome + ' · venc. ' + _jurRotVenc(longo.k)) +
+        _rgKpi('INCLINAÇÃO', _jurPP(incl), 'longa − curta, ' + hoje.length + ' vértices') +
+        _rgKpi('EM 21 PREGÕES', _jurPP(desl21), desl21 == null ? 'sem base de comparação'
+               : (desl21 >= 0 ? 'curva abriu, na média' : 'curva fechou, na média'));
+    }
+
+    var _nComp = comps.filter(function(cp){ return curvas[cp.n]; }).length - 1;
+    var formato = incl > 0.25 ? 'A curva está <b>positivamente inclinada</b>: o mercado cobra mais caro pelo prazo longo.'
+                : incl < -0.25 ? 'A curva está <b>invertida</b>: o prazo curto custa mais que o longo — leitura clássica de aperto temporário.'
+                : 'A curva está praticamente <b>plana</b>: o mercado não distingue muito o custo de curto e de longo prazo.';
+    _exSet(ctx, _exLeitura(
+      'Em <b>' + _jurDtBr(curvas[0].iso) + '</b>, o DI1 negociou de <b>' + _pcN(curto.taxa, 2)
+      + '% a.a.</b> no vencimento ' + _jurRotVenc(curto.k) + ' a <b>' + _pcN(longo.taxa, 2)
+      + '% a.a.</b> em ' + _jurRotVenc(longo.k) + ' — inclinação de ' + _jurPP(incl)
+      + ' entre as pontas. ' + formato
+      + (desl21 == null ? '' : ' Contra 21 pregões atrás, a curva andou ' + _jurPP(desl21) + ' na média dos vértices.'),
+      'Taxa implícita negociada na B3, não projeção. São ' + hoje.length
+      + ' vencimentos vigentes na base; os já liquidados ficam fora. O eixo é a data de '
+      + 'vencimento, calculada como o primeiro dia útil do mês do contrato. '
+      + 'A série de DI1 do Radar começa em ' + _jurDtBr(B.calendario[0]) + ' e tem '
+      + N + ' pregões, então das três comparações com o passado '
+      + (_nComp === 1 ? 'só uma está disponível hoje' : _nComp + ' estão disponíveis hoje')
+      + ' — as demais entram sozinhas quando a série alcançar o horizonte.'));
+  }
+
+  /* ── ② O DESLOCAMENTO ───────────────────────────────────────────────── */
+  function _jurDeslocCard(){
+    var cid = 'chartJurDesloc', ctx = 'chartJurDeslocContext';
+    function limpar(msg){
+      try { renderPlot(cid, [], { _no_title: true }); } catch(e){}
+      _exSet(ctx, _exLeitura(msg));
+    }
+    var B = _jurBase();
+    if (!B) { limpar('Não encontrei contratos de DI1 vigentes na base publicada.'); return; }
+    var N = B.calendario.length;
+    var C0 = _jurCurvaEm(B, N - 1);
+    if (!C0) { limpar('Não há pregões suficientes na base.'); return; }
+    var horizontes = [
+      { n: 21, rot: '21 pregões', cor: _PAL.destaque },
+      { n: 63, rot: '63 pregões', cor: _PAL.apoio }
+    ];
+    var rot = C0.pts.map(function(p){ return _jurRotVenc(p.k); });
+    var traces = [], resumo = [];
+    horizontes.forEach(function(h){
+      var C = _jurCurvaEm(B, N - 1 - h.n);
+      if (!C) return;
+      var m = {}; C.pts.forEach(function(p){ m[p.k] = p.taxa; });
+      var ys = C0.pts.map(function(p){ return m[p.k] == null ? null : p.taxa - m[p.k]; });
+      var val = ys.filter(function(v){ return v != null; });
+      if (!val.length) return;
+      traces.push({
+        x: rot, y: ys, type: 'bar', name: 'Variação em ' + h.rot,
+        marker: { color: h.cor },
+        hovertemplate: _jurHover('p.p.', 'vencimento %{x}')
+      });
+      var soma = 0; val.forEach(function(v){ soma += v; });
+      resumo.push({ rot: h.rot, media: soma / val.length,
+                    maior: val.reduce(function(a, b){ return Math.abs(b) > Math.abs(a) ? b : a; }, val[0]) });
+    });
+    if (!traces.length) { limpar('Não há histórico suficiente para comparar a curva com o passado.'); return; }
+    renderPlot(cid, traces, {
+      _no_title: true, barmode: 'group',
+      yaxis: { title: 'Variação da taxa (pontos percentuais)', zeroline: true },
+      xaxis: { title: 'Vencimento do contrato' },
+      showlegend: true
+    });
+    var r0 = resumo[0];
+    _exSet(ctx, _exLeitura(
+      resumo.map(function(r){
+        return 'Em <b>' + r.rot + '</b> a curva andou ' + _jurPP(r.media) + ' na média dos vértices';
+      }).join('; ') + '. '
+      + (r0 ? ('O maior movimento no horizonte de ' + r0.rot + ' foi de ' + _jurPP(r0.maior) + ' num único vértice. ') : '')
+      + (r0 && r0.media > 0.05 ? 'Abertura: financiar ficou mais caro.'
+         : r0 && r0.media < -0.05 ? 'Fechamento: financiar ficou mais barato.'
+         : 'Sem deslocamento relevante no período.'),
+      'Barra positiva é abertura e negativa é fechamento, vencimento por vencimento. '
+      + 'Vértices sem cotação no pregão de comparação ficam vazios em vez de receber o '
+      + 'valor do vizinho.'));
+  }
+
+  /* ── ③ JUROS × BOI ──────────────────────────────────────────────────── */
+  function _jurBoiSerie(){
+    /* O boi gordo físico do CEPEA, que é a referência de venda da 3M. */
+    if (!window.workbook || !workbook.Sheets) return null;
+    var nome = null;
+    workbook.SheetNames.forEach(function(n){
+      if (String(n).trim().toUpperCase() === 'BOI GORDO') nome = n;
+    });
+    if (!nome) return null;
+    var linhas = parseSheet(nome) || [];
+    if (!linhas.length) return null;
+    var col = null, cols = Object.keys(linhas[0]);
+    for (var i = 0; i < cols.length; i++) if (/pre[çc]o/i.test(cols[i])) { col = cols[i]; break; }
+    if (!col) return null;
+    var mapa = {}, datas = [];
+    linhas.forEach(function(r){
+      var iso = _rgData(r['Data']), v = Number(r[col]);
+      if (!iso || !isFinite(v)) return;
+      if (mapa[iso] == null) datas.push(iso);
+      mapa[iso] = v;
+    });
+    datas.sort();
+    return datas.length ? { mapa: mapa, datas: datas } : null;
+  }
+  function _jurMensal(isos, vals){
+    var acc = {}, ordem = [];
+    for (var i = 0; i < isos.length; i++){
+      var ch = isos[i].slice(0, 7);
+      if (!acc[ch]) { acc[ch] = { s: 0, n: 0 }; ordem.push(ch); }
+      acc[ch].s += vals[i]; acc[ch].n++;
+    }
+    ordem.sort();
+    return { chaves: ordem, valores: ordem.map(function(c){ return acc[c].s / acc[c].n; }) };
+  }
+  function _jurVar(a){
+    var o = [];
+    for (var i = 1; i < a.length; i++) o.push(a[i - 1] ? (a[i] / a[i - 1] - 1) : null);
+    return o;
+  }
+  function _jurDif(a){
+    var o = [];
+    for (var i = 1; i < a.length; i++) o.push(a[i] - a[i - 1]);
+    return o;
+  }
+  function _jurCorr(x, y){
+    var n = Math.min(x.length, y.length), xs = [], ys = [];
+    for (var i = 0; i < n; i++){
+      if (x[i] == null || y[i] == null || !isFinite(x[i]) || !isFinite(y[i])) continue;
+      xs.push(x[i]); ys.push(y[i]);
+    }
+    if (xs.length < _JUR_MIN_N) return null;
+    var mx = 0, my = 0, k;
+    for (k = 0; k < xs.length; k++){ mx += xs[k]; my += ys[k]; }
+    mx /= xs.length; my /= ys.length;
+    var sxy = 0, sxx = 0, syy = 0;
+    for (k = 0; k < xs.length; k++){
+      var dx = xs[k] - mx, dy = ys[k] - my;
+      sxy += dx * dy; sxx += dx * dx; syy += dy * dy;
+    }
+    return (sxx > 0 && syy > 0) ? sxy / Math.sqrt(sxx * syy) : null;
+  }
+  var _JUR_MIN_N = 10;
+
+  function _jurPopulaVertices(){
+    var sel = document.getElementById('jurVertice');
+    if (!sel || sel.options.length) return;
+    var B = _jurBase(); if (!B) return;
+    /* Padrão: o vértice mais próximo de 12 meses. É o prazo em que uma
+       decisão de confinamento se fecha — nem o overnight nem a ponta de
+       dez anos dizem alguma coisa sobre o lote. */
+    var hoje = new Date(), alvo = hoje.getFullYear() * 12 + hoje.getMonth() + 12, melhor = 0;
+    B.contratos.forEach(function(c, i){
+      sel.appendChild(new Option(c.nome + ' (' + _jurRotVenc(c.k) + ')', c.nome));
+      if (Math.abs(c.k - alvo) < Math.abs(B.contratos[melhor].k - alvo)) melhor = i;
+    });
+    sel.selectedIndex = melhor;
+  }
+  function _jurJanelaSel(){
+    var s = document.getElementById('jurJanela');
+    var m = s ? parseInt(s.value, 10) : 12;
+    if (!isFinite(m) || m <= 0) return { de: '0000-00-00', rot: 'série inteira' };
+    var d = new Date(); d.setMonth(d.getMonth() - m);
+    return { de: d.toISOString().slice(0, 10), rot: 'últimos ' + m + ' meses' };
+  }
+
+  function _jurBoiCard(){
+    var cid = 'chartJurBoi', ctx = 'chartJurBoiContext';
+    var kEl = document.getElementById('jurBoiKpis');
+    function limpar(msg){
+      try { renderPlot(cid, [], { _no_title: true }); } catch(e){}
+      if (kEl) kEl.innerHTML = '';
+      _exSet(ctx, _exLeitura(msg));
+    }
+    var B = _jurBase(); if (!B) { limpar('Não encontrei contratos de DI1 vigentes na base publicada.'); return; }
+    _jurPopulaVertices();
+    var sel = document.getElementById('jurVertice');
+    var alvo = sel && sel.value ? sel.value : B.contratos[0].nome;
+    var C = null;
+    B.contratos.forEach(function(c){ if (c.nome === alvo) C = c; });
+    if (!C) { limpar('Vencimento não encontrado na base.'); return; }
+    var boi = _jurBoiSerie();
+    if (!boi) { limpar('Não encontrei a série do boi gordo físico na base.'); return; }
+    var J = _jurJanelaSel();
+
+    /* Só as datas em que as DUAS séries têm cotação: comparar o juro de
+       hoje com o boi de ontem seria inventar um par que não existiu. */
+    var isos = [], yJ = [], yB = [];
+    C.datas.forEach(function(d){
+      if (d < J.de) return;
+      if (boi.mapa[d] == null) return;
+      isos.push(d); yJ.push(C.mapa[d]); yB.push(boi.mapa[d]);
+    });
+    if (isos.length < _JUR_MIN_N){ limpar('Só ' + isos.length + ' pregões com as duas séries na janela <b>' + J.rot + '</b>.'); return; }
+
+    var xs = isos.map(function(d){ return new Date(d + 'T00:00:00'); });
+    renderPlot(cid, [
+      { x: xs, y: yB, type: 'scatter', mode: 'lines', name: 'Boi gordo físico (R$/@)',
+        line: { color: _COR_ENT_BOI, width: _LARG.principal },
+        hovertemplate: _jurHover('R$/@') },
+      { x: xs, y: yJ, type: 'scatter', mode: 'lines', name: C.nome + ' (% a.a.)', yaxis: 'y2',
+        line: { color: _PAL.destaque, width: _LARG.destaque },
+        hovertemplate: _jurHover('% a.a.') }
+    ], {
+      _no_title: true,
+      yaxis:  { title: 'Boi gordo físico (R$/@)' },
+      yaxis2: { title: 'Taxa do ' + C.nome + ' (% a.a.)', overlaying: 'y', side: 'right',
+                ticksuffix: '%', showgrid: false },
+      xaxis:  { title: '' },
+      showlegend: true
+    });
+
+    var mB = _jurMensal(isos, yB), mJ = _jurMensal(isos, yJ);
+    var rM = _jurCorr(_jurVar(mB.valores), _jurDif(mJ.valores));
+    var rD = _jurCorr(_jurVar(yB), _jurDif(yJ));
+    var dJ = yJ[yJ.length - 1] - yJ[0], dB = yB[yB.length - 1] / yB[0] - 1;
+
+    if (kEl){
+      kEl.innerHTML =
+        _rgKpi('BOI GORDO', 'R$ ' + _pcN(yB[yB.length - 1]), 'físico CEPEA · ' + _jurDtBr(isos[isos.length - 1])) +
+        _rgKpi(C.nome, _pcN(yJ[yJ.length - 1], 2) + '%', 'venc. ' + _jurRotVenc(C.k)) +
+        _rgKpi('NA JANELA', _jurPP(dJ), 'boi ' + _pcPct(dB * 100, 1) + ' · ' + J.rot) +
+        _rgKpi('CORR. MENSAL', rM == null ? '–' : _pcN(rM, 2),
+               mB.valores.length + ' meses · diária ' + (rD == null ? '–' : _pcN(rD, 2)));
+    }
+
+    var leitura = rM == null ? 'A janela não tem meses suficientes para um coeficiente honesto.'
+      : Math.abs(rM) < 0.3 ? 'A correlação mensal é <b>fraca</b> (' + _pcN(rM, 2) + '): nesta janela o custo do dinheiro e a arroba andaram cada um por si.'
+      : rM > 0 ? 'A correlação mensal é <b>positiva</b> (' + _pcN(rM, 2) + '): juro e arroba subiram e caíram juntos no período.'
+      : 'A correlação mensal é <b>negativa</b> (' + _pcN(rM, 2) + '): a arroba andou contra o juro nesta janela.';
+    _exSet(ctx, _exLeitura(
+      'Na janela <b>' + J.rot + '</b>, o ' + C.nome + ' saiu de ' + _pcN(yJ[0], 2) + '% para <b>'
+      + _pcN(yJ[yJ.length - 1], 2) + '% a.a.</b> (' + _jurPP(dJ) + ') enquanto o boi físico foi de R$ '
+      + _pcN(yB[0]) + ' para <b>R$ ' + _pcN(yB[yB.length - 1]) + '/@</b> (' + _pcPct(dB * 100, 1) + '). '
+      + leitura,
+      'A correlação é calculada entre a <b>variação percentual</b> do boi e a <b>variação em '
+      + 'pontos percentuais</b> da taxa — taxa não varia em porcentagem de si mesma sem '
+      + 'confundir o leitor. Só entram os ' + isos.length + ' pregões em que as duas séries '
+      + 'cotaram no mesmo dia. Correlação não é causa.'));
+  }
+
+  /* ── ④ O CARREGO ────────────────────────────────────────────────────── */
+  function _jurCarregoCard(){
+    var cid = 'chartJurCarrego', ctx = 'chartJurCarregoContext';
+    var kEl = document.getElementById('jurCarregoKpis');
+    function limpar(msg){
+      try { renderPlot(cid, [], { _no_title: true }); } catch(e){}
+      if (kEl) kEl.innerHTML = '';
+      _exSet(ctx, _exLeitura(msg));
+    }
+    var B = _jurBase(); if (!B) { limpar('Não encontrei contratos de DI1 vigentes na base publicada.'); return; }
+    var curva = _jurCurvaEm(B, B.calendario.length - 1);
+    if (!curva) { limpar('Não há curva de DI1 para o pregão mais recente.'); return; }
+    var boi = _jurBoiSerie();
+    if (!boi) { limpar('Não encontrei a série do boi gordo físico na base.'); return; }
+    var isoSpot = boi.datas[boi.datas.length - 1], spot = boi.mapa[isoSpot];
+    if (!isFinite(spot) || spot <= 0) { limpar('A última cotação do boi físico não é um número utilizável.'); return; }
+
+    var hoje = new Date(isoSpot + 'T00:00:00');
+    var linhas = [];
+    workbook.SheetNames.forEach(function(n){
+      var nome = String(n).trim().toUpperCase();
+      if (!/^BGI[FGHJKMNQUVXZ]\d{2}$/.test(nome)) return;
+      var k = null;
+      try { k = _contractMaturityKey(nome); } catch(e){}
+      if (k == null) return;
+      try { if (_isContractExpired(nome)) return; } catch(e){}
+      var lin = parseSheet(n) || [];
+      if (!lin.length) return;
+      var col = null, cols = Object.keys(lin[0]);
+      for (var i = 0; i < cols.length; i++) if (/pre[çc]o/i.test(cols[i])) { col = cols[i]; break; }
+      if (!col) return;
+      var ultIso = null, ult = null;
+      lin.forEach(function(r){
+        var iso = _rgData(r['Data']), v = Number(r[col]);
+        if (!iso || !isFinite(v)) return;
+        if (ultIso == null || iso > ultIso){ ultIso = iso; ult = v; }
+      });
+      if (ult == null || ult <= 0) return;
+      /* O BGI liquida no ÚLTIMO dia útil do mês — ao contrário do DI1. */
+      var venc = (typeof _m3UltimoDiaUtil === 'function')
+        ? _m3UltimoDiaUtil(Math.floor(k / 12), k % 12)
+        : new Date(Math.floor(k / 12), k % 12 + 1, 0);
+      var du = _jurDU(hoje, venc);
+      /* PISO DE 21 DIAS ÚTEIS. O prêmio de duas semanas anualizado em 252
+         transforma o ruído de dois pregões em dezenas de pontos percentuais:
+         medido na base de 16/10/2026, o vencimento a 10 du devolvia 73% a.a.
+         O número não é falso — é só pequeno demais para ser anualizado. */
+      if (!du || du < 21) return;
+      var carrego = (Math.pow(ult / spot, 252 / du) - 1) * 100;
+      var di = _jurTaxaNoPrazo(curva, venc);
+      if (di == null) return;
+      linhas.push({ nome: nome, k: k, rot: _jurRotVenc(k), fut: ult, du: du,
+                    carrego: carrego, di: di, dif: carrego - di });
+    });
+    if (linhas.length < 2) { limpar('Não há contratos de BGI vigentes suficientes para a comparação.'); return; }
+    linhas.sort(function(a, b){ return a.k - b.k; });
+
+    renderPlot(cid, [
+      { x: linhas.map(function(l){ return l.rot; }), y: linhas.map(function(l){ return l.carrego; }),
+        type: 'bar', name: 'Carrego implícito do BGI (% a.a.)',
+        marker: { color: _COR_ENT_BOI },
+        customdata: linhas.map(function(l){ return l.du; }),
+        hovertemplate: "<span class='hover-label'>%{fullData.name}</span>: <b>%{y:,.2f}</b> % a.a."
+                     + "<br>%{customdata} dias úteis até o vencimento<extra></extra>" },
+      { x: linhas.map(function(l){ return l.rot; }), y: linhas.map(function(l){ return l.di; }),
+        type: 'bar', name: 'DI1 no mesmo prazo (% a.a.)',
+        marker: { color: _PAL.destaque },
+        hovertemplate: _jurHover('% a.a.', 'taxa interpolada no vencimento %{x}') },
+      { x: linhas.map(function(l){ return l.rot; }), y: linhas.map(function(l){ return l.dif; }),
+        type: 'scatter', mode: 'lines+markers', name: 'Carrego − juro (p.p.)', yaxis: 'y2',
+        line: { color: _PAL.referencia, width: _LARG.referencia },
+        marker: { size: 6, color: _PAL.referencia },
+        hovertemplate: _jurHover('p.p.', 'vencimento %{x}') }
+    ], {
+      _no_title: true, barmode: 'group',
+      yaxis:  { title: 'Taxa anualizada (% a.a.)', ticksuffix: '%' },
+      yaxis2: { title: 'Carrego − juro (p.p.)', overlaying: 'y', side: 'right', showgrid: false, zeroline: true },
+      xaxis:  { title: 'Vencimento do BGI' },
+      showlegend: true
+    });
+
+    var melhor = linhas.reduce(function(a, b){ return b.dif > a.dif ? b : a; }, linhas[0]);
+    var pior   = linhas.reduce(function(a, b){ return b.dif < a.dif ? b : a; }, linhas[0]);
+    var pos = linhas.filter(function(l){ return l.dif > 0; }).length;
+    if (kEl){
+      kEl.innerHTML =
+        _rgKpi('BOI À VISTA', 'R$ ' + _pcN(spot), 'físico CEPEA · ' + _jurDtBr(isoSpot)) +
+        _rgKpi('MELHOR CARREGO', _jurPP(melhor.dif), melhor.nome + ' · ' + _pcN(melhor.carrego, 2) + '% contra ' + _pcN(melhor.di, 2) + '%') +
+        _rgKpi('PIOR CARREGO', _jurPP(pior.dif), pior.nome + ' · ' + _pcN(pior.carrego, 2) + '% contra ' + _pcN(pior.di, 2) + '%') +
+        _rgKpi('PAGAM O JURO', pos + ' de ' + linhas.length, 'vencimentos com carrego acima do DI');
+    }
+    _exSet(ctx, _exLeitura(
+      'Com o boi à vista em <b>R$ ' + _pcN(spot) + '/@</b> (' + _jurDtBr(isoSpot) + '), <b>' + pos
+      + ' de ' + linhas.length + '</b> vencimentos do BGI pagam carrego acima do DI do mesmo prazo. '
+      + 'O melhor é o <b>' + melhor.nome + '</b>, com ' + _pcN(melhor.carrego, 2)
+      + '% a.a. de carrego implícito contra ' + _pcN(melhor.di, 2) + '% de juro — ' + _jurPP(melhor.dif)
+      + '. O pior é o <b>' + pior.nome + '</b>, ' + _jurPP(pior.dif) + '.',
+      'Carrego implícito = (futuro ÷ à vista) elevado a 252/du, menos 1. O DI é interpolado '
+      + 'linearmente no tempo entre os dois vértices que cercam o vencimento do BGI, nunca '
+      + 'extrapolado além das pontas. Dias úteis contam apenas sábados e domingos — sem o '
+      + 'calendário de feriados da B3 o prazo fica alguns dias otimista. A conta é do carrego '
+      + '<b>financeiro</b> do preço: não entram nutrição, sanidade, mão de obra, morte nem '
+      + 'margem de garantia.'));
+  }
+
+  /* ── Pintura da seção ───────────────────────────────────────────────── */
+  function _jurRender(){
+    try { _jurCurvaCard(); }   catch(e){ console.warn('Curva DI1:', e); }
+    try { _jurDeslocCard(); }  catch(e){ console.warn('Deslocamento DI1:', e); }
+    try { _jurBoiCard(); }     catch(e){ console.warn('Juros × boi:', e); }
+    try { _jurCarregoCard(); } catch(e){ console.warn('Carrego:', e); }
+  }
+  try { window._jurRender = _jurRender; } catch(e){}
+  /* Os dois seletores repintam só o card que depende deles. */
+  document.addEventListener('change', function(ev){
+    var t = ev.target;
+    if (!t || (t.id !== 'jurVertice' && t.id !== 'jurJanela')) return;
+    try { _jurBoiCard(); } catch(e){ console.warn('Juros × boi:', e); }
   });
 
   var _M3_ESTRUTURA = [
@@ -48685,11 +50099,21 @@ function updateRelacao() {
     { amb:'agro', id:'m3_1_9', nome:'Outros — mercado', oculta:true },
 
     /* ── 3 · MERCADOS & MACRO ────────────────────────────────────────── */
+    /* A ORDEM É O POUSO. `_m3IrAmbiente` abre a primeira seção do grupo que
+       tenha conteúdo — e quem escolhe "Mercados & Macro" na tela de entrada
+       cai exatamente aqui. Pousar em "Macro e moeda", que é o boi lido
+       contra a inflação, era o que fazia o painel macro parecer o painel do
+       boi. Os ativos do universo vêm primeiro; a leitura do boi contra o
+       macro continua no grupo, por último, porque é legítima — só não é a
+       primeira pergunta de quem entrou para ver juros, açúcar ou dólar. */
+    { amb:'macro', id:'m3_2_12', nome:'Juros futuros (DI1)',
+      dica:'A curva, quanto ela andou e se o futuro do boi paga o custo do dinheiro.',
+      render:['_jurRender'] },
+    { amb:'macro', id:'m3_2_4', nome:'Açúcar', render:['updateSHAcucarFixed'] },
+    { amb:'macro', id:'m3_2_5', nome:'Etanol', render:['updateSHEtanolFixed'] },
     { amb:'macro', id:'m3_2_9', nome:'Macro e moeda',
       dica:'Dólar, juros e o preço real do boi contra a inflação.',
       render:['updateEconomia','updateCorrelacaoFisico','updateRatioBGIDolar','updateRatioBGIDolarCasado'] },
-    { amb:'macro', id:'m3_2_4', nome:'Açúcar', render:['updateSHAcucarFixed'] },
-    { amb:'macro', id:'m3_2_5', nome:'Etanol', render:['updateSHEtanolFixed'] },
 
     /* ── 4 · GESTÃO DO CONFINAMENTO ──────────────────────────────────── */
     { amb:'confin', id:'m3_4_1', nome:'Calculadora do Boi',
@@ -48809,6 +50233,9 @@ function updateRelacao() {
     chartAtkExport:'m3_1_6',
     chartAtkAbate:'m3_1_7', chartAtkFemeas:'m3_1_7',
     chartFemDesconto:'m3_1_10', chartFemBase:'m3_1_10',
+    chartFemPreco:'m3_1_10', chartFemPosicao:'m3_1_10',
+    chartFemYoY:'m3_1_10', chartFemVol:'m3_1_10',
+    chartFemAgio:'m3_1_10', chartFemMatriz:'m3_1_10',
     chartFemTroca:'m3_1_10', chartFemNovilha:'m3_1_10',
     chartBoiVsBGIAll:'m3_1_8', chartRatioBGICCM:'m3_1_8', chartBGICarrego:'m3_1_8',
     // ── ESTUDO ──────────────────────────────────────────────────────────
@@ -48834,6 +50261,8 @@ function updateRelacao() {
     chartEcoComparativo:'m3_2_9', chartEcoBoiJuros:'m3_2_9', chartEcoYoY:'m3_2_9',
     chartEcoJuroReal:'m3_2_9',
     chartBGIDolar:'m3_2_9', chartBGIDolarCasado:'m3_2_9',
+    chartJurCurva:'m3_2_12', chartJurDesloc:'m3_2_12',
+    chartJurBoi:'m3_2_12', chartJurCarrego:'m3_2_12',
     chartAtkCorr:'m3_2_10', chartAtkLag:'m3_2_10', chartCascata:'m3_2_10',
     // ── DECISÃO ─────────────────────────────────────────────────────────
     chartBaseAtivo:'m3_3_5b',
@@ -49318,7 +50747,7 @@ function updateRelacao() {
     m3_1_8:'agro',
     m3_3_8:'agro', m3_3_9:'agro', m3_3_10:'agro',
     m3_4_2:'agro', m3_4_3:'agro',
-    m3_2_4:'macro', m3_2_5:'macro', m3_2_9:'macro'
+    m3_2_4:'macro', m3_2_5:'macro', m3_2_9:'macro', m3_2_12:'macro'
   };
   var _M3_UNIV_ATUAL = null;
 
@@ -49610,6 +51039,16 @@ function updateRelacao() {
        continuava em modo agro. */
     try { if (typeof window._aselApplyFilter==='function') window._aselApplyFilter(_M3_UNIV[u].sel); } catch(e){}
     document.body.setAttribute('data-m3-univ', u);
+    /* O cabeçalho descrevia só o agro, em texto fixo no HTML: "Boi Gordo
+       (BGI), Milho (CCM) e Soja (SJC)" continuava lá com o painel em açúcar.
+       Quem troca o universo repinta a descrição — um lugar só. */
+    try {
+      var _hd = document.getElementById('hdrDescricao');
+      if (_hd) _hd.textContent = (u === 'macro')
+        ? 'Painel interno de análise quantitativa: curvas de contratos futuros, alertas técnicos, ranking estatístico e gestão de risco — Açúcar, Etanol, Dólar (DOL) e Juros Futuros (DI1).'
+        : 'Painel interno de análise quantitativa: curvas de contratos futuros, alertas técnicos, ranking estatístico, radar de 7 pregões e gestão de risco — Boi Gordo (BGI), Milho (CCM) e Soja (SJC).';
+    } catch(e){}
+    try { if (typeof window.updateHeaderMeta === 'function') window.updateHeaderMeta(); } catch(e){}
     _m3PintaAtivos();
     _m3FiltraSecoes();
     /* Trocar de universo troca a largura útil de quem já estava pintado (a
@@ -50625,7 +52064,10 @@ function updateRelacao() {
     var ativo='';
     try { var sv=document.getElementById('sheetSelect'); if(sv&&sv.value) ativo=sv.value; } catch(e){}
     var u=_M3_UNIV[_M3_UNIV_ATUAL||'agro'];
-    el.innerHTML = (u?u.rot:'') + (a? (' <span>›</span> '+a.rot) : '')
+    /* "MERCADOS & MACRO › MERCADOS & MACRO" não informa nada: o universo e o
+       grupo têm o mesmo nome ali. Quando coincidem, um dos dois sai. */
+    var rotU = u ? u.rot : '', rotA = a ? a.rot : '';
+    el.innerHTML = rotU + ((rotA && rotA !== rotU) ? (' <span>›</span> '+rotA) : '')
                  + (ativo? (' <span>›</span> '+ativo) : '') + (s? (' <span>›</span> '+s.nome) : '');
   }
   try { window._m3IrAmbiente=_m3IrAmbiente; window._m3IrSecao=_m3IrSecao; } catch(e){}
@@ -60869,6 +62311,42 @@ function render(){
     if (hint) hint.style.opacity = any ? '0' : '1';
   }
 
+  /* ── A ENTRADA ESCOLHE O PAINEL, NÃO SÓ O ATIVO ────────────────────────
+     Medido no painel publicado: escolher "Mercados & Macro" trocava apenas
+     o filtro de ativos. O ativo virava AÇÚCAR e o seletor passava a listar
+     açúcar, etanol, dólar e juros — mas a aba aberta continuava sendo a do
+     boi, a trilha dizia `AGROPECUÁRIA › MERCADO AGROPECUÁRIO › AÇÚCAR` e o
+     indicador interno de universo (`_M3_UNIV_ATUAL`) nem era atualizado.
+     Escolher o painel passa a escolher as três coisas de uma vez.
+
+     NADA É REIMPLEMENTADO AQUI. Quem troca o universo é `_m3IrUniverso` e
+     quem troca o grupo é `_m3IrAmbiente` — as mesmas funções que o HUD e a
+     barra de grupos chamam. Esta função só ESPERA a navegação existir para
+     chamá-las: a tela de entrada aparece antes da migração dos cards, e
+     chamar cedo demais encontraria todos os slots vazios.
+
+     A Visão Executiva é o pouso do agro porque não declara universo — ela
+     serve aos dois e é o retrato de abertura de quem opera boi. O macro não
+     tem equivalente, então pousa no próprio grupo. */
+  function _aselAlinhaPainel(grupo){
+    var univ = (grupo === 'outros') ? 'macro' : 'agro';
+    var amb  = (grupo === 'outros') ? 'macro' : 'exec';
+    var tentativas = 0;
+    (function tenta(){
+      var pronto = typeof window._m3IrUniverso === 'function'
+                && typeof window._m3IrAmbiente === 'function'
+                && document.querySelector('.m3-amb-btn');
+      if (!pronto){
+        /* Desiste em silêncio depois de ~12s: sem a navegação montada o
+           painel ainda funciona pelo filtro de ativos, que já foi aplicado. */
+        if (++tentativas > 60) return;
+        return setTimeout(tenta, 200);
+      }
+      try { window._m3IrUniverso(univ); } catch(e){}
+      try { window._m3IrAmbiente(amb); } catch(e){}
+    })();
+  }
+
   function init(){
     var scr = document.getElementById('assetSelectScreen');
     if (!scr) return;
@@ -60891,12 +62369,14 @@ function render(){
     if (enterBtn){
       enterBtn.addEventListener('click', function(){
         if (!this.classList.contains('asel-ready')) return;
+        var grupo = Object.keys(_selGroups).filter(function(g){ return _selGroups[g]; })[0];
         var sel = {};
         Object.keys(GROUPS).forEach(function(g){
           if (_selGroups[g]) GROUPS[g].forEach(function(a){ sel[a] = true; });
         });
         hide();
         applyFilter(sel);
+        _aselAlinhaPainel(grupo);
       });
     }
   }
