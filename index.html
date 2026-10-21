@@ -18479,6 +18479,16 @@ function applyPlotlyTheme(chartId, layout, traces) {
       + 'ciclo: commodity costuma encadear alguns períodos de alta seguidos de uma correção mais rápida.');
     h += _ltNota('A variação de um período para o outro esconde tudo o que aconteceu no meio. ' + P.uma + ' '
         + P.teve + ' um pico e um fundo violentos ' + P.dentro + '.');
+    /* O ANO EM CURSO PRECISA SE DECLARAR. A última barra compara um ano que
+       ainda não terminou com um que terminou. Enquanto os meses que faltam
+       vinham preenchidos pela planilha, isso passava despercebido — e era o
+       caminho por onde novembro e dezembro entravam no gráfico em outubro.
+       Agora o que completa o ano é a curva de futuros, e a barra diz quanto
+       dela é apuração e quanto é preço negociado para o que vem. */
+    try {
+      var _av = window._shAvisoAnoParcial && window._shAvisoAnoParcial[c.id];
+      if (_av) h += _ltNota(_av);
+    } catch(e){}
     return h;
   };
 
@@ -22778,6 +22788,39 @@ function updatePreco() {
   // da planilha. Serve de âncora para converter a curva futura em variação.
   // Como a curva também vem deflacionada, a razão contrato/spot fica em
   // termos reais.
+  /* ── O FATOR DA CURVA DE FUTUROS, NUM LUGAR SÓ ────────────────────────
+     "Quanto o mercado diz que o preço do mês X vale contra o de hoje" é uma
+     pergunta que dois cards fazem: o M.B 100 projeta o resto do ciclo
+     corrente e o anual completa o ano em curso. É a mesma conta — razão
+     entre o contrato daquele mês e o spot nominal de hoje — e por isso mora
+     aqui, não em cada um.
+
+     A NORMALIZAÇÃO DE ESCALA não é detalhe: o ETH é cotado em R$/m³ e o
+     etanol spot em R$/L, e sem ajustar a razão sairia mil vezes maior. O
+     ajuste é pela potência de 10 mais próxima entre a mediana da curva e o
+     spot, que é o que o card de M.B 100 já fazia desde sempre.
+
+     Devolve `null` quando falta curva ou spot. Quem chama decide o que
+     fazer — nenhum caminho devolve 1 fingindo que o mercado não espera
+     variação nenhuma. */
+  function shFatorFuturo(futPrefix, spotSheet){
+    if (!futPrefix) return null;
+    var curve = shFuturesCurve(futPrefix);
+    var cKeys = curve ? Object.keys(curve) : [];
+    if (!cKeys.length) return null;
+    var spot = shSpotNominal(spotSheet);
+    if (spot == null || !(spot > 0)) return null;
+    var _cv = cKeys.map(function(k){ return curve[k]; }).sort(function(a,b){ return a-b; });
+    var _med = _cv[Math.floor(_cv.length/2)];
+    var _pow = Math.round(Math.log(_med/spot) / Math.LN10);
+    var _fScale = (Math.abs(_pow) >= 1) ? Math.pow(10, -_pow) : 1;
+    return function(ano, mes){
+      var fp = curve[ano*12 + mes];
+      if (fp == null || !(fp > 0)) return null;
+      return (fp * _fScale) / spot;
+    };
+  }
+
   function shSpotNominal(sheetLabel, semDeflacao){
     if (!sheetLabel || !workbook || !workbook.SheetNames) return null;
     var target = null;
@@ -22972,29 +23015,49 @@ function updatePreco() {
       }
     })();
 
-    // ---------- Mensal corrigida ----------
-    // Preferência: usar colunas "Meses" + "Média Corrigida" (tabela mensal já pronta na base).
-    // Fallback: agrega a série diária por mês (média).
+    /* ---------- Mensal corrigida ----------
+       A MÉDIA MENSAL SAI DA SÉRIE DIÁRIA, NÃO DA COLUNA DA PLANILHA.
+       Até 21/10/2026 este bloco preferia as colunas "Meses" + "Média
+       Corrigida" e só agregava o diário quando elas faltavam. A coluna é
+       fórmula O(n²) na planilha — recalcula a média de cada mês varrendo a
+       coluna inteira, a cada linha — e só sai do lugar quando alguém abre o
+       arquivo no Excel e espera o recálculo terminar. Medido na base
+       publicada naquele dia, com a série diária em 19/10/2026:
+
+         S.H AÇÚCAR      última média mensal: jun/26   (4 meses atrás)
+         S.H ETANOL      última média mensal: jun/26   (4 meses atrás)
+         S.H BOI GORDO   última média mensal: dez/26   (2 meses à frente)
+         S.H MILHO CEPEA última média mensal: nov/27   (13 meses à frente)
+
+       Os dois primeiros atrasam a leitura sem avisar; os dois últimos
+       desenham meses que não aconteceram — o boi aparecia com 354 pontos
+       indo até dezembro, os dois últimos em 396,90 e 395,90. Nenhum dos
+       quatro é detectável olhando o gráfico.
+
+       O diário é digitado, não é fórmula, e portanto nunca atrasa nem
+       inventa. A agregação já existia aqui como caminho alternativo e é a
+       mesma que o bezerro usa desde sempre, por aquela aba não ter a coluna:
+       não há conta nova, só uma fonte a menos.
+
+       A coluna da planilha continua existindo e pode voltar a ser lida se um
+       dia for recalculada em outro lugar — mas aí como conferência, não como
+       origem. */
     var monthly = [];
-    for (var j=0;j<rowsRaw.length;j++){
-      var rr = rowsRaw[j] || {};
-      var dm = toDate(rr['Meses'] || rr['MESES'] || rr['Mês'] || rr['MÊS']);
-      var ym = toNum(rr['Média Corrigida'] || rr['MEDIA CORRIGIDA'] || rr['Média corrigida'] || rr['Média Mensal'] || rr['MEDIA MENSAL'] || rr['Média'] || rr['MEDIA'] || rr['Preço'] || rr['Preço/@']);
-      if (dm && ym != null){
-        if (withinWindow(dm, win)) monthly.push({d:dm, y:ym});
-      }
-    }
-    if (!monthly.length){
+    (function(){
       var map = {};
       daily.forEach(function(o){
+        if (!o || !o.d || o.p == null || !isFinite(o.p)) return;
         var k = monthKey(o.d);
         if (!map[k]) map[k] = {d:new Date(o.d.getFullYear(), o.d.getMonth(), 1), sum:0, n:0};
         map[k].sum += o.p; map[k].n += 1;
       });
       Object.keys(map).sort().forEach(function(k){
-        monthly.push({d:map[k].d, y: map[k].n ? (map[k].sum/map[k].n) : null});
+        var e = map[k];
+        if (!e.n) return;
+        if (!withinWindow(e.d, win)) return;
+        monthly.push({d:e.d, y:e.sum/e.n, n:e.n});
       });
-    }
+    })();
     monthly.sort(function(a,b){return a.d-b.d;});
 
     (function(){
@@ -23301,19 +23364,11 @@ function updatePreco() {
       var _projFrom = -1;                      // 1º índice projetado (-1 = nenhum)
       (function(){
         if (!cfg.futPrefix || !_ehCorrente) return;   // ciclo passado já é fato
-        var curve = shFuturesCurve(cfg.futPrefix);
-        var cKeys = curve ? Object.keys(curve) : [];
-        if (!cKeys.length) return;
-        var spot = shSpotNominal(cfg.spotSheet);
-        if (spot == null || !(spot > 0)) return;
-
-        // Normaliza a escala: alguns contratos são cotados em outra unidade
-        // que o spot (ex.: ETH em R$/m³ vs. etanol spot em R$/L). Ajustamos
-        // pela potência de 10 mais próxima para a razão ficar adimensional.
-        var _cv = cKeys.map(function(k){ return curve[k]; }).sort(function(a,b){ return a-b; });
-        var _med = _cv[Math.floor(_cv.length/2)];
-        var _pow = Math.round(Math.log(_med/spot) / Math.LN10);
-        var _fScale = (Math.abs(_pow) >= 1) ? Math.pow(10, -_pow) : 1;
+        /* A razão futuro/spot saiu daqui para `shFatorFuturo`, porque o
+           gráfico anual passou a fazer a mesma pergunta. Mesma conta, mesma
+           normalização de escala — agora escrita uma vez. */
+        var _fator = shFatorFuturo(cfg.futPrefix, cfg.spotSheet);
+        if (!_fator) return;
 
         var lastIdx = -1;
         for (var q=0;q<12;q++) if (_curArr[q] != null && isFinite(_curArr[q])) lastIdx = q;
@@ -23324,9 +23379,9 @@ function updatePreco() {
           var absM = _bmBase + q2;                     // pode passar de 11
           var yr   = _curCy + Math.floor(absM/12);
           var mo   = absM % 12;
-          var fp   = curve[yr*12 + mo];
-          if (fp == null || !(fp > 0)) continue;
-          _curArr[q2] = lastB * ((fp * _fScale) / spot);
+          var fat  = _fator(yr, mo);
+          if (fat == null) continue;
+          _curArr[q2] = lastB * fat;
           if (_projFrom < 0) _projFrom = lastIdx + 1;   // projeção começa logo após o realizado
         }
         // Meses sem contrato listado ficam interpolados entre os vizinhos
@@ -23561,11 +23616,25 @@ function updatePreco() {
         return;
       }
 
-      // Agrega por ano usando a série MENSAL (Média Corrigida) quando disponível —
-      // inclui meses projetados já no Excel, evitando a distorção de ano parcial.
-      // Fallback: série diária (caso a tabela mensal esteja vazia).
+      /* ── O ANO EM CURSO E A DISTORÇÃO DE ANO PARCIAL ───────────────────
+         Este bloco agrega a série mensal por ano para medir variação
+         interanual. Enquanto a média mensal vinha da planilha, o ano
+         corrente chegava completo porque o Excel trazia meses à frente já
+         preenchidos — era isso que "evitava a distorção de ano parcial", e
+         era também o que punha novembro e dezembro de 2026 no gráfico em
+         outubro. Com a média saindo da série diária, o ano em curso passou
+         a ser honestamente parcial: dez meses contra doze do ano anterior,
+         uma diferença que vira variação sem ter nada de variação.
+
+         A saída não é voltar a inventar, é projetar declarando. Os meses
+         que faltam no ano corrente são completados pela CURVA DE FUTUROS —
+         o preço que o mercado negocia para aquele mês —, pela mesma conta
+         que o card de M.B 100 já usa. Sem curva listada para a commodity,
+         nada é completado e o ano fica marcado como parcial: melhor um ano
+         declarado incompleto do que um ano cheio de número inventado. */
       var byYear = {};
       var _yoySrc = (monthly.length >= 24) ? monthly : null;
+      var _anoProj = null, _mesesProj = 0;
       if (_yoySrc) {
         _yoySrc.forEach(function(o){
           if (!o || !o.d || o.y == null || isNaN(o.y)) return;
@@ -23573,6 +23642,26 @@ function updatePreco() {
           if (!byYear[yr]) byYear[yr] = {sum:0, n:0};
           byYear[yr].sum += o.y; byYear[yr].n += 1;
         });
+        (function(){
+          var ultimo = _yoySrc[_yoySrc.length-1];
+          if (!ultimo || !ultimo.d) return;
+          var anoAtual = new Date().getFullYear();
+          if (ultimo.d.getFullYear() !== anoAtual) return;      /* série antiga: não projeta */
+          var mesUlt = ultimo.d.getMonth();
+          if (mesUlt >= 11) return;                             /* ano já completo */
+          var fator = shFatorFuturo(cfg.futPrefix, cfg.spotSheet);
+          if (!fator) return;                                   /* sem curva, ano fica parcial */
+          var base = ultimo.y;
+          if (base == null || !isFinite(base) || base <= 0) return;
+          for (var mp = mesUlt+1; mp <= 11; mp++){
+            var f = fator(anoAtual, mp);
+            if (f == null) continue;
+            byYear[anoAtual].sum += base * f;
+            byYear[anoAtual].n   += 1;
+            _mesesProj++;
+          }
+          if (_mesesProj) _anoProj = anoAtual;
+        })();
       } else {
         daily.forEach(function(o){
           if (!o || !o.d || o.p == null || isNaN(o.p)) return;
@@ -23581,6 +23670,31 @@ function updatePreco() {
           byYear[yr].sum += o.p; byYear[yr].n += 1;
         });
       }
+      /* O ano corrente é parcial sempre que não fechou doze meses, com ou
+         sem projeção. Quem lê o gráfico precisa saber de qual dos dois se
+         trata — o aviso vai para o contexto do card, abaixo.
+
+         O AVISO É POR GRÁFICO, NÃO GLOBAL. A primeira versão guardava uma
+         string só em `window`, e como as quatro commodities desenham em
+         momentos diferentes, o card do milho exibia o aviso do etanol — a
+         última a renderizar vencia. O milho ainda tem outro agravante: ele
+         não passa por este bloco, tem renderizador próprio por safra, então
+         para ele o certo é não haver aviso nenhum em vez de herdar o do
+         vizinho. Guardado por id do gráfico, cada card lê o seu ou nada. */
+      var _anoCorrente = new Date().getFullYear();
+      var _apurados = (byYear[_anoCorrente] ? byYear[_anoCorrente].n : 0) - _mesesProj;
+      var _avisoParcial = '';
+      if (_apurados > 0 && _apurados < 12){
+        _avisoParcial = _anoCorrente + (_mesesProj
+          ? (': ' + _apurados + ' meses apurados e ' + _mesesProj
+             + ' projetados pela curva de futuros.')
+          : (' ainda é parcial: ' + _apurados
+             + ' meses apurados, sem curva de futuros para projetar o resto.'));
+      }
+      try {
+        if (!window._shAvisoAnoParcial) window._shAvisoAnoParcial = {};
+        window._shAvisoAnoParcial[idYoY] = _avisoParcial;
+      } catch(e){}
 
       var years = Object.keys(byYear).map(function(k){ return parseInt(k,10); }).sort(function(a,b){return a-b;});
       if (years.length < 2){
