@@ -3727,6 +3727,15 @@ header{
   color: var(--m3-body) !important;
 }
 #pagePaneTop10 *{ color: var(--m3-body) !important; }
+/* A CASCA ANTIGA DO TOP 5 SAI DE CENA ─────────────────────────────────
+   O painel trazia um cabeçalho "Ranking Estatístico" e uma barra com os
+   botões de mercado, pregões, "Gerar TOP 5", "Exportar A4" e as duas
+   páginas. O card logo abaixo repete tudo isso com o título, a pílula e
+   os seletores do painel, então a seção mostrava dois títulos e dois
+   conjuntos de controles para a mesma coisa. O que sobrou do antigo, a
+   exportação em PNG, virou botão dentro do card. */
+#pagePaneTop10 > .pane-hero,
+#pagePaneTop10 > .pane-ctrl-bar { display: none !important; }
 
 #pagePaneTop10 .top10-card{
   background: var(--m3-surface) !important;
@@ -6640,7 +6649,7 @@ header{
       </div>
     </section>
 
-      <section class="card">
+      <section class="card" id="cardAlertasPeriodo">
       <div class="card-title"><span class="card-title-text">Alertas no Período</span><button type="button" class="info-btn" aria-label="Ajuda: Alertas no Período" data-tooltip="Alertas detectados no período: rompimentos de banda, Z-score extremo (>2 ou <-2), cruzamentos de médias móveis e limiares de percentil.">ⓘ</button></div>
       <div class="pill">Síntese de sinais: preço, estatística e osciladores no período.</div>
       <ul id="alertList" class="alert-list">
@@ -10417,6 +10426,7 @@ header{
         <option value="252">252 pregões</option>
       </select>
       <button type="button" id="top5VerA4" class="bgi-sel" style="margin-left:10px;cursor:pointer" title="Abre a folha A4 pronta para impressão, com o mesmo ranking.">Versão para imprimir</button>
+      <button type="button" id="top5PNG" class="bgi-sel" style="margin-left:6px;cursor:pointer" title="Salva a folha A4 como imagem.">Exportar PNG</button>
     </div>
     <div id="top5Kpis" class="vol-kpis"></div>
     <div id="top5Tab"></div>
@@ -51922,6 +51932,16 @@ function updateRelacao() {
      próxima montagem tudo nasceria de novo no lugar antigo. Nessas, o que
      se move é o PAINEL INTEIRO — e os construtores continuam trabalhando
      dentro dele sem saber que ele mudou de endereço. */
+  /* ── ORDEM DECLARADA DE ALGUMAS SEÇÕES ────────────────────────────────
+     Só para as seções em que a ordem importa e a migração não a preserva.
+     Em "Travar boi — timing" a pergunta é em que patamar entrar, então a
+     janela de execução responde primeiro, o ranking qualifica depois e os
+     alertas fecham. Ids que não existirem são ignorados em silêncio. */
+  var _M3_ORDEM = {
+    m3_3_5c: ['sectionJanelasTrava', 'pagePaneTop10', 'cardAlertasPeriodo',
+              'sectionJanelasTravaOutros', 'pagePaneAlertas']
+  };
+
   var _M3_PAINEIS = {
     pagePaneExportacao:'m3_1_6',
     pagePaneHedge:'m3_3_6',        // Simulador de Hedge
@@ -52111,6 +52131,36 @@ function updateRelacao() {
     });
     _m3LimpaOrfaos();
     _M3_AMB.depois = _m3Inventario();
+    /* ── 4) ORDEM DENTRO DA SEÇÃO ─────────────────────────────────────
+       A migração acontece em etapas, e a ordem na tela é a ordem em que
+       cada etapa deposita: painéis inteiros primeiro (etapa 1), depois as
+       seções soltas dos painéis estáticos (2), depois a rede final (3).
+       A ordem do documento não sobrevive a isso.
+
+       Foi o que aconteceu em "Travar boi — timing": as Janelas de Trava
+       foram movidas no HTML para antes dos Alertas, e na tela continuaram
+       em sexto lugar, porque os painéis de Alertas e do TOP 5 entram na
+       etapa 1 e os cards só na 2. Quem abria a seção via 825 px de painel
+       legado antes de qualquer resposta.
+
+       Esta tabela resolve declarando a ordem. Os ids listados vêm primeiro,
+       na ordem escrita; o que não está na lista segue depois, na ordem em
+       que já estava. Seção sem entrada aqui não é tocada. */
+    Object.keys(_M3_ORDEM).forEach(function(secId){
+      var slot=_m3Slot(secId); if(!slot) return;
+      /* `appendChild` move para o FIM, e usá-lo aqui deixaria a lista no
+         fim da seção, atrás do que ela deveria ultrapassar. A inserção é
+         pelo topo, com uma âncora que avança a cada item. */
+      var ancora=null;
+      _M3_ORDEM[secId].forEach(function(id){
+        var el=document.getElementById(id);
+        if (!el || el.parentElement!==slot) return;
+        if (ancora) slot.insertBefore(el, ancora.nextSibling);
+        else        slot.insertBefore(el, slot.firstChild);
+        ancora = el;
+      });
+    });
+
     _M3_AMB.migrado = true;
     return _M3_AMB;
   }
@@ -58274,6 +58324,15 @@ function _top10TagFromFlags(flags){
     });
     /* A folha A4 nasce fechada: ela é o caminho da impressão, não a
        resposta. O botão revela e esconde, e diz em qual estado está. */
+    /* A exportação continua sendo a do painel antigo; o card só a aciona,
+       para a função não sumir junto com a barra que a hospedava. */
+    var _t5png=document.getElementById('top5PNG');
+    if(_t5png) _t5png.addEventListener('click', function(){
+      var sec=document.getElementById('top5A4Secao');
+      if(sec && (sec.style.display==='none' || !sec.style.display)) sec.style.display='';
+      var b=document.getElementById('btnTop10PNG');
+      if(b) b.click();
+    });
     var _t5a4=document.getElementById('top5VerA4');
     if(_t5a4) _t5a4.addEventListener('click', function(){
       var sec=document.getElementById('top5A4Secao'); if(!sec) return;
