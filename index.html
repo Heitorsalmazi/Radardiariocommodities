@@ -2015,6 +2015,36 @@ header{
   width:auto; max-width:100%;
 }
 .bgi-ctrl .bgi-sel:focus{ outline:none; border-color:#0f766e; }
+
+/* CHIPS DE PRAÇA — o controle de comparar ─────────────────────────────
+   Era um <select multiple>. Nele, clique simples SUBSTITUI a seleção
+   inteira pelo item clicado: para tirar uma praça da comparação era
+   preciso Ctrl+clique, que ninguém descobre sozinho e que no toque não
+   existe. Chip resolve porque a única interação é alternar: clicou,
+   entrou; clicou de novo, saiu — e o estado fica visível sem rolagem. */
+.rg-chips{ display:flex; flex-wrap:wrap; gap:6px; margin:2px 0 8px; }
+.rg-chip{
+  appearance:none; font-family:var(--font-display); font-size: var(--fs-sm);
+  color:#4b5563; background:#f9fafb; border:1px solid #d1d5db;
+  border-radius:999px; padding:3px 11px; cursor:pointer; line-height:1.5;
+  transition:background .12s, border-color .12s, color .12s;
+}
+.rg-chip:hover{ border-color:#9ca3af; }
+.rg-chip[aria-pressed="true"]{
+  background:#0f766e; border-color:#0f766e; color:#fff; font-weight:700;
+}
+/* A praça em unidade divergente não some da lista: ela fica marcada, para
+   quem escolher saber antes de clicar que ela não entra em média nenhuma. */
+.rg-chip[data-divergente="1"]{ border-style:dashed; }
+.rg-chips-acoes{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  font-size: var(--fs-nano); color:#6b7280; margin:0 0 10px;
+}
+.rg-chips-acoes button{
+  appearance:none; background:none; border:0; padding:0; cursor:pointer;
+  font-family:var(--font-display); font-size: var(--fs-nano);
+  color:#0f766e; font-weight:700; text-decoration:underline;
+}
 .bgi-ctrl #bgiMultiFancy{ min-width:186px; max-width:260px; }
 .bgi-ctrl .ms-trigger{
   border-radius:5px !important; padding:3px 8px !important;
@@ -5457,61 +5487,6 @@ header{
       .ld-brand-name { font-size: var(--fs-xl); letter-spacing: .12em; }
     }
 </style>
-<style id="radar-refinamentos-20261020">
-/* Refinamento de produto — 20/10/2026 */
-#veDecisao { margin:8px 0 24px; }
-.ve-decisao-cab { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:14px; }
-.ve-decisao-cab b { display:block; font-size:16px; color:var(--m3-accent-dark); }
-.ve-decisao-cab span:not(.ve-origem) { display:block; margin-top:3px; font-size:12px; color:#64748b; }
-.ve-origem { font-size:11px; font-weight:600; border:1px solid #cbd5e1; background:#f8fafc; color:#475569; padding:6px 10px; border-radius:6px; }
-.ve-decisao-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
-.ve-decisao-grid .ve-card { padding:16px; min-height:156px; border-top:3px solid var(--m3-accent); }
-.ve-decisao-grid .ve-card-val { font-size:28px; margin:5px 0; }
-.ve-decisao-grid .ve-card-rot { font-size:11px; line-height:1.5; }
-.ve-decisao-grid .ve-card-pe { font-size:11px; color:#64748b; }
-.ve-resumo-limites { color:#64748b; font-size:11px; line-height:1.6; margin:10px 0 0; }
-#veCards { grid-template-columns:repeat(3,minmax(0,1fr)); }
-#veCards .ve-card { padding:14px 16px; }
-#veCards .ve-card-rot { font-size:10px; }
-#veCards .ve-card-pe { color:#64748b; font-size:10px; }
-.ve-mercado-tit { margin:0 0 12px; padding-top:16px; border-top:1px solid var(--border-subtle); }
-.ve-fonte-status { align-self:flex-start; padding:3px 6px; background:#f1f5f9; color:#475569; font-size:10px; border-radius:4px; margin-bottom:5px; }
-.ve-fonte-defasada { background:#fff7ed; color:#9a3412; border:1px solid #fed7aa; }
-.ve-horizonte-topo { flex-basis:100%; width:100%; }
-.ve-horizonte-topo:empty { display:none; }
-.ve-horizonte-topo .ve-obs { margin:4px 0 8px; border-left:4px solid #b45309; background:#fffbeb; padding:12px; color:#78350f; font-size:12px; line-height:1.6; }
-#veGraficos { align-items:stretch; }
-#veGraficos > .ve-graf-um { margin:0 !important; display:flex; flex-direction:column; padding:16px; }
-#veGraficos .card-title { min-height:36px; margin:0 0 6px; align-items:flex-start; font-size:12px; }
-#veGraficos .ve-graf-sub { min-height:28px; margin:0 0 8px; line-height:1.5; color:#64748b; }
-#veGraficos .ve-graf-box { height:280px; margin-top:auto; }
-.dec-por-fundamento { display:grid !important; grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:16px; }
-.dec-fundamento { min-width:0; border:1px solid #e2e8f0; border-radius:10px; padding:14px; background:#fff; }
-.dec-fundamento-tit { font-size:12px; font-weight:700; color:#334155; padding-bottom:10px; border-bottom:1px solid #e2e8f0; }
-.dec-fundamento-tit span { display:block; font-size:11px; font-weight:500; color:#64748b; margin-top:4px; }
-.dec-fundamento-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; padding-top:10px; }
-.dec-pl-rot { font-size:11px; font-weight:600; color:#475569; margin-right:8px; }
-.radar-explicacao { border:1px solid #e2e8f0; border-radius:8px; margin:8px 0 12px; background:#f8fafc; font-size:12px; }
-.radar-explicacao > summary { cursor:pointer; padding:10px 12px; color:#475569; font-weight:600; line-height:1.5; }
-.radar-explicacao > summary:focus-visible { outline:2px solid var(--m3-accent); outline-offset:2px; }
-.radar-explicacao > .explain, .radar-explicacao > .ve-nota, .radar-explicacao > .io-nota, .radar-explicacao > .rb-note { margin:0; padding:10px 14px; border:0; background:transparent; }
-@media(max-width:1100px){ .ve-decisao-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media(max-width:768px){
-  #veCards { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .dec-por-fundamento { grid-template-columns:1fr !important; }
-  header p, header .header-meta { display:none; }
-  header { position:relative; padding:10px 14px; }
-  body[data-m3-barra] .m3-barra { position:relative; }
-}
-@media(max-width:480px){
-  #veCards, .ve-decisao-grid { grid-template-columns:1fr; }
-  .ve-decisao-grid .ve-card { min-height:0; }
-  .dec-fundamento-grid { grid-template-columns:1fr; }
-  #veGraficos { grid-template-columns:minmax(0,1fr); }
-  #veGraficos > .ve-graf-um { padding:12px; }
-}
-@media print { .radar-explicacao { break-inside:avoid; } }
-</style>
 </head>
 <body>
 <!-- ════════════════════════════════════════════════════════════════════════
@@ -8096,8 +8071,18 @@ header{
         <select id="rgProduto" class="bgi-sel" title="Boi gordo é o animal terminado; boi magro é a reposição."></select>
         <span class="bgi-lbl" style="margin-left:8px">UF</span>
         <select id="rgUF" class="bgi-sel" title="Filtra as praças da lista abaixo."></select>
-        <span class="bgi-lbl" style="margin-left:8px">Praça</span>
+        <span class="bgi-lbl" id="rgPracaLbl" style="margin-left:8px">Praça</span>
         <select id="rgPraca" class="bgi-sel" title="Praça analisada. A opção Todas as praças agrega as do recorte atual."></select>
+      </div>
+      <!-- COMPARAR: as praças viram chips de alternar. O <select> acima some
+           e continua existindo como estado, para o resto do card não mudar. -->
+      <div id="rgCompBox" style="display:none">
+        <div id="rgCompChips" class="rg-chips"></div>
+        <div class="rg-chips-acoes">
+          <span id="rgCompConta"></span>
+          <button type="button" id="rgCompTopo">marcar as 4 de maior cobertura</button>
+          <button type="button" id="rgCompLimpa">limpar seleção</button>
+        </div>
       </div>
       <div class="bgi-ctrl" style="margin-top:6px">
         <span class="bgi-lbl">Período</span>
@@ -13973,20 +13958,20 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
       + kpi('Custo por @ <b>comercializada</b>', rs(S.custoArrobaComercializada),
             'custo total ÷ arrobas de carcaça — inclui a compra · '
             + (S.arrobasComercializadas != null ? n2(S.arrobasComercializadas, 2) + ' @ vendidas' : '—'))
-      + kpi('Margem bruta por cabeça', rs(S.resultadoCabecaBruto),
+      + kpi('Resultado por cabeça — bruto', rs(S.resultadoCabecaBruto),
             'margem bruta, antes de despesas e tributos', sinal(S.resultadoCabecaBruto))
-      + kpi('Lucro líquido por cabeça', rs(S.resultadoCabecaLiquido),
+      + kpi('Resultado por cabeça — líquido', rs(S.resultadoCabecaLiquido),
             'depois de despesas, tributos e financeiro', sinal(S.resultadoCabecaLiquido))
       /* O motor devolve `lLote` como lucro LÍQUIDO × cabeças. Posto ao lado de
          uma margem BRUTA por cabeça, com lote de uma cabeça, o total parecia
          menor que a unidade — e a primeira leitura de quem vê isso é que a
          conta está errada. O rótulo agora diz qual dos dois ele é. */
-      + kpi('Lucro líquido do lote', rs(S.resultadoLote, 0),
+      + kpi('Resultado do lote — líquido', rs(S.resultadoLote, 0),
             (S.cabecas != null ? 'líquido por cabeça × ' + n2(S.cabecas, 0) + ' cabeça(s)' : ''),
             sinal(S.resultadoLote))
       + kpi('Break-even — margem bruta', rs(S.breakEvenBruto), 'zera a margem bruta')
       + kpi('Break-even — lucro líquido', rs(S.breakEvenLiquido), 'zera o lucro líquido')
-      + kpi('Margem bruta sobre a receita', pct(S.margemBrutaPct, 2),
+      + kpi('Margem operacional', pct(S.margemBrutaPct, 2),
             'sobre a receita líquida · líquida ' + pct(S.margemLiquidaPct, 2), sinal(S.margemBrutaPct))
       + kpi('ROI do ciclo', pct(S.roi, 2), 'lucro ÷ capital empregado', sinal(S.roi))
       + kpi('Peso de abate', (S.pesoAbate != null ? n2(S.pesoAbate, 1) + ' kg' : '—'),
@@ -14093,11 +14078,9 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
         ['Custo por @ produzida', rs(S.custoArrobaProduzida), ''],
         ['Custo por @ comercializada', rs(S.custoArrobaComercializada), ''],
         ['Break-even (margem bruta)', rs(S.breakEvenBruto), ''],
-        ['Margem bruta por cabeça', rs(S.resultadoCabecaBruto), sinal(S.resultadoCabecaBruto)],
-        ['Lucro líquido por cabeça', rs(S.resultadoCabecaLiquido), sinal(S.resultadoCabecaLiquido)],
-        ['Lucro líquido do lote', rs(S.resultadoLote, 2), sinal(S.resultadoLote)],
-        ['Margem bruta sobre a receita', pct(S.margemBrutaPct, 2), sinal(S.margemBrutaPct)],
-        ['Margem líquida sobre a receita', pct(S.margemLiquidaPct, 2), sinal(S.margemLiquidaPct)],
+        ['Resultado por cabeça', rs(S.resultadoCabecaBruto), sinal(S.resultadoCabecaBruto)],
+        ['Resultado do lote', rs(S.resultadoLote, 0), sinal(S.resultadoLote)],
+        ['Margem operacional', pct(S.margemBrutaPct, 2), sinal(S.margemBrutaPct)],
         ['ROI do ciclo', pct(S.roi, 2), sinal(S.roi)]
       ].map(function(l){
         return '<tr><th>' + esc(l[0]) + '</th><td class="num ' + (l[2] || '') + '">' + l[1] + '</td></tr>';
@@ -14188,9 +14171,9 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
       + '<th class="num">Distância do abate</th>'
       + '<th class="num">Custo de referência<em class="io-est">est.</em></th>'
       + '<th class="num">Distância do break-even<em class="io-est">est.</em></th>'
-      + '<th class="num">Margem bruta por cabeça<em class="io-est">est.</em></th>'
-      + '<th class="num">Margem bruta sobre a receita<em class="io-est">est.</em></th>'
-      + '<th class="num">Lucro líquido do lote<em class="io-est">est.</em></th>'
+      + '<th class="num">Resultado por cabeça<em class="io-est">est.</em></th>'
+      + '<th class="num">Margem<em class="io-est">est.</em></th>'
+      + '<th class="num">Resultado do lote<em class="io-est">est.</em></th>'
       + '</tr></thead><tbody>' + linhas + '</tbody></table></div>'
       + '<div class="io-nota"><b>Observado</b> é o que está na planilha: preço de ajuste do contrato e '
       + 'a data do pregão. <b>Estimado</b> é tudo que depende das suas premissas — o custo de '
@@ -15537,7 +15520,7 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
       +   '</div>'
       +   '<div class="ve-cab-r">'
       +     '<div class="ve-cab-item"><span>Data de referência</span><strong id="veDataRef">—</strong></div>'
-      +     '<div class="ve-cab-item"><span>Situação das fontes</span><strong id="veDataAtu">—</strong></div>'
+      +     '<div class="ve-cab-item"><span>Última atualização válida</span><strong id="veDataAtu">—</strong></div>'
       +     '<button type="button" class="ve-link" id="veBtnDiag">diagnóstico das fontes →</button>'
       +   '</div>'
       + '</section>'
@@ -15548,8 +15531,6 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
       + '<section class="card">'
       +   '<div class="card-title"><span class="card-title-text">INDICADORES PRINCIPAIS</span></div>'
       +   '<div class="ve-filtro" id="veFiltro"></div>'
-      +   '<div id="veDecisao"></div>'
-      +   '<div class="ve-sec-tit ve-mercado-tit">Mercado observado</div>'
       +   '<div class="ve-grid" id="veCards"></div>'
       + '</section>'
       + '<div class="ve-sec-tit">Mercado e custos</div>'
@@ -15689,7 +15670,8 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
       + 'estiver preenchido na Calculadora do Boi, e por cima de tudo o que você salvar aqui. '
       + '<b>Só o que você editar é salvo</b>: o cenário padrão continua sendo padrão e não vira '
       + 'cadastro da operação sozinho. "Restaurar premissas padrão" apaga apenas as suas edições e '
-      + 'mantém os vencimentos escolhidos. O que você salvar fica <b>neste navegador</b>. A Calculadora do Boi mantém suas próprias entradas.</div>'
+      + 'mantém os vencimentos escolhidos. O que você salvar fica <b>neste navegador</b>, em chave '
+      + 'própria (<code>' + m.esc(m.LS_PREM) + '</code>). A Calculadora do Boi não foi alterada.</div>'
       + '</details>';
   }
   function lerForm(){
@@ -15795,21 +15777,18 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     var el = document.getElementById('veDataRef');
     if (el) el.textContent = ref ? m.dBR(ref) : '—';
     var ok = L.filter(function(x){ return x.u; }).length;
-    L.forEach(function(x){ x.defasagem = x.u && ref ? Math.round((ref.getTime() - x.u.data.getTime()) / 86400000) : null; });
-    var atuais = L.filter(function(x){ return x.u && x.defasagem === 0; }).length;
-    var defasadas = ok - atuais;
     var el2 = document.getElementById('veDataAtu');
     if (el2){
-      el2.textContent = ref ? (ok + '/' + L.length + ' carregadas · ' + atuais + ' na referência' + (defasadas ? ' · ' + defasadas + ' com defasagem' : '')) : 'nenhuma fonte carregada';
-      el2.className = (ok === L.length && !defasadas) ? 've-ok' : 've-atencao';
+      el2.textContent = ref ? (m.dBR(ref) + ' · ' + ok + ' de ' + L.length + ' fontes') : 'nenhuma fonte carregada';
+      el2.className = (ok === L.length) ? 've-ok' : 've-atencao';
     }
     var d = document.getElementById('veDiag');
     if (!d) return;
     var linhas = L.map(function(x){
       var est = !x.aba ? '<span class="ve-erro">sem contrato vigente</span>'
               : !x.u   ? '<span class="ve-erro">sem pregão válido</span>'
-              : (x.defasagem > 0) ? '<span class="ve-atencao">' + x.defasagem + ' dia(s) antes da referência</span>'
-              : '<span class="ve-ok">na referência</span>';
+              : (x.idade != null && x.idade > 7) ? '<span class="ve-atencao">' + x.idade + ' dias</span>'
+              : '<span class="ve-ok">em dia</span>';
       if (x.u && x.u.repetidas > 0){
         est += ' <span class="ve-atencao">· ' + x.u.repetidas + ' data(s) repetida(s)</span>';
       }
@@ -15828,8 +15807,8 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
       + '<div class="ve-nota">Todos os valores desta tela são lidos da planilha do Radar. '
       + 'Nenhum preço é estimado, interpolado ou preenchido: fonte sem pregão válido aparece como '
       + 'ausência, e os blocos que dependiam dela mostram "Dados insuficientes para análise". '
-      + 'Defasagem compara o último pregão de cada fonte com a data de referência mais recente desta tela. '
-      + 'Ela descreve diferença entre datas; a frequência de publicação depende da fonte.</div>';
+      + 'A idade é a distância entre o último pregão da aba e hoje — um fim de semana ou feriado '
+      + 'já a faz passar de dois dias.</div>';
   }
 
   /* Divergência declarada, não emendada em silêncio. A tela antiga rotula a
@@ -15913,7 +15892,6 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
       +   linhaCas('Milho futuro utilizado (CCM)', 'CCM', cC, m)
       +   linhaCas('Soja futura utilizada (SJC)', 'SJC', cS, m)
       + '</div>'
-      + '<div id="veHorizonte" class="ve-horizonte-topo" aria-live="polite"></div>'
       /* A explicação da regra saiu daqui a pedido: ela vive na documentação,
          e o painel de contratos acima já diz o critério de cada um em duas
          palavras. O que fica é o aviso de ausência — esse é informação, não
@@ -15930,7 +15908,6 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
   function card(o){
     var m = mot();
     return '<div class="ve-card' + (o.destaque ? ' ve-card-forte' : '') + '">'
-      + (o.status ? '<span class="ve-fonte-status ' + (o.defasada ? 've-fonte-defasada' : '') + '">' + m.esc(o.status) + '</span>' : '')
       + '<div class="ve-card-rot">' + m.esc(o.rot) + '</div>'
       + '<div class="ve-card-val">' + o.valor + '<span class="ve-card-un">' + m.esc(o.unidade || '') + '</span></div>'
       + '<div class="ve-card-var ' + (o.varCls || 've-neu') + '">' + (o.variacao || '—') + '</div>'
@@ -15952,8 +15929,6 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
        pontos como reais. */
     return card({
       rot: rot, destaque: !!destaque,
-      status: x.defasagem > 0 ? ('Defasagem de ' + x.defasagem + ' dia(s) da referência') : 'Na data de referência',
-      defasada: x.defasagem > 0,
       valor: m.n2(u.preco * (un ? un.fator : 1), un ? un.casas : 2),
       unidade: un ? un.rot : '',
       variacao: (u.varPct == null ? 'sem pregão anterior'
@@ -15964,52 +15939,6 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
       sec: f.sec, alvo: f.alvo
     });
   }
-  /* Resumo executivo: somente valores do motor e posições registradas. */
-  function avisoHorizonte(r, vencRef){
-    if (!r || !isFinite(r.d)) return '';
-    var m = mot(), k = m.chaveVenc(vencRef);
-    var abate = new Date(); abate.setHours(0,0,0,0); abate.setDate(abate.getDate() + Math.ceil(r.d));
-    if (k == null || k >= abate.getFullYear()*12 + abate.getMonth()) return '';
-    return '<div class="ve-obs" role="status"><b>Vencimento anterior ao abate projetado.</b> '
-      + m.esc(rotC(vencRef)) + ' antecede o mês de saída de um ciclo iniciado hoje: '
-      + m.dBR(abate) + ' (' + m.n2(r.d, 0) + ' dias). Revise o vencimento de referência. '
-      + 'Preço e ciclo foram mantidos; esta comparação usa o mês do contrato, não sua data exata de liquidação.</div>';
-  }
-  function renderResumoOperacao(L, vencRef, r, preco, E){
-    var host = document.getElementById('veDecisao'); if (!host) return;
-    var m = mot(), by = {}; L.forEach(function(x){ by[x.f.k] = x; });
-    var origem = E.nPersonalizado ? 'Premissas personalizadas'
-      : E.nCalculadora ? 'Premissas da Calculadora' : 'Cenário padrão — revise para sua operação';
-    var futuro = by.bgi && by.bgi.u;
-    var aviso = futuro ? avisoHorizonte(r, vencRef) : '', topo = document.getElementById('veHorizonte');
-    if (topo) topo.innerHTML = aviso;
-    var cab = m.num(E.p.veCabecasVender), travas = m.travas();
-    var volume = r && preco > 0 && isFinite(r.recB) && cab != null ? cab * r.recB / preco : null;
-    var cobertura = volume > 0 ? travas.BGI.venda / volume * 100 : null;
-    var h = '<div class="ve-decisao-cab"><div><b>Resultado da operação</b><span>Estimativa com as premissas do ciclo</span></div>'
-      + '<span class="ve-origem">' + m.esc(origem) + '</span></div><div class="ve-decisao-grid">';
-    h += card({rot:'Lucro líquido por cabeça', destaque:true,
-      valor:r && isFinite(r.lL) ? m.n2(r.lL,2) : '—', unidade:'R$/cab',
-      variacao:r && isFinite(r.llP) ? sinalTxt(r.llP*100,2,'% da receita líquida') : 'Complete as premissas',
-      varCls:r ? sinalCls(r.lL) : 've-neu',
-      rodape:r && isFinite(r.lLote) ? 'Lucro líquido do lote: R$ ' + m.n2(r.lLote,2) : 'Informe os dados da operação abaixo',
-      sec:'m3_3_6',linkRot:'revisar operação'});
-    h += card({rot:'Break-even — lucro líquido', destaque:true,
-      valor:r && isFinite(r.bLL) ? m.n2(r.bLL,2) : '—',unidade:'R$/@',
-      variacao:r && isFinite(r.bLL) ? sinalTxt(preco-r.bLL,2,' R$/@ sobre o equilíbrio') : 'Complete as premissas',
-      varCls:r ? sinalCls(preco-r.bLL) : 've-neu',rodape:'Preço que zera o lucro líquido; inclui despesas e financeiro'});
-    h += card({rot:'Preço de referência',valor:preco != null ? m.n2(preco,2) : '—',unidade:'R$/@',
-      variacao:futuro ? rotC(vencRef) : (by.boiFis && by.boiFis.u ? 'Físico CEPEA' : 'Sem pregão válido'),
-      rodape:futuro ? 'Observado em ' + m.dBR(futuro.data) : (by.boiFis && by.boiFis.u ? 'Observado em ' + m.dBR(by.boiFis.u.data) : 'Sem pregão válido'),
-      sec:'m3_1_7',alvo:'chartBoiVsBGIAll',linkRot:'ver futuros'});
-    h += card({rot:'Cobertura do boi',valor:cobertura != null ? m.n2(cobertura,1) : '—',unidade:'%',
-      variacao:cobertura != null ? m.n2(travas.BGI.venda,0) + ' @ registradas em venda' : 'Informe as cabeças a vender',
-      varCls:cobertura > 100 ? 've-baixa' : 've-neu',
-      rodape:cobertura != null ? (cobertura > 100 ? 'Posição acima do volume físico informado' : 'Posições registradas ÷ exposição informada') : 'Exposição e posições não são inferidas',
-      sec:'m3_3_5f',linkRot:'Minhas Travas'});
-    host.innerHTML = h + '</div><p class="ve-resumo-limites">Estimativa do ciclo, sem base regional, corretagem, emolumentos ou ajuste diário. Confira as premissas antes de usar o resultado.</p>';
-  }
-
   function renderCards(L, vencRef){
     var m = mot(), host = document.getElementById('veCards');
     if (!host) return;
@@ -16070,7 +15999,29 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     var prem = premEfe().p;
     var precoRef = by.bgi.u ? by.bgi.u.preco : (by.boiFis.u ? by.boiFis.u.preco : null);
     var r = (precoRef != null) ? m.custo(precoRef, prem) : null;
-    renderResumoOperacao(L, vencRef, r, precoRef, premEfe());
+    if (r){
+      h += card({
+        rot:'Break-even — margem bruta zero', destaque:true,
+        valor: m.n2(r.bMB, 2), unidade:'R$/@',
+        variacao: (precoRef != null ? ('preço de referência R$ ' + m.n2(precoRef, 2) + '/@') : '—'),
+        varCls: sinalCls(precoRef - r.bMB),
+        rodape:'motor de custo da Calculadora · premissas desta tela',
+        sec:'m3_3_6', alvo:null, linkRot:'abrir a Calculadora'
+      });
+      h += card({
+        rot:'Margem bruta sobre a receita',
+        valor: (isFinite(r.mbP) ? m.n2(r.mbP * 100, 2) : '—'), unidade:'%',
+        variacao: (isFinite(r.mB) ? ('R$ ' + m.n2(r.mB, 2) + ' por cabeça') : '—'),
+        varCls: sinalCls(r.mB),
+        rodape:'margem bruta ÷ receita líquida, ao preço de referência',
+        sec:'m3_3_6', alvo:null, linkRot:'abrir a Calculadora'
+      });
+    } else {
+      h += '<div class="ve-card ve-card-vazio"><div class="ve-card-rot">Custo e margem</div>'
+         + insuf('Preencha as premissas da operação abaixo. Sem peso de entrada, rendimento, '
+               + 'custo da @ de entrada e dias do período, o motor de custo não devolve break-even.')
+         + '</div>';
+    }
     host.innerHTML = h;
   }
 
@@ -16092,16 +16043,6 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
              type:'scatter', mode:'lines', name:nome,
              line:{ width: dash ? 1.6 : 2.2, color:cor, dash: dash || 'solid' },
              hovertemplate:'%{x|%d/%m/%Y}<br>' + nome + ': <b>%{y:,.2f}</b> ' + unRot + '<extra></extra>' };
-  }
-  function rotulosFinais(tracos){
-    var ultimos = tracos.map(function(t){ return t.y[t.y.length-1]; });
-    var perto = ultimos.length > 1 && Math.abs(ultimos[0]-ultimos[1]) < Math.max(Math.abs(ultimos[0])*0.025,0.03);
-    return tracos.map(function(t,i){
-      return {xref:'paper',x:1.015,yref:'y',y:ultimos[i],showarrow:false,xanchor:'left',
-        yshift:perto ? (i===0 ? 10 : -10) : 0,
-        text:t.name.replace('Físico ','').replace('Futuro ',''),
-        font:{size:9,color:'#475569'},bgcolor:'rgba(255,255,255,0.85)'};
-    });
   }
   function renderGraficos(L, vencRef){
     var m = mot(), host = document.getElementById('veGraficos');
@@ -16175,10 +16116,9 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     pend.forEach(function(p){
       try {
         window.renderPlot(p[0], p[1], {
-          _no_title: true, _sem_titulo:true, /* título único no cabeçalho */
-          height: 280,
-          margin:{ l:54, r:72, t:38, b:52 },
-          annotations: rotulosFinais(p[1]),
+          _no_title: true,          /* o título do card já diz a commodity */
+          height: 230,
+          margin:{ l:54, r:14, t:10, b:34 },
           xaxis:{ tickformat:'%d/%m', showgrid:false },
           yaxis:{ title:{ text:p[2], standoff:6 }, tickformat:',.2f' },
           legend:{ orientation:'h', y:-0.22, x:0 },
@@ -16249,7 +16189,21 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     var arC = isFinite(r.arC) ? r.arC : null;
     var custoArroba = (arC && arC > 0 && isFinite(r.cT)) ? (r.cT / arC) : null;
 
-    var obsHorizonte = avisoHorizonte(r, vencRef);
+    /* Horizonte: o ciclo cabe até o vencimento escolhido? */
+    var kRef = m.chaveVenc(vencRef);
+    var hojeK = new Date().getFullYear() * 12 + new Date().getMonth();
+    var mesesAteVenc = (kRef == null) ? null : (kRef - hojeK);
+    var mesesCiclo = isFinite(r.d) ? (r.d / 30.4) : null;
+    var obsHorizonte = '';
+    if (mesesAteVenc != null && mesesCiclo != null){
+      if (mesesAteVenc < Math.floor(mesesCiclo)){
+        obsHorizonte = '<div class="ve-obs"><b>Observação de horizonte.</b> O ciclo tem '
+          + m.n2(r.d, 0) + ' dias (cerca de ' + m.n2(mesesCiclo, 1) + ' meses) e o vencimento de '
+          + 'referência está a ' + mesesAteVenc + ' ' + (mesesAteVenc === 1 ? 'mês' : 'meses') + '. '
+          + 'Um lote que entrasse hoje sairia depois deste contrato. As premissas <b>não</b> foram '
+          + 'ajustadas por causa disso — a conta continua sendo a do seu ciclo, vendido a este preço.</div>';
+      }
+    }
     /* Quando não há perdas nem dedução sobre a receita, "custo por arroba
        vendida" e "break-even de lucro líquido" são o MESMO número por
        construção — o break-even é o custo total dividido pelas mesmas
@@ -16296,7 +16250,9 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
             isFinite(r.lLote) ? 'resultado do lote: R$ ' + m.n2(r.lLote, 2) : '')
       + '</div>'
       + obsHorizonte + obsIguais + obsMilho
-      + '<div class="ve-nota">Os resultados usam o mesmo cálculo da Calculadora do Boi. O cenário veio de: <b>' + E.nPersonalizado + '</b> campo(s) seus, <b>'
+      + '<div class="ve-nota">Tudo acima sai do motor de custo <code>__3M_calcEngine</code>, o mesmo '
+      + 'da Calculadora do Boi e o mesmo que as Etapas 2 e 2.1 auditaram — esta tela não tem fórmula '
+      + 'financeira própria. O cenário veio de: <b>' + E.nPersonalizado + '</b> campo(s) seus, <b>'
       + E.nCalculadora + '</b> da Calculadora e <b>' + E.nPadrao + '</b> do cenário padrão do Radar. '
       + 'Mudar o vencimento troca o <b>preço de venda</b> e nada mais: dias de cocho, ganho, peso e '
       + 'custos ficam como estão. A margem bruta é medida <b>sobre a receita líquida</b>; nada aqui '
@@ -16812,9 +16768,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (id.indexOf('exp_') === 0){
       return { kind:'exportacao', yTitle:'', yTick:null, ySepThousands:false,
                unit:'', unitAxis:'', unitShort:'' };
-    }
-    if (id.indexOf('chartescala') === 0){
-      return { kind:'escala', yTitle:'', yTick:null, ySepThousands:false, unit:'', unitShort:'' };
     }
     var pu = _activePriceUnit();
     var priceSpec = { kind:'price', yTitle: pu.title, yTick: ",.2f",
@@ -17364,9 +17317,6 @@ function applyPlotlyTheme(chartId, layout, traces) {
       layout.height = _grauAltura(layout.height);
     } catch(e){}
 
-    // Decimal brasileiro em eixos e hover, independentemente do CDN de locale.
-    layout.separators = ',.';
-
     // Typography (BMS internal standard)
     var FF = 'Montserrat, sans-serif';
 
@@ -17568,11 +17518,7 @@ function applyPlotlyTheme(chartId, layout, traces) {
        sufixo do ativo; o título continuava sendo escrito, e num card que já
        o traz no cabeçalho isso é a mesma frase duas vezes, a 400 px de
        distância. Quem passa a bandeira é o card que se considera nomeado. */
-    if (layout._sem_titulo){
-      layout.__tituloExportacao = _tituloFig;
-      layout.__pngNome = _pngNome(_tituloFig);
-      _tituloFig = '';
-    }
+    if (layout._sem_titulo) _tituloFig = '';
     if (_tituloFig) {
       if (_tituloFig.length > 84) _tituloFig = _tituloFig.slice(0, 83) + '…';
       // Ancorado em 'container', e não em 'paper': assim o título fica preso
@@ -18885,27 +18831,6 @@ function applyPlotlyTheme(chartId, layout, traces) {
     if (!nome) return PLOTLY_CONFIG;
     var c = Object.assign({}, PLOTLY_CONFIG);
     c.toImageButtonOptions = Object.assign({}, PLOTLY_CONFIG.toImageButtonOptions || {}, { filename: nome });
-    /* Título único na tela, título completo no PNG. O clone de exportação
-       não altera o zoom, a seleção ou a figura que o usuário está vendo. */
-    if (layout.__tituloExportacao && window.Plotly){
-      c.modeBarButtonsToRemove = (c.modeBarButtonsToRemove || []).concat(['toImage']);
-      c.modeBarButtonsToAdd = (c.modeBarButtonsToAdd || []).concat([{
-        name:'Baixar gráfico em PNG', icon:Plotly.Icons.camera,
-        click:async function(gd){
-          var copia = document.createElement('div');
-          copia.style.cssText = 'position:fixed;left:-10000px;top:0;width:1200px;height:720px;';
-          document.body.appendChild(copia);
-          try {
-            var l = Object.assign({}, gd.layout, {width:1200,height:720,autosize:false,
-              title:{text:layout.__tituloExportacao,x:0.04,xanchor:'left'},
-              margin:Object.assign({},gd.layout.margin,{t:90,b:80})});
-            await Plotly.newPlot(copia,gd.data,l,{staticPlot:true,displayModeBar:false});
-            await Plotly.downloadImage(copia,{format:'png',filename:nome,width:1200,height:720,scale:2});
-          } catch(e){ console.warn('Exportação do gráfico:',e); }
-          finally { Plotly.purge(copia); copia.remove(); }
-        }
-      }]);
-    }
     return c;
   }
 
@@ -29685,7 +29610,7 @@ function updatePreco() {
     // 1) Onde o preço está na janela
     var rank = _decPct(vals, atual);
     itens.push({ nome:'Preço na janela', valor:'Percentil ' + rank,
-      obs: uni + ' ' + atual.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' · ' + jan.length + ' pregões analisados',
+      obs: uni + ' ' + atual.toFixed(2) + ' · ' + jan.length + ' pregões analisados',
       sinal: rank >= 65 ? 'bom' : (rank <= 35 ? 'ruim' : 'neutro') });
 
     // 2) Direção: regressão linear sobre a janela, em % ao mês
@@ -29698,7 +29623,7 @@ function updatePreco() {
       var media = sy/n;
       var pctMes = (b*21/media)*100;      // 21 pregões ≈ 1 mês
       itens.push({ nome:'Tendência da janela',
-        valor:(pctMes>=0?'+':'') + pctMes.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}) + '% ao mês',
+        valor:(pctMes>=0?'+':'') + pctMes.toFixed(2) + '% ao mês',
         obs:'inclinação da regressão nos ' + n + ' pregões',
         sinal: pctMes >= 0.5 ? 'bom' : (pctMes <= -0.5 ? 'ruim' : 'neutro') });
     })();
@@ -29711,8 +29636,8 @@ function updatePreco() {
       if (!(sd > 0)) return;
       var z = (atual-m)/sd;
       itens.push({ nome:'Distância da média',
-        valor:(z>=0?'+':'') + z.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}) + 'σ',
-        obs:'média da janela ' + uni + ' ' + m.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}),
+        valor:(z>=0?'+':'') + z.toFixed(2) + 'σ',
+        obs:'média da janela ' + uni + ' ' + m.toFixed(2),
         sinal: Math.abs(z) >= 2 ? (z>0?'bom':'ruim') : 'neutro' });
     })();
 
@@ -29729,8 +29654,8 @@ function updatePreco() {
       if (!(vTot > 0)) return;
       var razao = vRec/vTot;
       itens.push({ nome:'Volatilidade recente',
-        valor: vRec.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}) + '% ao dia',
-        obs:'contra ' + vTot.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}) + '% da janela · '
+        valor: vRec.toFixed(2) + '% ao dia',
+        obs:'contra ' + vTot.toFixed(2) + '% da janela · '
             + (razao>=1.25?'mercado mais nervoso':razao<=0.8?'mercado mais calmo':'dentro do normal'),
         sinal: razao >= 1.25 ? 'ruim' : (razao <= 0.8 ? 'bom' : 'neutro') });
     })();
@@ -29763,7 +29688,7 @@ function updatePreco() {
                  'agosto','setembro','outubro','novembro','dezembro'];
       var anos = Object.keys(porAno).filter(function(y){ return porAno[y].length >= minAno; }).length;
       itens.push({ nome:'Sazonalidade do mês',
-        valor: (idx>=100?'+':'') + (idx-100).toLocaleString('pt-BR', {minimumFractionDigits:1, maximumFractionDigits:1}) + '% vs ano',
+        valor: (idx>=100?'+':'') + (idx-100).toFixed(1) + '% vs ano',
         obs: MES[mesAtual] + ' historicamente ' + (idx>=101?'acima':idx<=99?'abaixo':'na média')
              + ' · ' + anos + ' anos',
         sinal: idx >= 101 ? 'bom' : (idx <= 99 ? 'ruim' : 'neutro') });
@@ -29787,7 +29712,7 @@ function updatePreco() {
             var razaoC = (curva[kLonge]*escF)/atual;
             var anual = (Math.pow(razaoC, 12/meses) - 1) * 100;
             itens.push({ nome:'Carrego da curva',
-              valor:(anual>=0?'+':'') + anual.toLocaleString('pt-BR', {minimumFractionDigits:1, maximumFractionDigits:1}) + '% ao ano',
+              valor:(anual>=0?'+':'') + anual.toFixed(1) + '% ao ano',
               obs:'até ' + _contractLabel(cfg.futPrefix + ['F','G','H','J','K','M','N','Q','U','V','X','Z'][kLonge%12]
                    + String(Math.floor(kLonge/12)).slice(-2)) + ' · ' + meses + ' meses à frente',
               sinal: anual >= 6 ? 'bom' : (anual <= 0 ? 'ruim' : 'neutro') });
@@ -29821,12 +29746,6 @@ function updatePreco() {
               pergunta:'o momento favorece comprar reposição?' }
   };
 
-  function grupoSinal(nome){
-    if (/Preço na janela|Tendência da janela|Distância da média|Volatilidade recente/.test(nome)) return 'Preço e tendência';
-    if (/Sazonalidade|Fase do ciclo/.test(nome)) return 'Sazonalidade e ciclo';
-    if (/Carrego|Curva contra o custo|Ciclo inteiro/.test(nome)) return 'Economia da operação';
-    return 'Base e validação histórica';
-  }
   function updatePainelDecisao(key){
     key = key || 'boi';
     var cfg = _DEC_CFGS[key];
@@ -29863,14 +29782,14 @@ function updatePreco() {
       var S = (window.__3M_SINAIS || {});
       if (S.cai){
         itens.push({ nome:'Curva contra o custo',
-          valor:(S.cai.margemInc>=0?'+':'') + 'R$ ' + S.cai.margemInc.toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:0}) + '/@',
+          valor:(S.cai.margemInc>=0?'+':'') + 'R$ ' + S.cai.margemInc.toFixed(0) + '/@',
           obs:'melhor em ' + S.cai.melhorVenc + ' · ' + S.cai.positivosInc + '/' + S.cai.total
               + ' pagam o incremental',
           sinal: S.cai.margemInc > 0 && S.cai.positivosInc > S.cai.total/2 ? 'bom'
                : (S.cai.margemInc <= 0 ? 'ruim' : 'neutro') });
         if (S.cai.margemVend != null){
           itens.push({ nome:'Ciclo inteiro (com reposição)',
-            valor:(S.cai.margemVend>=0?'+':'') + 'R$ ' + S.cai.margemVend.toLocaleString('pt-BR', {minimumFractionDigits:0, maximumFractionDigits:0}) + '/@',
+            valor:(S.cai.margemVend>=0?'+':'') + 'R$ ' + S.cai.margemVend.toFixed(0) + '/@',
             obs:'melhor em ' + S.cai.melhorVencVend + ' · ' + S.cai.positivosVend + '/'
                 + S.cai.totalVend + ' no positivo',
             sinal: S.cai.margemVend > 0 ? 'bom' : 'ruim' });
@@ -29878,7 +29797,7 @@ function updatePreco() {
       }
       if (S.base){
         itens.push({ nome:'Base do físico',
-          valor: S.base.emPct ? S.base.valor.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})+'%' : 'R$ ' + S.base.valor.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}),
+          valor: S.base.emPct ? S.base.valor.toFixed(2)+'%' : 'R$ ' + S.base.valor.toFixed(2),
           obs:'contra ' + S.base.contrato + ' · '
               + (S.base.valor>=0 ? 'soma ao preço travado' : 'desconta do preço travado'),
           sinal: S.base.valor >= 0 ? 'bom' : 'ruim' });
@@ -29886,14 +29805,14 @@ function updatePreco() {
       if (S.ciclo){
         itens.push({ nome:'Fase do ciclo pecuário',
           valor: S.ciclo.fase.charAt(0).toUpperCase()+S.ciclo.fase.slice(1),
-          obs: S.ciclo.fem.toLocaleString('pt-BR', {minimumFractionDigits:1, maximumFractionDigits:1}) + '% de fêmeas · '
-               + (S.ciclo.delta12>=0?'+':'') + S.ciclo.delta12.toLocaleString('pt-BR', {minimumFractionDigits:1, maximumFractionDigits:1}) + ' p.p. em 12 meses',
+          obs: S.ciclo.fem.toFixed(1) + '% de fêmeas · '
+               + (S.ciclo.delta12>=0?'+':'') + S.ciclo.delta12.toFixed(1) + ' p.p. em 12 meses',
           sinal: S.ciclo.fase==='liquidação' ? 'ruim' : (S.ciclo.fase==='retenção' ? 'bom' : 'neutro') });
       }
       if (S.backtest && S.backtest.nContratos){
         itens.push({ nome:'Travar no passado',
           valor: Math.round(S.backtest.acerto*100) + '% de acerto',
-          obs:'média ' + (S.backtest.media>=0?'+':'−') + 'R$ ' + Math.abs(S.backtest.media).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})
+          obs:'média ' + (S.backtest.media>=0?'+':'−') + 'R$ ' + Math.abs(S.backtest.media).toFixed(2)
               + '/@ · ' + S.backtest.nContratos + ' contratos',
           sinal: S.backtest.acerto >= 0.55 ? 'bom' : (S.backtest.acerto <= 0.45 ? 'ruim' : 'neutro') });
       }
@@ -29922,29 +29841,22 @@ function updatePreco() {
     var neutros = itens.filter(function(o){ return o.sinal==='neutro'; }).length;
 
     var ICON = { bom:'▲', ruim:'▼', neutro:'●', nd:'—' };
-    gEl.innerHTML = ['Preço e tendência','Sazonalidade e ciclo','Economia da operação','Base e validação histórica'].map(function(grupo){
-      var lista = itens.filter(function(o){ return grupoSinal(o.nome) === grupo; });
-      if (!lista.length) return '';
-      var aFavor = lista.filter(function(o){ return o.sinal === 'bom'; }).length;
-      var contra = lista.filter(function(o){ return o.sinal === 'ruim'; }).length;
-      return '<section class="dec-fundamento"><div class="dec-fundamento-tit">' + grupo
-        + '<span>' + aFavor + ' a favor · ' + contra + ' contra</span></div><div class="dec-fundamento-grid">'
-        + lista.map(function(o){
-          return '<div class="dec-item s-' + o.sinal + '">'
-            + '<div class="dec-ic">' + ICON[o.sinal] + '</div>'
-            + '<div class="dec-txt"><div class="dec-nome">' + o.nome + '</div>'
-            + '<div class="dec-val">' + o.valor + '</div>'
-            + '<div class="dec-obs">' + o.obs + '</div></div></div>';
-        }).join('') + '</div></section>';
+    gEl.innerHTML = itens.map(function(o){
+      return '<div class="dec-item s-' + o.sinal + '">'
+           + '<div class="dec-ic">' + ICON[o.sinal] + '</div>'
+           + '<div class="dec-txt"><div class="dec-nome">' + o.nome + '</div>'
+           + '<div class="dec-val">' + o.valor + '</div>'
+           + '<div class="dec-obs">' + o.obs + '</div></div></div>';
     }).join('');
-    gEl.classList.add('dec-por-fundamento');
 
     var classe, frase;
     if (bons >= ruins + 2){
       classe = 'v-favoravel';
       frase = _inv
-        ? 'Há mais sinais individuais favoráveis à compra de reposição. Confira quais fundamentos concordam e onde divergem antes de aplicar a leitura à sua operação.'
-        : 'Há mais sinais individuais favoráveis à trava de venda. Confira os grupos de fundamentos: sinais de preço relacionados não equivalem a confirmações independentes.';
+        ? 'A maioria dos sinais aponta a favor de comprar reposição agora. Comprar tudo de uma vez raramente '
+          + 'é o caminho: o uso comum é fracionar a compra ao longo da janela em que o preço está favorável.'
+        : 'A maioria dos sinais aponta a favor de travar parte da venda. Isso não quer dizer travar tudo: '
+          + 'o uso comum é fracionar, garantindo o que já cobre o custo e deixando o restante aberto.';
     } else if (ruins >= bons + 2){
       classe = 'v-contra';
       frase = _inv
@@ -29968,7 +29880,7 @@ function updatePreco() {
        vira "0 × 3a favor × contra", e o segundo × não separa nada: parece
        número quebrado. Agora cada contagem carrega o próprio rótulo. */
     vEl.innerHTML = '<div class="dec-placar">'
-                  + '<span class="dec-pl-rot">Sinais individuais</span><span class="dec-pl-n">' + bons + '</span><span class="dec-pl-r">a favor</span>'
+                  + '<span class="dec-pl-n">' + bons + '</span><span class="dec-pl-r">a favor</span>'
                   + '<span class="dec-pl-sep">·</span>'
                   + '<span class="dec-pl-n">' + ruins + '</span><span class="dec-pl-r">contra</span>'
                   + (neutros ? ('<small>' + neutros + (neutros>1?' neutros':' neutro') + '</small>') : '')
@@ -29991,7 +29903,7 @@ function updatePreco() {
            + 'e é aí que abrir os cards de origem rende mais do que olhar o placar.</div>';
       }
       h += '<div class="rb-line" style="border-left:3px solid #b45309;padding-left:9px;margin-top:8px">'
-         + '<b>Os sinais não são votos independentes.</b> Percentil, distância da média e tendência compartilham a mesma série de preços. Os grupos organizam fundamentos, sem atribuir pesos ou probabilidades. O placar não é recomendação; os cortes de classificação '
+         + '<b>O placar não é recomendação.</b> Os sinais não têm o mesmo peso, e os cortes de classificação '
          + 'são convenção, como percentil 65 para considerar o preço alto. Dois produtores com situações de '
          + 'caixa diferentes podem ler o mesmo painel e decidir o oposto, com razão. '
          + 'Trate como organização da informação.</div>';
@@ -31331,14 +31243,83 @@ function updatePreco() {
      estatística foi reescrita — onde o Radar já tinha função, ela é chamada. */
   var _RG_MODO = 'serie';
   var _RG_MEM  = { produto:null, uf:null, praca:null, comp:[] };
+  /* Já houve uma seleção de comparação nesta sessão? Enquanto for falso, o
+     card tem licença para semear a seleção sozinho; depois disso, quem manda
+     é o operador. Ver o bloco do preenchimento em `_rgPreencheControles`. */
+  var _RG_COMP_INIC = false;
+
+  /* Pedido de restauração, consumido uma vez na volta para COMPARAR. Ver
+     `rgSetModo`: é a única porta por onde a memória pode sobrepor o que
+     está marcado — num redesenho comum, quem vale é a seleção da tela. */
+  var _RG_COMP_RESTAURA = false;
 
   function rgSetModo(m){
+    var anterior = _RG_MODO;
     _RG_MODO = (m==='comparar') ? 'comparar' : 'serie';
+    /* SAIR DE COMPARAR DESTRUÍA A ESCOLHA. Tirar o `multiple` de um select
+       com várias marcadas deixa uma só, e o modo SÉRIE ainda atribui
+       `select.value`, que zera o resto. Quem comparava quatro praças, dava
+       uma olhada na série de uma e voltava, encontrava uma praça marcada.
+       A escolha é guardada na saída e devolvida na volta. */
+    if(anterior==='comparar' && _RG_MODO==='serie'){
+      var s0=document.getElementById('rgPraca');
+      if(s0) _RG_MEM.comp = Array.prototype.filter.call(s0.options,function(o){return o.selected;})
+                                 .map(function(o){ return o.value; });
+    }
+    if(anterior!=='comparar' && _RG_MODO==='comparar') _RG_COMP_RESTAURA = true;
     var a=document.getElementById('rgModoSerie'), b=document.getElementById('rgModoComp');
     if(a) a.classList.toggle('active', _RG_MODO==='serie');
     if(b) b.classList.toggle('active', _RG_MODO==='comparar');
-    var sel=document.getElementById('rgPraca');
-    if(sel){ sel.multiple = (_RG_MODO==='comparar'); sel.size = (_RG_MODO==='comparar') ? 6 : 1; }
+    /* O <select> continua sendo o estado — `_rgCompararCard` lê dele —, mas
+       deixa de ser o controle: em COMPARAR ele some e quem aparece são os
+       chips. Um controle para cada modo, nenhum dos dois meio visível. */
+    var sel=document.getElementById('rgPraca'),
+        lbl=document.getElementById('rgPracaLbl'),
+        box=document.getElementById('rgCompBox');
+    if(sel){
+      sel.multiple = (_RG_MODO==='comparar');
+      sel.size = 1;
+      sel.style.display = (_RG_MODO==='comparar') ? 'none' : '';
+    }
+    if(lbl) lbl.style.display = (_RG_MODO==='comparar') ? 'none' : '';
+    if(box) box.style.display = (_RG_MODO==='comparar') ? '' : 'none';
+    try{ updateRegional(); }catch(e){}
+  }
+
+  /* ── OS CHIPS ─────────────────────────────────────────────────────────
+     Desenham a lista atual e refletem a seleção que está no <select>. O
+     clique alterna UMA praça: nada é substituído, nada é recompletado. A
+     contagem embaixo diz quantas estão marcadas, porque com quinze chips na
+     tela ninguém conta de olho. */
+  function _rgChips(lista, uniDom, marcadas){
+    var box=document.getElementById('rgCompChips');
+    if(!box) return;
+    box.innerHTML='';
+    lista.forEach(function(o){
+      var b=document.createElement('button');
+      b.type='button'; b.className='rg-chip';
+      b.setAttribute('data-chave', o.chave);
+      b.setAttribute('aria-pressed', marcadas.indexOf(o.chave)>=0 ? 'true' : 'false');
+      if(o.unidade!==uniDom) b.setAttribute('data-divergente','1');
+      b.textContent = o.praca + (o.uf ? ' ('+o.uf+')' : '') + (o.unidade!==uniDom ? ' ⚠ '+o.unidade : '');
+      b.title = o.n + ' pregões' + (o.unidade!==uniDom
+        ? ' · cotada em '+o.unidade+', fora da unidade dominante: não entra em média nem em comparação direta'
+        : '');
+      box.appendChild(b);
+    });
+    var c=document.getElementById('rgCompConta');
+    if(c) c.textContent = marcadas.length===0 ? 'nenhuma praça marcada'
+                        : marcadas.length===1 ? '1 praça marcada · comparar pede duas'
+                        : marcadas.length+' praças marcadas';
+  }
+
+  /* Alterna uma praça e redesenha. A marcação vive no <select>, que continua
+     sendo a única fonte de verdade do card. */
+  function _rgChipToggle(chave){
+    var sel=document.getElementById('rgPraca'); if(!sel) return;
+    Array.prototype.forEach.call(sel.options, function(o){
+      if(o.value===chave) o.selected = !o.selected;
+    });
     try{ updateRegional(); }catch(e){}
   }
   try { window.rgSetModo = rgSetModo; } catch(e){}
@@ -31487,18 +31468,39 @@ function updatePreco() {
       selC.appendChild(op);
     });
     if(_RG_MODO==='comparar'){
-      /* Entrando no modo comparar vindo do modo série, só existe UMA praça
-         selecionada — e comparar exige duas. Em vez de mostrar a mensagem de
-         "selecione mais", o card completa a seleção com as praças de maior
-         cobertura na unidade dominante, mantendo a que já estava escolhida. */
-      var alvo = antes.filter(Boolean);
-      if(alvo.length < 2){
+      /* ── O PREENCHIMENTO AUTOMÁTICO SÓ VALE QUANDO NÃO HÁ ESCOLHA ──────
+         A versão anterior completava a seleção até quatro praças sempre que
+         contava menos de duas marcadas. Como num <select multiple> o clique
+         simples substitui a seleção inteira por um item, tirar uma praça
+         deixava uma marcada, o preenchimento entrava e devolvia quatro: não
+         havia como deselecionar nada. O automático agora acontece em dois
+         casos, os dois em que o operador não escolheu coisa alguma:
+         a primeira entrada no modo, e a troca de UF que deixa a seleção
+         anterior inteira fora da lista. Fora deles, menos de duas praças é
+         uma escolha, e o card mostra o aviso em vez de remarcar sozinho. */
+      var alvo = antes.filter(Boolean).filter(function(v){
+        return lista.some(function(o){ return o.chave===v; });
+      });
+      /* A volta de SÉRIE para COMPARAR: a memória sobrepõe o que sobrou no
+         select, e só aqui. Marcar e desmarcar chip não passa por este
+         caminho, então nada é remarcado pelas costas de quem clicou. */
+      if(_RG_COMP_RESTAURA){
+        _RG_COMP_RESTAURA = false;
+        var daMem = (_RG_MEM.comp||[]).filter(function(v){
+          return lista.some(function(o){ return o.chave===v; });
+        });
+        if(daMem.length) alvo = daMem;
+      }
+      var trocouUF = (_RG_MEM.uf !== selU.value);
+      var precisaSemear = !_RG_COMP_INIC || (trocouUF && !alvo.length);
+      if(precisaSemear && alvo.length < 2){
         var candidatas = lista.filter(function(o){ return o.unidade===uniDom && alvo.indexOf(o.chave)<0; })
                               .sort(function(a,b){ return b.n-a.n; });
         while(alvo.length < 4 && candidatas.length) alvo.push(candidatas.shift().chave);
       }
-      if(alvo.length < 2 && _RG_MEM.comp.length) alvo = _RG_MEM.comp;
+      _RG_COMP_INIC = true;
       Array.prototype.forEach.call(selC.options, function(o){ o.selected = alvo.indexOf(o.value)>=0; });
+      _rgChips(lista, uniDom, alvo);
     } else {
       var a1=antes[0];
       /* O agregado É uma seleção válida, mas não está em `lista` — ela só
@@ -32041,7 +32043,7 @@ function updatePreco() {
       + '<b>'+_pcN(Math.min.apply(null,vals),2)+'</b> — '+_pcN(Math.max.apply(null,vals)-Math.min.apply(null,vals),2)
       + ' dias entre as pontas das '+regs.length+' macrorregiões. '
       + (B.mtRef? ('O consolidado do estado está em <b>'+_pcN(B.mtRef.atual,2)+' dias</b>. ') : '')
-      + (agro? ('Vale notar: pela <b>Agrobrazil</b>, a escala de MT na publicação de '+_esDataBR(agro.fim)+' é de <b>'+_pcN(agro.atual,1)
+      + (agro? ('Vale notar: pela <b>Agrobrazil</b>, a escala de MT no mesmo dia é de <b>'+_pcN(agro.atual,1)
                + ' dias</b>. São <b>duas apurações independentes</b> do mesmo estado, com metodologias e amostras '
                + 'diferentes — o painel mostra as duas e não força uma a bater com a outra. ') : ''),
       '<b>Fonte:</b> '+(B.fonteMT||'IMEA')+', aba <b>Escala Abate MT</b> da planilha'
@@ -32511,8 +32513,10 @@ function updatePreco() {
     if(kpiEl) kpiEl.innerHTML=''; if(tabEl) tabEl.innerHTML='';
     if(!chaves || chaves.length<2){
       renderPlot(chartId,[],{_no_title:true});
-      _exSet(ctxId,'<div class="rb-vazio">Selecione ao menos duas praças na lista para comparar. '
-        +'Segure Ctrl (ou Cmd) para marcar várias.</div>');
+      /* A instrução do Ctrl saiu junto com o <select multiple>: ela mandava
+         fazer o que não funcionava mais, e era parte do problema. */
+      _exSet(ctxId,'<div class="rb-vazio">Clique nas praças acima para marcar ao menos duas. '
+        +'Clicar de novo tira a praça da comparação.</div>');
       return;
     }
     var CORES=['#0d9488','#7c3aed','#b45309','#1d4ed8','#be123c','#0891b2','#65a30d','#db2777'];
@@ -34142,6 +34146,37 @@ function updatePreco() {
       try{ _renderBoiMagroAgio(); }catch(e){ console.warn('Ágio do magro:',e); }
       try{ _ajustaCardsDoAtivo(); }catch(e){}
     });
+    /* Chips de praça: delegação, porque eles são redesenhados a cada
+       atualização e um listener por chip morreria junto com o chip. */
+    (function(){
+      var box=document.getElementById('rgCompChips');
+      if(box) box.addEventListener('click', function(ev){
+        var b=ev.target.closest ? ev.target.closest('.rg-chip') : null;
+        if(!b) return;
+        _rgChipToggle(b.getAttribute('data-chave'));
+      });
+      var lim=document.getElementById('rgCompLimpa');
+      if(lim) lim.addEventListener('click', function(){
+        var sel=document.getElementById('rgPraca'); if(!sel) return;
+        Array.prototype.forEach.call(sel.options, function(o){ o.selected=false; });
+        try{ updateRegional(); }catch(e){}
+      });
+      var topo=document.getElementById('rgCompTopo');
+      if(topo) topo.addEventListener('click', function(){
+        var sel=document.getElementById('rgPraca'); if(!sel) return;
+        /* As quatro de maior cobertura dentro da lista atual — o mesmo
+           critério do semeio, agora como ação explícita de quem pede. */
+        var prod=(document.getElementById('rgProduto')||{}).value||'Boi Gordo';
+        var uf=(document.getElementById('rgUF')||{}).value||null;
+        var uniDom=_rgUnidadeDominante(prod);
+        var top=_rgPracas(prod, uf).filter(function(o){ return o.unidade===uniDom; })
+                 .sort(function(a,b){ return b.n-a.n; }).slice(0,4)
+                 .map(function(o){ return o.chave; });
+        Array.prototype.forEach.call(sel.options, function(o){ o.selected = top.indexOf(o.value)>=0; });
+        try{ updateRegional(); }catch(e){}
+      });
+    })();
+
     liga(['rgProduto','rgUF','rgPraca','rgPeriodo','rgReal',
       'rgBaseProduto','rgBaseUF','rgBasePraca','rgBasePeriodo','rgBaseAVista','rgGmAVista',
       'rgDispProduto','rgDispUF','rgDispPeriodo',
@@ -69535,44 +69570,6 @@ window._m3SmokeTest = function(secId){
     if (!n) return '';
     return n + ' pregões · margem ±' + margem(n) + ' pts' + (n < MIN ? ' · abaixo do mínimo de ' + MIN : '');
   };
-})();
-</script>
-<script id="radar-explicacoes-20261020">
-/* Explicação sob demanda: mantém a leitura atual e todos os controles acessíveis. */
-(function(){
-  'use strict';
-  var seletor = '.explain, .ve-nota, .io-nota, .rb-note';
-  function compactar(raiz){
-    if (!raiz || raiz.nodeType !== 1 || raiz.closest('.js-plotly-plot')) return;
-    var itens = Array.prototype.slice.call(raiz.querySelectorAll(seletor));
-    if (raiz.matches(seletor)) itens.unshift(raiz);
-    itens.forEach(function(el){
-      if (!el.parentNode || el.closest('.radar-explicacao') || el.querySelector('input,select,button,textarea')
-          || el.textContent.trim().length < 180) return;
-      var caixa = document.createElement('details'); caixa.className = 'radar-explicacao';
-      var titulo = document.createElement('summary');
-      titulo.textContent = el.classList.contains('explain') ? 'Como interpretar' : 'Premissas e metodologia';
-      el.parentNode.insertBefore(caixa,el); caixa.appendChild(titulo); caixa.appendChild(el);
-    });
-  }
-  function iniciar(){
-    var main = document.querySelector('main'); if (!main) return;
-    compactar(main);
-    new MutationObserver(function(registros){
-      registros.forEach(function(r){
-        if (r.target.nodeType === 1 && r.target.closest('.js-plotly-plot')) return;
-        r.addedNodes.forEach(compactar);
-      });
-    }).observe(main,{childList:true,subtree:true});
-  }
-  var fechar = [];
-  window.addEventListener('beforeprint',function(){
-    fechar = Array.prototype.slice.call(document.querySelectorAll('details.radar-explicacao:not([open])'));
-    fechar.forEach(function(el){ el.open=true; });
-  });
-  window.addEventListener('afterprint',function(){ fechar.forEach(function(el){ el.open=false; }); fechar=[]; });
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',iniciar);
-  else iniciar();
 })();
 </script>
 </body>
