@@ -1101,8 +1101,23 @@ header h1,
     text-align: right;
     font-size: var(--fs-sm);
     color: var(--text-soft);
-    opacity: 0.95;
     line-height: 1.5;
+  }
+  /* RÓTULO E VALOR PRECISAM SER DIFERENTES. Os dois herdavam a mesma cor
+     suave e o mesmo peso, e o bloco inteiro saía num cinza só: "Data
+     22/10/2026" lia-se como uma coisa, não como um campo e seu conteúdo.
+     O rótulo fica pequeno e apagado, que é o papel dele, e o valor volta
+     à cor do texto com peso de dado. */
+  .hdr-chip-label {
+    font-size: var(--fs-nano);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-right: 6px;
+  }
+  .hdr-chip-value {
+    font-weight: 700;
+    color: #111827;
   }
 
   .header-actions {
@@ -6088,7 +6103,7 @@ header{
     <div>
       <h1>BMS Agrobrasil — Radar Diário de Mercado</h1>
       <div class="report-pills"><span class="report-pill" id="metaModoPill">DIÁRIO</span><span class="report-pill report-pill-soft" id="metaAtivoPill">Boi / B3</span></div>
-      <p id="hdrDescricao">Painel interno de análise quantitativa: curvas de contratos futuros, alertas técnicos, ranking estatístico, radar de 7 pregões e gestão de risco — Boi Gordo (BGI), Milho (CCM) e Soja (SJC).</p>
+      <p id="hdrDescricao">Boi, milho e soja, do físico ao futuro: onde o preço está na própria história, o que a curva da B3 paga à frente, como andam a reposição e as fêmeas, e quanto o lote fecha.</p>
 
     </div>
   </div>
@@ -17000,7 +17015,9 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
       if(metaData) metaData.textContent = dataStr;
       if(metaAba) metaAba.textContent = _safeText(sheetSel?.value || sheetSel?.selectedOptions?.[0]?.text);
 
-      const bgiVal = futSel?.value ? futSel.value : '(opcional)';
+      /* "(opcional)" é instrução de formulário, e este bloco mostra
+         estado, não instrução. Sem contrato escolhido, o estado é nenhum. */
+      const bgiVal = futSel?.value ? futSel.value : 'nenhum';
       if(metaBGI) metaBGI.textContent = _safeText(bgiVal);
 
       let janela = '—';
@@ -17010,7 +17027,9 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
         janela = `${s} → ${e}`;
       }else if(document.getElementById('rangeModePeriod')?.checked && lookbackEl){
         const n = lookbackEl.value ? lookbackEl.value : '—';
-        janela = `${n} pregões (janela móvel)`;
+        /* A pílula ao lado do título já diz JANELA MÓVEL; repetir aqui
+           gastava metade da linha para não acrescentar nada. */
+        janela = `${n} pregões`;
       }
       if(metaJanela) metaJanela.textContent = _safeText(janela);
 
@@ -53169,9 +53188,15 @@ function updateRelacao() {
        Quem troca o universo repinta a descrição — um lugar só. */
     try {
       var _hd = document.getElementById('hdrDescricao');
+      /* A descrição antiga enumerava módulos ("curvas de contratos
+         futuros, alertas técnicos, ranking estatístico, radar de 7 pregões
+         e gestão de risco"), o que envelheceu duas vezes: ficou com cara de
+         folheto e passou a estar errada, porque o painel cresceu para
+         fêmeas, ciclo, reposição, exportação e calculadora. A frase agora
+         diz a que o Radar serve, e não de que partes ele é feito. */
       if (_hd) _hd.textContent = (u === 'macro')
-        ? 'Painel interno de análise quantitativa: curvas de contratos futuros, alertas técnicos, ranking estatístico e gestão de risco — Açúcar, Etanol, Dólar (DOL) e Juros Futuros (DI1).'
-        : 'Painel interno de análise quantitativa: curvas de contratos futuros, alertas técnicos, ranking estatístico, radar de 7 pregões e gestão de risco — Boi Gordo (BGI), Milho (CCM) e Soja (SJC).';
+        ? 'Açúcar, etanol, dólar e juros futuros: onde cada preço está na própria história e o que a curva da B3 paga à frente.'
+        : 'Boi, milho e soja, do físico ao futuro: onde o preço está na própria história, o que a curva da B3 paga à frente, como andam a reposição e as fêmeas, e quanto o lote fecha.';
     } catch(e){}
     try { if (typeof window.updateHeaderMeta === 'function') window.updateHeaderMeta(); } catch(e){}
     _m3PintaAtivos();
@@ -55510,36 +55535,70 @@ async function exportarPdfPremium() {
 
 <div class="metodologia-card">
   <div class="metodologia-toggle" onclick="var c=document.getElementById('metodologiaContent'); c.style.display = (c.style.display === 'none' || !c.style.display) ? 'block' : 'none';">
-    <span>Metodologia – BMS Agrobrasil</span>
+    <span>Como o Radar calcula</span>
     <span class="metodologia-icon">▼</span>
   </div>
   <div id="metodologiaContent" class="metodologia-body" style="display:none;">
     <div class="metodologia-inner">
       <p class="metodologia-intro">
-        <strong>BMS Agrobrasil — Radar Diário de Mercado (uso interno)</strong> é um painel técnico que sintetiza a leitura quantitativa dos mercados agropecuários, cobrindo Boi Gordo (BGI/B3), Milho (CCM/B3) e Soja (SJC/B3), com preço físico via CEPEA.
+        O Radar lê uma planilha e desenha. Ele não busca preço em lugar nenhum durante a
+        navegação, não guarda histórico próprio e não corrige dado de origem. Tudo o que
+        aparece na tela sai do arquivo carregado no topo, o que tem uma consequência prática:
+        conferir qualquer número daqui é abrir a aba correspondente no Excel.
       </p>
 
-      <h4>Componentes estatísticos</h4>
+      <h4>De onde vem cada número</h4>
       <ul class="metodologia-list">
-        <li><strong>Média, Mediana e Desvio Padrão</strong>: leitura clássica de nível, dispersão e simetria.</li>
-        <li><strong>Bandas de Bollinger (21 dias, ±2σ)</strong>: zonas de “desvio estatístico” com leitura de pressão compradora/vendedora.</li>
-        <li><strong>Z-Score</strong>: distância do preço em relação à média, expressa em desvios-padrão.</li>
-        <li><strong>Percentis (P90–P05)</strong>: posição do preço dentro da distribuição histórica (caro, barato, neutro).</li>
-        <li><strong>Tendência por Regressão Linear</strong>: inclinação, resíduos e R² na janela filtrada.</li>
-        <li><strong>IFR (RSI)</strong>: oscilador de momentum, leitura de sobrecompra/sobrevenda.</li>
-        <li><strong>MACD</strong>: análise da força e reversão de curto/médio prazo.</li>
+        <li><strong>Preço físico</strong>: indicadores CEPEA, nas abas de série histórica.</li>
+        <li><strong>Futuros</strong>: ajustes da B3, uma aba por vencimento (BGI, CCM, SJC, DOL, ETH, DI1).</li>
+        <li><strong>Reposição</strong>: coletas Scot e Datagro, por categoria, UF e raça.</li>
+        <li><strong>Abate</strong>: IBGE, mais as escalas acompanhadas por estado.</li>
+        <li><strong>Inflação</strong>: IGP-M da FGV, na aba de referência da própria planilha.</li>
       </ul>
 
-      <h4>Módulos do painel</h4>
+      <h4>Moeda constante</h4>
+      <p class="metodologia-intro">
+        Toda série rotulada como <strong>real</strong> está deflacionada pelo IGP-M até o mês-base
+        declarado na planilha. A conversão é responsabilidade do Excel, e o painel apenas lê o
+        resultado, de modo que o número da tela e o da planilha sejam sempre o mesmo. Cotações
+        posteriores ao mês-base não recebem correção, que é a regra declarada no rodapé da aba
+        de IGP-M. Quando a tabela de inflação chega incompleta, o painel avisa em vez de supor:
+        uma série lida em valores correntes e rotulada como real somaria 26 anos de inflação ao
+        que deveria ser preço.
+      </p>
+
+      <h4>O que cada estatística diz</h4>
       <ul class="metodologia-list">
-        <li><strong>Análise de Preço</strong>: série histórica, Bollinger, Z-score, percentis, RSI, MACD e regressão linear — por ativo e janela configurável.</li>
-        <li><strong>Alertas Técnicos</strong>: sinais automáticos por contrato (rompimentos, Z-score extremo, cruzamentos de MM) — exportável em A4.</li>
-        <li><strong>Os melhores preços da janela</strong>: ranking dos 5 pregões com maior confluência estatística (P75 + resíduos ±1σ/±2σ) por vencimento — exportável em A4.</li>
-        <li><strong>7 Pregões</strong>: curva de contratos a partir do mês corrente (físico + futuros) e tabela de fechamentos com MM21 por vencimento — exportável em A4.</li>
-        <li><strong>Gestão de Risco (Matriz)</strong>: painel por vencimento com preço, tendência, percentis, MB%, relação BOI/MILHO, RSI e MACD — janela e colunas configuráveis.</li>
+        <li><strong>Percentis (P25, P75, P90)</strong>: posição do preço dentro da distribuição da janela. P75 ou acima é faixa superior; P25 ou abaixo, faixa inferior.</li>
+        <li><strong>Média e desvio-padrão</strong>: nível e dispersão da janela, com os preços de +1σ e +2σ calculados a partir deles.</li>
+        <li><strong>Z-Score</strong>: a mesma distância da média, expressa em desvios.</li>
+        <li><strong>Tendência por regressão linear</strong>: a reta ajustada à janela, o R² que diz quanto dela a reta explica, e o desvio dos resíduos. R² baixo significa que a reta não descreve o período, e o desvio em relação a ela vale pouco.</li>
+        <li><strong>RSI (14)</strong>: oscilador de momento, com as zonas usuais de 30 e 70.</li>
+        <li><strong>MACD (12, 26, 9)</strong>: força e mudança de direção no curto e médio prazo.</li>
+        <li><strong>Bandas de Bollinger (20, ±2σ)</strong>: canal em torno da média móvel, com leitura de contração e expansão.</li>
       </ul>
 
-      <p class="metodologia-note"><strong>Nota:</strong> uso interno — BMS Agrobrasil. Material analítico para apoio à tomada de decisão. Não constitui recomendação de investimento ou operação. Os resultados dependem dos dados importados (Excel/B3/CEPEA) e das premissas configuradas pelo usuário.</p>
+      <h4>O que muda com a janela de pregões</h4>
+      <p class="metodologia-intro">
+        Esta é a distinção que mais confunde leitura. <strong>Mudam com a janela</strong> os
+        percentis, a média, o desvio-padrão, a reta de tendência, o R² e o desvio dos resíduos.
+        O mesmo contrato pode aparecer a +1,1σ em 30 pregões e a −0,7σ em 120, e as duas
+        leituras estão corretas, porque respondem a perguntas diferentes.
+        <strong>Não mudam</strong> o RSI, o MACD e as bandas de Bollinger, que têm período próprio
+        e fixo, nem o fechamento anterior e a variação do dia. O texto ao lado das bandas
+        (contração ou expansão) é um caso à parte: as bandas em reais não mudam, mas a
+        classificação compara a largura de hoje com a da janela escolhida, e essa muda.
+      </p>
+
+      <h4>Limites</h4>
+      <ul class="metodologia-list">
+        <li>Frequência passada não é disponibilidade futura. Um contrato que passou trinta pregões acima de um preço pode nunca mais voltar lá.</li>
+        <li>Indicador físico e índice de liquidação têm metodologias diferentes, e a base entre eles não some por isso.</li>
+        <li>Projeção de ciclo é leitura de posição no ciclo, com as premissas visíveis no próprio card.</li>
+        <li>Bloco sem dado na planilha carregada fica vazio e diz o motivo, em vez de preencher com estimativa.</li>
+      </ul>
+
+      <p class="metodologia-note"><strong>Uso interno — BMS Agrobrasil.</strong> Material analítico de apoio à decisão. Não constitui recomendação de investimento ou de operação. Os resultados dependem dos dados importados e das premissas configuradas por quem usa.</p>
     </div>
   </div>
 </div>
