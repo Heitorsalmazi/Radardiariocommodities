@@ -15592,10 +15592,22 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
                  ? window._contractMaturityKey(sn) : null; }
     catch(e){ return null; }
   }
-  function casaVenc(prefixo, vencRef){
+  /* `desloc` é um deslocamento DECLARADO em meses sobre o vencimento de
+     referência, e nasceu para o dólar. O futuro de dólar da B3 vence no
+     último dia útil do mês ANTERIOR ao do nome: o DOLX26, de novembro,
+     encerra no fim de outubro. Então o contrato que carrega o câmbio do
+     mês do BGIV26 é o DOLX26, e não o DOLV26. Com `desloc = 1` o alvo
+     passa a ser o mês seguinte ao do boi, e a regra de busca continua a
+     mesma: o alvo exato, senão o primeiro posterior a ele, senão nada.
+     Sem argumento, nada muda — milho e soja seguem casando pelo próprio
+     mês, que é o horizonte operacional deles. */
+  function casaVenc(prefixo, vencRef, desloc){
     var kRef = chaveVenc(vencRef);
+    var passo = (typeof desloc === 'number' && isFinite(desloc)) ? Math.round(desloc) : 0;
+    var kAlvo = (kRef == null) ? null : (kRef + passo);
     var lista = vigentes(prefixo);
-    var r = { pre:prefixo, ref:vencRef || null, kRef:kRef, aba:null, k:null,
+    var r = { pre:prefixo, ref:vencRef || null, kRef:kRef, kAlvo:kAlvo, desloc:passo,
+              aba:null, k:null,
               criterio:'indisponivel', defasagem:null, lista:lista, motivo:null };
     if (!lista.length){
       r.motivo = 'Nenhum contrato ' + prefixo + ' vigente com pregão válido na planilha.';
@@ -15609,17 +15621,20 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     for (var i = 0; i < lista.length; i++){
       var k = chaveVenc(lista[i]);
       if (k == null) continue;
-      if (k === kRef){ mesmo = { sn:lista[i], k:k }; break; }
-      if (k > kRef && posterior == null) posterior = { sn:lista[i], k:k };
+      if (k === kAlvo){ mesmo = { sn:lista[i], k:k }; break; }
+      if (k > kAlvo && posterior == null) posterior = { sn:lista[i], k:k };
     }
     var esc = mesmo || posterior;
     if (!esc){
       r.motivo = 'A curva ' + prefixo + ' termina em ' + lista[lista.length - 1]
-               + ', antes do vencimento de referência. Sem contrato correspondente.';
+               + ', antes do vencimento ' + (passo ? 'alvo' : 'de referência')
+               + '. Sem contrato correspondente.';
       return r;
     }
     r.aba = esc.sn; r.k = esc.k;
-    r.criterio = mesmo ? 'mesmo' : 'posterior';
+    r.criterio = mesmo ? (passo ? 'deslocado' : 'mesmo') : 'posterior';
+    /* A defasagem continua medida contra o BOI, e não contra o alvo: é ela
+       que o operador lê para saber quantos meses separam as duas pontas. */
     r.defasagem = esc.k - kRef;
     return r;
   }
@@ -15627,6 +15642,7 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
   function criterioRot(c){
     if (!c) return '—';
     if (c.criterio === 'mesmo') return 'mesmo vencimento';
+    if (c.criterio === 'deslocado') return 'mês seguinte ao do boi';
     if (c.criterio === 'posterior')
       return 'posterior (+' + c.defasagem + (c.defasagem === 1 ? ' mês' : ' meses') + ')';
     return 'indisponível';
@@ -15803,15 +15819,24 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
 
      Agora CCM e SJC CASAM com o BGI de referência (mesmo mês, senão o
      primeiro posterior, senão nada — `casaVenc` no motor), e o operador
-     pode fixar um deles à mão. Dólar segue no primeiro vigente: ele não
-     entra em nenhuma relação por horizonte nesta tela.
+     pode fixar um deles à mão.
+
+     O DÓLAR CASA COM UM MÊS DE DIFERENÇA, de propósito. O futuro de dólar
+     da B3 vence no último dia útil do mês anterior ao do nome, então quem
+     cobre o câmbio de outubro é o DOLX26, de novembro. Com o boi em
+     BGIV26, a tela mostra DOLX26; com BGIX26, DOLZ26, e assim por diante.
+     Antes ele vinha no primeiro vigente da curva, o que podia colocar o
+     câmbio de um mês ao lado do boi de outro.
 
      Físico (`f.aba`) não tem vencimento e não muda com nada disto: CEPEA é
      CEPEA em qualquer horizonte. */
   function casamento(vencRef, prem){
     prem = prem || mot().premissas();
     var out = {};
-    ['CCM','SJC'].forEach(function(pre){
+    /* O terceiro item de cada par é o deslocamento em meses. Zero para
+       milho e soja, um para o dólar, pelo vencimento da B3. */
+    [['CCM',0], ['SJC',0], ['DOL',1]].forEach(function(par){
+      var pre = par[0], desloc = par[1];
       var manual = prem['veVenc' + pre];
       if (manual && mot().vigentes(pre).indexOf(manual) >= 0){
         out[pre] = { pre:pre, ref:vencRef || null, aba:manual,
@@ -15820,7 +15845,7 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
         var d = out[pre].k != null && out[pre].kRef != null ? out[pre].k - out[pre].kRef : null;
         out[pre].defasagem = d;
       } else {
-        out[pre] = mot().casaVenc(pre, vencRef);
+        out[pre] = mot().casaVenc(pre, vencRef, desloc);
         out[pre].manual = false;
       }
     });
@@ -15829,7 +15854,7 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
   function abaDe(f, vencRef, cas){
     if (f.aba) return f.aba;
     if (f.pre === 'BGI') return vencRef || mot().primeiroVigente('BGI');
-    if (f.pre === 'CCM' || f.pre === 'SJC'){
+    if (f.pre === 'CCM' || f.pre === 'SJC' || f.pre === 'DOL'){
       var c = (cas || {})[f.pre];
       /* `null` quando não há correspondente. A tela mostra a ausência; ela
          NÃO volta ao primeiro da curva, que era o defeito. */
@@ -16294,10 +16319,11 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     if (!host) return;
     var l = m.vigentes('BGI');
     if (!l.length){ host.innerHTML = ''; return; }
-    var cC = (cas || {}).CCM, cS = (cas || {}).SJC;
+    var cC = (cas || {}).CCM, cS = (cas || {}).SJC, cD = (cas || {}).DOL;
     var faltam = [];
     if (cC && !cC.aba) faltam.push(cC.motivo);
     if (cS && !cS.aba) faltam.push(cS.motivo);
+    if (cD && !cD.aba) faltam.push(cD.motivo);
     host.innerHTML = '<label class="ve-campo ve-campo-h"><span>Vencimento BGI de referência</span>'
       + '<select id="veVencRef">'
       + l.map(function(sn){
@@ -16315,6 +16341,11 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
                    { aba:vencRef, manual:false, criterio:'mesmo', defasagem:0 }, m)
       +   linhaCas('Milho futuro utilizado (CCM)', 'CCM', cC, m)
       +   linhaCas('Soja futura utilizada (SJC)', 'SJC', cS, m)
+      /* O dólar entra na lista desde que passou a seguir uma regra. Antes
+         vinha no primeiro vigente e não havia o que declarar; agora ele
+         anda com o boi, um mês à frente, e quem lê precisa ver qual
+         contrato está na tela. */
+      +   linhaCas('Dólar futuro utilizado (DOL)', 'DOL', cD, m)
       + '</div>'
       + '<div id="veHorizonte" class="ve-horizonte-topo" aria-live="polite"></div>'
       /* A explicação da regra saiu daqui a pedido: ela vive na documentação,
