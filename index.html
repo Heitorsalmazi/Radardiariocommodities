@@ -6615,47 +6615,39 @@ header{
     <!-- ORDEM DA SEÇÃO DE TIMING ─────────────────────────────────────
          As Janelas de Trava vêm ANTES dos Alertas e do TOP 5. A migração
          por seção preserva a ordem do documento, então a posição aqui é a
-         posição na tela. Quem abre "Travar boi — timing" está perguntando
+         posição na tela. Quem abre "Quando e a que preço travar" está perguntando
          em que patamar entrar, e é a janela de execução que responde
          primeiro; alerta e ranking qualificam depois. Antes ela ficava no
          fim da seção, abaixo de um painel inteiro, e praticamente não
          aparecia. -->
     <!-- SESSÃO FINAL: MELHORES MOMENTOS DE TRAVA – FUTURO (BGI) -->
     <section class="card" id="sectionJanelasTrava">
-      <div class="card-title"><span class="card-title-text">Janelas de Trava — Futuros B3</span><button type="button" class="info-btn" aria-label="Ajuda: Janelas de Trava — Futuros B3" data-tooltip="Melhores janelas históricas de trava: dias com preço em P75+ e sinal técnico favorável (RSI/MACD) nos últimos 7 pregões por contrato.">ⓘ</button></div>
+      <div class="card-title"><span class="card-title-text">Onde deu para travar neste contrato</span><button type="button" class="info-btn" aria-label="Ajuda: Onde deu para travar neste contrato" data-tooltip="Melhores janelas históricas de trava: dias com preço em P75+ e sinal técnico favorável (RSI/MACD) nos últimos 7 pregões por contrato.">ⓘ</button></div>
       <div class="pill">
         Quantos pregões o contrato passou acima de cada patamar de preço.
       </div>
       <div class="explain"><span class="ex-tag">Para que serve</span>O cálculo percorre a vida inteira do contrato e conta <b>quantos pregões fecharam acima de um patamar de preço</b>. Se você tivesse deixado ordem naquele nível, ela teria sido executada em algum desses dias. O número diz em quantos.<span class="ex-tag">O que isto não diz</span>Janela larga no passado não promete janela larga à frente. Um contrato que passou trinta pregões acima de um preço pode nunca mais voltar lá. O número serve para dimensionar <b>oportunidade de execução</b>. Ele não ajuda a escolher o nível da trava.</div>
-      <div class="hint">
-        Esta seção usa o <strong>mesmo arquivo Excel</strong> carregado no painel de configuração, mas permite escolher um contrato futuro e janela de pregões <strong>independentes</strong> dos gráficos principais.
+      <div class="bgi-ctrl">
+        <span class="bgi-lbl">Contrato</span>
+        <select id="futTravaSelect2" class="bgi-sel" title="Vencimento BGI, CCM ou SJC a analisar. Contratos já liquidados ficam fora.">
+          <option value="">Selecione...</option>
+        </select>
+        <span class="bgi-lbl" style="margin-left:10px">Janela</span>
+        <input type="number" id="periodTravaDays" class="bgi-sel" min="1" step="1" placeholder="60" style="width:92px" title="Quantos pregões entram no cálculo do P75 e da tendência." />
       </div>
 
-      <div class="controls-grid" style="margin-top:10px;">
-        <div>
-          <label>Contrato futuro (B3) – trava (BGI/CCM/SJC)</label>
-          <select id="futTravaSelect2">
-            <option value="">Selecione...</option>
-          </select>
-        </div>
-        <div>
-          <label>Janela de análise (pregões)</label>
-          <input type="number" id="periodTravaDays" min="1" step="1" placeholder="ex: 60" />
-        </div>
-      </div>
-
-      <div id="travaSummary" class="kpi-grid" style="margin-top:12px;"></div>
-      <div style="margin-top:10px; overflow-x:auto;">
-        <table id="travaTable" style="width:100%; border-collapse:collapse; font-size: var(--fs-base);">
-          <!-- preenchido via JavaScript -->
-        </table>
-      </div>
+      <div id="travaKpis" class="vol-kpis"></div>
+      <div id="chartTrava" class="chart-container"></div>
+      <div id="travaTab"></div>
+      <div id="travaContext" class="chart-context"></div>
+      <div id="travaSummary" style="display:none"></div>
+      <table id="travaTable" style="display:none"></table>
     </section>
     <!-- FIM SESSÃO FINAL -->
 
     <!-- SESSÃO: JANELAS DE TRAVA – OUTROS ATIVOS (DOL/ETH) -->
     <section class="card" id="sectionJanelasTravaOutros">
-      <div class="card-title"><span class="card-title-text">Janelas de Trava — Futuros B3 (Outros Ativos)</span><button type="button" class="info-btn" aria-label="Ajuda: Janelas de Trava Outros" data-tooltip="Melhores janelas históricas de trava para Dólar (DOL/WDO) e Etanol (ETH): dias com preço em P75+ e sinal técnico favorável nos últimos pregões.">ⓘ</button></div>
+      <div class="card-title"><span class="card-title-text">Onde deu para travar em dólar e etanol</span><button type="button" class="info-btn" aria-label="Ajuda: onde deu para travar em dólar e etanol" data-tooltip="Melhores janelas históricas de trava para Dólar (DOL/WDO) e Etanol (ETH): dias com preço em P75+ e sinal técnico favorável nos últimos pregões.">ⓘ</button></div>
       <div class="pill">Top janelas: P75, tendência com desvios nos últimos pregões — DOL e ETH.</div>
       <div class="explain"><span class="ex-tag">Para que serve</span>O mesmo cálculo das janelas de trava, aplicado aos ativos fora da carteira agrícola principal: quantos pregões cada contrato passou acima do patamar escolhido.<span class="ex-tag">O que isto não diz</span>Frequência passada não é disponibilidade futura. O número mede <b>oportunidade de execução</b> que existiu, não probabilidade de ela voltar.</div>
       <div class="hint">Selecione um contrato futuro de Dólar ou Etanol para analisar as melhores janelas de trava.</div>
@@ -10344,7 +10336,7 @@ header{
   </div>
 
   <section class="card" id="alertasCard">
-    <div class="card-title"><span class="card-title-text">ALERTAS TÉCNICOS — SINAIS POR CONTRATO</span><button type="button" class="info-btn" aria-label="Ajuda: alertas técnicos" data-tooltip="Para cada contrato do mercado escolhido: onde o fechamento está na faixa de preços da janela, quantos desvios ele está da reta de tendência e o que dizem RSI, MACD e Bollinger. Serve para escolher o que olhar hoje.">ⓘ</button></div>
+    <div class="card-title"><span class="card-title-text">SINAIS TÉCNICOS CONTRATO A CONTRATO</span><button type="button" class="info-btn" aria-label="Ajuda: alertas técnicos" data-tooltip="Para cada contrato do mercado escolhido: onde o fechamento está na faixa de preços da janela, quantos desvios ele está da reta de tendência e o que dizem RSI, MACD e Bollinger. Serve para escolher o que olhar hoje.">ⓘ</button></div>
     <div class="pill">Onde cada contrato está em relação à própria janela: faixa de preço, desvio da tendência e indicadores de giro.</div>
     <div class="explain">
       <span class="ex-tag">Como o sinal é montado</span>
@@ -10379,6 +10371,7 @@ header{
       <button type="button" id="alertasPNG" class="bgi-sel" style="margin-left:6px;cursor:pointer" title="Salva a folha A4 como imagem.">Exportar PNG</button>
     </div>
     <div id="alertasKpis" class="vol-kpis"></div>
+    <div id="chartAlertas" class="chart-container"></div>
     <div id="alertasTab"></div>
     <div id="alertasContext" class="chart-context"></div>
   </section>
@@ -10416,7 +10409,7 @@ header{
   <div class="pane-hero">
     <div class="pane-hero-left">
       <div class="pane-hero-tag">Ranking Estatístico</div>
-      <div class="pane-hero-title">TOP 5 — Preços de Referência</div>
+      <div class="pane-hero-title">Os melhores preços da janela</div>
       <div class="pane-hero-desc">Ranking dos 5 pregões mais relevantes por contrato: confluência P75 e resíduos ±1σ/±2σ na janela configurada. Exportável em A4 — uso interno.</div>
     </div>
     <div class="pane-hero-right">
@@ -10463,7 +10456,7 @@ header{
        folha A4 continua existindo atrás de um botão, para quem precisa
        imprimir. Uma passagem de cálculo alimenta os dois. -->
   <section class="card" id="top5Card">
-    <div class="card-title"><span class="card-title-text">TOP 5 — PREÇOS DE REFERÊNCIA</span><button type="button" class="info-btn" aria-label="Ajuda: TOP 5" data-tooltip="Os pregões mais relevantes da janela em cada contrato: preço no percentil 75 ou acima, e resíduo da tendência a mais de um ou dois desvios. É leitura de execução — em que patamar deu para entrar —, não previsão.">ⓘ</button></div>
+    <div class="card-title"><span class="card-title-text">OS MELHORES PREÇOS DA JANELA</span><button type="button" class="info-btn" aria-label="Ajuda: melhores preços da janela" data-tooltip="Os pregões mais relevantes da janela em cada contrato: preço no percentil 75 ou acima, e resíduo da tendência a mais de um ou dois desvios. É leitura de execução — em que patamar deu para entrar —, não previsão.">ⓘ</button></div>
     <div class="pill">Em que patamar deu para entrar, contrato por contrato, na janela escolhida.</div>
     <div class="explain">
       <span class="ex-tag">O que entra no ranking</span>
@@ -10497,6 +10490,7 @@ header{
       <button type="button" id="top5PNG" class="bgi-sel" style="margin-left:6px;cursor:pointer" title="Salva a folha A4 como imagem.">Exportar PNG</button>
     </div>
     <div id="top5Kpis" class="vol-kpis"></div>
+    <div id="chartTop5" class="chart-container"></div>
     <div id="top5Tab"></div>
     <div id="top5Context" class="chart-context"></div>
   </section>
@@ -14731,7 +14725,7 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
         ['m3_2_7', null, null,                  'Ciclo do bezerro']
       ]},
       { rot:'Ver também', classe:'m3-men-ref', itens:[
-        ['m3_2_1',  null, null, 'Histórico e sazonalidade — boi'],
+        ['m3_2_1',  null, null, 'Sazonalidade do boi'],
         ['m3_1_2',  null, null, 'Preço e momento'],
         ['m3_3_5b', null, null, 'Base: físico × futuro do contrato']
       ]}
@@ -14744,8 +14738,8 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     ],
     confin: [
       { rot:'Ver também', classe:'m3-men-ref', itens:[
-        ['m3_3_5d', null, null, 'Travar boi — a decisão econômica'],
-        ['m3_2_8',  null, null, 'Relações de troca & reposição'],
+        ['m3_3_5d', null, null, 'A conta da trava'],
+        ['m3_2_8',  null, null, 'Relações de troca e reposição'],
         ['m3_0_1',  null, null, 'Visão Executiva']
       ]}
     ],
@@ -14758,17 +14752,17 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     ],
     estudo: [
       { rot:'Ver também', classe:'m3-men-ref', itens:[
-        ['m3_1_3', null, null, 'Boi — mercado físico'],
+        ['m3_1_3', null, null, 'Boi no mercado físico'],
         ['m3_1_8', null, null, 'Futuros'],
-        ['m3_2_8', null, null, 'Relações de troca & reposição']
+        ['m3_2_8', null, null, 'Relações de troca e reposição']
       ]}
     ],
     relato: [
       { rot:'Ver também', classe:'m3-men-ref', itens:[
         ['m3_1_1',  null, null, 'Resumo do dia'],
         ['m3_4_1',  null, null, 'Calculadora do Boi'],
-        ['m3_3_5a', null, null, 'Travar boi — diagnóstico'],
-        ['m3_3_5c', null, null, 'Travar boi — timing']
+        ['m3_3_5a', null, null, 'Vale a pena travar?'],
+        ['m3_3_5c', null, null, 'Quando e a que preço travar']
       ]}
     ]
   };
@@ -22125,6 +22119,103 @@ function updatePreco() {
     };
   }
 
+  /* ── O CARD DA JANELA DE TRAVA, NA LINGUAGEM DO RADAR ─────────────────
+     Ele era três tabelas empilhadas num painel que fala de TEMPO: quando o
+     preço esteve alto, quando deu para executar. Pergunta temporal pede
+     desenho, não lista — a lista responde "quais foram os dez maiores" e
+     cala sobre a única coisa que importa aqui, que é onde o preço de hoje
+     está em relação ao corredor dele.
+
+     Os números são os mesmos de antes, calculados no mesmo lugar: preço,
+     P75, reta de tendência e os desvios dos resíduos. O que muda é que
+     agora eles aparecem juntos, no mesmo eixo de tempo. */
+  /* `fmt` deste bloco usa toFixed, que escreve 384.70 com ponto. O resto do
+     Radar escreve 384,70. Num card que fica ao lado dos outros, a diferença
+     salta. O formatador local resolve aqui sem mexer num `fmt` que outras
+     vinte funções já usam. E `fmt(v,0)` devolvia duas casas, porque `d || 2`
+     troca zero por dois: a leitura dizia "92.63%" onde pedia 93%. */
+  function _tvN(v, d){
+    if (v == null || !isFinite(v)) return '–';
+    d = (d == null ? 2 : d);
+    return Number(v).toLocaleString('pt-BR', { minimumFractionDigits:d, maximumFractionDigits:d });
+  }
+  function _tvKpi(rot, val, sub){
+    return '<div class="vol-kpi"><div class="vk-lbl">'+rot+'</div>'
+         + '<div class="vk-val">'+val+'</div><div class="vk-sub">'+(sub||'')+'</div></div>';
+  }
+  function _tvLeitura(corpo, nota){
+    var el = document.getElementById('travaContext'); if(!el) return;
+    el.className = 'read-box';
+    el.innerHTML = '<div class="rb-head">Leitura</div><div class="rb-line">'+corpo+'</div>'
+                 + (nota ? ('<div class="rb-note">'+nota+'</div>') : '');
+  }
+  function _tvVazio(msg){
+    var k=document.getElementById('travaKpis'), t=document.getElementById('travaTab');
+    if(k) k.innerHTML=''; if(t) t.innerHTML='';
+    try { Plotly.purge('chartTrava'); } catch(e){}
+    var c=document.getElementById('chartTrava'); if(c) c.innerHTML='';
+    _tvLeitura(msg);
+  }
+
+  /* O desenho do corredor. Quatro camadas, da mais ao fundo para a da
+     frente: a faixa entre +1σ e +2σ dos resíduos, que é onde o preço fica
+     estatisticamente alto para a própria trajetória; a reta de tendência;
+     o nível do P75 da janela; e o preço, com marca nos pregões que
+     cumpriram as duas condições ao mesmo tempo. */
+  function _tvDesenha(cand, rotuloContrato, uni){
+    if (!cand || !cand.length) return;
+    var x    = cand.map(function(c){ return c.dateObj; });
+    var COR_PRECO = '#0f766e', COR_REF = '#b45309', COR_FUNDO = '#94a3b8';
+    var marc = cand.filter(function(c){ return c.cond1; });
+    /* As bordas da faixa são DESENHADAS, não escondidas. Pedi linha de
+       largura zero na primeira versão e o tema do painel devolveu as duas
+       tracejadas em ardósia, iguais à da tendência: três linhas da mesma
+       cor, uma só no rótulo. Agora cada borda tem cor e nome próprios, e a
+       tendência fica sozinha em ardósia. */
+    var traces = [
+      { x:x, y:cand.map(function(c){ return c.lim2; }), type:'scatter', mode:'lines',
+        name:'+2σ da tendência', line:{color:'rgba(13,148,136,0.55)', width:1.1},
+        hovertemplate:'+2σ: %{y:,.2f}<extra></extra>' },
+      { x:x, y:cand.map(function(c){ return c.lim1; }), type:'scatter', mode:'lines',
+        name:'+1σ da tendência', line:{color:'rgba(13,148,136,0.55)', width:1.1},
+        fill:'tonexty', fillcolor:'rgba(15,118,110,0.11)',
+        hovertemplate:'+1σ: %{y:,.2f}<extra></extra>' },
+      { x:x, y:cand.map(function(c){ return c.lt; }), type:'scatter', mode:'lines',
+        name:'tendência da janela', line:{color:COR_FUNDO, width:1.4, dash:'dot'},
+        hovertemplate:'tendência: %{y:,.2f}<extra></extra>' },
+      { x:x, y:cand.map(function(c){ return c.p75; }), type:'scatter', mode:'lines',
+        name:'P75 da janela', line:{color:COR_REF, width:1.6, dash:'dash'},
+        hovertemplate:'P75: %{y:,.2f}<extra></extra>' },
+      { x:x, y:cand.map(function(c){ return c.preco; }), type:'scatter', mode:'lines',
+        name:rotuloContrato, line:{color:COR_PRECO, width:2.4},
+        hovertemplate:'%{x|%d/%m/%Y}<br><b>%{y:,.2f}</b><extra></extra>' }
+    ];
+    if (marc.length){
+      traces.push({ x:marc.map(function(c){ return c.dateObj; }),
+        y:marc.map(function(c){ return c.preco; }), type:'scatter', mode:'markers',
+        name:'deu para travar', marker:{color:'#065f46', size:7, symbol:'circle',
+          line:{color:'#ffffff', width:1.2}},
+        hovertemplate:'%{x|%d/%m/%Y}<br>executou a <b>%{y:,.2f}</b><extra></extra>' });
+    }
+    renderPlot('chartTrava', traces, {
+      /* RECUSA O REPINTE DE TENDÊNCIA. Depois do desenho, o painel passa
+         `applyStandardTrendStyles` em todo gráfico e pinta de ardósia
+         tracejada qualquer traço cujo nome contenha "tend". Aqui os três
+         que falam de tendência são a reta e as duas bordas da faixa: as
+         três saíam idênticas, e o corredor desaparecia dentro da linha que
+         ele deveria cercar. A saída já existia no código, para os gráficos
+         que trazem paleta própria. Este traz. */
+      _no_trend_restyle: true,
+      _no_last_marker: true,
+      height: 350,
+      margin: { l:58, r:18, t:34, b:40 },
+      legend: { orientation:'h', y:1.14, x:0, font:{size:11} },
+      xaxis: { type:'date', showgrid:false },
+      yaxis: { title:{ text:(uni||'preço'), font:{size:11} }, tickformat:',.2f' },
+      hovermode: 'x unified'
+    });
+  }
+
   function updateTravaBGI() {
     var summaryEl = document.getElementById('travaSummary');
     var tableEl = document.getElementById('travaTable');
@@ -22134,12 +22225,7 @@ function updatePreco() {
     tableEl.innerHTML = '';
 
     if (!workbook) {
-      summaryEl.innerHTML =
-        '<div class="kpi-card">' +
-          '<div class="kpi-label">Status</div>' +
-          '<div class="kpi-value">Carregue o arquivo Excel no painel de configuração.</div>' +
-          '<div class="kpi-sub">A análise de trava usa a mesma base de dados dos gráficos.</div>' +
-        '</div>';
+      _tvVazio('Carregue a planilha no painel de configuração. A análise de trava usa a mesma base dos gráficos.');
       return;
     }
 
@@ -22157,23 +22243,15 @@ function updatePreco() {
     var _selT = document.getElementById('futTravaSelect2');
     var futName = _selT ? _selT.value : '';
     if (!futName) {
-      summaryEl.innerHTML =
-        '<div class="kpi-card">' +
-          '<div class="kpi-label">Status</div>' +
-          '<div class="kpi-value">Nenhum contrato BGI vigente na base para analisar a trava.</div>' +
-          '<div class="kpi-sub">Os vencimentos já liquidados ficam fora da lista: travar preço em contrato vencido não existe.</div>' +
-        '</div>';
+      _tvVazio('Nenhum contrato BGI vigente na base. Os vencimentos já liquidados ficam fora da lista, '
+             + 'porque travar preço em contrato vencido não existe.');
       return;
     }
 
     var info = getFutRowsForTrava();
     var rows = info.window;
     if (!rows.length) {
-      summaryEl.innerHTML =
-        '<div class="kpi-card">' +
-          '<div class="kpi-label">Status</div>' +
-          '<div class="kpi-value">Sem dados válidos para o contrato selecionado.</div>' +
-        '</div>';
+      _tvVazio('Sem dados válidos para o contrato selecionado.');
       return;
     }
 
@@ -22182,39 +22260,14 @@ function updatePreco() {
     var reg = linearRegressionWithResiduals(prices);
 
     if (!stats || !reg || !reg.trend || reg.trend.length !== prices.length || reg.stdRes == null || isNaN(reg.stdRes)) {
-      summaryEl.innerHTML =
-        '<div class="kpi-card">' +
-          '<div class="kpi-label">Status</div>' +
-          '<div class="kpi-value">Não foi possível calcular P75 e tendência para este contrato.</div>' +
-        '</div>';
+      _tvVazio('Não foi possível calcular P75 e tendência para este contrato: a janela não tem pregões '
+             + 'suficientes.');
       return;
     }
 
     var p75 = stats.p75;
     var sigma = reg.stdRes;
     var vencStr = info.vencimento ? formatDateBR(info.vencimento) : '–';
-
-    var htmlSummary = '';
-
-    htmlSummary += '<div class="kpi-card">';
-    htmlSummary +=   '<div class="kpi-label">Contrato futuro (trava)</div>';
-    htmlSummary +=   '<div class="kpi-value">' + _contractLabel(futName) + '</div>';
-    htmlSummary +=   '<div class="kpi-sub">Vencimento operacional (última data da série): ' + vencStr + '</div>';
-    htmlSummary += '</div>';
-
-    htmlSummary += '<div class="kpi-card">';
-    htmlSummary +=   '<div class="kpi-label">Janela analisada</div>';
-    htmlSummary +=   '<div class="kpi-value">' + info.diasJanela + ' pregões</div>';
-    htmlSummary +=   '<div class="kpi-sub">Últimos ' + info.diasJanela + ' pregões até o vencimento operacional.</div>';
-    htmlSummary += '</div>';
-
-    htmlSummary += '<div class="kpi-card">';
-    htmlSummary +=   '<div class="kpi-label">Indicadores da curva</div>';
-    htmlSummary +=   '<div class="kpi-value">P75 ' + fmt(p75) + '</div>';
-    htmlSummary +=   '<div class="kpi-sub">σ dos resíduos: ' + fmt(sigma, 4) + ' · R² da tendência: ' + fmt(reg.r2, 3) + '</div>';
-    htmlSummary += '</div>';
-
-    summaryEl.innerHTML = htmlSummary;
 
     var candidatos = rows.map(function(r, i) {
       var lt = reg.trend[i];
@@ -22224,6 +22277,7 @@ function updatePreco() {
       var cond2 = (r.preco >= p75 && r.preco >= lim2);
       return {
         dateBr: r.dateBr,
+        dateObj: r.dateObj,
         preco: r.preco,
         p75: p75,
         lt: lt,
@@ -22248,33 +22302,69 @@ function updatePreco() {
       caption = 'Nenhum dia da janela atingiu simultaneamente P75 e Linha de tendência + 1σ dos resíduos. A tabela abaixo mostra os 10 maiores preços da janela para referência.';
     }
 
-    var htmlTable = '';
-    htmlTable += '<caption style="caption-side:top; text-align:left; margin-bottom:4px;">' + caption + '</caption>';
-    htmlTable += '<thead><tr>';
-    htmlTable += '<th style="border-bottom:1px solid #e5e7eb; padding:4px 6px; text-align:left;">Data</th>';
-    htmlTable += '<th style="border-bottom:1px solid #e5e7eb; padding:4px 6px; text-align:right;">Preço Futuro</th>';
-    htmlTable += '<th style="border-bottom:1px solid #e5e7eb; padding:4px 6px; text-align:right;">P75</th>';
-    htmlTable += '<th style="border-bottom:1px solid #e5e7eb; padding:4px 6px; text-align:right;">Tendência</th>';
-    htmlTable += '<th style="border-bottom:1px solid #e5e7eb; padding:4px 6px; text-align:right;">Tend. + 1σ</th>';
-    htmlTable += '<th style="border-bottom:1px solid #e5e7eb; padding:4px 6px; text-align:right;">Tend. + 2σ</th>';
-    htmlTable += '<th style="border-bottom:1px solid #e5e7eb; padding:4px 6px; text-align:center;">Cond. P75 ou +2σ</th>';
-    htmlTable += '</tr></thead><tbody>';
+    var uni = (function(){
+      var N = String(futName||'').toUpperCase();
+      if (N.indexOf('BGI')===0) return 'R$/@';
+      if (N.indexOf('CCM')===0 || N.indexOf('SJC')===0) return 'R$/sc';
+      return '';
+    })();
+    var rotulo = _contractLabel(futName);
+    _tvDesenha(candidatos, rotulo, uni);
 
-    usados.forEach(function(c) {
-      var hit = (c.preco >= c.p75) || (c.preco >= c.lim2);
-      htmlTable += '<tr' + (hit ? ' style="background-color:#dcfce7;"' : '') + '>';
-      htmlTable +=   '<td style="border-bottom:1px solid #f3f4f6; padding:3px 6px;">' + c.dateBr + '</td>';
-      htmlTable +=   '<td style="border-bottom:1px solid #f3f4f6; padding:3px 6px; text-align:right;' + (hit ? ' color:#166534; font-weight:700;' : '') + '">' + fmt(c.preco) + '</td>';
-      htmlTable +=   '<td style="border-bottom:1px solid #f3f4f6; padding:3px 6px; text-align:right;">' + fmt(c.p75) + '</td>';
-      htmlTable +=   '<td style="border-bottom:1px solid #f3f4f6; padding:3px 6px; text-align:right;">' + fmt(c.lt) + '</td>';
-      htmlTable +=   '<td style="border-bottom:1px solid #f3f4f6; padding:3px 6px; text-align:right;">' + fmt(c.lim1) + '</td>';
-      htmlTable +=   '<td style="border-bottom:1px solid #f3f4f6; padding:3px 6px; text-align:right;">' + fmt(c.lim2) + '</td>';
-      htmlTable +=   '<td style="border-bottom:1px solid #f3f4f6; padding:3px 6px; text-align:center;">' + (hit ? '✓' : '–') + '</td>';
-      htmlTable += '</tr>';
+    var ultimo  = candidatos[candidatos.length-1];
+    var nCond   = candidatos.filter(function(c){ return c.cond1; }).length;
+    var nCond2  = candidatos.filter(function(c){ return c.cond2; }).length;
+    var melhor  = candidatos.slice().sort(function(a,b){ return b.preco - a.preco; })[0];
+    var acima   = (ultimo.preco >= p75);
+    var distP75 = p75 ? ((ultimo.preco/p75 - 1)*100) : 0;
+
+    var kEl = document.getElementById('travaKpis');
+    if (kEl) kEl.innerHTML =
+      _tvKpi('ÚLTIMO FECHAMENTO', _tvN(ultimo.preco) + (uni?(' <span style="font-size:.62em;color:#9ca3af">'+uni+'</span>'):''),
+             ultimo.dateBr + ' · vence ' + vencStr) +
+      _tvKpi('P75 DA JANELA', _tvN(p75),
+             acima ? ('último está ' + _tvN(Math.abs(distP75),1) + '% acima')
+                   : ('último está ' + _tvN(Math.abs(distP75),1) + '% abaixo')) +
+      _tvKpi('PREGÕES NA CONDIÇÃO', String(nCond) + '<span style="font-size:.52em;color:#9ca3af"> / ' + info.diasJanela + '</span>',
+             nCond2 ? (nCond2 + ' deles também acima de +2σ') : 'nenhum chegou a +2σ') +
+      _tvKpi('MELHOR PREÇO DA JANELA', _tvN(melhor.preco),
+             melhor.dateBr + ' · ' + (melhor.cond1 ? 'estava na condição' : 'fora da condição'));
+
+    /* A lista continua, encolhida ao que ela responde bem: as datas em que
+       deu para executar, em ordem de preço. O resto da janela está no
+       desenho acima, que é onde ele faz sentido. */
+    var topCond2 = candidatos
+      .filter(function(c){ return c.cond1; })
+      .sort(function(a,b){ return b.preco - a.preco; });
+    var listados = topCond2.length ? topCond2.slice(0,10)
+                 : candidatos.slice().sort(function(a,b){ return b.preco - a.preco; }).slice(0,10);
+
+    var h = '<div class="rb-head">'
+          + (topCond2.length ? 'PREGÕES EM QUE DEU PARA TRAVAR' : 'MAIORES PREÇOS DA JANELA')
+          + ' — ' + rotulo + '</div>'
+          + '<table class="pc-tab"><thead><tr><th>data</th><th>preço</th><th>P75</th>'
+          + '<th>tendência</th><th>+1σ</th><th>+2σ</th></tr></thead><tbody>';
+    listados.forEach(function(c){
+      h += '<tr><td>' + c.dateBr + '</td><td>' + _tvN(c.preco) + '</td><td>' + _tvN(c.p75)
+         + '</td><td>' + _tvN(c.lt) + '</td><td>' + _tvN(c.lim1) + '</td><td>' + _tvN(c.lim2) + '</td></tr>';
     });
+    var tEl = document.getElementById('travaTab');
+    if (tEl) tEl.innerHTML = h + '</tbody></table>'
+      + (topCond2.length > 10 ? ('<div class="rb-note">Mostrando os 10 maiores de ' + topCond2.length
+         + ' pregões que cumpriram a condição.</div>') : '');
 
-    htmlTable += '</tbody>';
-    tableEl.innerHTML = htmlTable;
+    _tvLeitura(
+      'Em <b>' + info.diasJanela + ' pregões</b>, o <b>' + rotulo + '</b> fechou acima do P75 e a mais de '
+      + 'um desvio da própria tendência em <b>' + nCond + '</b> deles'
+      + (nCond2 ? (', sendo <b>' + nCond2 + '</b> acima de dois desvios') : '') + '. '
+      + 'O melhor preço da janela foi <b>' + _tvN(melhor.preco) + (uni?(' '+uni):'') + '</b> em ' + melhor.dateBr + ', e o '
+      + 'fechamento mais recente está <b>' + _tvN(Math.abs(distP75),1) + '% ' + (acima?'acima':'abaixo')
+      + '</b> do P75. A tendência da janela explica <b>' + _tvN(reg.r2*100,0) + '%</b> da variação do preço '
+      + '(σ dos resíduos: ' + _tvN(sigma,2) + ').',
+      'A faixa sombreada é o intervalo entre um e dois desvios acima da tendência: preço ali dentro está '
+      + 'alto para a própria trajetória do contrato. Tudo é medido DENTRO da janela escolhida, então '
+      + 'mudar a janela muda o P75, a tendência e a contagem. Janela larga no passado não promete janela '
+      + 'larga à frente, e um contrato que passou trinta pregões acima de um preço pode nunca mais voltar lá.');
   }
 
   /* ── Janelas de Trava — Outros Ativos (DOL / ETH) ─────────────────────── */
@@ -22477,6 +22567,22 @@ function updatePreco() {
     }
     return false;
   }
+  /* A COLUNA EXISTE E VEIO VAZIA é um caso diferente de A COLUNA NÃO EXISTE,
+     e pede conserto diferente. A primeira acontece quando a planilha é
+     regravada por script: a fórmula vai, o resultado calculado não. Mandar
+     "acrescente a coluna" nesse caso é mandar criar o que já está lá. */
+  function shColunaCorrigidaVazia(rows){
+    if (!rows || !rows.length) return null;
+    var amostra = rows.slice(0, 50);
+    for (var i=0;i<SH_COLS_CORRIGIDAS.length;i++){
+      var col = SH_COLS_CORRIGIDAS[i], existe = false;
+      for (var r=0;r<amostra.length;r++){
+        if (amostra[r] && Object.prototype.hasOwnProperty.call(amostra[r], col)){ existe = true; break; }
+      }
+      if (existe) return col;
+    }
+    return null;
+  }
 
   /* Resultado por aba, guardado para não refazer a cada redesenho.
      { declarada:bool, suspeita:bool, cresc:num, igpm:num, razao:num, ... } */
@@ -22484,51 +22590,102 @@ function updatePreco() {
   function shDiagnosticoBase(nome){
     if (!nome) return null;
     if (_SH_BASE[nome] !== undefined) return _SH_BASE[nome];
-    var out = { declarada:false, suspeita:false };
+    var out = { declarada:false, suspeita:false, motivo:null, colunaVazia:null };
     try {
       var rows = parseSheet(nome) || [];
       for (var i=0;i<rows.length && i<200;i++){
         if (shLinhaJaCorrigida(rows[i])) { out.declarada = true; break; }
       }
       if (!out.declarada){
+        out.colunaVazia = shColunaCorrigidaVazia(rows);
         var s = shDailySeries(rows, nome);
-        if (s && s.length > 200){
-          var f = s[0], u = s[s.length-1];
-          var anos = (u.d - f.d) / (365.25*24*3600*1000);
-          if (anos >= SH_SUSPEITA_ANOS && f.p > 0){
-            var igpm = shFatorIgpm(f.d.getFullYear(), f.d.getMonth())
-                     / shFatorIgpm(u.d.getFullYear(), u.d.getMonth());
-            var cresc = u.p / f.p;
-            if (igpm > 0){
-              out.cresc = cresc; out.igpm = igpm; out.razao = cresc / igpm;
-              out.ini = f.d; out.fim = u.d; out.anos = anos;
-              out.suspeita = (out.razao >= SH_SUSPEITA_CORTE);
-            }
-          }
+        if (!s || s.length <= 200){ out.motivo = 'serie-curta'; return (_SH_BASE[nome] = out); }
+
+        /* MEDIR SÓ ONDE O IGP-M EXISTE. `shFatorIgpm` gruda datas de fora da
+           tabela no extremo mais próximo, de propósito, para os vencimentos
+           futuros terem fator. Numa medição de inflação isso mente: o começo
+           da série do bezerro é fev/2000 e a tabela começa em 2003, então o
+           grude joga fora três anos de inflação alta e infla a razão. A
+           janela de medida encolhe até caber dentro da tabela. */
+        var ini = null, fim = null;
+        for (var a=0; a<s.length; a++){
+          if (shIgpmCobre(s[a].d.getFullYear(), s[a].d.getMonth())){ ini = s[a]; break; }
         }
+        for (var b2=s.length-1; b2>=0; b2--){
+          if (shIgpmCobre(s[b2].d.getFullYear(), s[b2].d.getMonth())){ fim = s[b2]; break; }
+        }
+        if (!ini || !fim || ini === fim){ out.motivo = 'sem-deflator'; return (_SH_BASE[nome] = out); }
+
+        out.recorte = (ini !== s[0] || fim !== s[s.length-1]);
+        out.serieIni = s[0].d; out.serieFim = s[s.length-1].d;
+        var anos = (fim.d - ini.d) / (365.25*24*3600*1000);
+        if (anos < SH_SUSPEITA_ANOS || !(ini.p > 0)){ out.motivo = 'periodo-curto'; return (_SH_BASE[nome] = out); }
+
+        var igpm = shFatorIgpm(ini.d.getFullYear(), ini.d.getMonth())
+                 / shFatorIgpm(fim.d.getFullYear(), fim.d.getMonth());
+        /* Razão 1 significa que o deflator devolveu o mesmo fator nas duas
+           pontas, o que num intervalo de oito anos ou mais não é inflação
+           zero: é tabela ausente ou quebrada. Nada a afirmar. */
+        if (!(igpm > 1.0001)){ out.motivo = 'sem-deflator'; return (_SH_BASE[nome] = out); }
+
+        out.cresc = fim.p / ini.p; out.igpm = igpm; out.razao = out.cresc / igpm;
+        out.ini = ini.d; out.fim = fim.d; out.anos = anos;
+        out.suspeita = (out.razao >= SH_SUSPEITA_CORTE);
       }
     } catch(e){ return (_SH_BASE[nome] = out); }
     return (_SH_BASE[nome] = out);
   }
 
+  function _shCaixaAviso(corpo){
+    return '<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:7px;'
+      + 'padding:9px 12px;margin-bottom:10px;font-size:var(--fs-sm);color:#78350f;'
+      + 'line-height:1.55">' + corpo + '</div>';
+  }
+
   function shAvisoBase(nome){
     var d = shDiagnosticoBase(nome);
-    if (!d || !d.suspeita) return '';
+    if (!d || d.declarada) return '';
     var fm = function(v,c){ return v.toLocaleString('pt-BR',
       { minimumFractionDigits:c, maximumFractionDigits:c }); };
+
+    /* SEM DEFLATOR, NÃO HÁ MEDIÇÃO. O aviso antigo publicava a razão assim
+       mesmo, e com a tabela quebrada ele dizia "o IGP-M subiu 1,00 vezes"
+       em 26 anos. Preferível dizer que não deu para medir. */
+    if (d.motivo === 'sem-deflator'){
+      var t = (typeof shIgpm === 'function') ? shIgpm() : null;
+      return _shCaixaAviso(
+        '<b>Não dá para conferir a base desta série.</b> A aba <b>' + nome + '</b> está sendo lida '
+        + 'em valores nominais' + (d.colunaVazia ? (', porque a coluna <b>“' + d.colunaVazia
+        + '”</b> existe mas chegou vazia') : ', porque não há coluna de preço corrigido') + ', e a '
+        + 'tabela de IGP-M da planilha ' + (t ? 'não alcança este período' : 'não pôde ser lida')
+        + '. Sem deflator não há como dizer se a série está em moeda constante, então o painel não '
+        + 'afirma nada aqui.<br><span style="opacity:.8">O que resolve: gravar a planilha com os '
+        + 'valores calculados das fórmulas, não só as fórmulas.</span>');
+    }
+    if (!d.suspeita) return '';
+
     var per = (d.ini.getMonth()+1) + '/' + d.ini.getFullYear() + ' a '
             + (d.fim.getMonth()+1) + '/' + d.fim.getFullYear();
-    return '<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:7px;'
-      + 'padding:9px 12px;margin-bottom:10px;font-size:var(--fs-sm);color:#78350f;line-height:1.55">'
-      + '<b>Esta série parece estar em valores correntes.</b> A aba <b>' + nome + '</b> não traz '
-      + 'coluna de preço corrigido, e de ' + per + ' o preço subiu <b>' + fm(d.cresc,2)
-      + ' vezes</b> enquanto o IGP-M subiu <b>' + fm(d.igpm,2) + ' vezes</b> — a série correu '
-      + fm(d.razao,2) + ' vezes a inflação. Séries já deflacionadas costumam correr bem abaixo dela. '
-      + 'Como todo o painel rotula esta série como <b>real</b>, comparar anos distantes aqui está '
-      + 'somando inflação ao que deveria ser preço. '
-      + 'Acrescente na planilha a coluna <b>“Preço corrigido IGP-M (base dez/25)”</b> e este aviso '
-      + 'some sozinho.<br><span style="opacity:.8">Se a alta for real mesmo, o aviso é falso '
-      + 'alarme — ele mede, não decide.</span></div>';
+    var conserto = d.colunaVazia
+      ? ('A coluna <b>“' + d.colunaVazia + '”</b> existe na aba, mas chegou vazia: a planilha '
+         + 'foi gravada com a fórmula e sem o resultado calculado. Gravar os valores faz este aviso '
+         + 'sumir sozinho.')
+      : ('Acrescente na planilha a coluna <b>“Preço corrigido IGP-M (base dez/25)”</b> e este '
+         + 'aviso some sozinho.');
+    var recorte = d.recorte
+      ? (' A medida usa de ' + per + ', que é o trecho coberto pela tabela de IGP-M; a série em si '
+         + 'começa em ' + (d.serieIni.getMonth()+1) + '/' + d.serieIni.getFullYear() + '.')
+      : '';
+
+    return _shCaixaAviso(
+      '<b>Esta série parece estar em valores correntes.</b> De ' + per + ' o preço da aba <b>'
+      + nome + '</b> subiu <b>' + fm(d.cresc,2) + ' vezes</b> enquanto o IGP-M subiu <b>'
+      + fm(d.igpm,2) + ' vezes</b>, ou seja, a série correu ' + fm(d.razao,2) + ' vezes a inflação. '
+      + 'Séries já deflacionadas costumam correr bem abaixo dela.' + recorte + ' Como todo o painel '
+      + 'rotula esta série como <b>real</b>, comparar anos distantes aqui está somando inflação ao '
+      + 'que deveria ser preço. ' + conserto
+      + '<br><span style="opacity:.8">Se a alta for real mesmo, o aviso é falso alarme. Ele mede, '
+      + 'quem decide é você.</span>');
   }
   try { window.shAvisoBase = shAvisoBase; window.shDiagnosticoBase = shDiagnosticoBase; } catch(e){}
 
@@ -22725,6 +22882,7 @@ function updatePreco() {
     'out':9,'outubro':9, 'nov':10,'novembro':10,'dez':11,'dezembro':11
   };
   var _shIgpmCache;                       // undefined = não tentado; null = indisponível
+  var SH_IGPM_MIN_MESES = 60;             // um bloco de IGP-M precisa cobrir 5 anos
 
   // Chamado por loadWorkbookFromBuffer a cada recarga do Excel.
   function shResetCaches(){
@@ -22804,9 +22962,42 @@ function updatePreco() {
         for (var b=0;b<blocos.length;b++) if (re.test(blocos[b].tipo)) return blocos[b];
         return null;
       }
+      /* ── UM BLOCO SÓ VALE SE COBRIR O PERÍODO ──────────────────────────
+         A preferência pelos fatores prontos da planilha pressupõe que eles
+         estejam lá. Quando o arquivo é regravado por script, as colunas de
+         fórmula podem chegar SEM o resultado calculado, e sobra um bloco
+         quase vazio: foi o que aconteceu em 21/10/2026, quando o bloco
+         "Fator de correção" chegou com doze células, todas iguais a 1, só
+         de 2026.
+
+         O código aceitava esse bloco e passava a deflacionar 26 anos de
+         série com uma tabela de doze meses. Toda data anterior era grudada
+         em jan/2026 e devolvia fator 1, ou seja: nenhuma correção, em
+         silêncio, no painel inteiro. O aviso de base do bezerro foi o único
+         sintoma visível, e ainda assim mostrando "IGP-M subiu 1,00 vezes".
+
+         Agora um bloco precisa abranger pelo menos cinco anos e ter mais de
+         um valor distinto para ser aceito. Reprovado, o motor desce para a
+         opção seguinte — e as taxas mensais, que são dado digitado e não
+         fórmula, costumam estar íntegras. */
+      function _blocoServe(b){
+        if (!b) return false;
+        if (b.n < SH_IGPM_MIN_MESES) return false;
+        if ((b.maxK - b.minK + 1) < SH_IGPM_MIN_MESES) return false;
+        var vistos = {}, distintos = 0;
+        for (var kk in b.dados){
+          var vv = String(b.dados[kk]);
+          if (!vistos[vv]){ vistos[vv] = 1; distintos++; }
+          if (distintos > 1) return true;
+        }
+        return false;
+      }
       var bFator  = _achaBloco(/fator/);
       var bIndice = _achaBloco(/[íi]ndice|acumulado/);
       var bTaxa   = _achaBloco(/mensal|%/) || blocos[0];
+      var _rejeitados = [];
+      if (bFator  && !_blocoServe(bFator)) { _rejeitados.push('fatores ('+bFator.n+' meses)');  bFator  = null; }
+      if (bIndice && !_blocoServe(bIndice)){ _rejeitados.push('índice ('+bIndice.n+' meses)');  bIndice = null; }
 
       // Mês-base declarado no título da aba ("Base para correção: Dezembro de 2025")
       var baseY = null, baseM = null;
@@ -22838,6 +23029,7 @@ function updatePreco() {
         Object.keys(bIndice.dados).forEach(function(k){ if (bIndice.dados[k] > 0) idx[k] = bIndice.dados[k]; });
         minK2 = bIndice.minK; maxK2 = bIndice.maxK;
       } else {
+        if (!_blocoServe(bTaxa)) return _shIgpmCache;   // nem as taxas servem: sem deflator
         origem = 'encadeamento das taxas mensais';
         var acc = 100;
         for (var k2=bTaxa.minK; k2<=bTaxa.maxK; k2++){
@@ -22857,9 +23049,24 @@ function updatePreco() {
       if (idx[baseK] == null) baseK = maxK2;
       if (baseIdx == null) baseIdx = idx[baseK];
 
+      /* DEPOIS DO MÊS-BASE, FATOR 1 ─────────────────────────────────────
+         A planilha declara a regra no rodapé da própria aba: "Cotações de
+         2026 não recebem correção (fator = 1)". Os blocos de fator e de
+         índice já vêm com isso embutido; o encadeamento das taxas, não, e
+         sozinho ele devolveria 0,963 para out/2026 enquanto as séries
+         históricas da mesma planilha tratam 2026 como não corrigido.
+
+         Seriam duas réguas para o mesmo mês, e a de fora da planilha
+         venceria sem avisar. A deflação é responsabilidade do Excel, então
+         a convenção dele é que vale, inclusive quando o painel precisa
+         reconstruir a tabela. */
+      if (origem === 'encadeamento das taxas mensais'){
+        Object.keys(idx).forEach(function(k){ if (+k > baseK) idx[k] = baseIdx; });
+      }
+
       _shIgpmCache = {
         idx: idx, minK: minK2, maxK: maxK2, baseK: baseK, baseIdx: baseIdx,
-        origem: origem, blocos: blocos.length,
+        origem: origem, blocos: blocos.length, recusados: _rejeitados,
         baseLabel: SH_MES_ABBR[baseK % 12] + '/' + String(Math.floor(baseK/12)).slice(-2)
       };
     } catch(e){ _shIgpmCache = null; }
@@ -22878,6 +23085,18 @@ function updatePreco() {
     var v = t.idx[k];
     return (v && v > 0) ? (t.baseIdx / v) : 1;
   }
+
+  /* A tabela COBRE esta data, ou o fator saiu de um grude no extremo?
+     `shFatorIgpm` gruda de propósito, para os vencimentos futuros terem
+     algum fator. Quem está medindo inflação de um período precisa saber a
+     diferença, porque grudar subestima a inflação de datas antigas. */
+  function shIgpmCobre(ano, mes){
+    var t = shIgpm();
+    if (!t) return false;
+    var k = ano*12 + mes;
+    return (k >= t.minK && k <= t.maxK && t.idx[k] > 0);
+  }
+  try { window.shIgpmCobre = shIgpmCobre; window.shIgpm = shIgpm; } catch(e){}
 
   // Converte um valor NOMINAL de uma data para reais da base da planilha.
   function shDeflacionar(valor, ano, mes){
@@ -51724,38 +51943,38 @@ function updateRelacao() {
       dica:'O que mudou desde a sessão anterior.' },
 
     /* ── 2 · MERCADO AGROPECUÁRIO ────────────────────────────────────── */
-    { amb:'agro', id:'m3_1_3', nome:'Boi — mercado físico',
+    { amb:'agro', id:'m3_1_3', nome:'Boi no mercado físico',
       dica:'Preço do físico e cobertura de compra da indústria.',
       render:['updateEscalas','updateFixedSeriesCharts'] },
     { amb:'agro', id:'m3_1_4', nome:'Regional',
       dica:'A pressão está numa praça só ou já se espalhou?', render:['updateRegional'] },
-    { amb:'agro', id:'m3_2_8', nome:'Relações de troca & reposição',
+    { amb:'agro', id:'m3_2_8', nome:'Relações de troca e reposição',
       dica:'Poder de compra do boi, custo relativo da reposição e relações com o milho.',
       render:['_m3RenderRelacoes'] },
     { amb:'agro', id:'m3_1_8', nome:'Futuros',
       dica:'O que o mercado precifica daqui para frente.',
       render:['updateBoiVsBGIAll','updateRatioBGICCM','updateBGICarrego'] },
-    { amb:'agro', id:'m3_1_5', nome:'Demanda doméstica — atacado',
+    { amb:'agro', id:'m3_1_5', nome:'Demanda no atacado',
       dica:'A carne sustenta o preço do boi?', render:['updateAtacado'] },
     /* "Exportação" aqui é o mercado externo — a carne brasileira vendida ao
        exterior, pela COMEX. Não confundir com exportar arquivo, que é o
        grupo 7. */
-    { amb:'agro', id:'m3_1_6', nome:'Demanda externa — exportação',
+    { amb:'agro', id:'m3_1_6', nome:'Exportação de carne',
       dica:'Quanto o mercado externo está pagando.',
       render:['_m3AbreExportacao','_m3RenderAtkExport'] },
-    { amb:'agro', id:'m3_1_7', nome:'Oferta imediata × demanda',
+    { amb:'agro', id:'m3_1_7', nome:'Oferta e demanda imediata',
       render:['_m3RenderOfertaDemanda'],
       dica:'Abate corrente contra o que a carne paga. Não é ciclo pecuário.' },
     /* FÊMEAS — 20/10/2026. Lar único: preço, desconto, base e reposição da
        fêmea moram aqui. A PRESSÃO de fêmeas no abate continua em
-       "Oferta imediata × demanda", que é onde a pergunta de oferta vive —
+       "Oferta e demanda imediata", que é onde a pergunta de oferta vive —
        o card não foi copiado, e a dica abaixo diz onde ele está. */
-    { amb:'agro', id:'m3_1_10', nome:'Fêmeas — abate e reposição',
+    { amb:'agro', id:'m3_1_10', nome:'Abate e reposição de fêmeas',
       render:['_femRender'],
       dica:'Desconto da vaca sobre o boi, base decomposta, relação de troca da '
          + 'fêmea e prêmio da novilha. A participação de fêmeas no abate está '
-         + 'em Oferta imediata × demanda.' },
-    { amb:'agro', id:'m3_1_9', nome:'Outros — mercado', oculta:true },
+         + 'em Oferta e demanda imediata.' },
+    { amb:'agro', id:'m3_1_9', nome:'Outros do mercado', oculta:true },
 
     /* ── 3 · MERCADOS & MACRO ────────────────────────────────────────── */
     /* A ORDEM É O POUSO. `_m3IrAmbiente` abre a primeira seção do grupo que
@@ -51790,10 +52009,10 @@ function updateRelacao() {
     { amb:'confin', id:'m3_3_4', nome:'Compro milho?' },
 
     /* ── 5 · HEDGE E GESTÃO DE RISCO ─────────────────────────────────── */
-    { amb:'hedge', id:'m3_3_1', nome:'Tenho boi — vendo ou seguro?',
+    { amb:'hedge', id:'m3_3_1', nome:'Vendo o boi ou protejo o preço?',
       dica:'A indústria está apertada? O futuro paga o carrego? A margem fecha?' },
-    { amb:'hedge', id:'m3_3_5a', nome:'Travar boi — diagnóstico' },
-    { amb:'hedge', id:'m3_3_5b', nome:'Travar boi — escolha do vencimento',
+    { amb:'hedge', id:'m3_3_5a', nome:'Vale a pena travar?' },
+    { amb:'hedge', id:'m3_3_5b', nome:'Qual vencimento usar',
       render:['updateBase','updateBGIvsCAI'] },
     /* ── A ÚNICA IRMÃ SEM `render` ────────────────────────────────────
        Timing reúne três áreas que vieram inteiras das telas antigas —
@@ -51804,23 +52023,23 @@ function updateRelacao() {
        sempre declararam (`m3_3_5b` chama updateBase e updateBGIvsCAI,
        `m3_3_5d` chama _m3RenderDecisaoEconomica); esta não declarava
        porque os construtores não estavam em `window`. Agora estão. */
-    { amb:'hedge', id:'m3_3_5c', nome:'Travar boi — timing',
+    { amb:'hedge', id:'m3_3_5c', nome:'Quando e a que preço travar',
       dica:'Sinais e níveis de execução: quando e em que patamar entrar.',
       render:['updateTravaBGI','updateTravaOutros','renderTop10All','renderAlertasPane','updateAlerts'] },
-    { amb:'hedge', id:'m3_3_5d', nome:'Travar boi — a decisão econômica',
+    { amb:'hedge', id:'m3_3_5d', nome:'A conta da trava',
       render:['_m3RenderDecisaoEconomica'] },
-    { amb:'hedge', id:'m3_3_5e', nome:'Travar boi — validação histórica',
+    { amb:'hedge', id:'m3_3_5e', nome:'A trava funcionou no passado?',
       render:['updateBacktest','updateBacktestCondicional','updateBacktestAtivo'] },
     { amb:'hedge', id:'m3_3_5f', nome:'Depois da trava',
       render:['_trvPopularContratos','updateTravas'] },
     /* Opções entra como irmã de "Travar boi": mesma pergunta — como proteger
        preço — resolvida com outro instrumento. A Proteção de Margem, que
        cruzará PUT de boi com CALL de milho, virá depois e vira a terceira. */
-    { amb:'hedge', id:'m3_3_5g', nome:'Opções — cadeia e seguro de preço',
+    { amb:'hedge', id:'m3_3_5g', nome:'Opções e seguro de preço',
       render:['_opcRender'] },
     { amb:'hedge', id:'m3_3_6', nome:'Simulador de hedge',
       dica:'Volume, trava, strikes e custo cotado — a simulação do instrumento.' },
-    { amb:'hedge', id:'m3_3_8', nome:'Vencimentos × período de abate',
+    { amb:'hedge', id:'m3_3_8', nome:'Vencimentos e período de abate',
       render:['_ioVencimentos'],
       dica:'Que contrato cobre o seu abate, e o que ele deixa de margem.' },
     { amb:'hedge', id:'m3_3_9', nome:'Escada de proteção',
@@ -51829,7 +52048,7 @@ function updateRelacao() {
     { amb:'hedge', id:'m3_3_10', nome:'Risco de base',
       render:['_ioBase'],
       dica:'Praça, indicador de liquidação e contrato — medidos, não presumidos.' },
-    { amb:'hedge', id:'m3_3_7', nome:'Outros — decisão', oculta:true },
+    { amb:'hedge', id:'m3_3_7', nome:'Outros da decisão', oculta:true },
 
     /* ── 6 · INTELIGÊNCIA E ESTUDOS ──────────────────────────────────── */
     { amb:'estudo', id:'m3_1_2', nome:'Preço e momento',
@@ -51838,12 +52057,12 @@ function updateRelacao() {
     { amb:'estudo', id:'m3_1_2t', nome:'Indicadores técnicos de trading',
       render:['updateBollinger','updateMACD','updateIFR'],
       dica:'Bollinger, MACD e IFR. Ferramenta de trading — não é estatística econômica.' },
-    { amb:'estudo', id:'m3_2_1', nome:'Histórico e sazonalidade — boi',
+    { amb:'estudo', id:'m3_2_1', nome:'Sazonalidade do boi',
       dica:'Nível, comparação entre anos, variação e calendário.',
       render:['updateSHBoiGordoFixed','updateFixedSeriesCharts'] },
-    { amb:'estudo', id:'m3_2_2', nome:'Histórico e sazonalidade — bezerro',
+    { amb:'estudo', id:'m3_2_2', nome:'Sazonalidade do bezerro',
       render:['updateSHBezerroFixed'] },
-    { amb:'estudo', id:'m3_2_3', nome:'Histórico e sazonalidade — grãos',
+    { amb:'estudo', id:'m3_2_3', nome:'Sazonalidade dos grãos',
       render:['updateSHMilhoFixed','updateSHMilhoClimatico'] },
     { amb:'estudo', id:'m3_2_6', nome:'Ciclo pecuário',
       dica:'Fundamento observado → ciclo → modelo → projeção.',
@@ -51853,7 +52072,7 @@ function updateRelacao() {
     { amb:'estudo', id:'m3_2_10', nome:'Estudo da cadeia',
       dica:'Transmissão e estrutura — leitura de fundo, não diária.',
       render:['_m3RenderEstudoCadeia'] },
-    { amb:'estudo', id:'m3_2_11', nome:'Outros — estudo', oculta:true },
+    { amb:'estudo', id:'m3_2_11', nome:'Outros do estudo', oculta:true },
 
     /* ── 7 · RELATÓRIOS E ARQUIVOS ───────────────────────────────────── */
     { amb:'relato', id:'m3_7_1', nome:'Relatórios e arquivos',
@@ -51901,6 +52120,12 @@ function updateRelacao() {
     chartSpdMemoria:'m3_1_5', chartSpdQuem:'m3_1_5', chartSpdSazonal:'m3_1_5',
     chartAtkExport:'m3_1_6',
     chartAtkAbate:'m3_1_7', chartAtkFemeas:'m3_1_7',
+    /* As Janelas de Trava casavam por TÍTULO, porque não tinham gráfico.
+       Agora têm, e a própria tabela já avisa que id é estável e título
+       muda — foi exatamente o que aconteceu quando o card deixou de se
+       chamar "Janelas de Trava". A regra de título continua logo abaixo,
+       como rede, mas quem decide passa a ser o id. */
+    chartTrava:'m3_3_5c',
     chartFemDesconto:'m3_1_10', chartFemBase:'m3_1_10',
     chartFemPreco:'m3_1_10', chartFemPosicao:'m3_1_10',
     chartFemYoY:'m3_1_10',
@@ -51973,7 +52198,7 @@ function updateRelacao() {
     [/Resumo Estatístico/i,                'm3_1_2'],
     [/RESUMO DO ATACADO/i,                 'm3_1_5'],
     [/Alertas/i,                           'm3_3_5c'],
-    [/Janelas de Trava/i,                  'm3_3_5c'],
+    [/Janelas de Trava|Onde deu para travar/i, 'm3_3_5c'],
     [/Minhas Travas|Ajuste Diário|Chamada de Margem/i, 'm3_3_5f'],
     [/Travar Agora Paga/i,                 'm3_3_5d'],
     [/Repor Agora Compensa/i,              'm3_3_2'],
@@ -52002,7 +52227,7 @@ function updateRelacao() {
      dentro dele sem saber que ele mudou de endereço. */
   /* ── ORDEM DECLARADA DE ALGUMAS SEÇÕES ────────────────────────────────
      Só para as seções em que a ordem importa e a migração não a preserva.
-     Em "Travar boi — timing" a pergunta é em que patamar entrar, então a
+     Em "Quando e a que preço travar" a pergunta é em que patamar entrar, então a
      janela de execução responde primeiro, o ranking qualifica depois e os
      alertas fecham. Ids que não existirem são ignorados em silêncio. */
   var _M3_ORDEM = {
@@ -52205,7 +52430,7 @@ function updateRelacao() {
        seções soltas dos painéis estáticos (2), depois a rede final (3).
        A ordem do documento não sobrevive a isso.
 
-       Foi o que aconteceu em "Travar boi — timing": as Janelas de Trava
+       Foi o que aconteceu em "Quando e a que preço travar": as Janelas de Trava
        foram movidas no HTML para antes dos Alertas, e na tela continuaram
        em sexto lugar, porque os painéis de Alertas e do TOP 5 entram na
        etapa 1 e os cards só na 2. Quem abria a seção via 825 px de painel
@@ -52308,7 +52533,7 @@ function updateRelacao() {
      gráficos era a resposta daquele passo. Com o alvo, `m3IrAlvo` rola até
      o card e o destaca por um instante. */
   var _M3_ROTEIROS = {
-    m3_3_1: { titulo:'Tenho boi — vendo ou seguro?',
+    m3_3_1: { titulo:'Vendo o boi ou protejo o preço?',
       intro:'A ordem importa: primeiro o físico, depois o que o futuro paga, e só então a conta.',
       passos:[
         ['A indústria está apertada?','Escala de abate encurtando é menos cobertura de compra.','m3_1_3','chartEscalaHist'],
@@ -53332,7 +53557,7 @@ function updateRelacao() {
     ],
     agro: [
       { rot:'Boi gordo', secs:['m3_1_3','m3_1_4'] },
-      /* ETAPA 5.1 — "Relações de troca & reposição" (m3_2_8) sai de debaixo
+      /* ETAPA 5.1 — "Relações de troca e reposição" (m3_2_8) sai de debaixo
          do rótulo "Bezerro e boi magro" e vem para cá. Ela responde boi ×
          bezerro, boi × boi magro E boi × milho: anunciá-la só como reposição
          escondia metade do que ela faz, e deixava a relação de troca com o
@@ -55119,7 +55344,7 @@ async function exportarPdfPremium() {
       <ul class="metodologia-list">
         <li><strong>Análise de Preço</strong>: série histórica, Bollinger, Z-score, percentis, RSI, MACD e regressão linear — por ativo e janela configurável.</li>
         <li><strong>Alertas Técnicos</strong>: sinais automáticos por contrato (rompimentos, Z-score extremo, cruzamentos de MM) — exportável em A4.</li>
-        <li><strong>TOP 5 — Preços de Referência</strong>: ranking dos 5 pregões com maior confluência estatística (P75 + resíduos ±1σ/±2σ) por vencimento — exportável em A4.</li>
+        <li><strong>Os melhores preços da janela</strong>: ranking dos 5 pregões com maior confluência estatística (P75 + resíduos ±1σ/±2σ) por vencimento — exportável em A4.</li>
         <li><strong>7 Pregões</strong>: curva de contratos a partir do mês corrente (físico + futuros) e tabela de fechamentos com MM21 por vencimento — exportável em A4.</li>
         <li><strong>Gestão de Risco (Matriz)</strong>: painel por vencimento com preço, tendência, percentis, MB%, relação BOI/MILHO, RSI e MACD — janela e colunas configuráveis.</li>
       </ul>
@@ -57346,6 +57571,58 @@ function saveSelectedSheets(setOrArr){
     return {txt:'miolo', ord:0};
   }
 
+  /* ── A RÉGUA DE DESLOCAMENTO ───────────────────────────────────────────
+     Dezenove linhas de tabela respondem "quanto" contrato por contrato, mas
+     só depois de lidas uma a uma. A mesma informação em barras responde
+     "quais" numa olhada: quem está esticado para cima, quem está afundado,
+     e a que distância do bolo. A tabela continua abaixo, para quem precisa
+     do RSI e do Bollinger de um contrato específico. */
+  function _alertasGrafico(linhas){
+    var el = document.getElementById('chartAlertas');
+    if (!el || typeof renderPlot !== 'function') return;
+    var com = linhas.filter(function(l){ return l.z != null; });
+    if (com.length < 2){
+      try { Plotly.purge('chartAlertas'); } catch(e){}
+      el.innerHTML = ''; return;
+    }
+    /* Ordem crescente para o eixo horizontal do Plotly desenhar o maior em
+       cima: o eixo y de categoria cresce de baixo para cima. */
+    var ord = com.slice().sort(function(a,b){ return a.z - b.z; });
+    var COR_ALTA = '#0f766e', COR_BAIXA = '#b45309', COR_MEIO = '#94a3b8';
+    var cores = ord.map(function(l){
+      if (l.z >= 1)  return COR_ALTA;
+      if (l.z <= -1) return COR_BAIXA;
+      return COR_MEIO;
+    });
+    var marcas = [];
+    [-2,-1,0,1,2].forEach(function(v){
+      marcas.push({ type:'line', xref:'x', x0:v, x1:v, yref:'paper', y0:0, y1:1,
+        line:{ color:(v===0?'#64748b':'#cbd5e1'), width:(v===0?1.2:1),
+               dash:(v===0?'solid':'dot') } });
+    });
+    renderPlot('chartAlertas', [{
+      type:'bar', orientation:'h',
+      y: ord.map(function(l){ return l.nome; }),
+      x: ord.map(function(l){ return l.z; }),
+      marker:{ color:cores },
+      hovertemplate:'<b>%{y}</b><br>%{x:+.2f}σ da tendência<extra></extra>',
+      showlegend:false
+    }], {
+      _no_trend_restyle: true,
+      _no_last_marker: true,
+      height: Math.max(300, Math.min(560, 92 + ord.length*21)),
+      margin:{ l:96, r:22, t:26, b:44 },
+      shapes: marcas,
+      bargap: 0.38,
+      xaxis:{ title:{ text:'desvios da tendência da janela', font:{size:11} },
+              zeroline:false, tickformat:'+,.1f', ticksuffix:'σ' },
+      /* Eixo de nomes, não de preço: sem o título vazio declarado, o motor
+         de temas herda o eixo de preço e rotula a coluna de contratos com
+         "Preço (@)". */
+      yaxis:{ title:{ text:'' }, automargin:true, tickfont:{size:10.5} }
+    });
+  }
+
   function _alertasCard(dados){
     var kEl = document.getElementById('alertasKpis'),
         tEl = document.getElementById('alertasTab');
@@ -57354,6 +57631,7 @@ function saveSelectedSheets(setOrArr){
     var bons = (dados||[]).filter(function(d){ return d && !d.error && d.last!=null && isFinite(d.last); });
     if(!bons.length){
       kEl.innerHTML = ''; tEl.innerHTML = '';
+      try { Plotly.purge('chartAlertas'); } catch(e){}
       _alLeitura('Nenhum contrato de <b>' + state.mercado + '</b> pôde ser lido nesta planilha. '
         + 'Ou as abas do mercado não estão presentes, ou o histórico é curto demais para a janela de <b>'
         + state.win + '</b> pregões.');
@@ -57421,6 +57699,7 @@ function saveSelectedSheets(setOrArr){
          + '<td>' + (l.boll || '–') + '</td></tr>';
     });
     tEl.innerHTML = h + '</tbody></table>';
+    try { _alertasGrafico(linhas); } catch(e){ console.warn('Alertas — régua:', e); }
 
     _alLeitura(
       'Na janela de <b>' + state.win + ' pregões</b>, <b>' + nSup + '</b> de <b>' + linhas.length
@@ -58242,6 +58521,68 @@ function updateTop10Meta(mercado, win, contractsCount){
                + (nota? ('<div class="rb-note">'+nota+'</div>') : '');
   }
 
+  /* ── QUANDO OS GATILHOS ACONTECERAM ────────────────────────────────────
+     A tabela lista noventa e cinco pregões e, lida de cima a baixo, esconde
+     o que salta aos olhos no desenho: os gatilhos não se espalham pela
+     janela, eles se amontoam em algumas semanas. Saber ISSO muda a conduta
+     de quem espera ordem executar — e nenhuma linha de tabela diz. Cada
+     ponto é um pregão; a altura é o contrato; a cor é a força do gatilho. */
+  function _top5Grafico(linhas){
+    var el = document.getElementById('chartTop5');
+    if (!el || typeof renderPlot !== 'function') return;
+    function _data(br){
+      var m = String(br||'').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      return m ? new Date(+m[3], +m[2]-1, +m[1]) : null;
+    }
+    var pts = linhas.map(function(l){ return { d:_data(l.data), c:l.contrato, p:l.p, preco:l.preco, gat:l.gat }; })
+                    .filter(function(o){ return o.d; });
+    if (pts.length < 2){
+      try { Plotly.purge('chartTop5'); } catch(e){}
+      el.innerHTML = ''; return;
+    }
+    /* Contratos no eixo vertical, em ordem de calendário de vencimento
+       quando o nome permite; na falta disso, alfabética. */
+    var contratos = [];
+    pts.forEach(function(o){ if (contratos.indexOf(o.c) < 0) contratos.push(o.c); });
+    contratos.sort(function(a,b){
+      var ka = (typeof _contractMaturityKey==='function') ? _contractMaturityKey(a) : null;
+      var kb = (typeof _contractMaturityKey==='function') ? _contractMaturityKey(b) : null;
+      if (ka != null && kb != null && ka !== kb) return kb - ka;
+      return String(b).localeCompare(String(a));
+    });
+    /* Três níveis pedem três cores separáveis. A primeira versão usou
+       #0f766e e #0d9488, que são o mesmo verde a olho nu numa bolinha de
+       sete pixels. Os três tons da paleta do painel resolvem: teal para o
+       gatilho raro, âmbar para o intermediário, ardósia para o comum. */
+    var FORCA = { 3:{cor:'#0f766e', tam:9,  rot:'resíduo acima de 2σ'},
+                  2:{cor:'#b45309', tam:7,  rot:'P75 com 1σ de resíduo'},
+                  1:{cor:'#94a3b8', tam:5.5,rot:'apenas P75'} };
+    var traces = [3,2,1].map(function(p){
+      var sub = pts.filter(function(o){ return o.p === p; });
+      if (!sub.length) return null;
+      return { type:'scatter', mode:'markers', name:FORCA[p].rot,
+        x: sub.map(function(o){ return o.d; }),
+        y: sub.map(function(o){ return o.c; }),
+        marker:{ color:FORCA[p].cor, size:FORCA[p].tam, symbol:'circle',
+                 line:{ color:'#ffffff', width:0.8 }, opacity:0.92 },
+        customdata: sub.map(function(o){ return o.preco; }),
+        hovertemplate:'<b>%{y}</b> · %{x|%d/%m/%Y}<br>%{customdata:,.2f}<extra>'+FORCA[p].rot+'</extra>' };
+    }).filter(Boolean);
+    renderPlot('chartTop5', traces, {
+      _no_trend_restyle: true,
+      _no_last_marker: true,
+      height: Math.max(300, Math.min(560, 108 + contratos.length*20)),
+      margin:{ l:92, r:22, t:34, b:42 },
+      legend:{ orientation:'h', y:1.13, x:0, font:{size:11} },
+      xaxis:{ type:'date', showgrid:true },
+      /* O eixo vertical lista contratos. Sem o título em branco explícito,
+         o motor de temas herda o de preço e rotula a coluna de nomes com
+         "Preço (@)". */
+      yaxis:{ type:'category', categoryorder:'array', categoryarray:contratos,
+              title:{ text:'' }, automargin:true, tickfont:{size:10.5}, showgrid:true }
+    });
+  }
+
   function _top5Card(dados){
     var kEl=document.getElementById('top5Kpis'),
         tEl=document.getElementById('top5Tab'),
@@ -58250,6 +58591,7 @@ function updateTop10Meta(mercado, win, contractsCount){
     var bons=(dados||[]).filter(function(d){ return d && !d.error && Array.isArray(d.top) && d.top.length; });
     if(!bons.length){
       kEl.innerHTML=''; tEl.innerHTML='';
+      try { Plotly.purge('chartTop5'); } catch(e){}
       _t5Leitura('Nenhum contrato deste mercado atingiu as condições na janela de <b>'
         + top10State.win + '</b> pregões. Isso é informação: o período não ofereceu preço no percentil 75 '
         + 'nem desvio de tendência relevante.');
@@ -58294,14 +58636,19 @@ function updateTop10Meta(mercado, win, contractsCount){
         + top10State.win + ' PREGÕES</div>'
         + '<table class="pc-tab"><thead><tr><th>contrato</th><th>data</th>'
         + '<th>preço</th><th>gatilho</th></tr></thead><tbody>';
-    linhas.slice(0,40).forEach(function(l){
+    /* A lista encolheu de quarenta para quinze. Com todos os pregões no
+       desenho acima, as outras vinte e cinco linhas eram rolagem, não
+       informação: quem precisa de uma data específica acha no gráfico. */
+    linhas.slice(0,15).forEach(function(l){
       h += '<tr><td>'+l.contrato+'</td><td>'+l.data+'</td><td>'
          + _t5N(l.preco, l.dec) + (l.uni?(' <span style="color:#9ca3af">'+l.uni+'</span>'):'')
          + '</td><td>'+l.gat+'</td></tr>';
     });
     tEl.innerHTML = h + '</tbody></table>'
-      + (linhas.length>40 ? '<div class="rb-note">Mostrando os 40 primeiros de '
-         + linhas.length + '. A folha para imprimir traz todos, separados por contrato.</div>' : '');
+      + (linhas.length>15 ? '<div class="rb-note">Mostrando os 15 primeiros de '
+         + linhas.length + '. O desenho acima traz todos, e a folha para imprimir também, '
+         + 'separados por contrato.</div>' : '');
+    try { _top5Grafico(linhas); } catch(e){ console.warn('TOP 5 — dispersão:', e); }
 
     _t5Leitura(
       'Na janela de <b>' + top10State.win + ' pregões</b>, <b>' + bons.length + '</b> contrato'
