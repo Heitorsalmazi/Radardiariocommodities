@@ -15966,6 +15966,10 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
       +   '<div id="veVenda"></div>'
       + '</section>'
       + '<section class="card">'
+      +   '<div class="card-title"><span class="card-title-text">REPOSIÇÃO E RELAÇÃO DE TROCA</span></div>'
+      +   '<div id="veReposicao"></div>'
+      + '</section>'
+      + '<section class="card">'
       +   '<div class="card-title"><span class="card-title-text">COMPRA DE INSUMOS</span></div>'
       +   '<div id="veInsumos"></div>'
       + '</section>'
@@ -16755,6 +16759,110 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
   /* ══════════════════════════════════════════════════════════════════════
      D2 · COMPRA DE INSUMOS
      ══════════════════════════════════════════════════════════════════════ */
+  /* ══════════════════════════════════════════════════════════════════════
+     REPOSIÇÃO E RELAÇÃO DE TROCA
+     ══════════════════════════════════════════════════════════════════════
+     A dica da seção promete "relações de troca" desde sempre, e a tela não
+     entregava: dava para ver o boi, o milho e a margem, mas não o preço do
+     animal que entra no curral. Numa operação de confinamento a reposição é
+     a maior linha de custo, e o ágio da arroba do bezerro sobre a do boi é
+     o termômetro de quando ela está cara.
+
+     NENHUMA CONTA NOVA AQUI. `_bezBoiSerie` e `_bezQuartis` são as mesmas
+     funções que desenham o card de detalhe em Relações de troca. Esta tela
+     lê o último ponto e os quartis, e manda o resto para lá. */
+  function renderReposicao(){
+    var m = mot(), host = document.getElementById('veReposicao');
+    if (!host) return;
+    var M = null;
+    try { M = (typeof window._bezBoiSerie === 'function') ? window._bezBoiSerie() : null; } catch(e){}
+    if (!M || !M.pts || M.pts.length < 24){
+      host.innerHTML = insuf('Faltam meses em comum entre as séries de bezerro e de boi para medir '
+        + 'a relação de troca. Ela precisa das duas séries do CEPEA na mesma planilha.')
+        + '<div class="ve-acoes">' + linkPara('m3_2_8', 'chartBezBoiTroca', 'relações de troca') + '</div>';
+      return;
+    }
+    var pts = M.pts, u = pts[pts.length-1];
+    /* A MEDIANA SÓ VALE COM AS DUAS SÉRIES NA MESMA MOEDA. Quando uma
+       ponta está em valores correntes e a outra em reais constantes, a
+       série do ágio mede inflação acumulada, e publicar a mediana dela na
+       tela mais vista do painel seria o pior lugar possível para um número
+       errado. O mês corrente continua válido, porque no ano em curso as
+       duas séries coincidem. */
+    var baseRuim = null;
+    try { baseRuim = (typeof window._bezBaseIncompativel === 'function')
+                     ? window._bezBaseIncompativel() : null; } catch(e){}
+    var Q = (!baseRuim && typeof window._bezQuartis === 'function')
+            ? window._bezQuartis(pts.map(function(o){ return o.agio; })) : null;
+    var arrobasPorBezerro = (u.boi > 0) ? (u.bez / u.boi) : null;
+
+    var posicao = '—', leitura = '';
+    if (baseRuim){
+      posicao = 'sem comparação histórica';
+      leitura = 'A série do <b>' + m.esc(baseRuim.correntes.join(' e do ')) + '</b> está sendo lida em '
+              + 'valores correntes, enquanto a do <b>' + m.esc(baseRuim.reais.join(' e do ')) + '</b> está '
+              + 'em reais constantes. Com as duas pontas em moedas diferentes, a mediana e a faixa '
+              + 'central mediriam inflação acumulada e não relação de troca, então ficam de fora. '
+              + 'O ágio de hoje continua válido: no ano em curso a planilha não corrige nenhuma das duas, '
+              + 'e as duas coincidem.';
+    } else if (Q){
+      if (u.agio >= Q.p75){
+        posicao = 'no quarto mais alto da série';
+        leitura = 'Ágio alto é escassez de reposição: quem cria está segurando bezerro e quem engorda '
+                + 'paga para conseguir animal. Para o confinamento, é o lado caro do ciclo para comprar.';
+      } else if (u.agio <= Q.p25){
+        posicao = 'no quarto mais baixo da série';
+        leitura = 'Ágio baixo é bezerro barato em relação ao boi terminado. Historicamente é o quadro '
+                + 'em que repor sai mais em conta, com a ressalva de que o boi de saída também precisa '
+                + 'sustentar preço.';
+      } else {
+        posicao = 'dentro da faixa central';
+        leitura = 'O ágio está na faixa em que passou metade dos meses da série, então a reposição não '
+                + 'está nem cara nem barata em termos históricos.';
+      }
+    }
+
+    var h = '<div class="ve-imp">'
+      + '<div class="ve-imp-l"><span>Ágio da @ do bezerro sobre a do boi</span><strong class="'
+      +   sinalCls(u.agio) + '">' + sinalTxt(u.agio, 1, '%') + '</strong></div>'
+      + (Q ? ('<div class="ve-imp-l"><span>Mediana de ' + pts.length + ' meses</span><strong>'
+      +   sinalTxt(Q.p50, 1, '%') + '</strong></div>'
+      + '<div class="ve-imp-l"><span>Faixa central da série</span><strong>'
+      +   sinalTxt(Q.p25, 1, '%') + ' a ' + sinalTxt(Q.p75, 1, '%') + '</strong></div>') : '')
+      + '<div class="ve-imp-l"><span>Posição de hoje</span><strong>' + m.esc(posicao) + '</strong></div>'
+      + '</div>';
+
+    h += '<div class="ve-tab-wrap"><table class="ve-tab"><thead><tr>'
+      +  '<th>Leitura</th><th class="num">Valor</th><th>O que é</th>'
+      +  '</tr></thead><tbody>'
+      +  '<tr><td>Arroba do boi</td><td class="num">R$ ' + m.n2(u.boi, 2) + '</td>'
+      +    '<td>indicador CEPEA do boi gordo, média do mês</td></tr>'
+      +  '<tr><td>Arroba equivalente do bezerro</td><td class="num">R$ ' + m.n2(u.arrobaBez, 2) + '</td>'
+      +    '<td>preço do bezerro dividido pela equivalência de ' + m.n2(M.equiv, 0) + ' @ por cabeça</td></tr>'
+      +  '<tr><td>Bezerro</td><td class="num">R$ ' + m.n2(u.bez, 2) + '</td>'
+      +    '<td>por cabeça, indicador CEPEA</td></tr>'
+      +  (arrobasPorBezerro != null
+         ? ('<tr><td>Arrobas de boi por bezerro</td><td class="num">' + m.n2(arrobasPorBezerro, 2) + ' @</td>'
+            + '<td>quantas arrobas a venda precisa cobrir para repor uma cabeça</td></tr>') : '')
+      +  '<tr><td>Bezerros por boi vendido</td><td class="num">' + m.n2(u.bezerros, 2) + '</td>'
+      +    '<td>vendendo um boi de ' + m.n2(M.pesoBoi, 0) + ' @, quantos bezerros a venda paga</td></tr>'
+      +  '</tbody></table></div>';
+
+    /* As duas observações num bloco só. Em dois, o painel abria duas
+       sanfonas "Premissas e metodologia" uma embaixo da outra. */
+    h += '<div class="ve-nota">' + (leitura ? (leitura + ' ') : '')
+      +  'A equivalência de ' + m.n2(M.equiv, 0) + ' @ por bezerro e o boi de '
+      +  m.n2(M.pesoBoi, 0) + ' @ são as premissas declaradas do painel, usadas aqui e no card de '
+      +  'detalhe sem diferença. A série é mensal, então o último ponto é o mês corrente e não o '
+      +  'pregão de hoje. Reposição por categoria, UF e raça, com as coletas Scot e Datagro, está no '
+      +  'card de detalhe.</div>';
+
+    h += '<div class="ve-acoes">' + linkPara('m3_2_8', 'chartBezAgioHist', 'ágio histórico da arroba')
+      +  linkPara('m3_2_8', 'chartBezBoiTroca', 'quantos bezerros paga um boi')
+      +  linkPara('m3_2_8', 'chartScotEscada', 'escada da reposição') + '</div>';
+    host.innerHTML = h;
+  }
+
   function renderInsumos(L){
     var m = mot(), host = document.getElementById('veInsumos');
     if (!host) return;
@@ -16975,6 +17083,7 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
     try { renderPrem(); }                 catch(e){ console.warn('Visão Executiva — premissas:', e); }
     try { renderMargem(L, vencRef, cas); }catch(e){ console.warn('Visão Executiva — margem:', e); }
     try { renderVenda(L, vencRef); }      catch(e){ console.warn('Visão Executiva — venda:', e); }
+    try { renderReposicao(); }            catch(e){ console.warn('Visão Executiva — reposição:', e); }
     try { renderInsumos(L); }             catch(e){ console.warn('Visão Executiva — insumos:', e); }
     try { renderProtecao(L, vencRef); }   catch(e){ console.warn('Visão Executiva — proteção:', e); }
   }
@@ -24521,6 +24630,75 @@ function updatePreco() {
   }
   try { window._bezBoiSerie = _bezBoiSerie; } catch(e){}
 
+  /* ── AS DUAS PONTAS PRECISAM ESTAR NA MESMA MOEDA ─────────────────────
+     O ágio divide a arroba do bezerro pela arroba do boi. Se uma das duas
+     séries vier em valores correntes e a outra em reais constantes, a
+     divisão compara moedas diferentes e a história inteira sai errada,
+     ainda que o mês corrente pareça certo — no mês corrente as duas são a
+     mesma coisa, porque a planilha não corrige o ano em curso.
+
+     Foi o que apareceu em 22/10/2026: a coluna corrigida da aba do bezerro
+     chegou vazia, o painel caiu para a cotação nominal, e a mediana do
+     ágio em 320 meses deu −52% contra +32% de hoje. Não houve mudança de
+     mercado nenhuma, foi a planilha.
+
+     O teste reaproveita o diagnóstico de base que já existe, um por aba. */
+  function _bezBaseIncompativel(){
+    if (typeof window.shDiagnosticoBase !== 'function') return null;
+    /* `GLOBAL_FIXED_SHEETS.shBezerro` é a LISTA DE APELIDOS da aba, não o
+       nome dela. Passar a lista direto ao diagnóstico fazia a função sair
+       pela porta do `if (!nome)` sem avisar, e a guarda nunca disparava.
+       `findSheetByAliases` é quem traduz apelido em nome real. */
+    function _aba(al){
+      try { return (typeof findSheetByAliases === 'function') ? findSheetByAliases(al) : null; }
+      catch(e){ return null; }
+    }
+    var abas = [];
+    try { abas.push(['bezerro', _aba(GLOBAL_FIXED_SHEETS.shBezerro)]); } catch(e){}
+    try { abas.push(['boi',     _aba(GLOBAL_FIXED_SHEETS.shBoi)]); }     catch(e){}
+    var correntes = [], reais = [];
+    abas.forEach(function(par){
+      if (!par[1]) return;
+      var d = null;
+      try { d = window.shDiagnosticoBase(par[1]); } catch(e){}
+      if (!d) return;
+      if (d.suspeita) correntes.push(par[0]); else reais.push(par[0]);
+    });
+    if (!correntes.length || !reais.length) return null;   // as duas no mesmo pé
+    return { correntes: correntes, reais: reais };
+  }
+  try { window._bezBaseIncompativel = _bezBaseIncompativel; } catch(e){}
+
+  /* Pendura a faixa no topo do card, e a tira quando o problema some.
+     Mesmo mecanismo do aviso de base das séries históricas. */
+  function _bezPinduraAviso(chartId){
+    try {
+      var el = document.getElementById(chartId); if (!el) return;
+      var card = el.closest ? el.closest('.card') : null; if (!card) return;
+      var idAv = 'bezAviso_' + chartId, av = document.getElementById(idAv);
+      var html = (typeof _bezAvisoBase === 'function') ? _bezAvisoBase() : '';
+      if (html){
+        if (!av){ av = document.createElement('div'); av.id = idAv; card.insertBefore(av, card.firstChild); }
+        av.innerHTML = html;
+      } else if (av && av.parentNode){ av.parentNode.removeChild(av); }
+    } catch(e){}
+  }
+
+  function _bezAvisoBase(){
+    var b = _bezBaseIncompativel();
+    if (!b) return '';
+    return '<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:7px;'
+      + 'padding:9px 12px;margin-bottom:10px;font-size:var(--fs-sm);color:#78350f;line-height:1.55">'
+      + '<b>A comparação entre anos está suspensa neste card.</b> A série do <b>'
+      + b.correntes.join('</b> e do <b>') + '</b> está sendo lida em valores correntes, enquanto a do <b>'
+      + b.reais.join('</b> e do <b>') + '</b> está em reais constantes. Dividir uma pela outra compara '
+      + 'moedas diferentes, e a mediana histórica que sairia daqui seria inflação, não relação de troca. '
+      + 'O número do mês corrente continua válido, porque no ano em curso as duas séries coincidem.'
+      + '<br><span style="opacity:.8">O que resolve: gravar a planilha com os valores calculados da '
+      + 'coluna corrigida, em vez de só a fórmula.</span></div>';
+  }
+  try { window._bezAvisoBase = _bezAvisoBase; } catch(e){}
+
   // Percentis de um vetor já ordenável
   function _bezQuartis(arr){
     var o = arr.slice().sort(function(a,b){ return a-b; });
@@ -24528,6 +24706,11 @@ function updatePreco() {
       return o[f+1]!==undefined ? o[f]+r*(o[f+1]-o[f]) : o[f]; };
     return { p25:q(0.25), p50:q(0.50), p75:q(0.75), min:o[0], max:o[o.length-1] };
   }
+  /* A Visão Executiva mostra o mesmo ágio com a mesma mediana e a mesma
+     faixa central. Reescrever o cálculo lá seria criar uma segunda verdade
+     sobre o mesmo número, que é como a relação bezerro/boi já deu 9,75 @
+     contra mediana de 3,34 uma vez. Uma função, dois lugares. */
+  try { window._bezQuartis = _bezQuartis; } catch(e){}
   function _bezMesData(k){ return new Date(Math.floor(k/12), k%12, 1); }
 
   /* ── Quantos bezerros a venda de um boi gordo paga ─────────────────────
@@ -24549,6 +24732,7 @@ function updatePreco() {
      não paga um bezerro. É a linha que separa crescer de encolher rebanho. */
   function _renderBezBoiTroca(){
     var chartId='chartBezBoiTroca', ctxId='chartBezBoiTrocaContext';
+    _bezPinduraAviso(chartId);
     if (!document.getElementById(chartId)) return;
     var M=_bezBoiSerie();
     if (!M){
@@ -25139,6 +25323,7 @@ function updatePreco() {
   function _renderBezAgioHist(){
     var chartId='chartBezAgioHist', ctxId='chartBezAgioHistContext';
     if (!document.getElementById(chartId)) return;
+    _bezPinduraAviso(chartId);
     var M=_bezBoiSerie();
     if (!M || M.pts.length<24){
       renderPlot(chartId, [], {_no_title:true});
@@ -49519,8 +49704,19 @@ function updateRelacao() {
     function direto(motivo){
       _WK_ESTADO.via = 'thread principal';
       _WK_ESTADO.erro = motivo || null;
+      /* QUATRO COISAS QUE NINGUÉM LÊ ───────────────────────────────────
+         O painel usa o VALOR das células e nunca a fórmula: não há uma
+         chamada sequer a `cell.f` no arquivo. Pedir as fórmulas, as
+         dependências, as propriedades do documento e o VBA custava tempo
+         de leitura para encher memória que nada consulta, e a planilha
+         ficou cheia de fórmulas desde que passou a ser regravada por
+         script. Medido nas 166 abas de hoje: 8.136 ms antes, 6.970 ms
+         depois.
+         `cellText` e `cellHTML` continuam ligados de propósito. Uma das
+         leituras do painel chama `sheet_to_json` sem `raw:true`, e essa
+         depende do texto formatado que o `cellText` produz. */
       var t0 = (window.performance&&performance.now)? performance.now() : Date.now();
-      var wb = XLSX.read(data, {type:'array', cellDates:false, cellNF:false, cellStyles:false});
+      var wb = XLSX.read(data, {type:'array', cellDates:false, cellNF:false, cellStyles:false, cellFormula:false, bookDeps:false, bookProps:false, bookVBA:false});
       _WK_ESTADO.msParse = ((window.performance&&performance.now)? performance.now() : Date.now()) - t0;
       return wb;
     }
@@ -49543,7 +49739,7 @@ function updateRelacao() {
               + "self.onmessage=function(ev){\n"
               + "  try{\n"
               + "    var t0=Date.now();\n"
-              + "    var wb=XLSX.read(ev.data,{type:'array',cellDates:false,cellNF:false,cellStyles:false});\n"
+              + "    var wb=XLSX.read(ev.data,{type:'array',cellDates:false,cellNF:false,cellStyles:false,cellFormula:false,bookDeps:false,bookProps:false,bookVBA:false});\n"
               + "    self.postMessage({ok:true, wb:wb, ms:Date.now()-t0});\n"
               + "  }catch(e){ self.postMessage({ok:false, erro:String(e&&e.message||e)}); }\n"
               + "};";
@@ -54414,7 +54610,7 @@ function updateRelacao() {
   function loadWorkbookFromBuffer(data) {
     return _lerWorkbook(data).then(function(wb){ _aplicaWorkbook(wb); }).catch(function(e){
       console.error('Leitura da planilha:', e);
-      try { _aplicaWorkbook(XLSX.read(data, {type:'array', cellDates:false, cellNF:false, cellStyles:false})); }
+      try { _aplicaWorkbook(XLSX.read(data, {type:'array', cellDates:false, cellNF:false, cellStyles:false, cellFormula:false, bookDeps:false, bookProps:false, bookVBA:false})); }
       catch(e2){ console.error('Leitura da planilha (fallback):', e2); }
     });
   }
