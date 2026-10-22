@@ -3112,6 +3112,9 @@ header{
 @media print{
   html.m3-print-alertas #pagePaneAlertas { background: #070b10 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   html.m3-print-alertas #pagePaneAlertas .m3-alertas-toolbar{ display:none !important; }
+  /* A seção que hospeda a folha nasce fechada dentro do card; na
+     impressão ela precisa reaparecer, senão sai página em branco. */
+  html.m3-print-alertas #alertasA4Secao{ display:block !important; }
   html.m3-print-alertas #alertasA4Wrap{ display:block !important; }
 }
 
@@ -3720,6 +3723,31 @@ header{
 }
 #pagePaneAlertas .delta.pos{ color: var(--m3-pos) !important; }
 #pagePaneAlertas .delta.neg{ color: var(--m3-neg) !important; }
+
+/* A CASCA ANTIGA DOS ALERTAS SAI DE CENA ─────────────────────────────
+   Mesmo caso do TOP 5: o painel trazia um cabeçalho "Alertas Técnicos /
+   Sinais de Mercado" e uma barra com mercado, pregões, "Gerar" e
+   "Exportar A4". O card abaixo refaz tudo isso com título, pílula e
+   seletores do próprio Radar, e a seção mostrava dois títulos e dois
+   conjuntos de controles para o mesmo cálculo. A exportação virou botão
+   dentro do card; a barra fica escondida, para a ação flutuante que
+   aciona #btnAlertasPNG continuar achando o botão. */
+#pagePaneAlertas > .pane-hero,
+#pagePaneAlertas > .pane-ctrl-bar { display: none !important; }
+
+/* PAINEL MIGRADO NÃO É MAIS PÁGINA ───────────────────────────────────
+   Alertas e TOP 5 nasceram como telas inteiras e carregam disso um fundo
+   de página, um respiro de 14px e `min-height: 100vh`. Dentro da seção de
+   timing eles são só contêineres de card, e essas três heranças apareciam
+   como uma faixa de cor diferente do resto da seção e um vazio de uns 60px
+   depois do último card. A migração marca o painel com `data-m3-painel`,
+   e é esse marcador que desliga as três. Fora da migração nada muda. */
+#pagePaneAlertas[data-m3-painel="1"],
+#pagePaneTop10[data-m3-painel="1"]{
+  background: transparent !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+}
 
 /* ---------- PANE: TOP10 (tela) ---------- */
 #top10Pane, #pagePaneTop10{
@@ -10315,7 +10343,47 @@ header{
     </div>
   </div>
 
-  <section class="card" style="padding:0;overflow:hidden">
+  <section class="card" id="alertasCard">
+    <div class="card-title"><span class="card-title-text">ALERTAS TÉCNICOS — SINAIS POR CONTRATO</span><button type="button" class="info-btn" aria-label="Ajuda: alertas técnicos" data-tooltip="Para cada contrato do mercado escolhido: onde o fechamento está na faixa de preços da janela, quantos desvios ele está da reta de tendência e o que dizem RSI, MACD e Bollinger. Serve para escolher o que olhar hoje.">ⓘ</button></div>
+    <div class="pill">Onde cada contrato está em relação à própria janela: faixa de preço, desvio da tendência e indicadores de giro.</div>
+    <div class="explain">
+      <span class="ex-tag">Como o sinal é montado</span>
+      O fechamento de cada contrato é comparado com três réguas da mesma janela: a
+      <b>faixa de preços</b> (percentis 25 e 75), a <b>reta de tendência</b> do período, medida em
+      desvios do resíduo do dia, e os indicadores de giro de sempre (RSI, MACD, bandas de
+      Bollinger). A tabela abre pelo contrato mais deslocado da própria trajetória.
+      <span class="ex-tag">Para que serve</span>
+      Serve para encurtar a busca. Com vinte vencimentos abertos, o sinal diz quais merecem
+      atenção hoje. A decisão de travar continua dependendo de custo, volume em aberto e prazo,
+      que estão nos cards acima desta seção.
+    </div>
+    <div class="bgi-ctrl">
+      <span class="bgi-lbl">Mercado</span>
+      <select id="alertasMercado" class="bgi-sel" title="Qual conjunto de contratos é lido.">
+        <option value="boi">Boi</option>
+        <option value="milho">Milho</option>
+        <option value="soja">Soja</option>
+        <option value="dolar">Dólar</option>
+        <option value="acucar">Açúcar</option>
+        <option value="etanol">Etanol</option>
+      </select>
+      <span class="bgi-lbl" style="margin-left:10px">Janela</span>
+      <select id="alertasJanela" class="bgi-sel" title="Quantos pregões entram no cálculo da faixa e da tendência.">
+        <option value="30" selected>30 pregões</option>
+        <option value="60">60 pregões</option>
+        <option value="90">90 pregões</option>
+        <option value="120">120 pregões</option>
+        <option value="252">252 pregões</option>
+      </select>
+      <button type="button" id="alertasVerA4" class="bgi-sel" style="margin-left:10px;cursor:pointer" title="Abre a folha A4 pronta para impressão, com um quadro por contrato.">Versão para imprimir</button>
+      <button type="button" id="alertasPNG" class="bgi-sel" style="margin-left:6px;cursor:pointer" title="Salva a folha A4 como imagem.">Exportar PNG</button>
+    </div>
+    <div id="alertasKpis" class="vol-kpis"></div>
+    <div id="alertasTab"></div>
+    <div id="alertasContext" class="chart-context"></div>
+  </section>
+
+  <section class="card" id="alertasA4Secao" style="padding:0;overflow:hidden;display:none">
     <div id="alertasA4Wrap" class="m3-a4-wrap">
       <div id="alertasA4" class="m3-a4">
         <div class="m3-a4-header">
@@ -10333,7 +10401,7 @@ header{
         </div>
 
         <div id="alertasGrid" class="m3-a4-grid">
-          <div class="m3-a4-empty">Clique em <b>Gerar</b> para montar os alertas automaticamente.</div>
+          <div class="m3-a4-empty">A folha é montada junto com o card, no mercado e na janela escolhidos ali.</div>
         </div>
 
         <div class="m3-a4-footer">
@@ -51738,7 +51806,7 @@ function updateRelacao() {
        porque os construtores não estavam em `window`. Agora estão. */
     { amb:'hedge', id:'m3_3_5c', nome:'Travar boi — timing',
       dica:'Sinais e níveis de execução: quando e em que patamar entrar.',
-      render:['updateTravaBGI','updateTravaOutros','renderTop10All','updateAlerts'] },
+      render:['updateTravaBGI','updateTravaOutros','renderTop10All','renderAlertasPane','updateAlerts'] },
     { amb:'hedge', id:'m3_3_5d', nome:'Travar boi — a decisão econômica',
       render:['_m3RenderDecisaoEconomica'] },
     { amb:'hedge', id:'m3_3_5e', nome:'Travar boi — validação histórica',
@@ -56945,8 +57013,11 @@ function buildAlertsForSheet(sheetName, win){
 
     return {
       sheet: sheetName,
-    name: (typeof upperTop10==='function' ? upperTop10(sheetName) : String(sheetName||'').trim().toUpperCase()),
-      name: String(sheetName==null?'':sheetName).toUpperCase(),
+      /* `name` estava declarado duas vezes no mesmo objeto: a segunda
+         vencia e a chamada a `upperTop10` nunca rodava. Sobra uma. */
+      name: (typeof upperTop10 === 'function')
+              ? upperTop10(sheetName)
+              : String(sheetName == null ? '' : sheetName).toUpperCase(),
       last: last,
       prev: prev,
       dAbs: dAbs,
@@ -57229,13 +57300,154 @@ function saveSelectedSheets(setOrArr){
     });
   }
 
-function render(){
+  /* ── O CARD DO RADAR ──────────────────────────────────────────────────
+     A folha A4 responde "me dê um quadro por contrato para imprimir". Na
+     tela a pergunta é outra: "qual destes vinte contratos merece atenção
+     agora". Uma tabela única, ordenada pelo deslocamento da tendência,
+     responde isso em uma olhada. Os dois saem do MESMO cálculo
+     (`buildAlertsForSheet`), de modo que não existe número na tela que a
+     folha contradiga.
+     Os ajudantes de formatação do painel (`_rgKpi`, `_exSet`) moram em
+     outra IIFE e não alcançam aqui, nem os do TOP 5. O contrato visual é
+     o das classes (`vol-kpi`, `read-box`, `pc-tab`), então a marcação é
+     escrita localmente. */
+  function _alKpi(rot, val, sub){
+    return '<div class="vol-kpi"><div class="vk-lbl">'+rot+'</div>'
+         + '<div class="vk-val">'+val+'</div><div class="vk-sub">'+(sub||'')+'</div></div>';
+  }
+  function _alLeitura(corpo, nota){
+    var el = document.getElementById('alertasContext'); if(!el) return;
+    el.className = 'read-box';
+    el.innerHTML = '<div class="rb-head">Leitura</div><div class="rb-line">'+corpo+'</div>'
+                 + (nota ? ('<div class="rb-note">'+nota+'</div>') : '');
+  }
+  /* UNIDADE POR CONTRATO, NUNCA POR MERCADO. `unitForAsset` responde R$/@
+     por padrão, o que erraria em dólar, açúcar e etanol. E mesmo dentro do
+     boi a lista mistura réguas: BGI e BOI GORDO são R$/@, enquanto o
+     BEZERRO roda perto de 3.500, que não é arroba. Onde a unidade não está
+     estabelecida, o campo fica em branco e o número aparece sozinho. */
+  function _alUnidadeContrato(nome){
+    var N = String(nome||'').toUpperCase();
+    try { N = N.normalize('NFD').replace(/[\u0300-\u036f]/g,''); } catch(e){}
+    if(N.indexOf('BEZERRO')>=0 || N.indexOf('REPOSICAO')>=0) return '';
+    if(N.indexOf('BGI')===0 || N.indexOf('BOI')>=0) return 'R$/@';
+    if(N.indexOf('CCM')===0 || N.indexOf('MILHO')>=0) return 'R$/sc';
+    if(N.indexOf('SJC')===0 || N.indexOf('SOJA')>=0) return 'R$/sc';
+    return '';
+  }
+  function _alResidZ(d){
+    if(!d || d.trendLast==null || !d.residStd || !isFinite(d.residStd) || d.residStd<=0) return null;
+    var z = (d.last - d.trendLast)/d.residStd;
+    return isFinite(z) ? z : null;
+  }
+  function _alFaixa(d){
+    if(d.p75!=null && d.last>=d.p75) return {txt:'superior', ord:1};
+    if(d.p25!=null && d.last<=d.p25) return {txt:'inferior', ord:-1};
+    return {txt:'miolo', ord:0};
+  }
+
+  function _alertasCard(dados){
+    var kEl = document.getElementById('alertasKpis'),
+        tEl = document.getElementById('alertasTab');
+    if(!kEl || !tEl) return;
+
+    var bons = (dados||[]).filter(function(d){ return d && !d.error && d.last!=null && isFinite(d.last); });
+    if(!bons.length){
+      kEl.innerHTML = ''; tEl.innerHTML = '';
+      _alLeitura('Nenhum contrato de <b>' + state.mercado + '</b> pôde ser lido nesta planilha. '
+        + 'Ou as abas do mercado não estão presentes, ou o histórico é curto demais para a janela de <b>'
+        + state.win + '</b> pregões.');
+      return;
+    }
+
+    var linhas = bons.map(function(d){
+      var z = _alResidZ(d), f = _alFaixa(d);
+      var _nome = d.name || String(d.sheet||'').toUpperCase();
+      return {
+        nome: _nome,
+        preco: d.last, dec: decForAsset(_nome), uni: _alUnidadeContrato(_nome),
+        dPct: d.dPct, pos: d.pos,
+        faixa: f.txt, faixaOrd: f.ord,
+        z: z,
+        rsi: (d.rsi!=null && isFinite(d.rsi)) ? d.rsi : null,
+        macd: (d.macd!=null && d.signal!=null && isFinite(d.macd) && isFinite(d.signal))
+                ? (d.macd > d.signal ? 'positivo' : 'negativo') : null,
+        boll: d.bollStatus || null
+      };
+    });
+    /* A ordem é por distância da tendência, dos dois lados: o contrato mais
+       esticado para cima interessa a quem vende, o mais afundado a quem
+       compra, e a tabela serve aos dois. Sem resíduo calculado, o contrato
+       desce para o fim. */
+    linhas.sort(function(a,b){
+      var za = (a.z==null) ? -1 : Math.abs(a.z);
+      var zb = (b.z==null) ? -1 : Math.abs(b.z);
+      return (zb - za) || String(a.nome).localeCompare(String(b.nome));
+    });
+
+    var nSup = linhas.filter(function(l){ return l.faixaOrd===1; }).length;
+    var nInf = linhas.filter(function(l){ return l.faixaOrd===-1; }).length;
+    var nZ2  = linhas.filter(function(l){ return l.z!=null && Math.abs(l.z)>=2; }).length;
+    var topo = linhas[0];
+
+    function zTxt(z){
+      if(z==null) return 'n/d';
+      return (z>=0?'+':'\u2212') + fmtNum(Math.abs(z),1) + 'σ';
+    }
+
+    kEl.innerHTML =
+      _alKpi('CONTRATOS LIDOS', String(linhas.length),
+             'mercado ' + state.mercado + ', janela de ' + state.win + ' pregões') +
+      _alKpi('NA FAIXA SUPERIOR', String(nSup),
+             nInf ? (nInf + ' na faixa inferior') : 'nenhum na faixa inferior') +
+      _alKpi('A 2σ OU MAIS DA TENDÊNCIA', String(nZ2),
+             nZ2 ? 'o deslocamento mais raro' : 'nenhum nesta janela') +
+      _alKpi('MAIOR DESLOCAMENTO', (topo && topo.z!=null) ? zTxt(topo.z) : '–',
+             topo ? (topo.nome + ' · ' + fmtNum(topo.preco, topo.dec) + (topo.uni?(' '+topo.uni):'')) : '');
+
+    var h = '<div class="rb-head">SINAL POR CONTRATO — ' + state.win + ' PREGÕES</div>'
+          + '<table class="pc-tab"><thead><tr><th>contrato</th><th>último</th><th>dia</th>'
+          + '<th>faixa</th><th>tendência</th><th>RSI</th><th>MACD</th><th>Bollinger</th>'
+          + '</tr></thead><tbody>';
+    linhas.forEach(function(l){
+      h += '<tr><td>' + l.nome + '</td>'
+         + '<td>' + fmtNum(l.preco, l.dec)
+         + (l.uni ? (' <span style="color:#9ca3af">' + l.uni + '</span>') : '') + '</td>'
+         + '<td class="' + (l.pos ? 'pos' : 'neg') + '">' + fmtPct(l.dPct, 2) + '</td>'
+         + '<td>' + l.faixa + '</td>'
+         + '<td>' + zTxt(l.z) + '</td>'
+         + '<td>' + (l.rsi!=null ? fmtNum(l.rsi,0) : '–') + '</td>'
+         + '<td>' + (l.macd || '–') + '</td>'
+         + '<td>' + (l.boll || '–') + '</td></tr>';
+    });
+    tEl.innerHTML = h + '</tbody></table>';
+
+    _alLeitura(
+      'Na janela de <b>' + state.win + ' pregões</b>, <b>' + nSup + '</b> de <b>' + linhas.length
+      + '</b> contrato' + (linhas.length===1?'':'s') + ' de <b>' + state.mercado + '</b> fecharam no '
+      + 'percentil 75 ou acima, e <b>' + nInf + '</b> no percentil 25 ou abaixo. O maior afastamento '
+      + 'da tendência é ' + (topo ? ('<b>' + topo.nome + '</b>, a ' + zTxt(topo.z) + ' do resíduo, '
+      + 'com último de ' + fmtNum(topo.preco, topo.dec) + (topo.uni?(' '+topo.uni):'')) : '—') + '.'
+      + (nZ2 ? (' Há <b>' + nZ2 + '</b> contrato' + (nZ2===1?'':'s') + ' a dois desvios ou mais, '
+                + 'que é o deslocamento mais raro da lista.') : ''),
+      'Faixa e tendência são medidas DENTRO da janela escolhida: trocar a janela troca o '
+      + 'diagnóstico de todos os contratos ao mesmo tempo. O sinal descreve onde o preço está hoje. '
+      + 'O que vem no próximo pregão ele não responde, e um contrato pode ficar dez pregões na faixa '
+      + 'superior sem voltar.');
+  }
+
+  /* A seção de timing chama os construtores por nome em `window`. Este
+     ficava só no escopo do módulo, e por isso o painel esperava o clique
+     em "Gerar" para existir. */
+  try { window.renderAlertasPane = render; } catch(e){}
+  function render(){
     var grid = $('#alertasGrid');
     if(!grid) return;
 
     if(!window.workbook){
       grid.innerHTML = '<div class="m3-a4-empty">Nenhum arquivo carregado. Carregue a planilha no topo e selecione uma aba.</div>';
       updateMeta(state.mercado, state.win, 0);
+      try { _alertasCard([]); } catch(e){}
       return;
     }
 
@@ -57250,8 +57462,12 @@ function render(){
     sheets = sheets;
 
     var cards = [];
+    /* MESMA PASSAGEM, DUAS APRESENTAÇÕES. Os objetos calculados aqui vão
+       para o card do Radar e para a folha A4, um cálculo só. */
+    var dados = [];
     sheets.forEach(function(sh){
       var d = buildAlertsForSheet(sh, state.win);
+      dados.push(d);
       if(d && !d.error){
         cards.push(buildCard(d));
       } else {
@@ -57278,6 +57494,8 @@ function render(){
 });
 
     updateMeta(state.mercado, state.win, cards.length);
+    try { _alertasCard(dados); }
+    catch(e){ console.warn('Alertas técnicos — card:', e); }
 
     if(!cards.length){
       grid.innerHTML = '<div class="m3-a4-empty">Nenhum contrato encontrado para este mercado, ou dados insuficientes para cálculo. Verifique os nomes das abas (ex.: BGI..., CCM..., SJC...).</div>';
@@ -57302,6 +57520,10 @@ function render(){
 
     // Gera/atualiza antes de imprimir
     render();
+    try {
+      var _sec = document.getElementById('alertasA4Secao');
+      if(_sec && getComputedStyle(_sec).display==='none') _sec.style.display='block';
+    } catch(e){}
 
     // Respira para layout, depois isola impressão do A4
     setTimeout(function(){
@@ -57329,6 +57551,7 @@ function render(){
         $all('.seg-btn', pane).forEach(function(b){ b.classList.remove('active'); });
         btn.classList.add('active');
         state.mercado = btn.getAttribute('data-mercado') || 'boi';
+        try { if(window._alEspelha) window._alEspelha(); } catch(e){}
         render();
       });
     });
@@ -57350,10 +57573,66 @@ function render(){
     var btnGerar = $('#btnAlertasGerar');
     if(btnGerar) btnGerar.addEventListener('click', render);
 
+    /* ── CONTROLES DO CARD ────────────────────────────────────────────
+       Os seletores do card e os controles antigos escrevem no MESMO
+       `state` e se espelham, para não existirem duas verdades sobre qual
+       mercado e qual janela estão na tela. A barra antiga está escondida,
+       mas ações externas (a barra flutuante, a exportação) ainda leem o
+       campo de pregões, e por isso ele continua sincronizado. */
+    function _alEspelha(){
+      var m = document.getElementById('alertasMercado');
+      if(m && m.value!==state.mercado) m.value = state.mercado;
+      var j = document.getElementById('alertasJanela');
+      if(j){
+        var achou = false;
+        Array.prototype.forEach.call(j.options, function(o){ if(+o.value===+state.win) achou = true; });
+        if(achou) j.value = String(state.win);
+      }
+      $all('.seg-btn', pane).forEach(function(b){
+        b.classList.toggle('active', b.getAttribute('data-mercado')===state.mercado);
+      });
+      var w = document.getElementById('alertasWinInput');
+      if(w && +w.value!==+state.win) w.value = String(state.win);
+    }
+    try { window._alEspelha = _alEspelha; } catch(e){}
+
+    var _alm = document.getElementById('alertasMercado');
+    if(_alm) _alm.addEventListener('change', function(){
+      state.mercado = _alm.value || 'boi'; _alEspelha(); render();
+    });
+    var _alj = document.getElementById('alertasJanela');
+    if(_alj) _alj.addEventListener('change', function(){
+      var v = parseInt(_alj.value,10); if(!isFinite(v) || v<5) v = 30;
+      state.win = v; _alEspelha(); render();
+    });
+    /* A folha A4 nasce fechada: ela é o caminho da impressão. O botão
+       revela, esconde e diz em qual estado está. */
+    var _ala4 = document.getElementById('alertasVerA4');
+    if(_ala4) _ala4.addEventListener('click', function(){
+      var sec = document.getElementById('alertasA4Secao'); if(!sec) return;
+      /* Estado pelo estilo calculado: `sec.style.display` volta vazio
+         depois de aberto e o botão reabriria em vez de fechar. */
+      var abrindo = (getComputedStyle(sec).display === 'none');
+      sec.style.display = abrindo ? 'block' : 'none';
+      _ala4.textContent = abrindo ? 'Fechar versão para imprimir' : 'Versão para imprimir';
+      if(abrindo){ try{ sec.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} }
+    });
+    /* A exportação continua sendo a do painel antigo; o card só a aciona,
+       para a função não sumir junto com a barra que a hospedava. */
+    var _alpng = document.getElementById('alertasPNG');
+    if(_alpng) _alpng.addEventListener('click', function(){
+      var b = document.getElementById('btnAlertasPNG');
+      if(b) b.click();
+    });
+    _alEspelha();
+
     var btnPDF = $('#btnAlertasPDF');
     if(btnPDF) btnPDF.addEventListener('click', exportPDF);
 
-    // When workbook loads, do nothing until user clicks gerar (evita confusão)
+    /* O painel passou a ser desenhado pela navegação, junto com o resto da
+       seção de timing (`_M3_ESTRUTURA` → m3_3_5c → renderAlertasPane). O
+       botão "Gerar" continua, para refazer depois de trocar mercado ou
+       janela, mas deixou de ser a única porta. */
   }
 
   if(document.readyState === 'loading'){
@@ -57404,6 +57683,18 @@ function __bmsAlertasAutoFitA4(cardCount){
 async function exportAlertasPNG() {
   try {
     if (typeof renderAlertas === "function") renderAlertas();
+  } catch (e) {}
+
+  /* A folha A4 nasce fechada dentro do card. html2canvas não captura o que
+     está com display:none, então quem exporta primeiro abre a seção. */
+  try {
+    const sec = document.getElementById("alertasA4Secao");
+    if (sec && getComputedStyle(sec).display === "none") {
+      sec.style.display = "block";
+      const bt = document.getElementById("alertasVerA4");
+      if (bt) bt.textContent = "Fechar vers\u00e3o para imprimir";
+      await new Promise(function(r){ setTimeout(r, 120); });
+    }
   } catch (e) {}
 
   const el =
@@ -58329,15 +58620,18 @@ function _top10TagFromFlags(flags){
     var _t5png=document.getElementById('top5PNG');
     if(_t5png) _t5png.addEventListener('click', function(){
       var sec=document.getElementById('top5A4Secao');
-      if(sec && (sec.style.display==='none' || !sec.style.display)) sec.style.display='';
+      if(sec && getComputedStyle(sec).display==='none') sec.style.display='block';
       var b=document.getElementById('btnTop10PNG');
       if(b) b.click();
     });
     var _t5a4=document.getElementById('top5VerA4');
     if(_t5a4) _t5a4.addEventListener('click', function(){
       var sec=document.getElementById('top5A4Secao'); if(!sec) return;
-      var abrindo = (sec.style.display==='none' || !sec.style.display);
-      sec.style.display = abrindo ? '' : 'none';
+      /* O estado vem do estilo CALCULADO. Lendo `sec.style.display`, a
+         folha aberta devolvia string vazia, a condição dava verdadeiro de
+         novo e o botão reabria o que já estava aberto: nunca fechava. */
+      var abrindo = (getComputedStyle(sec).display === 'none');
+      sec.style.display = abrindo ? 'block' : 'none';
       _t5a4.textContent = abrindo ? 'Fechar versão para imprimir' : 'Versão para imprimir';
       if(abrindo){ try{ sec.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} }
     });
