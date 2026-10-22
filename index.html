@@ -13132,7 +13132,7 @@ body[data-asel-agro="0"] #panelRatioBGICCM {
     <div id="opcRodape" class="opc-rodape"></div>
   </div>
 
-  <div id="opcCarregando" class="opc-vazio">Carregando opções…</div>
+  <div id="opcCarregando" class="opc-vazio">Carregando a base de opções. O arquivo é grande e a leitura roda fora da tela, então o resto do painel continua respondendo.</div>
 </section>
 
 </main>
@@ -49697,6 +49697,9 @@ function updateRelacao() {
     }
     return null;
   }
+  /* A base de opções tem arquivo próprio e precisa do mesmo endereço do
+     SheetJS para abrir o Worker dela. Uma função, dois leitores. */
+  try { window._wkUrlXlsx = _wkUrlXlsx; } catch(e){}
 
   /* Lê a planilha e devolve uma Promise com o workbook. Nunca rejeita: se o
      worker falhar por qualquer motivo, cai para a leitura direta e avisa. */
@@ -70649,6 +70652,83 @@ window._m3SmokeTest = function(secId){
   /* ── CARGA ─────────────────────────────────────────────────────────────
      Uma vez só. Todo mundo que precisar dos dados chama `carregar()` e
      recebe a MESMA promessa — nunca uma segunda leitura do arquivo. */
+  /* ── A LEITURA SAI DA THREAD PRINCIPAL ─────────────────────────────────
+     Medido em 22/10/2026: abrir `opcoes_radar.xlsx` travava a página por
+     9,5 segundos em um bloqueio único. O download tinha levado 36 ms; o
+     resto era `XLSX.read` mais oito `sheet_to_json` rodando em sequência
+     na thread que desenha a tela. Daí a sensação de travamento, que não é
+     sensação: durante esses segundos o navegador não responde a nada.
+
+     O remédio é o mesmo que a planilha principal já usa, com uma diferença
+     que importa: aqui a CONVERSÃO EM LINHAS também acontece dentro do
+     Worker. Devolver o workbook inteiro por `postMessage` obrigaria a
+     clonar 9 MB de estruturas e boa parte do custo voltaria para cá. O que
+     atravessa são os oito vetores de linhas, que é exatamente o que
+     `normalizar` consome.
+
+     NADA MUDA NO RESULTADO. As mesmas abas, as mesmas opções de leitura, a
+     mesma função de normalização. Se o Worker não puder ser criado, ou
+     falhar por qualquer motivo, a leitura direta de antes roda igual. */
+  var _opcVia = null;      /* 'worker' | 'thread principal' */
+  var _opcMsParse = null;
+
+  function _opcLerAbas(buf){
+    return new Promise(function(resolve, reject){
+      var url = null;
+      try { url = (typeof window._wkUrlXlsx === 'function') ? window._wkUrlXlsx() : null; } catch(e){}
+      var pode = url && (typeof Worker === 'function') && (typeof Blob === 'function')
+                 && location.protocol !== 'file:';
+      if (!pode){ reject(new Error('worker indisponível')); return; }
+      var abs = url;
+      try { abs = new URL(url, location.href).href; } catch(e){}
+      var src = 'importScripts(' + JSON.stringify(abs) + ');\n'
+        + 'self.onmessage=function(ev){\n'
+        + '  try{\n'
+        + '    var t0=Date.now();\n'
+        /* `cellDates:false` não muda nada aqui: TODAS as colunas de data
+           deste arquivo são texto ("2026-08-28"), e `dISO` já as lê assim.
+           O que se evita é a tentativa de reconhecer data em cada uma dos
+           3,1 milhões de células. E `sheets` faz o SheetJS abrir só as oito
+           abas que a tela usa, deixando SERIE_DIARIA fora. */
+        + '    var wb=XLSX.read(new Uint8Array(ev.data.buf),{type:"array",cellDates:false,'
+        +        'cellNF:false,cellStyles:false,cellFormula:false,bookDeps:false,'
+        +        'bookProps:false,bookVBA:false,sheets:ev.data.abas});\n'
+        + '    var faltando=[], out={};\n'
+        + '    ev.data.abas.forEach(function(a){\n'
+        + '      if(!wb.Sheets[a]){ faltando.push(a); return; }\n'
+        + '      out[a]=XLSX.utils.sheet_to_json(wb.Sheets[a],{defval:null,raw:true});\n'
+        + '    });\n'
+        + '    self.postMessage({ok:true, abas:out, faltando:faltando, ms:Date.now()-t0});\n'
+        + '  }catch(e){ self.postMessage({ok:false, erro:String(e&&e.message||e)}); }\n'
+        + '};';
+      var wk=null, blobUrl=null, feito=false;
+      function limpar(){
+        try { if (wk) wk.terminate(); } catch(e){}
+        try { if (blobUrl) URL.revokeObjectURL(blobUrl); } catch(e){}
+      }
+      try {
+        blobUrl = URL.createObjectURL(new Blob([src], {type:'application/javascript'}));
+        wk = new Worker(blobUrl);
+      } catch(e){ limpar(); reject(e); return; }
+      wk.onmessage = function(ev){
+        if (feito) return; feito = true;
+        var d = ev.data || {};
+        limpar();
+        if (!d.ok){ reject(new Error(d.erro || 'falha no worker')); return; }
+        _opcVia = 'worker'; _opcMsParse = d.ms;
+        resolve(d);
+      };
+      wk.onerror = function(e){
+        if (feito) return; feito = true;
+        limpar(); reject(new Error((e && e.message) || 'erro no worker'));
+      };
+      /* O buffer é TRANSFERIDO, não copiado: sai daqui e passa a pertencer
+         ao worker, o que evita duplicar 9 MB na memória. */
+      try { wk.postMessage({buf:buf, abas:ABAS}, [buf]); }
+      catch(e){ try { wk.postMessage({buf:buf, abas:ABAS}); } catch(e2){ limpar(); reject(e2); } }
+    });
+  }
+
   function carregar(){
     if (D) return Promise.resolve(D);
     if (_prom) return _prom;
@@ -70662,16 +70742,29 @@ window._m3SmokeTest = function(secId){
       })
       .then(function(buf){
         if (typeof XLSX === 'undefined') throw {tipo:'sheetjs'};
-        var wb;
-        try { wb = XLSX.read(new Uint8Array(buf), {type:'array', cellDates:true}); }
-        catch(e){ throw {tipo:'corrompido', detalhe:e.message}; }
+        /* Tenta o Worker; se ele não existir ou falhar, lê aqui mesmo,
+           exatamente como antes. O resto do fluxo não sabe a diferença. */
+        return _opcLerAbas(buf).catch(function(motivo){
+          console.warn('Opções — leitura fora da thread indisponível, lendo direto:', motivo && motivo.message);
+          var t0 = Date.now(), wb;
+          try { wb = XLSX.read(new Uint8Array(buf), {type:'array', cellDates:false,
+                      cellNF:false, cellStyles:false, cellFormula:false,
+                      bookDeps:false, bookProps:false, bookVBA:false, sheets:ABAS}); }
+          catch(e){ throw {tipo:'corrompido', detalhe:e.message}; }
+          var falt = [], out = {};
+          ABAS.forEach(function(a){
+            if (!wb.Sheets[a]){ falt.push(a); return; }
+            out[a] = XLSX.utils.sheet_to_json(wb.Sheets[a], {defval:null, raw:true});
+          });
+          _opcVia = 'thread principal'; _opcMsParse = Date.now()-t0;
+          return { ok:true, abas:out, faltando:falt, ms:_opcMsParse };
+        });
+      })
+      .then(function(res){
+        if (res.faltando && res.faltando.length)
+          throw {tipo:'corrompido', detalhe:'abas ausentes: '+res.faltando.join(', ')};
 
-        var faltando = ABAS.filter(function(a){ return !wb.Sheets[a]; });
-        if (faltando.length) throw {tipo:'corrompido', detalhe:'abas ausentes: '+faltando.join(', ')};
-
-        function ler(aba){
-          return XLSX.utils.sheet_to_json(wb.Sheets[aba], {defval:null, raw:true});
-        }
+        function ler(aba){ return res.abas[aba] || []; }
         var controle = (ler('CONTROLE')[0]) || {};
         var sv = String(controle.schema_version == null ? '' : controle.schema_version);
         if (sv !== SCHEMA_OK) throw {tipo:'schema', detalhe:'schema_version='+sv+' (suportado: '+SCHEMA_OK+')'};
@@ -70752,7 +70845,8 @@ window._m3SmokeTest = function(secId){
     };
   }
 
-  try { window._opcCarregar = carregar; window._opcDados = function(){ return D; }; } catch(e){}
+  try { window._opcCarregar = carregar; window._opcDados = function(){ return D; };
+        window._opcDiag = function(){ return { via:_opcVia, msParse:_opcMsParse, msCarga:_msCarga }; }; } catch(e){}
 
   /* ── ESTADO DA TELA ────────────────────────────────────────────────────
      Um objeto só. Cada seletor escreve aqui e chama `pintar()`; nada guarda
