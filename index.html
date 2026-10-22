@@ -3735,6 +3735,89 @@ header{
 #pagePaneAlertas > .pane-hero,
 #pagePaneAlertas > .pane-ctrl-bar { display: none !important; }
 
+
+/* ── RELATÓRIOS POR TEMA ──────────────────────────────────────────────
+   Os chips de relatório são a escolha principal da tela, então pesam
+   mais que um botão comum: cada um mostra o nome e, embaixo, o que
+   entra nele. Quem chega decide sem abrir nada. */
+/* As famílias de contrato na Apresentação, uma por linha com rótulo. */
+.apres-familia{ display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-bottom:7px; }
+.apres-familia-rot{
+  font-size:var(--fs-nano); font-weight:800; letter-spacing:.06em;
+  opacity:.6; min-width:116px;
+}
+.rel-escolha{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(214px,1fr));
+  gap:8px; margin:10px 0 12px;
+}
+.rel-chip{
+  text-align:left; cursor:pointer; font-family:inherit;
+  border:1px solid var(--card-border,#e5e7eb); border-radius:11px;
+  background:var(--card-bg,#fff); padding:9px 11px; transition:border-color .12s, box-shadow .12s;
+}
+.rel-chip:hover{ border-color:rgba(15,118,110,0.42); }
+.rel-chip.sel{
+  border-color:#0f766e; box-shadow:0 0 0 1px #0f766e inset;
+  background:rgba(15,118,110,0.05);
+}
+.rel-chip-rot{ display:block; font-weight:800; font-size:var(--fs-sm); letter-spacing:.03em; }
+.rel-chip-oque{ display:block; margin-top:3px; font-size:var(--fs-nano); opacity:.72; line-height:1.45; }
+.rel-acao-forte{ background:rgba(15,118,110,0.10) !important; border-color:rgba(15,118,110,0.34) !important; font-weight:700; }
+.rel-status{ font-size:var(--fs-nano); opacity:.8; min-height:17px; margin-top:8px; }
+.rel-lista{
+  margin-top:10px; padding:11px 12px; border:1px solid var(--card-border,#e5e7eb);
+  border-radius:11px; display:grid; grid-template-columns:repeat(auto-fill,minmax(214px,1fr)); gap:12px;
+}
+/* `hidden` é só `display:none` da folha do navegador, e qualquer regra
+   de autor com display vence. Sem esta linha a lista de blocos nascia
+   aberta, porque `.rel-lista{display:grid}` passava por cima. */
+.rel-lista[hidden]{ display:none !important; }
+.rel-grupo-rot{ font-weight:800; font-size:var(--fs-nano); letter-spacing:.07em; opacity:.6; margin-bottom:4px; }
+/* O painel estiliza `label` dentro de card como caixa empilhada: flex em
+   coluna, borda e doze pixels de respiro. Serve para um campo de
+   formulário e não para um item de lista, onde deixava a caixinha de
+   marcar sozinha em cima do texto. As três heranças saem aqui. */
+.rel-item{
+  display:flex !important; flex-direction:row !important;
+  border:0 !important; padding:2px 0 !important; background:none !important;
+  align-items:flex-start; gap:6px;
+  font-size:var(--fs-nano); line-height:1.5; cursor:pointer;
+  text-transform:none !important; letter-spacing:0 !important;
+  margin:0 0 4px !important; font-weight:400 !important;
+}
+.rel-item input{ margin:3px 0 0; flex:0 0 auto; }
+.rel-item span{ flex:1 1 auto; }
+.rel-saida{ margin-top:14px; }
+.rel-capa{
+  border:1px solid var(--card-border,#e5e7eb); border-radius:12px;
+  padding:22px 20px; margin-bottom:12px; background:var(--card-bg,#fff);
+}
+.rel-capa-marca{ font-size:var(--fs-nano); letter-spacing:.17em; opacity:.6; font-weight:700; }
+.rel-capa-tit{ font-size:1.5rem; font-weight:800; margin-top:5px; }
+.rel-capa-sub{ font-size:var(--fs-nano); opacity:.7; margin-top:5px; }
+.rel-pagina{ margin-bottom:12px; }
+.rel-pg-topo{
+  display:flex; align-items:baseline; gap:9px; padding:0 2px 5px;
+  font-size:var(--fs-nano);
+}
+.rel-pg-tema{ font-weight:800; letter-spacing:.09em; text-transform:uppercase; opacity:.55; }
+.rel-pg-rot{ font-weight:700; }
+.rel-pg-num{ margin-left:auto; opacity:.5; }
+.rel-pagina section.card{ margin:0 !important; }
+
+/* Impressão: sai só o documento, uma análise por folha. */
+@media print{
+  html.m3-print-rel body > *{ display:none !important; }
+  html.m3-print-rel #relSaida,
+  html.m3-print-rel #relSaida *{ visibility:visible !important; }
+  html.m3-print-rel #relSaida{
+    display:block !important; position:absolute !important; left:0 !important; top:0 !important;
+    width:100% !important; background:#fff !important;
+  }
+  html.m3-print-rel .rel-pagina{ page-break-after:always; break-after:page; }
+  html.m3-print-rel .rel-capa{ page-break-after:always; break-after:page; }
+}
+
 /* ── GRADE DE CARDS POR CONTRATO ──────────────────────────────────────
    A leitura contrato a contrato cabia numa tabela de vinte linhas e num
    gráfico de vinte barras, e nenhum dos dois é confortável: a tabela pede
@@ -12939,14 +13022,14 @@ body[data-asel-agro="0"] #panelRatioBGICCM {
   <div class="panel-block" style="margin-bottom:16px">
     <div class="panel-header">
       <div class="panel-title">Apresentação de Contratos Futuros</div>
-      <div class="panel-subtitle">Selecione contratos e período para exportar slides de análise.</div>
+      <div class="panel-subtitle">Boi, milho e soja. Selecione contratos e período para exportar slides de análise.</div>
     </div>
     <div class="panel-divider"></div>
 
     <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-end;margin-bottom:16px">
       <!-- Seleção de contratos -->
       <div style="flex:1;min-width:220px">
-        <label style="font-size: var(--fs-sm);font-weight:600;color:#374151;display:block;margin-bottom:6px">CONTRATOS BGI</label>
+        <label style="font-size: var(--fs-sm);font-weight:600;color:#374151;display:block;margin-bottom:6px">CONTRATOS FUTUROS</label>
         <div id="apresContractList" style="display:flex;flex-wrap:wrap;gap:6px;min-height:32px"></div>
       </div>
       <!-- Período -->
@@ -15028,7 +15111,7 @@ body[data-m3-barra] .m3-men-g.m3-men-ctx > .m3-men-t::after{
      tem um botão que EXISTE, com o id anotado. */
   var SAIDAS = [
     { rot:'Apresentação de contratos futuros',
-      oque:'Monta slides dos contratos BGI escolhidos e exporta em PowerPoint ou PDF.',
+      oque:'Monta slides dos contratos de boi, milho e soja escolhidos e exporta em PowerPoint ou PDF.',
       gera:'Slides · PPTX · PDF', sec:'m3_7_1', alvo:'apresGerarBtn', aqui:true },
     { rot:'Alertas no período',
       oque:'A folha A4 dos alertas disparados na janela analisada.',
@@ -52183,7 +52266,7 @@ function updateRelacao() {
 
     /* ── 7 · RELATÓRIOS E ARQUIVOS ───────────────────────────────────── */
     { amb:'relato', id:'m3_7_1', nome:'Relatórios e arquivos',
-      render:['_relRender'],
+      render:['_relRender','_relatRender'],
       dica:'Levar a análise para fora do painel: slides, imagem, PDF e PowerPoint.' }
   ];
   /* `univ` liga o grupo ao universo de ativos. Entrar no grupo passa a
@@ -64569,19 +64652,42 @@ function render(){
   function initApresControls(){
     var listEl=document.getElementById('apresContractList');
     if(!listEl||!window.workbook) return;
-    var bgiNames=(window.workbook.SheetNames||[]).filter(function(n){
-      return (n||'').toString().trim().toUpperCase().startsWith('BGI');
-    });
+    /* ── MILHO E SOJA ENTRAM AQUI ──────────────────────────────────────
+       A lista filtrava só abas começadas em BGI, e era esse o único motivo
+       de o gerador ser de boi: os cinco slides são genéricos sobre uma
+       série de preço, então CCM e SJC já funcionavam, faltava aparecerem.
+       Ficam separados por mercado, porque uma fileira única com trinta
+       chips sem divisão não se lê. */
+    var FAMILIAS = [
+      { pre:'BGI', rot:'Boi gordo (BGI)' },
+      { pre:'CCM', rot:'Milho (CCM)' },
+      { pre:'SJC', rot:'Soja (SJC)' }
+    ];
+    var nomes=(window.workbook.SheetNames||[]).map(function(n){ return (n||'').toString().trim(); });
     listEl.innerHTML='';
-    bgiNames.forEach(function(name){
-      var chip=document.createElement('span');
-      chip.className='apres-contract-chip';
-      chip.dataset.contract=name;
-      chip.textContent=_contractLabel(name);
-      chip.addEventListener('click',function(){
-        chip.classList.toggle('selected');
+    FAMILIAS.forEach(function(f){
+      var doGrupo = nomes.filter(function(n){ return n.toUpperCase().indexOf(f.pre)===0; });
+      if(!doGrupo.length) return;
+      doGrupo.sort(function(a,b){
+        var ka=(typeof _contractMaturityKey==='function')?_contractMaturityKey(a):null;
+        var kb=(typeof _contractMaturityKey==='function')?_contractMaturityKey(b):null;
+        if(ka!=null && kb!=null && ka!==kb) return ka-kb;
+        return a.localeCompare(b);
       });
-      listEl.appendChild(chip);
+      var linha=document.createElement('div');
+      linha.className='apres-familia';
+      linha.innerHTML='<span class="apres-familia-rot">'+f.rot+'</span>';
+      doGrupo.forEach(function(name){
+        var chip=document.createElement('span');
+        chip.className='apres-contract-chip';
+        chip.dataset.contract=name;
+        chip.textContent=_contractLabel(name);
+        chip.addEventListener('click',function(){
+          chip.classList.toggle('selected');
+        });
+        linha.appendChild(chip);
+      });
+      listEl.appendChild(linha);
     });
   }
 
@@ -71114,5 +71220,410 @@ window._m3SmokeTest = function(secId){
   else iniciar();
 })();
 </script>
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   RELATÓRIOS POR TEMA — montagem a partir do que o painel já calcula
+   ══════════════════════════════════════════════════════════════════════
+   A Apresentação ao lado tem motor próprio: ela RECALCULA cinco quadros
+   técnicos para cada contrato escolhido. Serve bem ao boi, ao milho e à
+   soja, que são séries de preço de contrato.
+
+   Fêmeas e ciclo pecuário não são contrato, são tema, e a análise deles
+   já existe pronta em cards do painel. Escrever um segundo motor para
+   refazer essas contas criaria duas verdades sobre o mesmo número — o
+   erro que este arquivo já pagou caro com o IGP-M. Então o relatório de
+   tema não calcula nada: ele MONTA, a partir dos cards que o Radar
+   desenha, na ordem declarada numa receita.
+
+   A âncora de cada bloco é o ID DO GRÁFICO, não o do card nem o título.
+   É a mesma escolha que a tabela de migração já fez, e pela mesma razão:
+   id de gráfico é estável, título muda e id de card é gerado em tempo de
+   execução (m3card_57 hoje, outro número amanhã).                      */
+(function(){
+  function $(id){ return document.getElementById(id); }
+
+  /* ── CATÁLOGO ────────────────────────────────────────────────────────
+     Levantado do painel em execução, seção por seção, não de memória.
+     Bloco cujo gráfico não existir na planilha carregada é ignorado em
+     silêncio na montagem: o relatório sai menor, não quebrado. */
+  var BLOCOS = [
+    // ── BOI ──────────────────────────────────────────────────────────
+    { id:'boi_diario',   tema:'Boi',    chart:'chartSHBoiGordoDaily',  rot:'Preço diário e médias móveis' },
+    { id:'boi_vol',      tema:'Boi',    chart:'chartSHVolBoi',         rot:'Variação diária' },
+    { id:'boi_futuros',  tema:'Boi',    chart:'chartBoiVsBGIAll',      rot:'Físico contra a curva BGI' },
+    { id:'boi_carrego',  tema:'Boi',    chart:'chartBGICarrego',       rot:'Quanto o mercado paga para carregar' },
+    { id:'boi_agio',     tema:'Boi',    chart:'chartAgio',             rot:'Ágio do futuro sobre o físico' },
+    { id:'boi_trava',    tema:'Boi',    chart:'chartTrava',            rot:'Onde deu para travar' },
+    { id:'boi_top5',     tema:'Boi',    chart:'chartTop5',             rot:'Melhores preços da janela' },
+    { id:'boi_anual',    tema:'Boi',    chart:'chartSHBoiGordoAnnual', rot:'Preço real por ano' },
+    { id:'boi_sazon',    tema:'Boi',    chart:'chartSHBoiGordoMonthly',rot:'Sazonalidade mensal' },
+    { id:'boi_hit',      tema:'Boi',    chart:'chartSHBoiGordoHitRate',rot:'Meses fortes e fracos' },
+    { id:'boi_escala',   tema:'Boi',    chart:'chartEscalaHist',       rot:'Escalas de abate' },
+    // ── MILHO ────────────────────────────────────────────────────────
+    { id:'mi_diario',    tema:'Milho',  chart:'chartSHMilhoDaily',     rot:'Preço diário e médias móveis' },
+    { id:'mi_anual',     tema:'Milho',  chart:'chartSHMilhoAnnual',    rot:'Preço real por safra' },
+    { id:'mi_base100',   tema:'Milho',  chart:'chartSHMilhoBase100',   rot:'Índice base 100' },
+    { id:'mi_sazon',     tema:'Milho',  chart:'chartSHMilhoMonthly',   rot:'Sazonalidade mensal' },
+    { id:'mi_janela',    tema:'Milho',  chart:'chartJanelaMilho',      rot:'Janela de compra' },
+    { id:'mi_enso',      tema:'Milho',  chart:'chartSHMilhoEnso',      rot:'Sazonalidade e evento climático' },
+    { id:'mi_curva',     tema:'Milho',  chart:'chartCurvaVarCCM',      rot:'Como a curva CCM se moveu' },
+    { id:'mi_troca',     tema:'Milho',  chart:'chartSHBoiMilhoTroca',  rot:'Relação de troca boi e milho' },
+    // ── SOJA ─────────────────────────────────────────────────────────
+    { id:'so_var',       tema:'Soja',   chart:'chartSojaVariacao',     rot:'Variação desde uma data' },
+    { id:'so_curva',     tema:'Soja',   chart:'chartCurvaVarSJC',      rot:'Como a curva SJC se moveu' },
+    // ── FÊMEAS ───────────────────────────────────────────────────────
+    { id:'fe_preco',     tema:'Fêmeas', chart:'chartFemPreco',         rot:'Fêmea de abate: preço e médias' },
+    { id:'fe_posicao',   tema:'Fêmeas', chart:'chartFemPosicao',       rot:'Posição na própria história' },
+    { id:'fe_desconto',  tema:'Fêmeas', chart:'chartFemDesconto',      rot:'Desconto da vaca e da novilha' },
+    { id:'fe_base',      tema:'Fêmeas', chart:'chartFemBase',          rot:'Vaca contra BGI: a base' },
+    { id:'fe_yoy',       tema:'Fêmeas', chart:'chartFemYoY',           rot:'Ritmo contra o ano anterior' },
+    { id:'fe_novilha',   tema:'Fêmeas', chart:'chartFemNovilha',       rot:'Prêmio da novilha sobre a vaca' },
+    { id:'fe_agio',      tema:'Fêmeas', chart:'chartFemAgio',          rot:'Reposição: ágio por categoria' },
+    { id:'fe_matriz',    tema:'Fêmeas', chart:'chartFemMatriz',        rot:'Reposição: troca entre categorias' },
+    // ── CICLO PECUÁRIO ───────────────────────────────────────────────
+    { id:'ci_abate',     tema:'Ciclo',  chart:'chartAbateIBGE',        rot:'Abate de fêmeas no Brasil' },
+    { id:'ci_preco',     tema:'Ciclo',  chart:'chartAbatePreco',       rot:'Preço real do boi no mesmo período' },
+    { id:'ci_mt',        tema:'Ciclo',  chart:'chartAbateFemeasMT',    rot:'Abate de fêmeas em MT' },
+    { id:'ci_tempo',     tema:'Ciclo',  chart:'chartCicloTempo',       rot:'Ciclo: abate de fêmeas e preço' },
+    { id:'ci_proj',      tema:'Ciclo',  chart:'chartProjCiclo',        rot:'Projeção pelo ciclo' },
+    { id:'ci_senoide',   tema:'Ciclo',  chart:'chartProjSenoide',      rot:'Projeção pela senóide' },
+    { id:'ci_anual',     tema:'Ciclo',  chart:'chartProjAnual',        rot:'Preço real anual com projeção' },
+    { id:'ci_bez',       tema:'Ciclo',  chart:'chartAbatePrecoBez',    rot:'Ciclo do bezerro: preço real' },
+    { id:'ci_bezboi',    tema:'Ciclo',  chart:'chartBezBoiTroca',      rot:'Quantos bezerros paga um boi' },
+    { id:'ci_bezagio',   tema:'Ciclo',  chart:'chartBezAgioHist',      rot:'Ágio histórico da arroba do bezerro' }
+  ];
+
+  /* As receitas. A ordem dentro de cada uma é a ordem do documento, e ela
+     segue o raciocínio de quem lê: onde o preço está, como chegou até
+     aqui, o que o mercado paga à frente e onde dá para agir. */
+  var RELATORIOS = [
+    { id:'r_boi',    rot:'Boi gordo',       oque:'Posição do preço, curva de futuros e janelas de execução.',
+      blocos:['boi_diario','boi_vol','boi_escala','boi_futuros','boi_agio','boi_carrego','boi_trava','boi_top5'] },
+    { id:'r_milho',  rot:'Milho',           oque:'Preço, safra, sazonalidade e janela de compra.',
+      blocos:['mi_diario','mi_anual','mi_base100','mi_sazon','mi_janela','mi_enso','mi_curva','mi_troca'] },
+    { id:'r_soja',   rot:'Soja',            oque:'O que o painel acompanha de soja hoje.',
+      blocos:['so_var','so_curva'] },
+    { id:'r_femeas', rot:'Fêmeas',          oque:'Abate e reposição: preço, desconto, base e ágio por categoria.',
+      blocos:['fe_preco','fe_posicao','fe_desconto','fe_base','fe_yoy','fe_novilha','fe_agio','fe_matriz'] },
+    { id:'r_ciclo',  rot:'Ciclo pecuário',  oque:'Onde o ciclo está, o que ele projeta e como a reposição responde.',
+      blocos:['ci_abate','ci_preco','ci_mt','ci_tempo','ci_proj','ci_senoide','ci_anual','ci_bez','ci_bezboi','ci_bezagio'] },
+    { id:'r_sazon',  rot:'Sazonalidade',    oque:'O ano típico de cada mercado, lado a lado.',
+      blocos:['boi_anual','boi_sazon','boi_hit','mi_anual','mi_sazon','ci_bez'] },
+    { id:'r_dia',    rot:'Fechamento do dia', oque:'Uma página por mercado, para circular no fim do pregão.',
+      blocos:['boi_diario','boi_futuros','boi_trava','mi_diario','fe_desconto'] }
+  ];
+
+  var _sel = { relatorio:'r_boi', blocos:null };   // blocos:null = usa a receita
+  var _montando = false;
+
+  // ── onde cada bloco mora ────────────────────────────────────────────
+  function secaoDe(chartId){
+    try { return (window._M3_POR_GRAFICO || {})[chartId] || null; } catch(e){ return null; }
+  }
+  function ambienteDe(secId){
+    try {
+      var e = (window._M3_ESTRUTURA || []).filter(function(x){ return x.id === secId; })[0];
+      return e ? e.amb : null;
+    } catch(e){ return null; }
+  }
+  function espera(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+  /* O painel só desenha o que está à vista: gráfico em seção oculta fica
+     pendente de propósito, para não repintar sessenta figuras a cada
+     navegação. Para capturar um card, então, é preciso realmente PASSAR
+     por ele. A tela pisca durante a montagem, e é por isso que existe a
+     linha de progresso dizendo em que bloco está. No fim volta para cá. */
+  async function garanteDesenhado(chartId){
+    var sec = secaoDe(chartId);
+    if (!sec) return false;
+    var el = $(chartId);
+    if (el && el.querySelector && el.querySelector('.main-svg')) return true;
+    var amb = ambienteDe(sec);
+    try {
+      if (amb && window._m3IrAmbiente) window._m3IrAmbiente(amb, sec);
+      else if (window.m3Ir) window.m3Ir(sec);
+    } catch(e){ return false; }
+    for (var i=0;i<24;i++){
+      await espera(350);
+      el = $(chartId);
+      if (el && el.querySelector && el.querySelector('.main-svg')) return true;
+    }
+    return !!$(chartId);
+  }
+
+  /* A cópia precisa perder os ids, senão o documento passa a ter dois
+     elementos com o mesmo nome e a captura seguinte encontra o clone em
+     vez do original. Some também o que não faz sentido num relatório:
+     seletores, botões e a barra de ferramentas do Plotly. */
+  function clonaCard(chartId){
+    var g = $(chartId); if (!g) return null;
+    var card = g.closest ? g.closest('section.card') : null;
+    if (!card) return null;
+    var c = card.cloneNode(true);
+    c.removeAttribute('id');
+    Array.prototype.forEach.call(c.querySelectorAll('[id]'), function(n){ n.removeAttribute('id'); });
+    Array.prototype.forEach.call(
+      c.querySelectorAll('.bgi-ctrl, .modebar, .modebar-container, button, select, input, .rangeselector'),
+      function(n){ if (n.parentNode) n.parentNode.removeChild(n); });
+    return c;
+  }
+
+  function blocosEscolhidos(){
+    if (_sel.blocos && _sel.blocos.length){
+      return BLOCOS.filter(function(b){ return _sel.blocos.indexOf(b.id) >= 0; });
+    }
+    var r = RELATORIOS.filter(function(x){ return x.id === _sel.relatorio; })[0];
+    if (!r) return [];
+    return r.blocos.map(function(id){
+      return BLOCOS.filter(function(b){ return b.id === id; })[0];
+    }).filter(Boolean);
+  }
+  function nomeRelatorio(){
+    if (_sel.blocos && _sel.blocos.length) return 'Relatório personalizado';
+    var r = RELATORIOS.filter(function(x){ return x.id === _sel.relatorio; })[0];
+    return r ? r.rot : 'Relatório';
+  }
+
+  function aviso(txt){ var e=$('relStatus'); if (e) e.innerHTML = txt || ''; }
+
+  async function montar(){
+    if (_montando) return;
+    var saida = $('relSaida'); if (!saida) return;
+    var blocos = blocosEscolhidos();
+    if (!blocos.length){ aviso('Escolha um relatório ou marque ao menos um bloco.'); return; }
+    if (!window.workbook){ aviso('Carregue a planilha antes de montar o relatório.'); return; }
+
+    _montando = true;
+    saida.innerHTML = '';
+    var secAtual = null;
+    try { secAtual = (window._M3_AMB_ATUAL || null); } catch(e){}
+
+    var feitos = 0, faltaram = [];
+    for (var i=0;i<blocos.length;i++){
+      var b = blocos[i];
+      aviso('Montando <b>' + (i+1) + ' de ' + blocos.length + '</b>: ' + b.rot + '…');
+      var ok = await garanteDesenhado(b.chart);
+      var copia = ok ? clonaCard(b.chart) : null;
+      if (!copia){ faltaram.push(b.rot); continue; }
+      var pg = document.createElement('div');
+      pg.className = 'rel-pagina';
+      pg.innerHTML = '<div class="rel-pg-topo"><span class="rel-pg-tema">' + b.tema + '</span>'
+                   + '<span class="rel-pg-rot">' + b.rot + '</span>'
+                   + '<span class="rel-pg-num">' + (feitos+1) + '</span></div>';
+      pg.appendChild(copia);
+      saida.appendChild(pg);
+      feitos++;
+    }
+
+    // de volta para a tela de relatórios
+    try { if (window._m3IrAmbiente) window._m3IrAmbiente('relato','m3_7_1'); } catch(e){}
+    await espera(400);
+
+    var hoje = new Date().toLocaleDateString('pt-BR');
+    var cab = document.createElement('div');
+    cab.className = 'rel-capa';
+    cab.innerHTML = '<div class="rel-capa-marca">BMS AGROBRASIL</div>'
+      + '<div class="rel-capa-tit">' + nomeRelatorio() + '</div>'
+      + '<div class="rel-capa-sub">' + feitos + ' análise' + (feitos===1?'':'s')
+      + ' · montado em ' + hoje + ' · uso interno</div>';
+    saida.insertBefore(cab, saida.firstChild);
+
+    aviso(feitos + ' bloco' + (feitos===1?'':'s') + ' no documento.'
+      + (faltaram.length ? (' Fora: <b>' + faltaram.join(', ') + '</b>, sem dado na planilha carregada.') : ''));
+    _montando = false;
+  }
+
+  // ── Excel: os números que sustentam cada gráfico ─────────────────────
+  /* Sai do que foi PLOTADO, lendo `gd.data` do próprio gráfico. É o
+     caminho mais honesto que existe: o que vai para a planilha é
+     exatamente o que apareceu na tela, sem segunda conta pelo meio. */
+  function exportarExcel(){
+    if (typeof XLSX === 'undefined'){ aviso('A biblioteca de Excel não carregou.'); return; }
+    var blocos = blocosEscolhidos();
+    if (!blocos.length){ aviso('Escolha um relatório primeiro.'); return; }
+    var wb = XLSX.utils.book_new(), usados = {}, n = 0;
+    blocos.forEach(function(b){
+      var gd = $(b.chart);
+      if (!gd || !gd.data || !gd.data.length) return;
+      /* Fora os traços de serviço: o anel do último ponto e as bordas
+         invisíveis de banda entram no desenho sem nome e sem legenda, e
+         na planilha virariam colunas "série 5" que não querem dizer nada. */
+      var traces = gd.data.filter(function(t){
+        return t && (t.x || t.y) && t.showlegend !== false && String(t.name||'').trim();
+      });
+      if (!traces.length) traces = gd.data.filter(function(t){ return t && (t.x || t.y); });
+      if (!traces.length) return;
+      var linhas = [], cab = ['x'];
+      traces.forEach(function(t,i){ cab.push(String(t.name || ('série '+(i+1)))); });
+      linhas.push(cab);
+      var maxN = 0;
+      traces.forEach(function(t){ maxN = Math.max(maxN, (t.y||t.x||[]).length); });
+      for (var r=0;r<maxN;r++){
+        var li = [];
+        var tx = traces[0].x ? traces[0].x[r] : r;
+        li.push(tx instanceof Date ? tx.toLocaleDateString('pt-BR') : tx);
+        traces.forEach(function(t){
+          var v = t.y ? t.y[r] : null;
+          li.push(v == null ? '' : v);
+        });
+        linhas.push(li);
+      }
+      var nome = (b.tema + ' ' + b.rot).slice(0,28).replace(/[\\\/\?\*\[\]:]/g,' ');
+      var k = 2; var base = nome;
+      while (usados[nome]) { nome = (base.slice(0,26) + ' ' + (k++)); }
+      usados[nome] = 1;
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(linhas), nome);
+      n++;
+    });
+    if (!n){ aviso('Monte o relatório antes de exportar a planilha: os números saem dos gráficos desenhados.'); return; }
+    var hoje = new Date();
+    var nomeArq = 'BMS_RADAR_' + nomeRelatorio().toUpperCase().replace(/[^A-Z0-9]+/g,'_')
+      + '_' + hoje.getFullYear() + '-' + String(hoje.getMonth()+1).padStart(2,'0')
+      + '-' + String(hoje.getDate()).padStart(2,'0') + '.xlsx';
+    XLSX.writeFile(wb, nomeArq);
+    aviso('Planilha com ' + n + ' aba' + (n===1?'':'s') + ' exportada.');
+  }
+
+  // ── PPTX: um slide por bloco ─────────────────────────────────────────
+  async function exportarPPTX(){
+    var pgs = document.querySelectorAll('#relSaida .rel-pagina');
+    if (!pgs.length){ aviso('Monte o relatório primeiro.'); return; }
+    if (typeof PptxGenJS === 'undefined'){ aviso('A biblioteca de PowerPoint não carregou.'); return; }
+    if (typeof html2canvas !== 'function'){ aviso('A biblioteca de imagem não carregou.'); return; }
+    aviso('Gerando PowerPoint…');
+    var pptx = new PptxGenJS();
+    pptx.defineLayout({ name:'WIDE', width:13.33, height:7.5 });
+    pptx.layout = 'WIDE';
+    for (var i=0;i<pgs.length;i++){
+      var pg = pgs[i];
+      var sl = pptx.addSlide();
+      var topo = pg.querySelector('.rel-pg-topo');
+      sl.addShape(pptx.ShapeType.rect, { x:0, y:0, w:'100%', h:0.55, fill:{ color:'0F766E' } });
+      sl.addText((topo ? topo.textContent : '').replace(/\s+/g,' ').trim(),
+        { x:0.15, y:0.08, w:12.9, h:0.34, fontSize:14, bold:true, color:'FFFFFF', fontFace:'Calibri' });
+      try {
+        var alvo = pg.querySelector('section.card') || pg;
+        var url = await html2canvas(alvo, { scale:2, useCORS:true, backgroundColor:'#ffffff' })
+                        .then(function(c){ return c.toDataURL('image/png'); });
+        sl.addImage({ data:url, x:0.2, y:0.65, w:12.93, h:6.6 });
+      } catch(e){}
+    }
+    var hoje = new Date();
+    await pptx.writeFile({ fileName:'BMS_RADAR_' + nomeRelatorio().toUpperCase().replace(/[^A-Z0-9]+/g,'_')
+      + '_' + hoje.getFullYear() + '-' + String(hoje.getMonth()+1).padStart(2,'0')
+      + '-' + String(hoje.getDate()).padStart(2,'0') + '.pptx' });
+    aviso('PowerPoint com ' + pgs.length + ' slide' + (pgs.length===1?'':'s') + ' exportado.');
+  }
+
+  function imprimir(){
+    var pgs = document.querySelectorAll('#relSaida .rel-pagina');
+    if (!pgs.length){ aviso('Monte o relatório primeiro.'); return; }
+    document.documentElement.classList.add('m3-print-rel');
+    setTimeout(function(){
+      window.print();
+      setTimeout(function(){ document.documentElement.classList.remove('m3-print-rel'); }, 700);
+    }, 120);
+  }
+
+  // ── a tela ───────────────────────────────────────────────────────────
+  var _montado = false;
+  function render(){
+    var slot = $('slot_m3_7_1'); if (!slot) return;
+    if (_montado) return;
+
+    var temas = [];
+    BLOCOS.forEach(function(b){ if (temas.indexOf(b.tema) < 0) temas.push(b.tema); });
+
+    var card = document.createElement('section');
+    card.className = 'card';
+    card.id = 'relatCard';
+    card.innerHTML =
+      '<div class="card-title"><span class="card-title-text">RELATÓRIOS POR TEMA</span>'
+      + '<button type="button" class="info-btn" aria-label="Ajuda: relatórios por tema" data-tooltip="Monta um documento a partir dos cards que o painel já desenha. Escolha um relatório pronto ou marque os blocos que quiser, gere, e exporte em PowerPoint, PDF ou planilha.">ⓘ</button></div>'
+      + '<div class="pill">Um documento montado do que o painel já calcula, sem refazer conta nenhuma.</div>'
+      + '<div class="explain"><span class="ex-tag">Como funciona</span>'
+      + 'Cada relatório é uma <b>receita</b>: a lista de análises que entram e a ordem delas. '
+      + 'Na montagem o painel passa por cada seção, espera o card ficar pronto e copia o que está na tela. '
+      + 'Por isso a tela pisca enquanto monta, e por isso o número do documento é o mesmo número do painel.'
+      + '<span class="ex-tag">O que ele não faz</span>'
+      + 'Nenhum cálculo novo acontece aqui. Bloco cujo gráfico não existir na planilha carregada fica de fora, '
+      + 'e o rodapé diz quais ficaram.</div>'
+      + '<div class="rel-escolha" id="relEscolha"></div>'
+      + '<div class="bgi-ctrl" style="margin-top:4px">'
+      +   '<button type="button" id="relGerar" class="bgi-sel rel-acao-forte" style="cursor:pointer">Montar relatório</button>'
+      +   '<button type="button" id="relPptx" class="bgi-sel" style="margin-left:8px;cursor:pointer">PowerPoint</button>'
+      +   '<button type="button" id="relPdf" class="bgi-sel" style="margin-left:6px;cursor:pointer">PDF / A4</button>'
+      +   '<button type="button" id="relXls" class="bgi-sel" style="margin-left:6px;cursor:pointer">Planilha</button>'
+      +   '<button type="button" id="relBlocos" class="bgi-sel" style="margin-left:14px;cursor:pointer">Montar bloco a bloco</button>'
+      + '</div>'
+      + '<div class="rel-status" id="relStatus"></div>'
+      + '<div class="rel-lista" id="relLista" hidden></div>'
+      + '<div id="relSaida" class="rel-saida"></div>';
+    slot.appendChild(card);
+
+    // chips dos relatórios prontos
+    var esc = $('relEscolha');
+    RELATORIOS.forEach(function(r){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'rel-chip' + (r.id === _sel.relatorio ? ' sel' : '');
+      b.innerHTML = '<span class="rel-chip-rot">' + r.rot + '</span>'
+                  + '<span class="rel-chip-oque">' + r.oque + '</span>';
+      b.addEventListener('click', function(){
+        _sel.relatorio = r.id; _sel.blocos = null;
+        Array.prototype.forEach.call(esc.children, function(x){ x.classList.remove('sel'); });
+        b.classList.add('sel');
+        Array.prototype.forEach.call(document.querySelectorAll('#relLista input'), function(i){ i.checked = false; });
+        aviso('');
+      });
+      esc.appendChild(b);
+    });
+
+    // lista completa, para montagem livre
+    var lista = $('relLista');
+    temas.forEach(function(t){
+      var g = document.createElement('div');
+      g.className = 'rel-grupo';
+      g.innerHTML = '<div class="rel-grupo-rot">' + t + '</div>';
+      BLOCOS.filter(function(b){ return b.tema === t; }).forEach(function(b){
+        var l = document.createElement('label');
+        l.className = 'rel-item';
+        l.innerHTML = '<input type="checkbox" value="' + b.id + '"> <span>' + b.rot + '</span>';
+        g.appendChild(l);
+      });
+      lista.appendChild(g);
+    });
+    lista.addEventListener('change', function(){
+      var marcados = Array.prototype.slice.call(lista.querySelectorAll('input:checked'))
+                       .map(function(i){ return i.value; });
+      _sel.blocos = marcados.length ? marcados : null;
+      if (marcados.length){
+        Array.prototype.forEach.call(esc.children, function(x){ x.classList.remove('sel'); });
+        aviso(marcados.length + ' bloco' + (marcados.length===1?'':'s') + ' marcado'
+            + (marcados.length===1?'':'s') + '.');
+      } else {
+        var atual = esc.children[RELATORIOS.map(function(r){return r.id;}).indexOf(_sel.relatorio)];
+        if (atual) atual.classList.add('sel');
+        aviso('');
+      }
+    });
+
+    $('relGerar').addEventListener('click', montar);
+    $('relPptx').addEventListener('click', exportarPPTX);
+    $('relPdf').addEventListener('click', imprimir);
+    $('relXls').addEventListener('click', exportarExcel);
+    $('relBlocos').addEventListener('click', function(){
+      var aberto = !lista.hidden;
+      lista.hidden = aberto;
+      this.textContent = aberto ? 'Montar bloco a bloco' : 'Fechar a lista de blocos';
+    });
+
+    _montado = true;
+  }
+
+  try { window._relatRender = render; } catch(e){}
+})();
+</script>
+
 </body>
 </html>
