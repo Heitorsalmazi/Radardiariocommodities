@@ -3735,6 +3735,80 @@ header{
 #pagePaneAlertas > .pane-hero,
 #pagePaneAlertas > .pane-ctrl-bar { display: none !important; }
 
+/* ── GRADE DE CARDS POR CONTRATO ──────────────────────────────────────
+   A leitura contrato a contrato cabia numa tabela de vinte linhas e num
+   gráfico de vinte barras, e nenhum dos dois é confortável: a tabela pede
+   que se leia tudo para achar um, e a barra responde só uma pergunta. Um
+   card por vencimento resolve as duas coisas — o olho acha o contrato pelo
+   nome, e cada card carrega o preço, o caminho dele na janela e as três
+   etiquetas técnicas. A ordem é por deslocamento, então o mais esticado
+   continua sendo o primeiro.
+   A faixa de cor dentro do card é o intervalo entre o percentil 25 e o 75
+   da janela, que é o miolo. Linha acima da faixa é preço alto para o
+   próprio período; abaixo, preço baixo. */
+#pagePaneAlertas .ct-grade{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+}
+#pagePaneAlertas .ct-card{
+  border: 1px solid var(--m3-border-soft);
+  border-radius: 12px;
+  background: var(--m3-surface);
+  padding: 10px 12px 11px;
+  box-shadow: var(--shadow-soft);
+}
+#pagePaneAlertas .ct-topo{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  margin-bottom: 5px;
+}
+#pagePaneAlertas .ct-nome{
+  font-weight:800; font-size: var(--fs-sm); letter-spacing:.04em;
+  color: var(--m3-title) !important;
+}
+#pagePaneAlertas .ct-sig{
+  font-size: var(--fs-nano); font-weight:800; letter-spacing:.02em;
+  border-radius:999px; padding:2px 7px; white-space:nowrap;
+  border:1px solid transparent;
+}
+#pagePaneAlertas .ct-sig-alta{
+  background: rgba(15,118,110,0.12) !important; border-color: rgba(15,118,110,0.26) !important;
+  color: #0f766e !important;
+}
+#pagePaneAlertas .ct-sig-baixa{
+  background: rgba(180,83,9,0.12) !important; border-color: rgba(180,83,9,0.26) !important;
+  color: #b45309 !important;
+}
+#pagePaneAlertas .ct-sig-meio{
+  background: rgba(148,163,184,0.14) !important; border-color: rgba(148,163,184,0.30) !important;
+  color: #475569 !important;
+}
+#pagePaneAlertas .ct-preco{
+  display:flex; align-items:baseline; gap:7px; flex-wrap:wrap; margin-bottom:7px;
+}
+#pagePaneAlertas .ct-preco b{
+  font-size: var(--fs-lg); font-weight:800; color: var(--m3-title) !important;
+  font-variant-numeric: tabular-nums;
+}
+#pagePaneAlertas .ct-uni{ font-size: var(--fs-nano); color: var(--m3-muted) !important; }
+#pagePaneAlertas .ct-dia{ font-size: var(--fs-nano); font-weight:700; margin-left:auto; }
+#pagePaneAlertas .ct-dia.pos{ color: var(--m3-pos) !important; }
+#pagePaneAlertas .ct-dia.neg{ color: var(--m3-neg) !important; }
+#pagePaneAlertas .ct-spark{ height:46px; margin-bottom:8px; }
+#pagePaneAlertas .ct-spark svg{ width:100%; height:46px; display:block; }
+#pagePaneAlertas .ct-tags{ display:flex; flex-wrap:wrap; gap:4px; }
+#pagePaneAlertas .ct-tag{
+  font-size: var(--fs-nano); line-height:1.5;
+  border:1px solid var(--m3-border-soft); border-radius:6px;
+  padding:1px 6px; background: var(--m3-surface-2) !important;
+  color: var(--m3-body) !important; white-space:nowrap;
+}
+#pagePaneAlertas .ct-tag b{ color: var(--m3-title) !important; font-weight:700; }
+#pagePaneAlertas .ct-vazio{
+  color: var(--m3-muted) !important; font-size: var(--fs-nano); padding:12px 0 2px;
+}
+
 /* PAINEL MIGRADO NÃO É MAIS PÁGINA ───────────────────────────────────
    Alertas e TOP 5 nasceram como telas inteiras e carregam disso um fundo
    de página, um respiro de 14px e `min-height: 100vh`. Dentro da seção de
@@ -10371,7 +10445,6 @@ header{
       <button type="button" id="alertasPNG" class="bgi-sel" style="margin-left:6px;cursor:pointer" title="Salva a folha A4 como imagem.">Exportar PNG</button>
     </div>
     <div id="alertasKpis" class="vol-kpis"></div>
-    <div id="chartAlertas" class="chart-container"></div>
     <div id="alertasTab"></div>
     <div id="alertasContext" class="chart-context"></div>
   </section>
@@ -22887,6 +22960,7 @@ function updatePreco() {
   // Chamado por loadWorkbookFromBuffer a cada recarga do Excel.
   function shResetCaches(){
     _SH_BASE = {};
+    try { if (window._alLimpaCacheSerie) window._alLimpaCacheSerie(); } catch(e){}
     _shIgpmCache = undefined;
     _shEnsoCache = null;
     try{ _AB_CACHE=null; }catch(e){}
@@ -57571,56 +57645,115 @@ function saveSelectedSheets(setOrArr){
     return {txt:'miolo', ord:0};
   }
 
-  /* ── A RÉGUA DE DESLOCAMENTO ───────────────────────────────────────────
-     Dezenove linhas de tabela respondem "quanto" contrato por contrato, mas
-     só depois de lidas uma a uma. A mesma informação em barras responde
-     "quais" numa olhada: quem está esticado para cima, quem está afundado,
-     e a que distância do bolo. A tabela continua abaixo, para quem precisa
-     do RSI e do Bollinger de um contrato específico. */
-  function _alertasGrafico(linhas){
-    var el = document.getElementById('chartAlertas');
-    if (!el || typeof renderPlot !== 'function') return;
-    var com = linhas.filter(function(l){ return l.z != null; });
-    if (com.length < 2){
-      try { Plotly.purge('chartAlertas'); } catch(e){}
-      el.innerHTML = ''; return;
+  /* ── O CAMINHO DO PREÇO DENTRO DO CARD ────────────────────────────────
+     Vinte contratos, vinte desenhos. Chamar o Plotly vinte vezes custaria
+     caro e entregaria eixos e barras de ferramenta que ninguém quer num
+     quadro de 46 pixels de altura. O traço é SVG escrito à mão: a faixa
+     cinza é o miolo da janela (do percentil 25 ao 75), a linha é o preço, e
+     o ponto é o fechamento mais recente. Linha terminando acima da faixa é
+     preço alto para o próprio período.
+     `vector-effect` mantém a espessura do traço quando o SVG é esticado na
+     largura do card, que é o preço de usar `preserveAspectRatio="none"`. */
+  function _alSpark(serie, p25, p75){
+    if (!serie || serie.length < 2) return '';
+    var L = 200, A = 46, pad = 3;
+    var vals = serie.slice();
+    var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
+    if (p25 != null && isFinite(p25)) { mn = Math.min(mn, p25); mx = Math.max(mx, p25); }
+    if (p75 != null && isFinite(p75)) { mn = Math.min(mn, p75); mx = Math.max(mx, p75); }
+    var amp = (mx - mn) || 1;
+    function py(v){ return pad + (A - 2*pad) * (1 - (v - mn)/amp); }
+    var passo = (serie.length > 1) ? (L / (serie.length - 1)) : L;
+    var pts = serie.map(function(v,i){ return (i*passo).toFixed(1) + ',' + py(v).toFixed(1); }).join(' ');
+    var faixa = '';
+    if (p25 != null && p75 != null && isFinite(p25) && isFinite(p75) && p75 > p25){
+      var y1 = py(p75), y2 = py(p25);
+      faixa = '<rect x="0" y="' + y1.toFixed(1) + '" width="' + L + '" height="'
+            + Math.max(1,(y2-y1)).toFixed(1) + '" fill="rgba(148,163,184,0.20)"></rect>';
     }
-    /* Ordem crescente para o eixo horizontal do Plotly desenhar o maior em
-       cima: o eixo y de categoria cresce de baixo para cima. */
-    var ord = com.slice().sort(function(a,b){ return a.z - b.z; });
-    var COR_ALTA = '#0f766e', COR_BAIXA = '#b45309', COR_MEIO = '#94a3b8';
-    var cores = ord.map(function(l){
-      if (l.z >= 1)  return COR_ALTA;
-      if (l.z <= -1) return COR_BAIXA;
-      return COR_MEIO;
-    });
-    var marcas = [];
-    [-2,-1,0,1,2].forEach(function(v){
-      marcas.push({ type:'line', xref:'x', x0:v, x1:v, yref:'paper', y0:0, y1:1,
-        line:{ color:(v===0?'#64748b':'#cbd5e1'), width:(v===0?1.2:1),
-               dash:(v===0?'solid':'dot') } });
-    });
-    renderPlot('chartAlertas', [{
-      type:'bar', orientation:'h',
-      y: ord.map(function(l){ return l.nome; }),
-      x: ord.map(function(l){ return l.z; }),
-      marker:{ color:cores },
-      hovertemplate:'<b>%{y}</b><br>%{x:+.2f}σ da tendência<extra></extra>',
-      showlegend:false
-    }], {
-      _no_trend_restyle: true,
-      _no_last_marker: true,
-      height: Math.max(300, Math.min(560, 92 + ord.length*21)),
-      margin:{ l:96, r:22, t:26, b:44 },
-      shapes: marcas,
-      bargap: 0.38,
-      xaxis:{ title:{ text:'desvios da tendência da janela', font:{size:11} },
-              zeroline:false, tickformat:'+,.1f', ticksuffix:'σ' },
-      /* Eixo de nomes, não de preço: sem o título vazio declarado, o motor
-         de temas herda o eixo de preço e rotula a coluna de contratos com
-         "Preço (@)". */
-      yaxis:{ title:{ text:'' }, automargin:true, tickfont:{size:10.5} }
-    });
+    var ux = (serie.length-1)*passo, uy = py(serie[serie.length-1]);
+    return '<svg viewBox="0 0 ' + L + ' ' + A + '" preserveAspectRatio="none" aria-hidden="true">'
+         + faixa
+         + '<polyline points="' + pts + '" fill="none" stroke="#0f766e" stroke-width="1.6" '
+         + 'stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"></polyline>'
+         + '<circle cx="' + ux.toFixed(1) + '" cy="' + uy.toFixed(1) + '" r="2.6" fill="#0f766e" '
+         + 'stroke="#ffffff" stroke-width="1.2" vector-effect="non-scaling-stroke"></circle>'
+         + '</svg>';
+  }
+
+  /* A série da janela, para o traço. `buildAlertsForSheet` devolve só os
+     agregados, e refazer a leitura aqui sai barato: `extractSeries` já
+     guarda o resultado por aba dentro do próprio parseSheet. */
+  /* ── NEM TODA ABA DO MERCADO É UMA SÉRIE DE CONTRATO ───────────────────
+     `getMarketSheets('boi')` casa qualquer aba com "REPOSIÇÃO" no nome, e a
+     REPOSIÇÃO DATAGRO entrou por aí. Só que ela não é a série de um
+     vencimento ao longo do tempo: é um CORTE — uma data só, 48 linhas, uma
+     por UF e raça, em R$/@ por categoria. Lida como se fosse série, virava
+     um card com "46.316,00" e um traço em degrau, que não é preço nenhum.
+     O mesmo valia para as abas de machos e fêmeas da reposição.
+
+     O teste é pela forma do dado, não pelo nome: série de contrato tem
+     muitas datas distintas; corte de mercado tem uma ou duas. Vinte é folga
+     confortável — o contrato mais novo da B3 já passa disso em um mês de
+     pregão. As abas de reposição continuam inteiras onde são usadas de
+     verdade, que são os cards de reposição. */
+  var _AL_SERIE_OK = {};
+  function _alEhSerieDeContrato(sheetName){
+    if (_AL_SERIE_OK[sheetName] !== undefined) return _AL_SERIE_OK[sheetName];
+    var ok = false;
+    try {
+      var e = extractSeries(sheetName);
+      if (e && e.ok && e.dates && e.dates.length){
+        var vistas = {}, n = 0;
+        for (var i=0;i<e.dates.length;i++){
+          var k = String(e.dates[i]);
+          if (!vistas[k]){ vistas[k] = 1; n++; }
+          if (n >= 20) break;
+        }
+        ok = (n >= 20);
+      }
+    } catch(err){ ok = false; }
+    return (_AL_SERIE_OK[sheetName] = ok);
+  }
+
+  function _alSerieJanela(sheetName){
+    try {
+      var s = extractSeries(sheetName);
+      if (!s || !s.ok || !s.closes || s.closes.length < 2) return null;
+      var n = s.closes.length, w = Math.min(state.win, n);
+      var corte = s.closes.slice(Math.max(0, n - w)).filter(function(v){ return v != null && isFinite(v); });
+      /* Mais de cem pontos num quadro de 232px vira borrão. A redução pega
+         um a cada k, preservando sempre o último, que é o que o ponto marca. */
+      if (corte.length > 120){
+        var k = Math.ceil(corte.length/120), red = [];
+        for (var i=0;i<corte.length;i+=k) red.push(corte[i]);
+        if (red[red.length-1] !== corte[corte.length-1]) red.push(corte[corte.length-1]);
+        corte = red;
+      }
+      return corte.length >= 2 ? corte : null;
+    } catch(e){ return null; }
+  }
+
+  function _alCardContrato(l){
+    var cls = (l.z == null) ? 'ct-sig-meio'
+            : (l.z >= 1 ? 'ct-sig-alta' : (l.z <= -1 ? 'ct-sig-baixa' : 'ct-sig-meio'));
+    var sig = (l.z == null) ? 'sem tendência'
+            : ((l.z >= 0 ? '+' : '−') + fmtNum(Math.abs(l.z),1) + 'σ');
+    var spark = _alSpark(l.serie, l.p25, l.p75);
+    var tags = '<span class="ct-tag">faixa <b>' + l.faixa + '</b></span>';
+    if (l.rsi != null) tags += '<span class="ct-tag">RSI <b>' + fmtNum(l.rsi,0) + '</b></span>';
+    if (l.macd)        tags += '<span class="ct-tag">MACD <b>' + l.macd + '</b></span>';
+    if (l.boll)        tags += '<span class="ct-tag">' + l.boll + '</span>';
+    return '<div class="ct-card">'
+         + '<div class="ct-topo"><span class="ct-nome">' + l.nome + '</span>'
+         + '<span class="ct-sig ' + cls + '">' + sig + '</span></div>'
+         + '<div class="ct-preco"><b>' + fmtNum(l.preco, l.dec) + '</b>'
+         + (l.uni ? ('<span class="ct-uni">' + l.uni + '</span>') : '')
+         + '<span class="ct-dia ' + (l.pos ? 'pos' : 'neg') + '">' + fmtPct(l.dPct, 2) + '</span></div>'
+         + (spark ? ('<div class="ct-spark">' + spark + '</div>')
+                  : '<div class="ct-vazio">Histórico curto demais para desenhar a janela.</div>')
+         + '<div class="ct-tags">' + tags + '</div>'
+         + '</div>';
   }
 
   function _alertasCard(dados){
@@ -57631,7 +57764,6 @@ function saveSelectedSheets(setOrArr){
     var bons = (dados||[]).filter(function(d){ return d && !d.error && d.last!=null && isFinite(d.last); });
     if(!bons.length){
       kEl.innerHTML = ''; tEl.innerHTML = '';
-      try { Plotly.purge('chartAlertas'); } catch(e){}
       _alLeitura('Nenhum contrato de <b>' + state.mercado + '</b> pôde ser lido nesta planilha. '
         + 'Ou as abas do mercado não estão presentes, ou o histórico é curto demais para a janela de <b>'
         + state.win + '</b> pregões.');
@@ -57646,6 +57778,8 @@ function saveSelectedSheets(setOrArr){
         preco: d.last, dec: decForAsset(_nome), uni: _alUnidadeContrato(_nome),
         dPct: d.dPct, pos: d.pos,
         faixa: f.txt, faixaOrd: f.ord,
+        p25: d.p25, p75: d.p75,
+        serie: _alSerieJanela(d.sheet),
         z: z,
         rsi: (d.rsi!=null && isFinite(d.rsi)) ? d.rsi : null,
         macd: (d.macd!=null && d.signal!=null && isFinite(d.macd) && isFinite(d.signal))
@@ -57683,23 +57817,10 @@ function saveSelectedSheets(setOrArr){
       _alKpi('MAIOR DESLOCAMENTO', (topo && topo.z!=null) ? zTxt(topo.z) : '–',
              topo ? (topo.nome + ' · ' + fmtNum(topo.preco, topo.dec) + (topo.uni?(' '+topo.uni):'')) : '');
 
-    var h = '<div class="rb-head">SINAL POR CONTRATO — ' + state.win + ' PREGÕES</div>'
-          + '<table class="pc-tab"><thead><tr><th>contrato</th><th>último</th><th>dia</th>'
-          + '<th>faixa</th><th>tendência</th><th>RSI</th><th>MACD</th><th>Bollinger</th>'
-          + '</tr></thead><tbody>';
-    linhas.forEach(function(l){
-      h += '<tr><td>' + l.nome + '</td>'
-         + '<td>' + fmtNum(l.preco, l.dec)
-         + (l.uni ? (' <span style="color:#9ca3af">' + l.uni + '</span>') : '') + '</td>'
-         + '<td class="' + (l.pos ? 'pos' : 'neg') + '">' + fmtPct(l.dPct, 2) + '</td>'
-         + '<td>' + l.faixa + '</td>'
-         + '<td>' + zTxt(l.z) + '</td>'
-         + '<td>' + (l.rsi!=null ? fmtNum(l.rsi,0) : '–') + '</td>'
-         + '<td>' + (l.macd || '–') + '</td>'
-         + '<td>' + (l.boll || '–') + '</td></tr>';
-    });
-    tEl.innerHTML = h + '</tbody></table>';
-    try { _alertasGrafico(linhas); } catch(e){ console.warn('Alertas — régua:', e); }
+    tEl.innerHTML = '<div class="rb-head">SINAL POR CONTRATO — ' + state.win + ' PREGÕES</div>'
+                  + '<div class="ct-grade">'
+                  + linhas.map(_alCardContrato).join('')
+                  + '</div>';
 
     _alLeitura(
       'Na janela de <b>' + state.win + ' pregões</b>, <b>' + nSup + '</b> de <b>' + linhas.length
@@ -57719,6 +57840,7 @@ function saveSelectedSheets(setOrArr){
      ficava só no escopo do módulo, e por isso o painel esperava o clique
      em "Gerar" para existir. */
   try { window.renderAlertasPane = render; } catch(e){}
+  try { window._alLimpaCacheSerie = function(){ _AL_SERIE_OK = {}; }; } catch(e){}
   function render(){
     var grid = $('#alertasGrid');
     if(!grid) return;
@@ -57737,6 +57859,8 @@ function saveSelectedSheets(setOrArr){
       var __sel = loadSelectedSheets(sheets);
       sheets = sheets.filter(function(sh){ return __sel.has(String(sh)); });
     }catch(e){}
+    /* Fora os cortes de mercado, que não são série de contrato. */
+    try{ sheets = sheets.filter(_alEhSerieDeContrato); }catch(e){}
     // Cap 12 para caber 1 página
     sheets = sheets;
 
