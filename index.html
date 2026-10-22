@@ -3748,9 +3748,10 @@ header{
    próprio período; abaixo, preço baixo. */
 #pagePaneAlertas .ct-grade{
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(232px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(306px, 1fr));
   gap: 10px;
   margin-top: 6px;
+  align-items: start;
 }
 #pagePaneAlertas .ct-card{
   border: 1px solid var(--m3-border-soft);
@@ -3808,6 +3809,38 @@ header{
 #pagePaneAlertas .ct-vazio{
   color: var(--m3-muted) !important; font-size: var(--fs-nano); padding:12px 0 2px;
 }
+#pagePaneAlertas .ct-tag-alta{
+  background: rgba(15,118,110,0.10) !important; border-color: rgba(15,118,110,0.24) !important;
+}
+#pagePaneAlertas .ct-tag-baixa{
+  background: rgba(180,83,9,0.10) !important; border-color: rgba(180,83,9,0.24) !important;
+}
+/* A tabela interna do card. Duas colunas para a altura não disparar, com
+   rótulo à esquerda e número alinhado à direita em dígitos de largura
+   fixa, que é o que deixa a coluna de valores legível de relance. */
+#pagePaneAlertas .ct-dados{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 0 14px;
+  margin-top: 9px;
+}
+#pagePaneAlertas .ct-item{
+  display:flex; align-items:baseline; justify-content:space-between; gap:8px;
+  font-size: var(--fs-nano); line-height:1.75;
+  border-bottom: 1px dotted var(--m3-border-soft);
+}
+#pagePaneAlertas .ct-k{ color: var(--m3-muted) !important; white-space:nowrap; }
+#pagePaneAlertas .ct-v{
+  color: var(--m3-body) !important; font-weight:700;
+  font-variant-numeric: tabular-nums; white-space:nowrap;
+}
+#pagePaneAlertas .ct-item-forte .ct-v{ color: var(--m3-title) !important; }
+#pagePaneAlertas .ct-leitura{
+  margin: 9px 0 0; padding: 0 0 0 15px;
+  font-size: var(--fs-nano); line-height:1.55; color: var(--m3-body) !important;
+}
+#pagePaneAlertas .ct-leitura li{ margin: 2px 0; }
+#pagePaneAlertas .ct-leitura li::marker{ color: var(--m3-muted); }
 
 /* PAINEL MIGRADO NÃO É MAIS PÁGINA ───────────────────────────────────
    Alertas e TOP 5 nasceram como telas inteiras e carregam disso um fundo
@@ -57734,25 +57767,89 @@ function saveSelectedSheets(setOrArr){
     } catch(e){ return null; }
   }
 
+  /* ── TUDO O QUE SE SABE DO ATIVO AGORA, NUM CARD ──────────────────────
+     A primeira versão trouxe só preço, desvio e três etiquetas, e ficou
+     curta: quem está decidindo trava precisa dos NÍVEIS, não só do
+     diagnóstico. Onde está o percentil 25 e o 75, quanto é a média da
+     janela e onde ficam um e dois desvios dela, em que preço passa a reta
+     de tendência e o resíduo de dois desvios, quanto o RSI marca, para que
+     lado o MACD aponta e se o histograma abre ou fecha, onde correm as
+     bandas de Bollinger. São os mesmos números da folha A4 — um cálculo,
+     duas apresentações — organizados como tabela de duas colunas dentro
+     do card, com as três leituras do painel no rodapé. */
+  function _alLinhaDado(rot, val, destaque){
+    if (val == null) return '';
+    return '<div class="ct-item' + (destaque ? ' ct-item-forte' : '') + '">'
+         + '<span class="ct-k">' + rot + '</span><span class="ct-v">' + val + '</span></div>';
+  }
+  function _alJanelaChip(d){
+    try {
+      for (var i=0;i<(d.chips||[]).length;i++){
+        if (String(d.chips[i].k).toUpperCase() === 'JANELA') return d.chips[i].v;
+      }
+    } catch(e){}
+    return null;
+  }
+
   function _alCardContrato(l){
+    var d = l.bruto || {};
+    var dec = l.dec, n2 = function(v){ return (v==null||!isFinite(v)) ? null : fmtNum(v, dec); };
     var cls = (l.z == null) ? 'ct-sig-meio'
             : (l.z >= 1 ? 'ct-sig-alta' : (l.z <= -1 ? 'ct-sig-baixa' : 'ct-sig-meio'));
     var sig = (l.z == null) ? 'sem tendência'
             : ((l.z >= 0 ? '+' : '−') + fmtNum(Math.abs(l.z),1) + 'σ');
     var spark = _alSpark(l.serie, l.p25, l.p75);
-    var tags = '<span class="ct-tag">faixa <b>' + l.faixa + '</b></span>';
-    if (l.rsi != null) tags += '<span class="ct-tag">RSI <b>' + fmtNum(l.rsi,0) + '</b></span>';
-    if (l.macd)        tags += '<span class="ct-tag">MACD <b>' + l.macd + '</b></span>';
-    if (l.boll)        tags += '<span class="ct-tag">' + l.boll + '</span>';
+
+    /* Etiquetas qualitativas em cima, números embaixo: o olho decide pela
+       etiqueta e confere no número, nessa ordem. */
+    var tags = '<span class="ct-tag ct-tag-' 
+             + (l.faixaOrd === 1 ? 'alta' : (l.faixaOrd === -1 ? 'baixa' : 'meio'))
+             + '">faixa <b>' + l.faixa + '</b></span>';
+    if (l.macd) tags += '<span class="ct-tag">MACD <b>' + l.macd + '</b></span>';
+    if (d.hist != null && isFinite(d.hist))
+      tags += '<span class="ct-tag">histograma <b>' + (d.hist >= 0 ? 'positivo' : 'negativo') + '</b></span>';
+    if (l.boll) tags += '<span class="ct-tag">' + l.boll + '</span>';
+
+    var dados = ''
+      + _alLinhaDado('P25 da janela',  n2(d.p25))
+      + _alLinhaDado('P75 da janela',  n2(d.p75), true)
+      + _alLinhaDado('média',          n2(d.mean))
+      + _alLinhaDado('desvio-padrão',  n2(d.stdev))
+      + _alLinhaDado('média +1σ',      n2(d.pxMeanP1))
+      + _alLinhaDado('média +2σ',      n2(d.pxMeanP2))
+      + _alLinhaDado('tendência hoje', n2(d.trendLast))
+      + _alLinhaDado('resíduo +2σ',    n2(d.pxResidP2), true)
+      + _alLinhaDado('R² da tendência', (d.r2 != null && isFinite(d.r2)) ? (fmtNum(d.r2*100,0) + '%') : null)
+      + _alLinhaDado('σ dos resíduos',  n2(d.residStd))
+      + _alLinhaDado('RSI (14)',       (d.rsi != null && isFinite(d.rsi)) ? fmtNum(d.rsi,0) : null)
+      + _alLinhaDado('MACD − sinal',   (d.macd != null && d.signal != null && isFinite(d.macd) && isFinite(d.signal))
+                                        ? fmtNum(d.macd - d.signal, 2) : null)
+      + _alLinhaDado('banda superior', (d.bb && isFinite(d.bb.up)) ? n2(d.bb.up) : null)
+      + _alLinhaDado('banda inferior', (d.bb && isFinite(d.bb.lo)) ? n2(d.bb.lo) : null)
+      + _alLinhaDado('fechamento anterior', n2(d.prev))
+      + _alLinhaDado('pregões usados', _alJanelaChip(d));
+
+    var leituras = (d.bullets || []).slice(0,3).map(function(b){
+      return '<li>' + b + '</li>';
+    }).join('');
+
+    /* O mesmo sinal que `fmtPct` escreve, para o par não sair com dois
+       tipos de menos lado a lado: "−1,60 (-0,41%)". */
+    var dAbs = (d.dAbs != null && isFinite(d.dAbs))
+             ? ((d.dAbs >= 0 ? '+' : '-') + fmtNum(Math.abs(d.dAbs), dec) + ' ') : '';
+
     return '<div class="ct-card">'
          + '<div class="ct-topo"><span class="ct-nome">' + l.nome + '</span>'
          + '<span class="ct-sig ' + cls + '">' + sig + '</span></div>'
-         + '<div class="ct-preco"><b>' + fmtNum(l.preco, l.dec) + '</b>'
+         + '<div class="ct-preco"><b>' + fmtNum(l.preco, dec) + '</b>'
          + (l.uni ? ('<span class="ct-uni">' + l.uni + '</span>') : '')
-         + '<span class="ct-dia ' + (l.pos ? 'pos' : 'neg') + '">' + fmtPct(l.dPct, 2) + '</span></div>'
+         + '<span class="ct-dia ' + (l.pos ? 'pos' : 'neg') + '">' + dAbs
+         + '(' + fmtPct(l.dPct, 2) + ')</span></div>'
          + (spark ? ('<div class="ct-spark">' + spark + '</div>')
                   : '<div class="ct-vazio">Histórico curto demais para desenhar a janela.</div>')
          + '<div class="ct-tags">' + tags + '</div>'
+         + '<div class="ct-dados">' + dados + '</div>'
+         + (leituras ? ('<ul class="ct-leitura">' + leituras + '</ul>') : '')
          + '</div>';
   }
 
@@ -57780,6 +57877,7 @@ function saveSelectedSheets(setOrArr){
         faixa: f.txt, faixaOrd: f.ord,
         p25: d.p25, p75: d.p75,
         serie: _alSerieJanela(d.sheet),
+        bruto: d,
         z: z,
         rsi: (d.rsi!=null && isFinite(d.rsi)) ? d.rsi : null,
         macd: (d.macd!=null && d.signal!=null && isFinite(d.macd) && isFinite(d.signal))
