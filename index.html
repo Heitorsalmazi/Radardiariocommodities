@@ -6787,6 +6787,89 @@ header{
       <div id="chartScotEscadaContext" class="chart-context"></div>
     </section>
 
+    <!-- ═══════════════════════════════════════════════════════════════════
+         REPOSIÇÃO NAS TRÊS FONTES                              23/10/2026
+         ═══════════════════════════════════════════════════════════════════
+         Três levantamentos da mesma cadeia, em três unidades e três
+         geografias. O cruzamento só vale se ele disser, antes do número, o
+         que de fato é comparável:
+
+           CEPEA regional · R$/cabeça · 11 UFs em 28 praças · diário desde
+             2024 · duas categorias de macho, sem raça e SEM PESO DECLARADO.
+             É isto que impede convertê-la em R$/kg: faltaria o peso, e o
+             peso teria de ser inventado.
+           Scot · R$/cabeça com PESO DECLARADO · 16 UFs · Nelore e Mestiço
+             quatro categorias de macho e quatro de fêmea. Dividir o preço
+             pelo peso que a própria fonte publica dá R$/kg exato.
+           DATAGRO · R$/kg de peso vivo · 10 UFs · Nelore, Anelorado e
+             Cruzamento industrial · quatro categorias de macho e quatro de
+             fêmea, cada uma numa FAIXA de peso.
+
+         SÃO DUAS COMPARAÇÕES EXATAS, CADA UMA ENTRE UM PAR DIFERENTE, e é
+         a unidade de cada fonte que decide qual par fecha:
+
+           Scot × DATAGRO, em R$/kg de peso vivo. Nenhuma ponta é estimada:
+             a da Scot sai do peso que ela declara, a da DATAGRO vem
+             publicada em R$/kg.
+           CEPEA × Scot, em R$/cabeça. Mesma unidade nas duas, direto da
+             fonte. O que não se sabe é se é o mesmo animal: o CEPEA não
+             declara peso, a Scot declara.
+
+         E NÃO HÁ PONTE ENTRE CEPEA E DATAGRO. Uma cota por cabeça sem dizer
+         o peso, a outra por quilo numa faixa de peso. Ligar as duas exigiria
+         um peso inventado de um lado ou o ponto médio da faixa do outro, e
+         qualquer dos dois faria metade do número virar suposição.
+
+         O card mostra o peso da Scot ao lado da faixa da DATAGRO e avisa
+         quando ele cai FORA dela — é o caso da desmama Nelore, 195 kg contra
+         uma faixa que termina em 180.
+
+         O QUE O CARD NÃO FAZ. Não usa o ponto médio de uma faixa de peso
+         como se fosse peso apurado, não trata "Mestiço" da Scot como
+         "Anelorado" ou "Cruzamento industrial" da DATAGRO — são definições
+         diferentes, e só NELORE existe nas duas com o mesmo nome. Não tira
+         média entre as fontes: três levantamentos não viram um número.    -->
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">REPOSIÇÃO NAS TRÊS FONTES</span><button type="button" class="info-btn" aria-label="Ajuda: cruzamento das três fontes de reposição" data-tooltip="CEPEA regional, Scot e DATAGRO para a mesma categoria de reposição. Duas comparações exatas: Scot contra DATAGRO em R$/kg de peso vivo, e CEPEA contra Scot em R$/cabeça. Entre CEPEA e DATAGRO não há ponte, porque o CEPEA não declara o peso dos animais que cota.">ⓘ</button></div>
+      <div class="pill">O que cada levantamento diz da mesma categoria, na unidade dele</div>
+      <div class="explain">
+        <span class="ex-tag">Duas comparações exatas, não uma</span>
+        <b>Scot contra DATAGRO, em R$/kg de peso vivo:</b> a Scot publica R$ por cabeça com o
+        <b>peso declarado</b>, e dividir um pelo outro dá R$/kg sem suposição; a DATAGRO publica
+        R$/kg direto. <b>CEPEA contra Scot, em R$/cabeça:</b> as duas cotam reposição de macho
+        nessa mesma unidade, direto da fonte. Nenhuma ponta é estimada aqui.
+        <span class="ex-tag">Por que não há ponte entre CEPEA e DATAGRO</span>
+        O CEPEA cota <b>por cabeça e não declara o peso</b>; a DATAGRO cota <b>por quilo numa
+        faixa de peso</b>. Ligar as duas exigiria inventar um peso de um lado ou usar o ponto
+        médio da faixa do outro, e aí metade do número seria suposição. O que o CEPEA acrescenta
+        é o que as outras duas não têm: <b>histórico diário desde ago/2024</b>, praça por praça.
+        <span class="ex-tag">Faixa contra ponto</span>
+        A DATAGRO cota uma <b>faixa de peso</b>; a Scot, um <b>peso único</b>. Como o R$/kg cai
+        conforme o animal engorda, um peso no topo da faixa deve sair <b>abaixo</b> da média
+        dela. Quando o peso da Scot cai fora da faixa da DATAGRO, a linha é marcada: ali as duas
+        não estão falando do mesmo animal.
+        <span class="ex-tag">Raça</span>
+        Só <b>Nelore</b> existe nas duas fontes com o mesmo nome. "Mestiço" da Scot não é
+        "Anelorado" nem "Cruzamento industrial" da DATAGRO, e o card não as iguala.
+      </div>
+      <div class="bgi-ctrl">
+        <span class="bgi-lbl">Sexo</span>
+        <select id="x3Sexo" class="bgi-sel" title="A DATAGRO cota macho e fêmea por UF. Na Scot, o macho é por UF e a fêmea é nacional.">
+          <option value="macho" selected>Macho</option>
+          <option value="femea">Fêmea</option>
+        </select>
+        <span class="bgi-lbl" style="margin-left:8px">Categoria</span>
+        <select id="x3Cat" class="bgi-sel" title="Categorias da DATAGRO, com a faixa de peso de cada uma."></select>
+        <span class="bgi-lbl" style="margin-left:8px">Raça da DATAGRO</span>
+        <select id="x3Raca" class="bgi-sel" title="Nelore, Anelorado e Cruzamento industrial. A Scot entra quando a raça existe nas duas com o mesmo nome."></select>
+      </div>
+      <div id="x3Kpis" class="vol-kpis"></div>
+      <div id="chartX3Fontes" class="chart-container" style="height:440px"></div>
+      <div id="x3Tab"></div>
+      <div id="chartX3FontesContext" class="chart-context"></div>
+    </section>
+
     <section class="card">
       <div class="card-title"><span class="card-title-text">BOI MAGRO — Variação desde uma Data</span><button type="button" class="info-btn" aria-label="Ajuda: BOI MAGRO — Variação desde uma Data" data-tooltip="Variação percentual entre uma data que você escolhe e hoje, com outra série sobreposta na mesma janela para comparação.">ⓘ</button></div>
         <div class="pill">Quanto o boi magro andou desde a data que você escolher.</div>
@@ -20040,6 +20123,27 @@ function toNum(v){
       'MACHOS MESTIÇO REPOSIÇÃO',
       'MACHOS MESTICO REPOSICAO',
       'MACHOS MESTIÇO – REPOSIÇÃO'
+    ],
+    /* REPOSIÇÃO DATAGRO — a terceira fonte de reposição, 23/10/2026.
+       Estava na planilha sem registro aqui, e por isso aparecia no seletor
+       de contratos como se fosse ativo negociável: uma tabela de 48 linhas
+       por UF e raça com os cards de contrato pedindo dela Z-score, MACD e
+       IFR. `isGlobalFixedSheet` varre este objeto inteiro, então registrar
+       a aba é o que a tira de lá. O mesmo vale para a linha única da
+       REPOSIÇÃO SCOT. */
+    repoDatagro: [
+      'REPOSIÇÃO DATAGRO',
+      'REPOSICAO DATAGRO',
+      'REPOSIÇÃO - DATAGRO',
+      'REPOSICAO - DATAGRO',
+      'REPOSIÇÃO – DATAGRO'
+    ],
+    repoScotResumo: [
+      'REPOSIÇÃO SCOT',
+      'REPOSICAO SCOT',
+      'REPOSIÇÃO - SCOT',
+      'REPOSICAO - SCOT',
+      'REPOSIÇÃO – SCOT'
     ]
   };
 
@@ -50390,6 +50494,455 @@ function updateRelacao() {
     }
   });
 
+  /* ══════════════════════════════════════════════════════════════════════
+     REPOSIÇÃO DATAGRO — a terceira fonte, e o cruzamento das três
+     ══════════════════════════════════════════════════════════════════════
+     A aba estava na planilha e não era lida por nenhum card. Pior: sem
+     alias registrado, ela entrava no seletor de contratos como se fosse
+     ativo negociável.
+
+     A DATAGRO cota R$ POR QUILO DE PESO VIVO, por UF, por raça e por FAIXA
+     de peso. Isso muda o que é comparável:
+
+       · contra a SCOT a comparação é EXATA, em R$/kg. A Scot publica R$ por
+         cabeça COM O PESO DECLARADO, e dividir um pelo outro não supõe
+         nada. Nenhuma das duas pontas é estimada aqui.
+       · contra o CEPEA REGIONAL não há conversão possível. O CEPEA cota em
+         R$/@ e NÃO DECLARA O PESO dos animais. Virar R$/kg exigiria
+         escolher um peso, e aí o número seria metade fonte e metade
+         suposição. O CEPEA entra na tabela na unidade dele.
+
+     FAIXA NÃO É PONTO. A DATAGRO cota "180 a 240 kg"; a Scot cota "240 kg".
+     O R$/kg cai conforme o animal engorda, então um animal no TOPO da faixa
+     deve sair abaixo da média dela — a diferença entre os dois números é
+     esperada e tem sinal previsível. O card marca a linha quando o peso da
+     Scot cai FORA da faixa: na desmama Nelore, 195 kg contra uma faixa que
+     termina em 180, as duas não estão falando do mesmo animal.
+
+     RAÇA NÃO SE TRADUZ. A Scot apura Nelore e Mestiço. A DATAGRO apura
+     Nelore, Anelorado e Cruzamento industrial. Só NELORE existe nas duas
+     com o mesmo nome; igualar "Mestiço" a "Cruzamento industrial" seria
+     inventar uma equivalência que nenhuma das fontes afirma.
+
+     E NADA DE MÉDIA ENTRE FONTES. Três levantamentos da mesma cadeia não
+     viram um número: cada um fica identificado, com a data dele.          */
+
+  var _DG_CACHE = null;
+  try { document.addEventListener('workbookLoaded', function(){ _DG_CACHE = null; }); } catch(e){}
+
+  function _dgBase(){
+    if (_DG_CACHE !== null) return _DG_CACHE;
+    var nome = null;
+    try { nome = findSheetByAliases(GLOBAL_FIXED_SHEETS.repoDatagro); } catch(e){}
+    if (!nome || !window.workbook || !workbook.Sheets[nome]){ _DG_CACHE = false; return false; }
+    var linhas = [];
+    try { linhas = parseSheet(nome) || []; } catch(e){ linhas = []; }
+    if (!linhas.length){ _DG_CACHE = false; return false; }
+
+    /* O rótulo manda, não a posição: "Macho Bezerro 180-240kg (R$/kg)".
+       Inserir uma coluna na planilha não pode trocar o significado de um
+       número na tela. */
+    var cats = [];
+    Object.keys(linhas[0]).forEach(function(c){
+      var m = String(c).match(
+        /^\s*(Macho|F[êe]mea)\s+(.*?)\s*(\d{1,4})\s*-\s*(\d{1,4})\s*kg\s*\(\s*R\$\s*\/\s*kg\s*\)\s*$/i);
+      if (!m) return;
+      var sexo = /^m/i.test(m[1]) ? 'macho' : 'femea';
+      var cat  = m[2].trim();
+      cats.push({ sexo:sexo, nome:cat, lo:Number(m[3]), hi:Number(m[4]), col:c,
+                  chave: sexo + '|' + cat,
+                  rot: cat + ' ' + m[3] + ' a ' + m[4] + ' kg' });
+    });
+    if (!cats.length){ _DG_CACHE = false; return false; }
+    /* Escada: do mais pesado ao mais leve, dentro de cada sexo. */
+    cats.sort(function(a,b){
+      if (a.sexo !== b.sexo) return a.sexo === 'macho' ? -1 : 1;
+      return b.hi - a.hi;
+    });
+
+    var obs = {}, racas = [], ufs = [], datas = {}, vr = {}, vu = {};
+    linhas.forEach(function(r){
+      var raca = String(r['Raça'] || r['Raca'] || '').trim();
+      var uf   = String(r['UF'] || '').trim().toUpperCase();
+      var d    = _rgData(r['Data']);
+      if (!raca || !uf || uf === 'UF' || !d) return;
+      datas[d] = 1;
+      if (!vr[raca]){ vr[raca] = 1; racas.push(raca); }
+      if (!vu[uf]){ vu[uf] = 1; ufs.push(uf); }
+      cats.forEach(function(k){
+        var v = Number(r[k.col]);
+        if (!isFinite(v) || v <= 0) return;      /* ausência não vira zero */
+        obs[raca + '|' + uf + '|' + d + '|' + k.chave] = v;
+      });
+    });
+    if (!racas.length){ _DG_CACHE = false; return false; }
+    racas.sort(); ufs.sort();
+    var ds = Object.keys(datas).sort();
+    _DG_CACHE = { aba:nome, cats:cats, racas:racas, ufs:ufs, datas:ds,
+                  data: ds.length ? ds[ds.length-1] : null,
+                  nLeituras: ds.length, obs:obs };
+    return _DG_CACHE;
+  }
+  function _dgValor(raca, uf, chaveCat, data){
+    var B = _dgBase(); if (!B) return null;
+    var d = data || B.data;
+    var v = B.obs[raca + '|' + String(uf||'').toUpperCase() + '|' + d + '|' + chaveCat];
+    return (v > 0) ? v : null;
+  }
+  function _dgCat(chave){
+    var B = _dgBase(); if (!B) return null;
+    for (var i=0;i<B.cats.length;i++) if (B.cats[i].chave === chave) return B.cats[i];
+    return null;
+  }
+  /* As UFs em que esta raça tem apuração. Anelorado e Cruzamento industrial
+     cobrem sete estados; Nelore cobre dez. */
+  function _dgUfs(raca, chaveCat){
+    var B = _dgBase(); if (!B) return [];
+    return B.ufs.filter(function(u){ return _dgValor(raca, u, chaveCat) != null; });
+  }
+  try { window._dgBase = _dgBase; window._dgValor = _dgValor; } catch(e){}
+
+  /* ── A CATEGORIA EQUIVALENTE NA SCOT ──────────────────────────────────
+     Equivalência de NOME de categoria, declarada aqui para ficar auditável.
+     O peso continua sendo o que cada fonte publica, e o card compara os
+     dois pesos em vez de supor que são o mesmo animal. */
+  var _X3_PAR_SCOT = {
+    'macho|Boi Magro':   'Boi Magro',
+    'macho|Garrote':     'Garrote',
+    'macho|Bezerro':     'Bezerro',
+    'macho|Desmama':     'Desmama',
+    'femea|Vaca Magra':  'Vaca Boiadeira',
+    'femea|Novilha':     'Novilha',
+    'femea|Bezerra':     'Bezerra',
+    'femea|Desmama':     'Desmama'
+  };
+  /* Raça: só o nome idêntico casa. "Mestiço" não é "Anelorado" nem
+     "Cruzamento industrial" — são definições de fontes diferentes. */
+  function _x3RacaScot(racaDg){
+    var B = null; try { B = _scotBase(); } catch(e){}
+    if (!B) return null;
+    for (var i=0;i<B.racas.length;i++) if (B.racas[i] === racaDg) return B.racas[i];
+    return null;
+  }
+  /* O produto do CEPEA regional equivalente, quando existe. O CEPEA cota
+     duas categorias de macho e nenhuma de fêmea de reposição. */
+  var _X3_PAR_CEPEA = { 'macho|Boi Magro':'Boi Magro', 'macho|Bezerro':'Bezerro' };
+  /* A apuração regional do CEPEA cota boi magro e bezerro EM R$ POR CABEÇA,
+     nas 15.316 observações de cada um, e nunca em arroba. Isso define onde
+     ela entra no cruzamento: ao lado do R$/cabeça da Scot, que é a mesma
+     unidade, e fora da comparação em R$/kg, porque ela não declara o peso.
+     A unidade é lida da planilha a cada leitura, não presumida: se a fonte
+     mudar de unidade, o card mostra qual é em vez de rotular errado. */
+  var _X3_UNI_CEPEA = 'R$/cabeça';
+
+  /* A fêmea da Scot é NACIONAL: a aba FÊMEAS - REPOSIÇÃO não tem coluna de
+     UF. Então ela não entra como barra por estado, e sim como linha de
+     referência atravessando o gráfico, rotulada como nacional. */
+  function _x3ScotFemea(racaDg, catDg){
+    var A = null;
+    try { A = _femTab('femeasReposicao'); } catch(e){}
+    if (!A || !A.ultima) return null;
+    var catScot = _X3_PAR_SCOT[catDg.chave];
+    if (!catScot) return null;
+    /* Os rótulos da aba são "<Raça> <Categoria> <peso>kg (R$/cabeça)", com a
+       raça no feminino: Nelore e Mestiça. */
+    var achou = null;
+    A.series.forEach(function(c){
+      var m = String(c).match(/^\s*(\S+)\s+(.*?)\s*(\d{2,4})\s*kg\s*\(R\$\/cabe[çc]a\)\s*$/i);
+      if (!m) return;
+      var raca = m[1].trim(), cat = m[2].trim(), kg = Number(m[3]);
+      /* "Mestiça" e "Mestiço" são a mesma apuração da Scot em gênero
+         diferente; "Nelore" é igual nas duas. Nada além disso é casado. */
+      var rn = raca.replace(/[ao]$/, '');
+      if (rn !== String(racaDg).replace(/[ao]$/, '')) return;
+      if (cat.toLowerCase() !== catScot.toLowerCase()) return;
+      var v = A.ultima[c];
+      if (!(v > 0)) return;
+      achou = { cab:v, kg:kg, porKg:v/kg, cat:cat, raca:raca, data:A.ultima.data };
+    });
+    return achou;
+  }
+
+  /* ── O CARD DO CRUZAMENTO ─────────────────────────────────────────────── */
+  function _x3Popula(){
+    var B = _dgBase(); if (!B) return false;
+    var ss = document.getElementById('x3Sexo'),
+        sc = document.getElementById('x3Cat'),
+        sr = document.getElementById('x3Raca');
+    var sexo = (ss && ss.value) ? ss.value : 'macho';
+    if (sc && sc.getAttribute('data-sexo') !== sexo){
+      var atual = sc.value;
+      sc.innerHTML = '';
+      B.cats.forEach(function(k){
+        if (k.sexo !== sexo) return;
+        sc.appendChild(new Option(k.rot, k.chave));
+      });
+      sc.setAttribute('data-sexo', sexo);
+      for (var i=0;i<sc.options.length;i++) if (sc.options[i].value === atual) sc.value = atual;
+    }
+    if (sr && !sr.options.length){
+      B.racas.forEach(function(r){ sr.appendChild(new Option(r, r)); });
+      /* Nelore primeiro: é a única raça que existe nas duas fontes com o
+         mesmo nome, e por isso a única em que o cruzamento fecha. */
+      for (var j=0;j<sr.options.length;j++)
+        if (sr.options[j].value === 'Nelore'){ sr.value = 'Nelore'; break; }
+    }
+    return true;
+  }
+
+  function _x3FontesCard(){
+    var cid = 'chartX3Fontes', ctx = 'chartX3FontesContext';
+    var kEl = document.getElementById('x3Kpis'), tEl = document.getElementById('x3Tab');
+    function limpar(msg){
+      renderPlot(cid, [], { _no_title:true, _sem_titulo:true });
+      if (kEl) kEl.innerHTML = ''; if (tEl) tEl.innerHTML = '';
+      _exSet(ctx, '<div class="rb-vazio">' + msg + '</div>');
+    }
+    if (!document.getElementById(cid)) return;
+    var B = _dgBase();
+    if (!B){ limpar('A aba <b>REPOSIÇÃO DATAGRO</b> não está nesta planilha.'); return; }
+    if (!_x3Popula()){ limpar('A aba <b>REPOSIÇÃO DATAGRO</b> não trouxe colunas em R$/kg.'); return; }
+
+    var sc = document.getElementById('x3Cat'), sr = document.getElementById('x3Raca');
+    var chave = (sc && sc.value) ? sc.value : (B.cats[0] && B.cats[0].chave);
+    var raca  = (sr && sr.value) ? sr.value : B.racas[0];
+    var cat = _dgCat(chave);
+    if (!cat){ limpar('Categoria não encontrada na aba da DATAGRO.'); return; }
+
+    var ufsDg = _dgUfs(raca, chave);
+    if (!ufsDg.length){
+      limpar('A DATAGRO não apura <b>' + cat.rot + '</b> em <b>' + raca + '</b> nesta leitura.');
+      return;
+    }
+
+    /* A Scot: por UF no macho, nacional na fêmea. */
+    var racaScot = _x3RacaScot(raca);
+    var catScot  = _X3_PAR_SCOT[chave] || null;
+    var scotNac  = (cat.sexo === 'femea') ? _x3ScotFemea(raca, cat) : null;
+    var scotData = null;
+    try { var SB = _scotBase(); if (SB && racaScot && SB.porRaca[racaScot]) scotData = SB.porRaca[racaScot].data; } catch(e){}
+
+    var linhas = [], foraFaixa = 0, comPar = 0;
+    ufsDg.forEach(function(uf){
+      var vDg = _dgValor(raca, uf, chave);
+      var sv = null;
+      if (cat.sexo === 'macho' && racaScot && catScot){
+        try { sv = _scotValor(racaScot, uf, catScot); } catch(e){ sv = null; }
+      }
+      var cepea = [];
+      var prodCepea = _X3_PAR_CEPEA[chave] || null;
+      if (prodCepea){
+        var ps = [];
+        try { ps = _rgPracas(prodCepea, uf) || []; } catch(e){ ps = []; }
+        ps.forEach(function(p){
+          if (p.uf !== uf) return;
+          var S = null; try { S = _rgSerie(prodCepea, p.chave, uf); } catch(e){}
+          if (!S || !S.datas || !S.datas.length) return;
+          var ult = S.datas[S.datas.length-1];
+          var v = S.obs[ult];
+          if (!(v > 0)) return;
+          cepea.push({ praca:p.praca, unidade:S.unidade, valor:v, data:ult });
+        });
+      }
+      var dentro = null;
+      if (sv){ comPar++;
+        dentro = (sv.kg >= cat.lo && sv.kg <= cat.hi);
+        if (!dentro) foraFaixa++; }
+      linhas.push({ uf:uf, dg:vDg, scot:sv, dentro:dentro, cepea:cepea });
+    });
+    linhas.sort(function(a,b){ return (b.dg || 0) - (a.dg || 0); });
+
+    /* ── O gráfico: duas barras por UF, cada uma da sua fonte ─────────── */
+    var ufOrd = linhas.map(function(l){ return l.uf; });
+    var tr = [{ x:ufOrd, y:linhas.map(function(l){ return l.dg; }),
+                type:'bar', name:'DATAGRO · ' + cat.lo + ' a ' + cat.hi + ' kg',
+                marker:{ color:_COR_ENT_REPO },
+                hovertemplate:"<span class='hover-label'>%{fullData.name}</span>"
+                  + "<br>%{x}: <b>R$ %{y:,.2f}</b>/kg vivo<extra></extra>" }];
+    if (comPar){
+      tr.push({ x:ufOrd, y:linhas.map(function(l){ return l.scot ? l.scot.porKg : null; }),
+                type:'bar', name:'Scot · peso declarado',
+                marker:{ color:_COR_ENT_BOI },
+                customdata:linhas.map(function(l){
+                  return [ l.scot ? l.scot.kg : null, l.scot ? l.scot.cab : null,
+                           (l.dentro === false) ? 'fora da faixa da DATAGRO' : 'dentro da faixa' ]; }),
+                hovertemplate:"<span class='hover-label'>%{fullData.name}</span>"
+                  + "<br>%{x}: <b>R$ %{y:,.2f}</b>/kg vivo"
+                  + "<br>%{customdata[0]} kg · R$ %{customdata[1]:,.2f}/cabeça"
+                  + "<br>%{customdata[2]}<extra></extra>" });
+    }
+    if (scotNac){
+      /* Fêmea: a Scot é nacional, então vira linha e não barra. Desenhar uma
+         barra por estado com o mesmo número nacional diria que a fonte tem
+         recorte estadual, e ela não tem. */
+      tr.push({ x:[ufOrd[0], ufOrd[ufOrd.length-1]], y:[scotNac.porKg, scotNac.porKg],
+                type:'scatter', mode:'lines',
+                name:'Scot · nacional, ' + scotNac.kg + ' kg',
+                line:{ color:_COR_ENT_BOI, width:_LARG.referencia, dash:'dash' },
+                hovertemplate:"<span class='hover-label'>%{fullData.name}</span>"
+                  + "<br><b>R$ %{y:,.2f}</b>/kg vivo<extra></extra>" });
+    }
+    renderPlot(cid, tr,
+      { _no_title:true, _sem_titulo:true, barmode:'group',
+        yaxis:{ title:'R$ por quilo de peso vivo' }, xaxis:{ title:'' }, showlegend:true });
+
+    /* ── Indicadores ──────────────────────────────────────────────────── */
+    if (kEl){
+      var somaDg = 0, nDg = 0, mn = null, mx = null;
+      linhas.forEach(function(l){ if (!(l.dg > 0)) return;
+        somaDg += l.dg; nDg++;
+        if (mn == null || l.dg < mn) mn = l.dg;
+        if (mx == null || l.dg > mx) mx = l.dg; });
+      var h = _rgKpi('DATAGRO · ' + cat.nome.toUpperCase(),
+                     'R$ ' + _pcN(nDg ? somaDg/nDg : null) + '/kg',
+                     'média simples de ' + nDg + (nDg === 1 ? ' estado' : ' estados')
+                     + ' · faixa R$ ' + _pcN(mn) + ' a ' + _pcN(mx)
+                     + ' · ' + cat.lo + ' a ' + cat.hi + ' kg');
+      if (comPar){
+        var dif = [], nIn = 0;
+        linhas.forEach(function(l){ if (!l.scot || !(l.dg > 0)) return;
+          dif.push(l.dg / l.scot.porKg - 1); if (l.dentro) nIn++; });
+        var mdif = 0; dif.forEach(function(v){ mdif += v; });
+        if (dif.length) mdif /= dif.length;
+        h += _rgKpi('DATAGRO CONTRA SCOT', _pcPct(mdif*100, 1),
+                    'em ' + dif.length + (dif.length === 1 ? ' estado' : ' estados')
+                    + ' com as duas fontes · ' + nIn + ' com o peso da Scot dentro da faixa');
+      } else if (scotNac){
+        h += _rgKpi('SCOT · NACIONAL', 'R$ ' + _pcN(scotNac.porKg) + '/kg',
+                    scotNac.kg + ' kg · R$ ' + _pcN(scotNac.cab) + '/cabeça'
+                    + (scotNac.kg >= cat.lo && scotNac.kg <= cat.hi
+                       ? ' · dentro da faixa' : ' · fora da faixa'));
+      } else {
+        h += _rgKpi('SCOT', 'sem par',
+                    'a raça <b>' + raca + '</b> não existe na apuração da Scot');
+      }
+      var nCep = 0; linhas.forEach(function(l){ nCep += l.cepea.length; });
+      if (nCep){
+        /* O CEPEA casa com a Scot em R$/cabeça, que é a unidade das duas.
+           A razão sai praça por praça contra o preço de cabeça da Scot na
+           UF daquela praça — sem média entre praças. */
+        var rz = [], uniCep = {};
+        linhas.forEach(function(l){
+          var sv = l.scot || scotNac;
+          l.cepea.forEach(function(c){
+            uniCep[c.unidade || '?'] = 1;
+            if (sv && c.valor > 0 && sv.cab > 0 && c.unidade === _X3_UNI_CEPEA)
+              rz.push(c.valor / sv.cab - 1);
+          });
+        });
+        var mr = 0; rz.forEach(function(v){ mr += v; });
+        if (rz.length) mr /= rz.length;
+        var us = Object.keys(uniCep);
+        h += _rgKpi('CEPEA CONTRA SCOT',
+                    rz.length ? _pcPct(mr*100, 1) : _pcN(nCep,0) + ' praças',
+                    rz.length
+                      ? (_pcN(nCep,0) + ' praças em ' + us.join(' e ')
+                         + ', a mesma unidade da Scot · sem peso declarado')
+                      : ('em ' + us.join(' e ') + ' · sem par da Scot nesta leitura'));
+      } else {
+        h += _rgKpi('CEPEA REGIONAL', 'sem equivalente',
+                    'a apuração regional dele tem boi magro e bezerro, e mais nada de reposição');
+      }
+      h += _rgKpi('DATA DE CADA FONTE', _sfDc(B.data),
+                  'DATAGRO ' + _sfDc(B.data)
+                  + (scotData ? (' · Scot ' + _sfDc(scotData)) : '')
+                  + (scotNac && scotNac.data ? (' · Scot fêmea ' + _sfDc(scotNac.data)) : ''));
+      kEl.innerHTML = h;
+    }
+
+    /* ── A tabela das três fontes, cada uma na sua unidade ────────────── */
+    if (tEl){
+      var html = '<div class="rb-head">AS TRÊS FONTES NA MESMA CATEGORIA — '
+        + _sfEsc(cat.rot.toUpperCase()) + ', ' + _sfEsc(raca.toUpperCase()) + '</div>'
+        + '<table class="pc-tab"><thead><tr><th>UF</th>'
+        + '<th>DATAGRO R$/kg</th><th>Scot R$/kg</th><th>peso Scot</th>'
+        + '<th>Scot R$/cabeça</th><th>DATAGRO ÷ Scot</th>'
+        + '<th>CEPEA regional R$/cabeça, por praça</th></tr></thead><tbody>';
+      linhas.forEach(function(l){
+        var sv = l.scot || scotNac;
+        var raz = (sv && l.dg > 0) ? _pcPct((l.dg/sv.porKg - 1)*100, 1) : '–';
+        var pes = sv ? (_pcN(sv.kg, 0) + ' kg'
+                   + (l.dentro === false ? ' <span class="sf-k">(fora da faixa)</span>' : '')
+                   + (!l.scot && scotNac ? ' <span class="sf-k">(nacional)</span>' : '')) : '–';
+        /* Uma linha por praça, com a razão contra o R$/cabeça da Scot ao
+           lado. Unidade impressa quando NÃO é a esperada: aí o número não
+           se compara com nada e isso tem de estar visível. */
+        var cep = l.cepea.length
+          ? l.cepea.map(function(c){
+              var r = (sv && c.valor > 0 && sv.cab > 0 && c.unidade === _X3_UNI_CEPEA)
+                    ? (' <span class="sf-k">(' + _pcPct((c.valor/sv.cab - 1)*100, 1) + ')</span>')
+                    : '';
+              return _sfEsc(c.praca) + ' ' + _pcN(c.valor)
+                   + (c.unidade !== _X3_UNI_CEPEA ? (' ' + _sfEsc(c.unidade || '?')) : '')
+                   + r; }).join('<br>')
+          : '–';
+        html += '<tr><td>' + _sfEsc(l.uf) + '</td>'
+          + '<td><b>' + _pcN(l.dg) + '</b></td>'
+          + '<td>' + (sv ? _pcN(sv.porKg) : '–') + '</td>'
+          + '<td>' + pes + '</td>'
+          + '<td>' + (sv ? _pcN(sv.cab) : '–') + '</td>'
+          + '<td>' + raz + '</td>'
+          + '<td>' + cep + '</td></tr>';
+      });
+      tEl.innerHTML = html + '</tbody></table>';
+    }
+
+    /* ── A leitura ────────────────────────────────────────────────────── */
+    var corpo = 'A DATAGRO apura <b>' + _sfEsc(cat.rot) + '</b> em <b>' + _sfEsc(raca)
+      + '</b> em <b>' + ufsDg.length + '</b> ' + (ufsDg.length === 1 ? 'estado' : 'estados')
+      + ', em R$ por quilo de peso vivo, na leitura de <b>' + _sfD(B.data) + '</b>. ';
+    if (comPar){
+      corpo += 'A Scot cota a mesma categoria em <b>' + comPar + '</b> '
+        + (comPar === 1 ? 'desses estados' : 'desses estados')
+        + ', e o R$/kg dela sai do peso que ela própria declara. ';
+      if (foraFaixa)
+        corpo += 'Em <b>' + foraFaixa + '</b> ' + (foraFaixa === 1 ? 'estado' : 'estados')
+          + ' o peso da Scot cai <b>fora</b> da faixa da DATAGRO, e ali as duas não estão '
+          + 'falando do mesmo animal. ';
+      else
+        corpo += 'O peso da Scot cai dentro da faixa da DATAGRO em todos eles. ';
+    } else if (scotNac){
+      corpo += 'A Scot cota esta categoria de fêmea em <b>âmbito nacional</b>, sem recorte por '
+        + 'estado, a R$ ' + _pcN(scotNac.porKg) + '/kg sobre ' + _pcN(scotNac.kg, 0)
+        + ' kg declarados. Por isso ela aparece como linha, não como barra por estado. ';
+    } else {
+      corpo += 'A Scot não apura a raça <b>' + _sfEsc(raca) + '</b>: ela separa apenas Nelore e '
+        + 'Mestiço, e o painel não trata "Mestiço" como equivalente de "Anelorado" ou de '
+        + '"Cruzamento industrial". ';
+    }
+    var temCepea = !!_X3_PAR_CEPEA[chave];
+    corpo += temCepea
+      ? 'O CEPEA regional cota esta categoria em <b>R$ por cabeça</b>, praça por praça, que é a '
+        + 'mesma unidade da Scot: a razão entre os dois está na tabela, sem conversão nenhuma.'
+      : 'O CEPEA regional <b>não cota</b> esta categoria: a apuração regional dele tem boi magro '
+        + 'e bezerro, e mais nada de reposição.';
+    var nota = 'São duas comparações exatas e cada uma é entre um par diferente. Scot e DATAGRO '
+      + 'se comparam em R$/kg de peso vivo, porque a Scot declara o peso e a DATAGRO publica o '
+      + 'quilo. CEPEA e Scot se comparam em R$/cabeça, que é a unidade das duas. Entre CEPEA e '
+      + 'DATAGRO não há ponte: uma cota por cabeça sem dizer o peso, a outra por quilo numa '
+      + 'faixa de peso, e ligar as duas exigiria um peso inventado ou o ponto médio da faixa. '
+      + 'Como o R$/kg cai conforme o animal engorda, um peso no topo da faixa deve sair abaixo '
+      + 'da média dela: a diferença entre Scot e DATAGRO tem sinal esperado. Nenhuma média é '
+      + 'tirada entre fontes, e cada uma carrega a data da própria leitura.';
+    _exSet(ctx, _exLeitura(corpo, nota));
+  }
+
+  function _x3Render(){
+    try { _x3FontesCard(); } catch(e){ console.warn('Cruzamento das fontes de reposição:', e); }
+  }
+  try { window._x3Render = _x3Render; } catch(e){}
+  document.addEventListener('change', function(ev){
+    var t = ev.target; if (!t) return;
+    if (['x3Sexo','x3Cat','x3Raca'].indexOf(t.id) < 0) return;
+    /* Trocar o sexo troca a lista de categorias: o seletor precisa se
+       refazer antes do card ler dele. */
+    if (t.id === 'x3Sexo'){
+      var sc = document.getElementById('x3Cat');
+      if (sc) sc.setAttribute('data-sexo', '');
+    }
+    _x3Render();
+  });
+
   /* ═══════════════════════════════════════════════════════════════════════
      FÊMEAS — ABATE E REPOSIÇÃO                              Etapa 6 · 20/10/2026
      ═══════════════════════════════════════════════════════════════════════
@@ -53525,6 +54078,7 @@ function updateRelacao() {
     chartFemAgio:'m3_1_10', chartFemMatriz:'m3_1_10',
     chartFemNovilha:'m3_1_10',
     chartSfCurva:'m3_1_11', chartSfDif:'m3_1_11',
+    chartX3Fontes:'m3_2_8',
     chartBoiVsBGIAll:'m3_1_8', chartRatioBGICCM:'m3_1_8', chartBGICarrego:'m3_1_8',
     // ── ESTUDO ──────────────────────────────────────────────────────────
     chartSHBoiGordoAnnual:'m3_2_1', chartSHBoiGordoYoY:'m3_2_1',
@@ -55126,7 +55680,7 @@ function updateRelacao() {
        só eram desenhados pela série histórica do bezerro, em outra seção. */
     ['_renderBoiMagroTroca','_renderBoiMagroAgio',
      '_renderBezBoiTroca','_renderBezAgioHist',
-     'updateMagroVariacao','_scotRender'].forEach(function(f){
+     'updateMagroVariacao','_scotRender','_x3Render'].forEach(function(f){
       try { if(typeof window[f]==='function') window[f](); }
       catch(e){ console.warn(f+':', e); }
     });
@@ -72622,6 +73176,7 @@ window._m3SmokeTest = function(secId){
     { id:'fe_matriz',    tema:'Fêmeas', chart:'chartFemMatriz',        rot:'Reposição: troca entre categorias' },
     { id:'fe_sint',      tema:'Fêmeas', chart:'chartSfCurva',          rot:'Vaca e novilha sintéticas por vencimento' },
     { id:'fe_sintdif',   tema:'Fêmeas', chart:'chartSfDif',            rot:'O diferencial que monta a curva sintética' },
+    { id:'fe_x3',        tema:'Fêmeas', chart:'chartX3Fontes',         rot:'Reposição nas três fontes' },
     // ── CICLO PECUÁRIO ───────────────────────────────────────────────
     { id:'ci_abate',     tema:'Ciclo',  chart:'chartAbateIBGE',        rot:'Abate de fêmeas no Brasil' },
     { id:'ci_preco',     tema:'Ciclo',  chart:'chartAbatePreco',       rot:'Preço real do boi no mesmo período' },
@@ -72646,9 +73201,9 @@ window._m3SmokeTest = function(secId){
     { id:'r_soja',   rot:'Soja',            oque:'O que o painel acompanha de soja hoje.',
       blocos:['so_var','so_curva'] },
     { id:'r_femeas', rot:'Fêmeas',          oque:'Abate e reposição: preço, desconto, base, ágio por categoria e as referências por vencimento.',
-      blocos:['fe_preco','fe_posicao','fe_desconto','fe_base','fe_yoy','fe_novilha','fe_agio','fe_matriz','fe_sintdif','fe_sint'] },
+      blocos:['fe_preco','fe_posicao','fe_desconto','fe_base','fe_yoy','fe_novilha','fe_agio','fe_matriz','fe_sintdif','fe_sint','fe_x3'] },
     { id:'r_ciclo',  rot:'Ciclo pecuário',  oque:'Onde o ciclo está, o que ele projeta e como a reposição responde.',
-      blocos:['ci_abate','ci_preco','ci_mt','ci_tempo','ci_proj','ci_senoide','ci_anual','ci_bez','ci_bezboi','ci_bezagio'] },
+      blocos:['ci_abate','ci_preco','ci_mt','ci_tempo','ci_proj','ci_senoide','ci_anual','ci_bez','ci_bezboi','ci_bezagio','fe_x3'] },
     { id:'r_sazon',  rot:'Sazonalidade',    oque:'O ano típico de cada mercado, lado a lado.',
       blocos:['boi_anual','boi_sazon','boi_hit','mi_anual','mi_sazon','ci_bez'] },
     { id:'r_dia',    rot:'Fechamento do dia', oque:'Uma página por mercado, para circular no fim do pregão.',
