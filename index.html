@@ -1576,21 +1576,49 @@ header{
 .kpi-card.status-risk{ border-left: 4px solid #dc2626; }
 
 /* ── Projeção pelo ciclo pecuário ───────────────────────────────────── */
+/* A FONTE DA TABELA É A DO CORPO, NÃO A DE DISPLAY.
+   `--font-display` é Montserrat, uma geométrica de títulos: dígitos largos,
+   redondos e de larguras diferentes entre si. Numa tabela de números isso
+   produz duas coisas ruins ao mesmo tempo — coluna de valores que não
+   alinha e peso de cartaz num bloco de dados densos. Inter foi desenhada
+   para interface e tem algarismos tabulares de verdade.
+   `tabular-nums` é o que faz a vírgula de cada linha cair na mesma coluna.
+   Sem isso, 1.111,11 e 4.999,99 ocupam larguras distintas e a coluna
+   inteira fica torta, que é o detalhe que denuncia tabela improvisada. */
 .pc-tab{ width:100%; border-collapse:collapse; font-size: var(--fs-sm); margin-top:10px;
-  font-family:var(--font-display); }
+  font-family:var(--font-sans); font-variant-numeric:tabular-nums;
+  font-feature-settings:'tnum' 1, 'lnum' 1; }
+/* NÚMERO ALINHA À DIREITA, e o cabeçalho acompanha a coluna.
+   Algarismo tabular só paga quando as casas caem umas sobre as outras.
+   Centralizado, "−10,24%" e "−6,27%" têm comprimentos diferentes e a
+   vírgula de uma linha não fica em cima da vírgula da outra: a coluna sai
+   torta mesmo com a fonte certa. À direita, as casas decimais formam uma
+   coluna e a ordem de grandeza se lê pelo comprimento do número, que é
+   para isso que a tabela existe.
+   A primeira coluna é rótulo, não número, e continua à esquerda. */
 .pc-tab thead th{ background:#0f766e; color:#fff; font-size: var(--fs-mini); font-weight:700;
-  text-transform:uppercase; letter-spacing:.05em; padding:7px 8px; text-align:center;
+  text-transform:uppercase; letter-spacing:.05em; padding:7px 9px; text-align:right;
   white-space:nowrap; }
 .pc-tab thead th:first-child{ border-radius:8px 0 0 0; text-align:left; }
 .pc-tab thead th:last-child{ border-radius:0 8px 0 0; }
-.pc-tab tbody td{ padding:6px 8px; text-align:center; border-bottom:1px solid #eef2f5; color:#111827; }
+.pc-tab tbody td{ padding:6px 9px; text-align:right; border-bottom:1px solid #eef2f5;
+  color:#111827; font-variant-numeric:tabular-nums; line-height:1.5; }
 .pc-tab tbody td:first-child{ text-align:left; font-weight:700; color:#134e4a; white-space:nowrap; }
 .pc-tab tbody tr:nth-child(even) td{ background:#f8fafb; }
 .pc-tab tbody tr:hover td{ background:#ecfdf5; }
 .pc-tab .pc-cen{ font-weight:800; color:#0f766e; }
 .pc-tab .pc-inf{ color:#b91c1c; }
 .pc-tab .pc-sup{ color:#15803d; }
-.pc-tab .pc-apoio{ font-size: var(--fs-nano); color:#6b7280; text-align:left; }
+.pc-tab .pc-apoio{ font-size: var(--fs-nano); color:#6b7280; }
+.pc-tab tbody td.pc-apoio, .pc-tab thead th.pc-apoio{ text-align:left; white-space:normal; }
+/* COLUNA DE TEXTO VOLTA PARA A ESQUERDA.
+   Direita é o alinhamento do número, não da palavra: "retração" e "início
+   de recuperação" encostados na borda direita deixam a margem esquerda
+   serrilhada e ficam mais difíceis de varrer que à esquerda. Quem marca
+   estas colunas é `_pcAlinhaTabela`, que lê o conteúdo — CSS não enxerga
+   conteúdo, e a posição da coluna não diz se ela é número ou palavra. */
+.pc-tab tbody td.pc-txt{ text-align:left; white-space:normal; }
+.pc-tab thead th.pc-txt{ text-align:left; }
 .pc-tab .pc-fase{ font-size: var(--fs-nano); }
 .pc-conf{ display:inline-block; padding:1px 7px; border-radius:999px; font-size: var(--fs-mini); font-weight:700; }
 .pc-conf.alta{ background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; }
@@ -49339,10 +49367,44 @@ function updateRelacao() {
     // inteira. O filtro de período entra depois, para que a volatilidade
     // móvel no início do mês use os pregões do mês anterior em vez de ficar
     // vazia nos primeiros 21 dias.
-    var ret = [];
+    /* ── VARIAÇÃO ENTRE PREGÕES DISTANTES NÃO É VARIAÇÃO DIÁRIA ───────
+       CAUSA RAIZ DE UM DEFEITO REAL. A conta percorria LINHAS da planilha e
+       tratava cada par consecutivo como dois pregões seguidos. A S.H BOI
+       GORDO tem um buraco de 60 dias entre 05/01/2026 e 06/03/2026, e a
+       diferença de preço entre as duas pontas — +8,65% — virava uma barra
+       de variação DIÁRIA. Com isso o card mentia duas vezes: "maior alta
+       +8,65% em 06/03" como indicador, e a escala simétrica do eixo esticada
+       para ±10,2% por causa dessa única barra, achatando os outros 158
+       pregões num fio. O gráfico parecia quebrado porque, em termos de
+       leitura, estava.
+
+       O LIMITE É MEDIDO NA PRÓPRIA SÉRIE, não arbitrado. Boi, milho e
+       açúcar têm cadência diária: gap de 1 a 5 dias é fim de semana e
+       feriado, e o normal é 1. O etanol é SEMANAL — 1.241 dos seus 1.245
+       intervalos têm de 6 a 10 dias. Uma constante de cinco dias apagaria o
+       card do etanol inteiro. Então o limite sai da mediana do intervalo da
+       série vezes três, com piso de cinco dias: dá 5 para as diárias e 21
+       para a semanal, e cada uma passa a reconhecer o próprio buraco.
+
+       O ponto do buraco não existe, não vira zero e não é interpolado — é a
+       mesma regra do resto do painel. E o número de buracos vai para a
+       tela, porque lacuna silenciosa foi exatamente o que criou isto. */
+    var _gaps = [];
+    for (var g = 1; g < serie.pts.length; g++)
+      _gaps.push(Math.round((serie.pts[g].d - serie.pts[g-1].d) / 86400000));
+    var _gOrd = _gaps.slice().sort(function(a,b){ return a - b; });
+    var _gMed = _gOrd.length ? _gOrd[Math.floor(_gOrd.length/2)] : 1;
+    var _volLimGap = Math.max(5, (_gMed > 0 ? _gMed : 1) * 3);
+
+    var ret = [], _volBuracos = [];
     for (var i=1;i<serie.pts.length;i++){
       var p0 = serie.pts[i-1].p, p1 = serie.pts[i].p;
       if (!(p0 > 0)) continue;
+      var _dias = Math.round((serie.pts[i].d - serie.pts[i-1].d) / 86400000);
+      if (_dias > _volLimGap){
+        _volBuracos.push({ de:serie.pts[i-1].d, para:serie.pts[i].d, dias:_dias });
+        continue;
+      }
       ret.push({ d:serie.pts[i].d, v:(p1/p0 - 1) * 100, px:p1 });
     }
     if (!ret.length){ limpar('Não foi possível calcular a variação entre pregões nesta aba.'); return; }
@@ -49405,8 +49467,17 @@ function updateRelacao() {
                : (fy != null) ? ('ano de ' + fy)
                : (_VOL_MESES[fm] + ', todos os anos');
     var nomeSerie = cfg.label || serie.sheet;
+    /* Buracos que caem DENTRO do recorte da tela. Um buraco em 2019 não
+       interessa a quem está olhando 2026. */
+    var _bJanela = _volBuracos.filter(function(b){
+      if (fy != null && b.para.getFullYear() !== fy && b.de.getFullYear() !== fy) return false;
+      if (fm != null && b.para.getMonth()  !== fm && b.de.getMonth()  !== fm) return false;
+      return true;
+    });
     if (scopeEl) scopeEl.textContent = nomeSerie + ' · ' + rotulo + ' · ' + x.length + ' pregões'
-      + (lim > 0 ? ' · mostrando ' + nAcima + ' acima de ' + lim.toFixed(2).replace('.',',') + '%' : '');
+      + (lim > 0 ? ' · mostrando ' + nAcima + ' acima de ' + lim.toFixed(2).replace('.',',') + '%' : '')
+      + (_bJanela.length ? ' · ' + _bJanela.length
+          + (_bJanela.length === 1 ? ' intervalo sem cotação' : ' intervalos sem cotação') : '');
 
     var traces = [
       {x:x, y:y, type:'bar', name:'Variação do pregão (%)',
@@ -49513,6 +49584,20 @@ function updateRelacao() {
       h += '<div class="rb-line">O melhor dia subiu <span class="rb-num">+' + yCheio[iMax].toFixed(2)
          + '%</span> em ' + _dbr(x[iMax]) + ' e o pior caiu <span class="rb-num">' + yCheio[iMin].toFixed(2)
          + '%</span> em ' + _dbr(x[iMin]) + '. Fecharam em alta ' + altas + ' dos ' + x.length + ' pregões.</div>';
+      /* O buraco explicado onde o leitor procura o porquê. Sem esta linha,
+         um mês inteiro sem barras parece card quebrado. */
+      if (_bJanela.length){
+        h += '<div class="rb-line">A série tem <b>' + _bJanela.length + '</b> '
+           + (_bJanela.length === 1 ? 'intervalo sem cotação na série' : 'intervalos sem cotação na série')
+           + ' dentro deste recorte'
+           + _bJanela.slice(0,3).map(function(b){
+               return ' — de ' + _dbr(b.de) + ' a ' + _dbr(b.para) + ', ' + b.dias + ' dias';
+             }).join(';')
+           + (_bJanela.length > 3 ? ' e outros' : '') + '. '
+           + 'A diferença de preço entre as duas pontas de um intervalo desses <b>não é variação '
+           + 'diária</b> e por isso não vira barra: ela entraria com o tamanho de semanas de '
+           + 'mercado num gráfico de um dia, distorcendo também a escala e os indicadores.</div>';
+      }
       if (lim > 0){
         h += '<div class="rb-line">Com o corte em <b>' + lim.toFixed(2).replace('.',',')
            + '%</b>, o gráfico está exibindo <span class="rb-num">' + nAcima + '</span> pregões, '
@@ -52145,6 +52230,82 @@ function updateRelacao() {
       + (m.melhor ? (' Em dia: <b>' + _sfEsc(m.melhor.rot) + '</b>.') : '') + '</div>';
   }
 
+  /* ── ALINHAMENTO DAS TABELAS, DECIDIDO PELO CONTEÚDO ──────────────────
+     As ~25 tabelas `pc-tab` do painel são escritas por outros tantos
+     construtores, cada um montando o HTML por conta própria. Marcar coluna
+     por coluna em todos eles seria um trabalho que envelhece: a próxima
+     tabela nasceria desalinhada.
+
+     Então a decisão é lida do resultado. Para cada coluna, quantas células
+     são número e quantas são palavra; abaixo de 60% de números a coluna é
+     de texto e volta para a esquerda. Travessão de ausência não conta para
+     nenhum dos lados — ele aparece tanto numa coluna de preço quanto numa
+     de rótulo, e deixá-lo votar inverteria colunas quase vazias.
+
+     A primeira coluna nunca entra: ela é o rótulo da linha, e já está à
+     esquerda por regra própria. */
+  function _pcEhNum(txt){
+    var t = String(txt == null ? '' : txt).trim();
+    if (!t) return null;                            /* vazio: neutro      */
+    if (/^[—–-]$/.test(t)) return null;             /* ausência: neutro   */
+    return /^[+\-−]?\s*(R\$\s*)?\d[\d.\s]*(,\d+)?\s*(%|×|x|@|pp|p\.p\.|\/@|\/sc|\/kg|\/cab\w*|a\.a\.|sc|kg|cab\w*|dias?|meses|pregões?)?$/i
+             .test(t);
+  }
+  function _pcAlinhaTabela(tab){
+    var corpo = tab.tBodies && tab.tBodies[0];
+    if (!corpo || !corpo.rows.length) return;
+    var linhas = corpo.rows, nCol = 0, i, j;
+    for (i = 0; i < linhas.length; i++)
+      if (linhas[i].cells.length > nCol) nCol = linhas[i].cells.length;
+    var cab = tab.tHead && tab.tHead.rows.length ? tab.tHead.rows[tab.tHead.rows.length-1] : null;
+    for (j = 1; j < nCol; j++){
+      var num = 0, txt = 0;
+      for (i = 0; i < linhas.length; i++){
+        var c = linhas[i].cells[j]; if (!c) continue;
+        var r = _pcEhNum(c.textContent);
+        if (r === true) num++; else if (r === false) txt++;
+      }
+      var total = num + txt;
+      var ehTexto = total > 0 && num < total * 0.6;
+      for (i = 0; i < linhas.length; i++){
+        var c2 = linhas[i].cells[j];
+        if (c2) c2.classList.toggle('pc-txt', ehTexto);
+      }
+      var h = cab && cab.cells[j];
+      if (h) h.classList.toggle('pc-txt', ehTexto);
+    }
+  }
+  function _pcAlinhaTudo(){
+    try {
+      var ts = document.querySelectorAll('table.pc-tab');
+      for (var i = 0; i < ts.length; i++) _pcAlinhaTabela(ts[i]);
+    } catch(e){}
+  }
+  try { window._pcAlinhaTudo = _pcAlinhaTudo; } catch(e){}
+
+  /* As tabelas nascem e renascem a cada navegação e a cada troca de
+     seletor. O observador cobre todas sem que nenhum construtor precise
+     saber que isto existe. Só `childList`: a passada mexe em CLASSE, e
+     observar atributos faria ela se observar e girar sozinha. */
+  var _PC_ALIN_PEND = null;
+  function _pcAgenda(){
+    if (_PC_ALIN_PEND) return;
+    _PC_ALIN_PEND = setTimeout(function(){ _PC_ALIN_PEND = null; _pcAlinhaTudo(); }, 60);
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    _pcAlinhaTudo();
+    try {
+      new MutationObserver(function(muts){
+        for (var i = 0; i < muts.length; i++){
+          var a = muts[i].target;
+          if (!a || a.nodeType !== 1) continue;
+          if ((a.closest && a.closest('table.pc-tab')) ||
+              (a.querySelector && a.querySelector('table.pc-tab'))){ _pcAgenda(); return; }
+        }
+      }).observe(document.body, { childList:true, subtree:true });
+    } catch(e){}
+  });
+
   function _femPopulaPracasBloco(){
     var el = document.getElementById('femVPraca'); if (!el) return;
     var cat = _femCatSel();
@@ -52550,11 +52711,52 @@ function updateRelacao() {
        partir a figura em dois painéis. Sem essa palavra o Plotly empilha os
        dois eixos no mesmo canto esquerdo: duas escalas de ticks uma por cima
        da outra, dois títulos colados e as quatro séries no mesmo espaço. */
+    /* ── O VÃO DO PAINEL DE CIMA, DECLARADO ───────────────────────────
+       Os dois painéis dividem UM eixo do tempo, e é isso que permite ler
+       ritmo e oscilação na vertical, pela data. Só que eles não começam
+       juntos: a volatilidade de 21 pregões precisa de 21 pregões, e a
+       variação interanual precisa de DOZE MESES. Numa janela de 24 meses
+       sobre uma série que começou em ago/2024, o painel de baixo arranca em
+       nov/2024 e o de cima só em jul/2025 — 37% da largura do painel
+       superior ficava em branco, sem nada na tela dizendo por quê.
+
+       Encurtar o eixo até onde o interanual existe resolveria o vão e
+       mentiria sobre a janela escolhida, além de jogar fora oito meses de
+       volatilidade que existem de verdade. Dar um eixo próprio a cada
+       painel destruiria o alinhamento vertical, que é a razão de os dois
+       estarem no mesmo card.
+
+       Então o vão fica, e passa a ser informação: faixa cinza sobre o
+       painel de cima, com a razão escrita dentro quando há largura para
+       ela. Lacuna explicada é leitura; lacuna silenciosa é o que parece
+       defeito. */
+    var _femFaltaYoY = [], _femFaltaRot = [];
+    if (comV.length >= _FEM_MIN_N && temVol && B.datas.length && d.length){
+      var _x0 = B.datas[0], _x1 = d[0];
+      if (_x0 < _x1){
+        var _t0 = _femX([_x0])[0], _t1 = _femX([_x1])[0];
+        var _tFim = _femX([B.datas[B.datas.length-1]])[0];
+        _femFaltaYoY = [{ type:'rect', xref:'x', yref:'y domain',
+          x0:_t0, x1:_t1, y0:0, y1:1,
+          fillcolor:'rgba(148,163,184,0.12)', line:{ width:0 }, layer:'below' }];
+        /* O rótulo só entra quando a faixa é larga o bastante para caber:
+           texto espremido num vão estreito é pior que vão sem texto. */
+        var _frac = (_t1 - _t0) / ((_tFim - _t0) || 1);
+        if (_frac >= 0.14){
+          _femFaltaRot = [{ xref:'x', yref:'y domain',
+            x:new Date((_t0.getTime() + _t1.getTime())/2), y:0.5,
+            text:'sem doze meses anteriores<br>para comparar',
+            showarrow:false, align:'center',
+            font:{ size:10, color:'#64748b' } }];
+        }
+      }
+    }
     renderPlot(cid, traces, { _no_title:true, _sem_titulo:true,
       yaxis:  { title:'Contra 12 meses antes (%)', ticksuffix:'%' },
       yaxis2: { title:'Volatilidade anualizada (%)', ticksuffix:'%',
                 overlaying:'y', side:'right' },
-      xaxis:  { title:'' }, showlegend:true });
+      xaxis:  { title:'' }, showlegend:true,
+      shapes:_femFaltaYoY, annotations:_femFaltaRot });
 
     function ultimo(a){ if(!a) return null; for (var z=a.length-1;z>=0;z--) if (a[z]!=null) return a[z]; return null; }
     var uV = ultimo(v), uB = ultimo(b), dif = (uV!=null && uB!=null) ? uV-uB : null;
@@ -73374,7 +73576,11 @@ window._m3SmokeTest = function(secId){
   input[type="date"], .btn, .bmslk-btn, .asel-choice{
     min-height:44px;
   }
-  .wl-tab-btn, .page-tab-btn, .opc-tab, .pc-tab, .btn-ig, .info-btn{
+  /* `.pc-tab` e `.opc-tab` SAÍRAM DAQUI. Esta regra é de alvo de toque e
+     vale para BOTÕES de aba; as duas são tabelas, e o nome com "tab" vem de
+     "tabela", não de "aba". Um <table> com altura mínima de 40 px e padding
+     de botão é defeito, não acessibilidade. */
+  .wl-tab-btn, .page-tab-btn, .btn-ig, .info-btn{
     min-height:40px; padding-inline:var(--space-3);
   }
 
