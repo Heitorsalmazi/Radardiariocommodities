@@ -3940,6 +3940,84 @@ header{
 #pagePaneAlertas .ct-leitura li{ margin: 2px 0; }
 #pagePaneAlertas .ct-leitura li::marker{ color: var(--m3-muted); }
 
+/* ── CURVAS SINTÉTICAS DE FÊMEAS ────────────────────────────────────────
+   A geometria é a dos cards de contrato dos Alertas, logo acima. As regras
+   são repetidas com escopo próprio porque aquelas vivem dentro de
+   `#pagePaneAlertas`, que é painel migrado, e esta seção não é.
+
+   A diferença de substância é o selo. Os preços destes cards não existem
+   na B3: são o fechamento de um contrato real somado ao diferencial
+   observado de uma fêmea física. O card diz isso antes de mostrar o
+   número, e o selo não é removível por configuração. */
+.sf-grade{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(318px, 1fr));
+  gap: 10px; margin-top: 6px; align-items: start;
+}
+.sf-card{
+  border: 1px solid var(--m3-border-soft); border-radius: 12px;
+  background: var(--m3-surface); padding: 10px 12px 11px;
+  box-shadow: var(--shadow-soft);
+}
+.sf-topo{ display:flex; align-items:center; justify-content:space-between; gap:8px;
+  margin-bottom:5px; }
+.sf-cod{ font-weight:800; font-size: var(--fs-sm); letter-spacing:.04em;
+  color: var(--m3-title) !important; }
+.sf-selo{
+  font-size: var(--fs-nano); font-weight:800; letter-spacing:.02em;
+  border-radius:999px; padding:2px 7px; white-space:nowrap;
+  background: rgba(190,18,60,0.10) !important;
+  border:1px solid rgba(190,18,60,0.30) !important; color:#be123c !important;
+}
+.sf-preco{ display:flex; align-items:baseline; gap:7px; flex-wrap:wrap; margin-bottom:7px; }
+.sf-preco b{ font-size: var(--fs-lg); font-weight:800; color: var(--m3-title) !important;
+  font-variant-numeric: tabular-nums; }
+.sf-uni{ font-size: var(--fs-nano); color: var(--m3-muted) !important; }
+.sf-dia{ font-size: var(--fs-nano); font-weight:700; margin-left:auto;
+  font-variant-numeric: tabular-nums; }
+.sf-dia.pos{ color: var(--m3-pos) !important; }
+.sf-dia.neg{ color: var(--m3-neg) !important; }
+.sf-dia.nula{ color: var(--m3-muted) !important; }
+.sf-tags{ display:flex; flex-wrap:wrap; gap:4px; }
+.sf-tag{
+  font-size: var(--fs-nano); line-height:1.5;
+  border:1px solid var(--m3-border-soft); border-radius:6px; padding:1px 6px;
+  background: var(--m3-surface-2) !important; color: var(--m3-body) !important;
+  white-space:nowrap;
+}
+.sf-tag b{ color: var(--m3-title) !important; font-weight:700; }
+/* Mistura de abrangência entre a fêmea e o boi: âmbar, a cor que o painel
+   já usa para reposição e para o que exige ressalva. */
+.sf-tag-mist{ background: rgba(180,83,9,0.10) !important;
+  border-color: rgba(180,83,9,0.24) !important; }
+.sf-tag-def{ background: rgba(148,163,184,0.14) !important;
+  border-color: rgba(148,163,184,0.30) !important; }
+.sf-spark{ height:46px; margin:7px 0 2px; }
+.sf-spark svg{ width:100%; height:46px; display:block; }
+.sf-dados{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr));
+  gap:0 14px; margin-top:9px; }
+.sf-item{ display:flex; align-items:baseline; justify-content:space-between; gap:8px;
+  font-size: var(--fs-nano); line-height:1.75;
+  border-bottom:1px dotted var(--m3-border-soft); }
+.sf-k{ color: var(--m3-muted) !important; white-space:nowrap; }
+.sf-v{ color: var(--m3-body) !important; font-weight:700;
+  font-variant-numeric: tabular-nums; white-space:nowrap; }
+.sf-item-forte .sf-v{ color: var(--m3-title) !important; }
+.sf-item-larg{ grid-column: 1 / -1; }
+.sf-item-larg .sf-v{ white-space:normal; text-align:right; font-weight:600; }
+.sf-vazio{ color: var(--m3-muted) !important; font-size: var(--fs-nano); padding:12px 0 2px; }
+/* Card sem valor corrente: a borda tracejada diz, antes da leitura, que ali
+   não há número de hoje. O último valor montado fica na primeira linha de
+   apoio, com a data, e não no lugar de destaque. */
+.sf-card-pend{ border-style: dashed !important; }
+.sf-pend{ font-size: var(--fs-sm) !important; font-weight:700 !important;
+  color: var(--m3-muted) !important; letter-spacing:.01em; }
+.sf-card-pend .sf-uni{ white-space:normal; }
+@media (max-width: 560px){
+  .sf-grade{ grid-template-columns: 1fr; }
+  .sf-dados{ grid-template-columns: 1fr; }
+}
+
 /* PAINEL MIGRADO NÃO É MAIS PÁGINA ───────────────────────────────────
    Alertas e TOP 5 nasceram como telas inteiras e carregam disso um fundo
    de página, um respiro de 14px e `min-height: 100vh`. Dentro da seção de
@@ -9363,6 +9441,135 @@ header{
       <div id="chartFemMatriz" class="chart-container" style="height:420px"></div>
       <div id="femMatrizTab"></div>
       <div id="chartFemMatrizContext" class="chart-context"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         VACA E NOVILHA POR VENCIMENTO DO BOI GORDO          23/10/2026
+         ═══════════════════════════════════════════════════════════════════
+         A B3 não lista contrato de vaca nem de novilha. Quem precisa
+         precificar um lote de fêmea para entrega em março só tem duas
+         coisas na mão: a curva do boi, que é negociada, e o quanto a fêmea
+         vale a menos que o boi no mercado físico, que é observado.
+
+         A conta é a soma das duas, em reais por arroba:
+
+             VGI = fechamento do BGI + (vaca física − boi CEPEA)
+             NVI = fechamento do BGI + (novilha física − boi CEPEA)
+
+         Três coisas definem se isso informa ou engana:
+
+         ① O DIFERENCIAL É DO DIA, NÃO O MAIS RECENTE. Cada pregão carrega
+         o diferencial que foi observado NAQUELE pregão, ou o último
+         anterior a ele dentro de dez dias. A busca só olha para trás, e é
+         isso que torna a curva estável: um pregão novo nunca reescreve um
+         ponto antigo. O diferencial de 2 de agosto de 2024 continua sendo
+         o de 2 de agosto de 2024 depois de quinhentos pregões.
+
+         ② CADA PRAÇA É UMA CONFIGURAÇÃO, COM HISTÓRICO PRÓPRIO. Nada é
+         somado entre praças e nada troca de fonte em silêncio. O CEPEA
+         regional cota vaca e boi na MESMA praça desde 01/08/2024, e esse é
+         o diferencial mais limpo que a base permite. A coleta própria tem
+         novilha, que o CEPEA não cota, e não tem macho — então o boi dela
+         vem do CEPEA, e quando a praça não existe no CEPEA regional o boi
+         é o indicador nacional. O card diz qual dos dois casos é o seu.
+
+         ③ FALTA DE DADO É FALTA DE PONTO. Sem cotação da fêmea, sem
+         cotação do boi ou sem fechamento do contrato, o ponto não existe.
+         Não vira zero, não vira variação de 0% e não vira interpolação. O
+         gráfico mostra o buraco, que é informação.
+
+         O que isto NÃO faz: não estima novilha a partir de vaca, não usa
+         preço de reposição, não substitui o CEPEA pela DATAGRO na ponta do
+         boi e não arredonda o diferencial para uma média da série.         -->
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">VACA E NOVILHA SINTÉTICAS POR VENCIMENTO</span><button type="button" class="info-btn" aria-label="Ajuda: curvas sintéticas de fêmeas" data-tooltip="Fechamento do contrato BGI do vencimento somado ao diferencial da fêmea observado no mesmo pregão. Preço de referência, não cotação: a B3 não negocia contrato de vaca nem de novilha.">ⓘ</button></div>
+      <div class="pill">O fechamento do BGI mais o quanto a fêmea vale a menos no físico</div>
+      <div class="explain">
+        <span class="ex-tag">Como o número é montado</span>
+        Para cada vencimento vigente do boi gordo, o <b>fechamento do contrato</b> somado ao
+        <b>diferencial da fêmea</b> em reais por arroba. O diferencial é a diferença observada
+        entre a fêmea e o boi gordo do CEPEA no mesmo pregão, na mesma praça quando existe par.
+        <span class="ex-tag">Por que aditivo e não razão</span>
+        Diferencial em reais mantém a unidade da arroba e soma direto no fechamento. Razão
+        percentual exigiria escolher sobre qual preço aplicar o percentual, e essa escolha
+        mudaria o resultado sem estar na tela.
+        <span class="ex-tag">O que cada card carrega</span>
+        Código sintético, categoria, vencimento, valor em R$/@, variação do dia em reais e em
+        percentual, a <b>decomposição</b> dessa variação entre o que veio do BGI e o que veio do
+        diferencial, o acumulado, a data do dado e o estado da atualização.
+        <span class="ex-tag">Limite</span>
+        <b>Não é cotação.</b> Nenhum destes códigos é negociável e nenhuma bolsa os publica.
+        São referência de precificação construída a partir de duas séries que existem.
+      </div>
+      <!-- A barra desta seção governa os três cards: fonte da fêmea, praça e
+           categoria. O vencimento é escolha do segundo card, porque a grade
+           mostra todos de uma vez e o gráfico mostra um. -->
+      <div class="bgi-ctrl">
+        <span class="bgi-lbl">Fonte da fêmea</span>
+        <select id="sfFonte" class="bgi-sel" title="O CEPEA regional cota vaca gorda em 27 praças desde 01/08/2024 e não cota novilha. A coleta própria cota as duas, em três praças, desde 16/10/2026.">
+          <option value="cepea" selected>CEPEA regional, vaca gorda</option>
+          <option value="coleta">Coleta própria, vaca e novilha</option>
+        </select>
+        <span class="bgi-lbl" style="margin-left:8px">Praça</span>
+        <select id="sfPraca" class="bgi-sel" title="Cada praça é uma configuração com histórico próprio. Nada é somado entre praças."></select>
+        <span class="bgi-lbl" style="margin-left:8px">Categoria</span>
+        <select id="sfCat" class="bgi-sel" title="Vaca e novilha são dois produtos, com mercados e preços próprios. A novilha nunca é estimada a partir da vaca.">
+          <option value="ambas" selected>As duas</option>
+          <option value="vaca">Vaca gorda</option>
+          <option value="novilha">Novilha gorda</option>
+        </select>
+      </div>
+      <div id="sfKpis" class="vol-kpis"></div>
+      <div id="sfGrade" class="sf-grade"></div>
+      <div id="sfGradeContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">BOI, VACA E NOVILHA NO MESMO VENCIMENTO</span><button type="button" class="info-btn" aria-label="Ajuda: curvas no mesmo vencimento" data-tooltip="A curva negociada do BGI e as curvas sintéticas de vaca e novilha para o mesmo vencimento. A distância vertical entre elas é o diferencial do físico, pregão por pregão. Buracos no traço são pregões sem dado.">ⓘ</button></div>
+      <div class="pill">A distância entre os traços é o diferencial, dia a dia</div>
+      <div class="explain">
+        <span class="ex-tag">O que o gráfico mede</span>
+        Três séries no mesmo vencimento e no mesmo eixo de reais por arroba: o
+        <b>fechamento negociado</b> do contrato e as <b>referências sintéticas</b> de vaca e de
+        novilha construídas sobre ele. A distância vertical entre o boi e cada fêmea é o
+        diferencial do mercado físico naquele pregão.
+        <span class="ex-tag">Por que os traços têm buracos</span>
+        Porque o dado tem. Pregão sem cotação da fêmea, sem cotação do boi de referência ou com
+        diferencial mais velho que dez dias não gera ponto. Ligar as pontas por cima do buraco
+        inventaria preço, e o gráfico prefere mostrar a lacuna.
+        <span class="ex-tag">Novilha em tracejado</span>
+        A novilha não é variante da vaca, é outro produto. Cor igual e traço diferente é a
+        separação que sobrevive a daltonismo e a impressão em preto e branco.
+      </div>
+      <div class="bgi-ctrl">
+        <span class="bgi-lbl">Vencimento</span>
+        <select id="sfVenc" class="bgi-sel" title="Vencimentos vigentes do BGI com série na planilha."></select>
+      </div>
+      <div id="chartSfCurva" class="chart-container" style="height:460px"></div>
+      <div id="chartSfCurvaContext" class="chart-context"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-title"><span class="card-title-text">O DIFERENCIAL QUE MONTA A CURVA</span><button type="button" class="info-btn" aria-label="Ajuda: diferencial da fêmea" data-tooltip="Série do diferencial fêmea menos boi, em R$/@, pregão por pregão. É a única parcela que a curva sintética acrescenta ao fechamento do contrato, e é a parcela auditável: a tabela mostra os últimos pregões com a conta aberta.">ⓘ</button></div>
+      <div class="pill">A única parcela que o sintético acrescenta ao contrato</div>
+      <div class="explain">
+        <span class="ex-tag">O que a série mostra</span>
+        <b>Fêmea menos boi</b>, em reais por arroba, pregão por pregão. Valor negativo é a
+        situação normal: a fêmea vale menos que o boi. O que informa não é o nível isolado, é o
+        movimento — diferencial encolhendo significa fêmea encarecendo contra o macho.
+        <span class="ex-tag">Por que a tabela está aberta</span>
+        A variação de um sintético é, por construção, a <b>variação do contrato mais a variação
+        do diferencial</b>. A tabela mostra as três colunas para os últimos pregões, com a data
+        do diferencial usado em cada linha. É o registro de auditoria da curva.
+        <span class="ex-tag">Unidade</span>
+        <b>R$/@</b>, a mesma do contrato e a mesma do físico. Sem conversão de peso, sem
+        rendimento de carcaça e sem frete.
+      </div>
+      <div id="sfDifKpis" class="vol-kpis"></div>
+      <div id="chartSfDif" class="chart-container" style="height:420px"></div>
+      <div id="sfDifTab"></div>
+      <div id="chartSfDifContext" class="chart-context"></div>
     </section>
 
     <section class="card">
@@ -51811,6 +52018,746 @@ function updateRelacao() {
 
 
   /* ══════════════════════════════════════════════════════════════════════
+     CURVAS SINTÉTICAS DE VACA GORDA E NOVILHA GORDA POR VENCIMENTO
+     ══════════════════════════════════════════════════════════════════════
+     A B3 lista boi gordo e mais nada em bovinos. Quem vende fêmea não tem
+     curva para olhar: tem o BGI, que é negociado, e o desconto da fêmea no
+     físico, que é observado. A soma das duas, em reais por arroba, é uma
+     referência de preço por vencimento — e é só isso que estes cards são.
+
+         VGI = fechamento do BGI + (vaca gorda física − boi gordo CEPEA)
+         NVI = fechamento do BGI + (novilha gorda física − boi gordo CEPEA)
+
+     ONDE O HISTÓRICO FICA GUARDADO. Em `dados.xlsx`, que é onde o Radar
+     guarda tudo. Não há arquivo paralelo e não há localStorage: cada ponto
+     da curva é recomposto a partir das três séries que a planilha já
+     persiste — o fechamento do contrato, a fêmea e o boi, cada um com a
+     sua data. Isso dá uma garantia que um cache não daria: o valor de um
+     pregão antigo não PODE divergir da fonte, porque é derivado dela a
+     cada leitura. Uma cópia em JSON só poderia envelhecer em silêncio.
+
+     O QUE TORNA A ROTINA IDEMPOTENTE. A busca do diferencial olha apenas
+     para TRÁS: para o pregão `d`, vale a última observação em data menor
+     ou igual a `d`, e só se ela estiver a até `_SF_TOL_DIAS` dias. Nenhum
+     ponto consulta data futura. Então acrescentar o pregão de amanhã não
+     mexe em nenhum ponto de ontem, e recalcular a série inteira devolve
+     exatamente os mesmos números. O diferencial de uma data é dela.
+
+     O QUE A ROTINA NÃO FAZ, por decisão e não por falta de tempo:
+       · não estima novilha a partir de vaca, em nenhuma circunstância;
+       · não usa preço de reposição em lugar nenhum da conta;
+       · não substitui o CEPEA pela DATAGRO ou pela Scot na ponta do boi —
+         o boi de referência do diferencial é o CEPEA, sempre;
+       · não mistura praças nem fontes numa média;
+       · não preenche lacuna: sem dado, o ponto não existe, e nunca vira
+         zero nem variação de 0%;
+       · não aplica o diferencial mais recente ao histórico.             */
+
+  var _SF_TOL_DIAS = 10;     /* defasagem máxima do diferencial, em dias  */
+  var _SF_COD = { vaca:'VGI', novilha:'NVI' };
+  var _SF_ROT = { vaca:'Vaca gorda', novilha:'Novilha gorda' };
+  /* A vaca vem primeiro porque é a categoria com série longa e a âncora da
+     leitura; a novilha é a mais recente. Ordem alfabética punha a novilha na
+     frente, o que lia como se ela fosse a referência. */
+  var _SF_ORD_CAT = { vaca:0, novilha:1 };
+  var _SF_MES = { F:'jan', G:'fev', H:'mar', J:'abr', K:'mai', M:'jun',
+                  N:'jul', Q:'ago', U:'set', V:'out', X:'nov', Z:'dez' };
+  var _SF_SELO = 'Sintético — não negociável';
+  var _SF_CACHE = {};
+  try { document.addEventListener('workbookLoaded', function(){ _SF_CACHE = {}; }); } catch(e){}
+
+  function _sfEsc(v){
+    return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+             .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function _sfD(iso){
+    var p = String(iso || '').split('-');
+    return (p.length === 3) ? (p[2]+'/'+p[1]+'/'+p[0]) : '–';
+  }
+  function _sfDc(iso){
+    var p = String(iso || '').split('-');
+    return (p.length === 3) ? (p[2]+'/'+p[1]) : '–';
+  }
+  /* Valor com sinal explícito, para diferencial e variação. O menos é o
+     mesmo caractere que `_pcPct` usa, para não aparecerem dois tipos de
+     menos na mesma linha. */
+  function _sfSin(v, d){
+    if (v == null || !isFinite(v)) return '–';
+    var dec = (d == null) ? 2 : d;
+    /* Zero exato sai SEM sinal. "+0,00" num diferencial reaproveitado sugere
+       movimento onde não houve nenhum. */
+    if (Math.abs(v) < Math.pow(10, -dec)/2) return _pcN(0, dec);
+    return (v >= 0 ? '+' : '−') + _pcN(Math.abs(v), dec);
+  }
+  /* Fonte e praça do boi numa linha, sem repetir o indicador nacional duas
+     vezes: ele não tem praça, é um índice de várias. */
+  function _sfOndeBoi(cfg){
+    return (cfg.pracaBoi && cfg.pracaBoi !== 'indicador nacional')
+      ? (_sfEsc(cfg.fonteBoi) + ' · ' + _sfEsc(cfg.pracaBoi))
+      : _sfEsc(cfg.fonteBoi);
+  }
+
+  /* ── AS CONFIGURAÇÕES ─────────────────────────────────────────────────
+     Cada uma é uma identidade completa: categoria, fonte e praça da fêmea,
+     fonte e praça do boi. Duas configurações nunca se somam e nenhuma troca
+     de fonte sozinha. */
+  function _sfConfigs(){
+    if (_SF_CACHE.cfgs) return _SF_CACHE.cfgs;
+    var out = [];
+
+    /* ① CEPEA REGIONAL. Vaca e boi na mesma praça, na mesma data, na mesma
+       tabela. É o diferencial mais limpo que a base permite: as duas pontas
+       vêm do mesmo levantamento, com o mesmo calendário de coleta. */
+    var ps = [];
+    try { ps = _rgPracas('Vaca Gorda') || []; } catch(e){ ps = []; }
+    ps.forEach(function(p){
+      if (p.unidade !== 'R$/@') return;        /* R$/kg ficaria fora de unidade */
+      var V = _femSerieCepea('Vaca Gorda', p.chave);
+      var B = _femSerieCepea('Boi Gordo',  p.chave);
+      if (!V || !B) return;
+      if (V.unidadeMista || B.unidadeMista) return;
+      var rot = p.uf + '/' + p.praca;
+      out.push({ id:'vaca.cepea.'+p.chave, grupo:'cepea', categoria:'vaca',
+                 fonteFemea:'CEPEA regional', pracaFemea:rot, chaveFemea:p.chave,
+                 fonteBoi:'CEPEA regional',   pracaBoi:rot,   chaveBoi:p.chave,
+                 mistura:false, rotPraca:rot });
+    });
+
+    /* ② COLETA PRÓPRIA. Três praças, vaca E novilha. A coleta não cota
+       macho, então o boi do diferencial vem do CEPEA. Onde a praça existe
+       no CEPEA regional, é o boi da mesma praça. Em Barretos, que não tem
+       praça equivalente, é o indicador nacional — e aí o diferencial mistura
+       uma praça com um índice de várias, o que o card declara em vez de
+       esconder. Emprestar a praça vizinha resolveria o card e estragaria o
+       número. */
+    var A = _femTab('femeasAbate');
+    if (A && A.series && A.series.length){
+      Object.keys(_FEM_PAR_CEPEA).forEach(function(pr){
+        var par = _FEM_PAR_CEPEA[pr];
+        var chaveB = par ? _femChavePorRotulo(par) : null;
+        ['vaca','novilha'].forEach(function(cat){
+          var col = null;
+          A.series.forEach(function(c){
+            if (c.indexOf(pr) < 0) return;
+            if (cat === 'vaca' ? /^vaca/i.test(c) : /^novilha/i.test(c)) col = c;
+          });
+          if (!col) return;
+          out.push({ id:cat+'.coleta.'+pr, grupo:'coleta', categoria:cat,
+                     fonteFemea:'coleta própria', pracaFemea:pr, colunaFemea:col,
+                     fonteBoi: chaveB ? 'CEPEA regional' : 'CEPEA, indicador nacional',
+                     pracaBoi: chaveB ? par : 'indicador nacional',
+                     chaveBoi: chaveB, mistura: !chaveB, rotPraca:pr });
+        });
+      });
+    }
+    _SF_CACHE.cfgs = out;
+    return out;
+  }
+
+  /* ── O DIFERENCIAL, PREGÃO POR PREGÃO ─────────────────────────────────
+     Só onde fêmea E boi têm cotação na MESMA data. Sem essa condição a
+     conta compararia a vaca de quinta com o boi de terça e chamaria a
+     diferença de diferencial. */
+  function _sfDif(cfg){
+    if (!cfg) return null;
+    var ck = 'dif:' + cfg.id;
+    if (_SF_CACHE[ck] !== undefined) return _SF_CACHE[ck];
+    var femObs = null, boiObs = null;
+
+    if (cfg.grupo === 'cepea'){
+      var V = _femSerieCepea('Vaca Gorda', cfg.chaveFemea);
+      var B = _femSerieCepea('Boi Gordo',  cfg.chaveBoi);
+      if (!V || !B){ _SF_CACHE[ck] = null; return null; }
+      femObs = V.obs; boiObs = B.obs;
+    } else {
+      var A = _femTab('femeasAbate');
+      if (!A || !A.dados){ _SF_CACHE[ck] = null; return null; }
+      femObs = {};
+      A.dados.forEach(function(r){
+        var v = r[cfg.colunaFemea];
+        if (v != null && isFinite(v) && v > 0) femObs[r.data] = v;
+      });
+      if (cfg.chaveBoi){
+        var B2 = _femSerieCepea('Boi Gordo', cfg.chaveBoi);
+        if (!B2){ _SF_CACHE[ck] = null; return null; }
+        boiObs = B2.obs;
+      } else {
+        try { boiObs = window._baseSerieDiaria('BOI GORDO'); } catch(e){ boiObs = null; }
+        if (!boiObs || !Object.keys(boiObs).length){ _SF_CACHE[ck] = null; return null; }
+      }
+    }
+
+    var datas = Object.keys(femObs).sort();
+    var d = [], dif = [], fe = {}, bo = {};
+    datas.forEach(function(k){
+      var f = femObs[k], b = boiObs[k];
+      if (!(f > 0) || !(b > 0)) return;        /* lacuna não vira ponto */
+      d.push(k); dif.push(f - b); fe[k] = f; bo[k] = b;
+    });
+    var r = d.length ? { cfg:cfg, datas:d, dif:dif, femea:fe, boi:bo, n:d.length,
+                         ini:d[0], fim:d[d.length-1] } : null;
+    _SF_CACHE[ck] = r;
+    return r;
+  }
+
+  /* ── VENCIMENTOS VIGENTES DO BGI, COM SÉRIE ──────────────────────────
+     Contrato listado sem pregão válido não é vencimento disponível: é linha
+     vazia na tela. Mesma regra do seletor de futuros. */
+  function _sfVencimentos(){
+    if (_SF_CACHE.vencs) return _SF_CACHE.vencs;
+    var wb = window.workbook, out = [];
+    if (wb && wb.SheetNames){
+      wb.SheetNames.forEach(function(sn){
+        var nome = String(sn).trim().toUpperCase();
+        var m = nome.match(/^BGI([FGHJKMNQUVXZ])(\d{2})$/);
+        if (!m) return;
+        try { if (typeof window._isContractExpired === 'function'
+                  && window._isContractExpired(nome)) return; } catch(e){}
+        var S = null;
+        try { S = window._baseSerieDiaria(nome); } catch(e){}
+        if (!S || !Object.keys(S).length) return;
+        var k = null;
+        try { k = window._contractMaturityKey(nome); } catch(e){}
+        out.push({ sn:nome, k:k, serie:S, letra:m[1], ano:m[2],
+                   rot:_SF_MES[m[1]] + '/' + m[2] });
+      });
+    }
+    out.sort(function(a,b){ return (a.k || 0) - (b.k || 0); });
+    _SF_CACHE.vencs = out;
+    return out;
+  }
+  function _sfVencPor(sn){
+    var l = _sfVencimentos();
+    for (var i=0;i<l.length;i++) if (l[i].sn === sn) return l[i];
+    return null;
+  }
+
+  /* ── A CURVA SINTÉTICA ────────────────────────────────────────────────
+     Para cada pregão do contrato, o fechamento daquele dia somado ao
+     diferencial vigente naquele dia. A busca do diferencial é um ponteiro
+     que só avança: para o pregão `d`, o último diferencial em data ≤ `d`.
+     Nenhum ponto olha para frente — é o que garante que acrescentar um
+     pregão novo não altera nenhum ponto anterior. */
+  function _sfCurva(cfg, venc){
+    if (!cfg || !venc) return null;
+    var ck = 'curva:' + cfg.id + ':' + venc.sn;
+    if (_SF_CACHE[ck] !== undefined) return _SF_CACHE[ck];
+    var D = _sfDif(cfg);
+    if (!D){ _SF_CACHE[ck] = null; return null; }
+
+    var datasB = Object.keys(venc.serie).sort();
+    var pts = [], j = -1, i;
+    for (i=0;i<datasB.length;i++){
+      var d = datasB[i];
+      while (j + 1 < D.n && D.datas[j+1] <= d) j++;
+      if (j < 0) continue;                       /* antes do 1º diferencial */
+      var dd = D.datas[j];
+      var dias = Math.round((_rgDt(d) - _rgDt(dd)) / 86400000);
+      if (dias > _SF_TOL_DIAS) continue;         /* diferencial velho: sem ponto */
+      var bgi = venc.serie[d];
+      if (!(bgi > 0)) continue;
+      pts.push({ data:d, bgi:bgi, dif:D.dif[j], difData:dd, difDias:dias,
+                 femea:D.femea[dd], boi:D.boi[dd], sint: bgi + D.dif[j] });
+    }
+    if (!pts.length){ _SF_CACHE[ck] = null; return null; }
+
+    /* DECOMPOSIÇÃO. Por construção, variação do sintético = variação do BGI
+       mais variação do diferencial. Guardar as três parcelas é o que permite
+       dizer, na tela, se o movimento do dia veio do futuro ou do físico. */
+    for (i=1;i<pts.length;i++){
+      pts[i].dBgi  = pts[i].bgi  - pts[i-1].bgi;
+      pts[i].dDif  = pts[i].dif  - pts[i-1].dif;
+      pts[i].dSint = pts[i].sint - pts[i-1].sint;
+      pts[i].pct   = (pts[i-1].sint > 0) ? (pts[i].dSint / pts[i-1].sint) : null;
+    }
+    var ultBgi = datasB[datasB.length - 1];
+    var r = { cfg:cfg, venc:venc, pts:pts, n:pts.length,
+              codigo: _SF_COD[cfg.categoria] + venc.letra + venc.ano,
+              ini:pts[0].data, fim:pts[pts.length-1].data,
+              ultimoPregaoBgi: ultBgi,
+              paradaAtras: pts[pts.length-1].data < ultBgi };
+    _SF_CACHE[ck] = r;
+    return r;
+  }
+
+  /* Variação acumulada em `n` pregões DA CURVA, com as parcelas. */
+  function _sfVarN(C, n){
+    if (!C || C.n <= n) return null;
+    var a = C.pts[C.n-1-n], b = C.pts[C.n-1];
+    if (!(a.sint > 0)) return null;
+    return { abs: b.sint - a.sint, pct: b.sint/a.sint - 1, de:a.data,
+             bgi: b.bgi - a.bgi, dif: b.dif - a.dif };
+  }
+  function _sfStatus(C){
+    var u = C.pts[C.n-1];
+    if (C.paradaAtras)
+      return { cls:'sf-tag-def',
+               txt:'curva parada em ' + _sfDc(u.data) + ', contrato até '
+                   + _sfDc(C.ultimoPregaoBgi) };
+    if (u.difDias === 0) return { cls:'', txt:'diferencial do dia' };
+    return { cls:'sf-tag-def',
+             txt:'diferencial de ' + _sfDc(u.difData) + ', '
+                 + u.difDias + (u.difDias === 1 ? ' dia atrás' : ' dias atrás') };
+  }
+
+  /* Faixa desenhada à mão: o contrato em traço fino e o sintético em cima.
+     A distância entre os dois É o diferencial, então o olho lê a parcela
+     antes de ler o número. Plotly aqui seria sessenta gráficos a mais. */
+  function _sfSpark(pts){
+    if (!pts || pts.length < 2) return '';
+    var L = 200, A = 46, pad = 3, i;
+    var mn = Infinity, mx = -Infinity;
+    for (i=0;i<pts.length;i++){
+      if (pts[i].sint < mn) mn = pts[i].sint;
+      if (pts[i].sint > mx) mx = pts[i].sint;
+      if (pts[i].bgi  < mn) mn = pts[i].bgi;
+      if (pts[i].bgi  > mx) mx = pts[i].bgi;
+    }
+    var amp = (mx - mn) || 1;
+    function px(k){ return L * k / (pts.length - 1); }
+    function py(v){ return pad + (A - 2*pad) * (1 - (v - mn)/amp); }
+    var pb = [], ps = [];
+    for (i=0;i<pts.length;i++){
+      pb.push(px(i).toFixed(1) + ',' + py(pts[i].bgi).toFixed(1));
+      ps.push(px(i).toFixed(1) + ',' + py(pts[i].sint).toFixed(1));
+    }
+    return '<svg viewBox="0 0 ' + L + ' ' + A + '" preserveAspectRatio="none" aria-hidden="true">'
+      + '<polyline points="' + pb.join(' ') + '" fill="none" stroke="' + _COR_ENT_BOI
+      + '" stroke-width="1.4" stroke-opacity="0.55" vector-effect="non-scaling-stroke"/>'
+      + '<polyline points="' + ps.join(' ') + '" fill="none" stroke="' + _COR_ENT_FEMEA
+      + '" stroke-width="2" vector-effect="non-scaling-stroke"'
+      + (pts[0].difDias != null ? '' : '') + '/>'
+      + '<circle cx="' + px(pts.length-1).toFixed(1) + '" cy="'
+      + py(pts[pts.length-1].sint).toFixed(1) + '" r="2.6" fill="' + _COR_ENT_FEMEA + '"/>'
+      + '</svg>';
+  }
+
+  function _sfItem(k, v, forte, larga){
+    return '<div class="sf-item' + (forte ? ' sf-item-forte' : '')
+         + (larga ? ' sf-item-larg' : '') + '">'
+         + '<span class="sf-k">' + k + '</span>'
+         + '<span class="sf-v">' + (v == null ? '–' : v) + '</span></div>';
+  }
+
+  /* ── O CARD DE UM CÓDIGO SINTÉTICO ───────────────────────────────────
+     Tudo que o número precisa para ser conferido está aqui: as duas
+     parcelas, as duas datas, as duas fontes e o selo. */
+  function _sfCard(C){
+    var cfg = C.cfg, u = C.pts[C.n-1], st = _sfStatus(C);
+    var cls = (u.dSint == null || u.dSint === 0) ? 'nula' : (u.dSint > 0 ? 'pos' : 'neg');
+    var dia = (u.dSint == null)
+      ? '<span class="sf-dia nula">primeiro pregão da curva</span>'
+      : '<span class="sf-dia ' + cls + '">' + _sfSin(u.dSint)
+        + (u.pct == null ? '' : ' (' + _pcPct(u.pct*100, 2) + ')') + '</span>';
+
+    /* CURVA PARADA NÃO TEM VALOR DE HOJE. O contrato negociou ontem e a fêmea
+       não, ou não há diferencial a até `_SF_TOL_DIAS` dias do último pregão:
+       nesse caso o card NÃO exibe o último sintético montado como se fosse o
+       preço corrente. Ele diz que não há valor, e o número antigo desce para
+       a linha de apoio, com a data dele. Mostrar um preço de seis meses atrás
+       no lugar de destaque seria pior que não mostrar nada. */
+    var pendente = C.paradaAtras;
+    var cabeca = pendente
+      ? ('<div class="sf-preco"><b class="sf-pend">indisponível</b>'
+         + '<span class="sf-uni">sem diferencial a até ' + _SF_TOL_DIAS
+         + ' dias do pregão de ' + _sfDc(C.ultimoPregaoBgi) + '</span></div>')
+      : ('<div class="sf-preco"><b>' + _pcN(u.sint) + '</b>'
+         + '<span class="sf-uni">R$/@</span>' + dia + '</div>');
+
+    var tags = '<span class="sf-tag">' + _SF_ROT[cfg.categoria] + '</span>'
+             + '<span class="sf-tag">vencimento <b>' + C.venc.rot + '</b></span>'
+             + '<span class="sf-tag ' + st.cls + '">' + st.txt + '</span>';
+    if (cfg.mistura)
+      tags += '<span class="sf-tag sf-tag-mist">boi do indicador nacional</span>';
+
+    var v5  = _sfVarN(C, 5), v21 = _sfVarN(C, 21);
+    var vTot = (C.n > 1 && C.pts[0].sint > 0)
+      ? { abs:u.sint - C.pts[0].sint, pct:u.sint/C.pts[0].sint - 1 } : null;
+
+    var dados = ''
+      + (pendente
+          ? _sfItem('último valor montado', _pcN(u.sint) + ' R$/@ em ' + _sfD(u.data), true, true)
+          : '')
+      + _sfItem('diferencial aplicado', _sfSin(u.dif) + ' R$/@', !pendente)
+      + _sfItem('observado em',          _sfD(u.difData))
+      + _sfItem('fechamento do BGI',     _pcN(u.bgi))
+      + _sfItem('contrato',              _sfEsc(C.venc.sn))
+      + _sfItem('variação do BGI',       _sfSin(u.dBgi))
+      + _sfItem('variação do diferencial', _sfSin(u.dDif))
+      + _sfItem(_SF_ROT[cfg.categoria].toLowerCase() + ' física', _pcN(u.femea))
+      + _sfItem('boi gordo CEPEA',       _pcN(u.boi))
+      + _sfItem('em 5 pregões',  v5  ? (_sfSin(v5.abs)  + ' (' + _pcPct(v5.pct*100,2)  + ')') : null)
+      + _sfItem('em 21 pregões', v21 ? (_sfSin(v21.abs) + ' (' + _pcPct(v21.pct*100,2) + ')') : null)
+      + _sfItem('desde ' + _sfDc(C.ini),
+                vTot ? (_sfSin(vTot.abs) + ' (' + _pcPct(vTot.pct*100,2) + ')') : null)
+      + _sfItem('pregões na curva', _pcN(C.n, 0))
+      + _sfItem('fêmea',
+                _sfEsc(cfg.fonteFemea) + ' · ' + _sfEsc(cfg.pracaFemea)
+                + ' · ' + _sfD(u.difData), false, true)
+      + _sfItem('boi de referência',
+                _sfOndeBoi(cfg) + ' · ' + _sfD(u.difData), false, true)
+      + _sfItem('fechamento de', _sfD(u.data), false, true);
+
+    var spark = _sfSpark(C.pts);
+
+    return '<div class="sf-card' + (pendente ? ' sf-card-pend' : '') + '">'
+      + '<div class="sf-topo"><span class="sf-cod">' + C.codigo + '</span>'
+      + '<span class="sf-selo">' + _SF_SELO + '</span></div>'
+      + cabeca
+      + '<div class="sf-tags">' + tags + '</div>'
+      + (spark ? ('<div class="sf-spark">' + spark + '</div>')
+               : '<div class="sf-vazio">Só ' + C.n + ' pregão na curva: curto demais para desenhar.</div>')
+      + '<div class="sf-dados">' + dados + '</div>'
+      + '</div>';
+  }
+
+  /* ── A BARRA DA SEÇÃO ────────────────────────────────────────────────
+     Guarda em `data-grupo` para qual fonte foi montada, para trocar de
+     categoria não perder a praça escolhida. */
+  function _sfPopulaPracas(){
+    var fo = document.getElementById('sfFonte'), pr = document.getElementById('sfPraca');
+    if (!pr) return;
+    var grupo = (fo && fo.value) ? fo.value : 'cepea';
+    if (pr.getAttribute('data-grupo') === grupo) return;
+    var vistos = {}, html = '';
+    _sfConfigs().forEach(function(c){
+      if (c.grupo !== grupo || vistos[c.rotPraca]) return;
+      vistos[c.rotPraca] = 1;
+      html += '<option value="' + _sfEsc(c.rotPraca) + '">' + _sfEsc(c.rotPraca) + '</option>';
+    });
+    pr.innerHTML = html;
+    /* Padrão: praça com série longa e diferencial estável, não a primeira
+       em ordem alfabética. */
+    var pref = (grupo === 'cepea')
+      ? ['GO/Goiânia', 'MS/Três Lagoas', 'SP/Araçatuba']
+      : ['MS Três Lagoas', 'SP Araçatuba', 'SP Barretos'];
+    for (var i=0;i<pref.length;i++){
+      for (var j=0;j<pr.options.length;j++){
+        if (pr.options[j].value === pref[i]){ pr.value = pref[i]; i = 99; break; }
+      }
+    }
+    pr.setAttribute('data-grupo', grupo);
+  }
+  function _sfPopulaVencs(){
+    var el = document.getElementById('sfVenc'); if (!el) return;
+    if (el.getAttribute('data-pronto') === '1' && el.options.length) return;
+    var l = _sfVencimentos(), html = '';
+    l.forEach(function(v){
+      html += '<option value="' + v.sn + '">' + v.sn + ' · ' + v.rot + '</option>';
+    });
+    el.innerHTML = html;
+    if (l.length) el.value = l[0].sn;
+    el.setAttribute('data-pronto','1');
+  }
+  function _sfSelecionadas(){
+    _sfPopulaPracas();
+    var fo = document.getElementById('sfFonte'),
+        pr = document.getElementById('sfPraca'),
+        ca = document.getElementById('sfCat');
+    var grupo = (fo && fo.value) ? fo.value : 'cepea';
+    var praca = (pr && pr.value) ? pr.value : null;
+    var cat   = (ca && ca.value) ? ca.value : 'ambas';
+    return _sfConfigs().filter(function(c){
+      if (c.grupo !== grupo) return false;
+      if (praca && c.rotPraca !== praca) return false;
+      if (cat !== 'ambas' && c.categoria !== cat) return false;
+      return true;
+    });
+  }
+
+  /* ── CARD 1 · A GRADE DE CÓDIGOS ─────────────────────────────────────── */
+  function _sfGradeCard(){
+    var gEl = document.getElementById('sfGrade'),
+        kEl = document.getElementById('sfKpis'), ctx = 'sfGradeContext';
+    if (!gEl) return;
+    function limpar(msg){
+      gEl.innerHTML = '<div class="sf-vazio">' + msg + '</div>';
+      if (kEl) kEl.innerHTML = '';
+      _exSet(ctx, '<div class="rb-vazio">' + msg + '</div>');
+    }
+    var cfgs = _sfSelecionadas();
+    if (!cfgs.length){
+      limpar('Nenhuma configuração de fêmea disponível nesta planilha. A curva de vaca precisa '
+           + 'de <b>vaca gorda</b> e <b>boi gordo</b> em R$/@ na mesma praça do <b>CEPEA REGIONAL</b>; '
+           + 'a de novilha precisa da aba <b>FÊMEAS - ABATE</b>.');
+      return;
+    }
+    var vencs = _sfVencimentos();
+    if (!vencs.length){ limpar('Nenhum vencimento vigente do BGI com série na planilha.'); return; }
+
+    var curvas = [], faltando = [];
+    cfgs.forEach(function(c){
+      vencs.forEach(function(v){
+        var C = _sfCurva(c, v);
+        if (C) curvas.push(C);
+        else faltando.push(_SF_COD[c.categoria] + v.letra + v.ano);
+      });
+    });
+    if (!curvas.length){
+      limpar('Nenhum pregão com fêmea, boi e fechamento do contrato na mesma janela de '
+           + _SF_TOL_DIAS + ' dias. Sem isso o ponto não existe, e o painel não preenche lacuna.');
+      return;
+    }
+    /* Ordem: vencimento primeiro, categoria depois. Quem procura um código
+       procura pelo mês. */
+    curvas.sort(function(a,b){
+      return ((a.venc.k||0) - (b.venc.k||0))
+           || ((_SF_ORD_CAT[a.cfg.categoria]||0) - (_SF_ORD_CAT[b.cfg.categoria]||0));
+    });
+    gEl.innerHTML = curvas.map(_sfCard).join('');
+
+    /* KPIs: o primeiro vencimento de cada categoria e o diferencial que
+       está entrando na conta hoje. */
+    if (kEl){
+      var porCat = {};
+      curvas.forEach(function(C){ if (!porCat[C.cfg.categoria]) porCat[C.cfg.categoria] = C; });
+      var u0 = curvas[0].pts[curvas[0].n - 1];
+      var h = '';
+      ['vaca','novilha'].forEach(function(cat){
+        var C = porCat[cat]; if (!C) return;
+        var u = C.pts[C.n-1];
+        h += _rgKpi(_SF_ROT[cat].toUpperCase() + ' · ' + C.venc.rot,
+                    'R$ ' + _pcN(u.sint),
+                    C.codigo + ' · diferencial ' + _sfSin(u.dif) + ' de ' + _sfDc(u.difData));
+      });
+      h += _rgKpi('DIFERENCIAL NA CONTA', _sfSin(u0.dif) + ' R$/@',
+                  _sfEsc(curvas[0].cfg.fonteFemea) + ' contra CEPEA · ' + _sfDc(u0.difData));
+      h += _rgKpi('CÓDIGOS MONTADOS', _pcN(curvas.length, 0),
+                  vencs.length + (vencs.length === 1 ? ' vencimento vigente' : ' vencimentos vigentes')
+                  + (faltando.length ? ' · ' + faltando.length + ' sem dado' : ''));
+      kEl.innerHTML = h;
+    }
+
+    var c0 = curvas[0].cfg, maisLonga = curvas[0];
+    curvas.forEach(function(C){ if (C.n > maisLonga.n) maisLonga = C; });
+    var corpo = 'Cada card é o <b>fechamento do contrato</b> daquele vencimento somado ao '
+      + '<b>diferencial da fêmea</b> em reais por arroba. O diferencial sai de '
+      + '<b>' + _sfEsc(c0.fonteFemea) + '</b>, praça <b>' + _sfEsc(c0.pracaFemea) + '</b>, '
+      + 'contra o boi gordo de <b>' + _sfEsc(c0.fonteBoi) + '</b>'
+      + (c0.mistura ? ', que é um índice de várias praças' : ', na mesma praça') + '. '
+      + 'A curva mais longa tem <b>' + _pcN(maisLonga.n, 0) + '</b> pregões, começando em <b>'
+      + _sfD(maisLonga.ini) + '</b> (' + maisLonga.codigo + ').';
+    var nPend = 0;
+    curvas.forEach(function(C){ if (C.paradaAtras) nPend++; });
+    if (nPend)
+      corpo += ' <b>' + nPend + '</b> ' + (nPend === 1 ? 'card está' : 'cards estão')
+        + ' sem valor corrente: o diferencial mais recente daquela praça está a mais de '
+        + _SF_TOL_DIAS + ' dias do último pregão do contrato, e o painel não mostra preço '
+        + 'antigo no lugar do de hoje.';
+    if (faltando.length)
+      corpo += ' <b>' + faltando.length + '</b> ' + (faltando.length === 1 ? 'código' : 'códigos')
+        + ' ficaram de fora por não ter pregão com as três pontas na mesma janela: '
+        + _sfEsc(faltando.slice(0,6).join(', ')) + (faltando.length > 6 ? ' e outros' : '') + '.';
+    var nota = 'Nenhum destes códigos é negociável. A B3 não lista contrato de vaca nem de '
+      + 'novilha, e nenhuma bolsa publica estes preços. Cada pregão usa o diferencial '
+      + 'observado nele mesmo, ou o último anterior dentro de ' + _SF_TOL_DIAS
+      + ' dias; o diferencial de hoje não é aplicado ao histórico. Novilha nunca é estimada '
+      + 'a partir de vaca, e preço de reposição não entra na conta.';
+    _exSet(ctx, _exLeitura(corpo, nota));
+  }
+
+  /* ── CARD 2 · AS TRÊS CURVAS NO MESMO VENCIMENTO ──────────────────────
+     Eixo de datas vindo do CONTRATO, não da união das séries: é o contrato
+     que define o calendário de pregões. Onde a fêmea não tem ponto entra
+     `null`, e o traço abre buraco em vez de ligar as pontas. */
+  function _sfCurvaCard(){
+    var cid = 'chartSfCurva', ctx = 'chartSfCurvaContext';
+    function limpar(msg){
+      renderPlot(cid, [], { _no_title:true, _sem_titulo:true });
+      _exSet(ctx, '<div class="rb-vazio">' + msg + '</div>');
+    }
+    _sfPopulaVencs();
+    var sel = document.getElementById('sfVenc');
+    var v = (sel && sel.value) ? _sfVencPor(sel.value) : null;
+    if (!v){ var l = _sfVencimentos(); v = l.length ? l[0] : null; }
+    if (!v){ limpar('Nenhum vencimento vigente do BGI com série na planilha.'); return; }
+
+    var datasB = Object.keys(v.serie).sort();
+    var tr = [{ x:datasB, y:datasB.map(function(d){ return v.serie[d]; }),
+                type:'scatter', mode:'lines',
+                name:'Boi gordo ' + v.sn + ', fechamento',
+                line:{ color:_COR_ENT_BOI, width:_LARG.principal },
+                hovertemplate:_femHover('R$/@') }];
+
+    var cfgs = _sfSelecionadas(), montadas = 0, resumo = [];
+    cfgs.forEach(function(c){
+      var C = _sfCurva(c, v); if (!C) return;
+      montadas++;
+      var m = {}; C.pts.forEach(function(p){ m[p.data] = p; });
+      var y = datasB.map(function(d){ return m[d] ? m[d].sint : null; });
+      var cd = datasB.map(function(d){
+        return m[d] ? [m[d].dif, _sfDc(m[d].difData), m[d].femea, m[d].boi]
+                    : [null, '', null, null];
+      });
+      tr.push({ x:datasB, y:y, type:'scatter', mode:'lines', connectgaps:false,
+        name:_SF_ROT[c.categoria] + ' sintética · ' + C.codigo,
+        line:{ color:_COR_ENT_FEMEA, width:_LARG.destaque,
+               dash:(c.categoria === 'novilha') ? _TRACO_NOVILHA : 'solid' },
+        customdata:cd,
+        hovertemplate:_femHover('R$/@',
+          'diferencial R$ %{customdata[0]:,.2f}/@ de %{customdata[1]}'
+          + ' · física R$ %{customdata[2]:,.2f}/@ · boi R$ %{customdata[3]:,.2f}/@') });
+      var u = C.pts[C.n-1];
+      resumo.push('<b>' + C.codigo + '</b> a R$ ' + _pcN(u.sint) + '/@ em ' + _sfDc(u.data)
+        + ', com diferencial de ' + _sfSin(u.dif) + ' observado em ' + _sfDc(u.difData)
+        + ' (' + _pcN(C.n, 0) + ' de ' + _pcN(datasB.length, 0) + ' pregões com ponto)');
+    });
+
+    renderPlot(cid, tr,
+      { _no_title:true, _sem_titulo:true,
+        yaxis:{ title:'R$ por arroba' }, xaxis:{ title:'' }, showlegend:true });
+
+    if (!montadas){
+      _exSet(ctx, _exLeitura('O contrato <b>' + v.sn + '</b> tem <b>' + _pcN(datasB.length,0)
+        + '</b> pregões na planilha, e nenhum deles tem diferencial de fêmea a até '
+        + _SF_TOL_DIAS + ' dias de distância. Sem as duas parcelas no mesmo dia o ponto não '
+        + 'existe, e o painel não preenche a lacuna.',
+        'Trocar a praça ou a fonte da fêmea na barra da seção muda este resultado: a coleta '
+        + 'própria começa em 16/10/2026 e o CEPEA regional em 01/08/2024.'));
+      return;
+    }
+    _exSet(ctx, _exLeitura(
+      'O traço cheio em verde é o <b>fechamento negociado</b> do ' + v.sn + '. '
+      + 'Em rosa, as referências sintéticas: ' + resumo.join('; ') + '. '
+      + 'A distância vertical entre o boi e cada fêmea é o diferencial do físico naquele pregão.',
+      'Buraco no traço é pregão sem dado em uma das três pontas, não queda de preço. '
+      + 'A novilha vai em tracejado porque é outro produto, não uma variante da vaca. '
+      + 'Os códigos sintéticos não são negociáveis.'));
+  }
+
+  /* ── CARD 3 · O DIFERENCIAL E A AUDITORIA ─────────────────────────────── */
+  function _sfDifCard(){
+    var cid = 'chartSfDif', ctx = 'chartSfDifContext';
+    var kEl = document.getElementById('sfDifKpis'), tEl = document.getElementById('sfDifTab');
+    function limpar(msg){
+      renderPlot(cid, [], { _no_title:true, _sem_titulo:true });
+      if (kEl) kEl.innerHTML = ''; if (tEl) tEl.innerHTML = '';
+      _exSet(ctx, '<div class="rb-vazio">' + msg + '</div>');
+    }
+    var cfgs = _sfSelecionadas();
+    if (!cfgs.length){ limpar('Nenhuma configuração de fêmea disponível nesta planilha.'); return; }
+
+    var tr = [], algum = null;
+    cfgs.forEach(function(c){
+      var D = _sfDif(c); if (!D) return;
+      if (!algum) algum = D;
+      tr.push({ x:D.datas, y:D.dif, type:'scatter',
+        mode:(D.n > 20 ? 'lines' : 'lines+markers'), connectgaps:false,
+        name:_SF_ROT[c.categoria] + ' menos boi · ' + _sfEsc(c.rotPraca),
+        line:{ color:_COR_ENT_FEMEA, width:_LARG.destaque,
+               dash:(c.categoria === 'novilha') ? _TRACO_NOVILHA : 'solid' },
+        marker:{ size:7 },
+        customdata:D.datas.map(function(k){ return [D.femea[k], D.boi[k]]; }),
+        hovertemplate:_femHover('R$/@',
+          'física R$ %{customdata[0]:,.2f}/@ · boi R$ %{customdata[1]:,.2f}/@') });
+    });
+    if (!tr.length){
+      limpar('Nenhum pregão com fêmea e boi na mesma data nesta configuração.');
+      return;
+    }
+    /* Zero é a referência que importa: acima dele a fêmea vale mais que o
+       macho, o que é raro e merece ser visto como exceção. */
+    tr.push({ x:[algum.ini, algum.fim], y:[0,0], type:'scatter', mode:'lines',
+      name:'Paridade com o boi', line:{ color:_PAL.referencia, width:_LARG.referencia, dash:'dash' },
+      hoverinfo:'skip' });
+
+    renderPlot(cid, tr,
+      { _no_title:true, _sem_titulo:true,
+        yaxis:{ title:'Fêmea menos boi (R$/@)' }, xaxis:{ title:'' }, showlegend:true });
+
+    if (kEl){
+      var h = '';
+      cfgs.forEach(function(c){
+        var D = _sfDif(c); if (!D) return;
+        var med = 0, mn = D.dif[0], mx = D.dif[0];
+        for (var i=0;i<D.n;i++){ med += D.dif[i];
+          if (D.dif[i] < mn) mn = D.dif[i]; if (D.dif[i] > mx) mx = D.dif[i]; }
+        med /= D.n;
+        h += _rgKpi(_SF_ROT[c.categoria].toUpperCase() + ' MENOS BOI',
+                    _sfSin(D.dif[D.n-1]) + ' R$/@',
+                    'média ' + _sfSin(med) + ' · faixa ' + _sfSin(mn) + ' a ' + _sfSin(mx)
+                    + ' · ' + _pcN(D.n,0) + ' pregões');
+      });
+      var D0 = _sfDif(cfgs[0]);
+      if (D0) h += _rgKpi('JANELA OBSERVADA', _sfDc(D0.ini) + ' a ' + _sfDc(D0.fim),
+                          _sfEsc(cfgs[0].fonteFemea) + ' contra ' + _sfEsc(cfgs[0].fonteBoi));
+      kEl.innerHTML = h;
+    }
+
+    /* A TABELA DE AUDITORIA. Últimos dez pregões do primeiro código
+       selecionado, com a conta aberta: fechamento, diferencial, data do
+       diferencial, sintético e as três variações. É aqui que se confere a
+       identidade `variação do sintético = variação do BGI + variação do
+       diferencial`. */
+    if (tEl){
+      _sfPopulaVencs();
+      var sel = document.getElementById('sfVenc');
+      var v = (sel && sel.value) ? _sfVencPor(sel.value) : null;
+      if (!v){ var lv = _sfVencimentos(); v = lv.length ? lv[0] : null; }
+      var C = v ? _sfCurva(cfgs[0], v) : null;
+      if (!C){ tEl.innerHTML = ''; }
+      else {
+        var ult = C.pts.slice(-10);
+        var html = '<div class="rb-head">CONTA ABERTA DOS ÚLTIMOS PREGÕES — '
+          + C.codigo + ', ' + _sfEsc(C.cfg.pracaFemea) + '</div>'
+          + '<table class="pc-tab"><thead><tr><th>pregão</th><th>fechamento BGI</th>'
+          + '<th>diferencial</th><th>observado em</th><th>sintético</th>'
+          + '<th>Δ BGI</th><th>Δ diferencial</th><th>Δ sintético</th></tr></thead><tbody>';
+        ult.forEach(function(p){
+          html += '<tr><td>' + _sfD(p.data) + '</td><td>' + _pcN(p.bgi) + '</td><td>'
+            + _sfSin(p.dif) + '</td><td>' + _sfD(p.difData)
+            + (p.difDias ? (' <span class="sf-k">(' + p.difDias + 'd)</span>') : '')
+            + '</td><td><b>' + _pcN(p.sint) + '</b></td><td>' + _sfSin(p.dBgi) + '</td><td>'
+            + _sfSin(p.dDif) + '</td><td>' + _sfSin(p.dSint) + '</td></tr>';
+        });
+        tEl.innerHTML = html + '</tbody></table>';
+      }
+    }
+
+    var D1 = _sfDif(cfgs[0]);
+    _exSet(ctx, _exLeitura(
+      'Esta é a única parcela que o sintético acrescenta ao fechamento do contrato. '
+      + 'Em <b>' + _sfEsc(cfgs[0].pracaFemea) + '</b>, a '
+      + _SF_ROT[cfgs[0].categoria].toLowerCase() + ' está '
+      + (D1 && D1.dif[D1.n-1] < 0 ? 'abaixo' : 'acima') + ' do boi em <b>'
+      + _pcN(Math.abs(D1 ? D1.dif[D1.n-1] : 0)) + ' R$/@</b>, medido em <b>'
+      + _sfDc(D1 ? D1.fim : '') + '</b>. Diferencial encolhendo significa fêmea encarecendo '
+      + 'contra o macho, e é isso que muda o sintético sem que o contrato se mexa.',
+      'A tabela acima é o registro de auditoria: a variação do sintético é, por construção, a '
+      + 'variação do fechamento mais a variação do diferencial. Cada linha mostra a data do '
+      + 'diferencial que entrou nela, e essa data nunca é posterior ao pregão da linha.'));
+  }
+
+  function _sfRender(){
+    [['grade', _sfGradeCard], ['curvas', _sfCurvaCard], ['diferencial', _sfDifCard]]
+      .forEach(function(par){
+        try { par[1](); } catch(e){ console.warn('Sintéticos de fêmea — ' + par[0] + ':', e); }
+      });
+  }
+  try {
+    window._sfRender = _sfRender;   window._sfConfigs = _sfConfigs;
+    window._sfDif = _sfDif;         window._sfCurva = _sfCurva;
+    window._sfVencimentos = _sfVencimentos; window._sfVencPor = _sfVencPor;
+    window._SF_TOL_DIAS = _SF_TOL_DIAS;
+  } catch(e){}
+
+  document.addEventListener('DOMContentLoaded', function(){
+    ['sfFonte','sfPraca','sfCat','sfVenc'].forEach(function(id){
+      var el = document.getElementById(id); if (!el) return;
+      el.addEventListener('change', function(){
+        /* Trocar a fonte troca a lista de praças: o seletor precisa se
+           refazer antes do primeiro card ler dele. */
+        if (id === 'sfFonte'){
+          var p = document.getElementById('sfPraca');
+          if (p) p.setAttribute('data-grupo','');
+        }
+        try { _sfRender(); } catch(e){ console.warn('Sintéticos ('+id+'):', e); }
+      });
+    });
+  });
+
+
+  /* ══════════════════════════════════════════════════════════════════════
      JUROS FUTUROS (DI1) — a curva, o deslocamento e o custo do dinheiro
      ══════════════════════════════════════════════════════════════════════
      A base já trazia 47 vencimentos de DI1 e o painel não desenhava nenhum:
@@ -52413,6 +53360,13 @@ function updateRelacao() {
       dica:'Desconto da vaca sobre o boi, base decomposta, relação de troca da '
          + 'fêmea e prêmio da novilha. A participação de fêmeas no abate está '
          + 'em Oferta e demanda imediata.' },
+    /* As curvas sintéticas moram ao lado das fêmeas, não em Futuros: a
+       pergunta é o preço da fêmea por vencimento, e o contrato de boi é o
+       insumo da conta, não o assunto. */
+    { amb:'agro', id:'m3_1_11', nome:'Vaca e novilha por vencimento',
+      render:['_sfRender'],
+      dica:'Fechamento do BGI de cada vencimento somado ao diferencial da fêmea '
+         + 'no mesmo pregão. Preço de referência, não cotação.' },
     { amb:'agro', id:'m3_1_9', nome:'Outros do mercado', oculta:true },
 
     /* ── 3 · MERCADOS & MACRO ────────────────────────────────────────── */
@@ -52570,6 +53524,7 @@ function updateRelacao() {
     chartFemYoY:'m3_1_10',
     chartFemAgio:'m3_1_10', chartFemMatriz:'m3_1_10',
     chartFemNovilha:'m3_1_10',
+    chartSfCurva:'m3_1_11', chartSfDif:'m3_1_11',
     chartBoiVsBGIAll:'m3_1_8', chartRatioBGICCM:'m3_1_8', chartBGICarrego:'m3_1_8',
     // ── ESTUDO ──────────────────────────────────────────────────────────
     chartSHBoiGordoAnnual:'m3_2_1', chartSHBoiGordoYoY:'m3_2_1',
@@ -52624,6 +53579,11 @@ function updateRelacao() {
   /* Casamento por título, para as seções sem gráfico. Ordem importa: a
      primeira que casar vence. */
   var _M3_POR_TITULO = [
+    /* PRIMEIRO DA LISTA, de propósito. A grade de códigos sintéticos não tem
+       gráfico nenhum, então `_m3Destino` cai na regra por título — e a regra
+       precisa vir antes de qualquer padrão mais largo que possa pegar o
+       mesmo nome. */
+    [/SINT[ÉE]TIC/i,                       'm3_1_11'],
     [/^Opções$/,                           'm3_3_5g'],
     [/Painel de Decisão/i,                 'm3_1_1'],
     [/Cotações — Hoje|Hoje vs\. Ontem/i,   'm3_1_1'],
@@ -71660,6 +72620,8 @@ window._m3SmokeTest = function(secId){
     { id:'fe_novilha',   tema:'Fêmeas', chart:'chartFemNovilha',       rot:'Prêmio da novilha sobre a vaca' },
     { id:'fe_agio',      tema:'Fêmeas', chart:'chartFemAgio',          rot:'Reposição: ágio por categoria' },
     { id:'fe_matriz',    tema:'Fêmeas', chart:'chartFemMatriz',        rot:'Reposição: troca entre categorias' },
+    { id:'fe_sint',      tema:'Fêmeas', chart:'chartSfCurva',          rot:'Vaca e novilha sintéticas por vencimento' },
+    { id:'fe_sintdif',   tema:'Fêmeas', chart:'chartSfDif',            rot:'O diferencial que monta a curva sintética' },
     // ── CICLO PECUÁRIO ───────────────────────────────────────────────
     { id:'ci_abate',     tema:'Ciclo',  chart:'chartAbateIBGE',        rot:'Abate de fêmeas no Brasil' },
     { id:'ci_preco',     tema:'Ciclo',  chart:'chartAbatePreco',       rot:'Preço real do boi no mesmo período' },
@@ -71683,8 +72645,8 @@ window._m3SmokeTest = function(secId){
       blocos:['mi_diario','mi_anual','mi_base100','mi_sazon','mi_janela','mi_enso','mi_curva','mi_troca'] },
     { id:'r_soja',   rot:'Soja',            oque:'O que o painel acompanha de soja hoje.',
       blocos:['so_var','so_curva'] },
-    { id:'r_femeas', rot:'Fêmeas',          oque:'Abate e reposição: preço, desconto, base e ágio por categoria.',
-      blocos:['fe_preco','fe_posicao','fe_desconto','fe_base','fe_yoy','fe_novilha','fe_agio','fe_matriz'] },
+    { id:'r_femeas', rot:'Fêmeas',          oque:'Abate e reposição: preço, desconto, base, ágio por categoria e as referências por vencimento.',
+      blocos:['fe_preco','fe_posicao','fe_desconto','fe_base','fe_yoy','fe_novilha','fe_agio','fe_matriz','fe_sintdif','fe_sint'] },
     { id:'r_ciclo',  rot:'Ciclo pecuário',  oque:'Onde o ciclo está, o que ele projeta e como a reposição responde.',
       blocos:['ci_abate','ci_preco','ci_mt','ci_tempo','ci_proj','ci_senoide','ci_anual','ci_bez','ci_bezboi','ci_bezagio'] },
     { id:'r_sazon',  rot:'Sazonalidade',    oque:'O ano típico de cada mercado, lado a lado.',
