@@ -4006,6 +4006,16 @@ header{
 .sf-item-larg{ grid-column: 1 / -1; }
 .sf-item-larg .sf-v{ white-space:normal; text-align:right; font-weight:600; }
 .sf-vazio{ color: var(--m3-muted) !important; font-size: var(--fs-nano); padding:12px 0 2px; }
+/* AVISO DE PRAÇA PARADA, na seção de fêmeas. Âmbar, que é a cor que este
+   painel usa para o que exige ressalva, e largura total: o leitor precisa
+   bater nele antes de chegar ao primeiro número. */
+.fem-atraso{
+  margin: 8px 0 2px; padding: 8px 11px;
+  border: 1px solid rgba(180,83,9,0.30); border-left-width: 3px;
+  border-radius: 8px; background: rgba(180,83,9,0.07) !important;
+  color: var(--m3-body) !important; font-size: var(--fs-nano); line-height: 1.55;
+}
+.fem-atraso b{ color: var(--m3-title) !important; font-weight: 700; }
 /* Card sem valor corrente: a borda tracejada diz, antes da leitura, que ali
    não há número de hoje. O último valor montado fica na primeira linha de
    apoio, com a data, e não no lugar de destaque. */
@@ -6698,12 +6708,17 @@ header{
       <span class="bgi-lbl">Praça</span>
       <select id="bmgPraca" class="bgi-sel" title="Praça usada nas duas pontas. A opção padrão usa a média das praças que cotam boi gordo e boi magro."></select>
         <span class="bgi-lbl" style="margin-left:14px">Scot</span>
-        <select id="bmgScotRaca" class="bgi-sel" title="A Scot entra COMO PONTO sobre a série do CEPEA, não no lugar dela: a apuração da Scot começou agora e trocar a fonte deixaria o gráfico vazio.">
+        <select id="bmgScotRaca" class="bgi-sel" title="A Scot entra como SÉRIE sobre a do CEPEA, não no lugar dela: a apuração dela começou em 19/10/2026 e trocar a fonte deixaria o gráfico quase vazio. A relação em arroba é a que a própria Scot publica.">
           <option value="" selected>não mostrar</option>
           <option value="Nelore">Nelore</option>
           <option value="Mestiço">Mestiço</option>
         </select>
-        <select id="bmgScotUf" class="bgi-sel" title="Estado da apuração da Scot. A geografia da Scot é o estado; a do CEPEA é a praça, então o ponto é posicionado pela UF escolhida aqui, não pela praça do card."></select>
+        <span class="bgi-lbl" style="margin-left:8px">DATAGRO</span>
+        <select id="bmgScotDgRaca" class="bgi-sel" title="A DATAGRO cota o boi magro em R$ por quilo de peso vivo, numa faixa de peso. Nelore, Anelorado e Cruzamento industrial são raças da apuração dela, e não equivalem ao Mestiço da Scot.">
+          <option value="" selected>não mostrar</option>
+        </select>
+        <span class="bgi-lbl" style="margin-left:8px">UF</span>
+        <select id="bmgScotUf" class="bgi-sel" title="Estado das duas apurações, uma lista só para as duas. A geografia delas é o estado; a do CEPEA é a praça, então a sobreposição é posicionada pela UF escolhida aqui, não pela praça do card."></select>
       </div>
       <div id="bmgKpis" class="vol-kpis"></div>
       <div id="chartBoiMagroTroca" class="chart-container"></div>
@@ -6736,12 +6751,17 @@ header{
         <span class="bgi-lbl" style="margin-left:14px">Praça</span>
         <select id="bmgAgPraca" class="bgi-sel" title="Praça usada nas duas pontas. O padrão usa a média das praças que cotam boi gordo e boi magro."></select>
         <span class="bgi-lbl" style="margin-left:14px">Scot</span>
-        <select id="bmgAgScotRaca" class="bgi-sel" title="A Scot entra como ponto sobre a série do CEPEA. O ágio da Scot é calculado pela MESMA conta deste card, com o preço e o peso que a Scot declara.">
+        <select id="bmgAgScotRaca" class="bgi-sel" title="A Scot entra como SÉRIE sobre a do CEPEA. O ágio dela é calculado pela MESMA conta deste card, com o preço e o peso que a Scot declara.">
           <option value="" selected>não mostrar</option>
           <option value="Nelore">Nelore</option>
           <option value="Mestiço">Mestiço</option>
         </select>
-        <select id="bmgAgScotUf" class="bgi-sel" title="Estado da apuração da Scot. A geografia da Scot é o estado; a do CEPEA é a praça, então o ponto é posicionado pela UF escolhida aqui, não pela praça do card."></select>
+        <span class="bgi-lbl" style="margin-left:8px">DATAGRO</span>
+        <select id="bmgAgScotDgRaca" class="bgi-sel" title="A DATAGRO cota o boi magro em R$ por quilo de peso vivo, numa faixa de peso. Nelore, Anelorado e Cruzamento industrial são raças da apuração dela, e não equivalem ao Mestiço da Scot.">
+          <option value="" selected>não mostrar</option>
+        </select>
+        <span class="bgi-lbl" style="margin-left:8px">UF</span>
+        <select id="bmgAgScotUf" class="bgi-sel" title="Estado das duas apurações, uma lista só para as duas. A geografia delas é o estado; a do CEPEA é a praça, então a sobreposição é posicionada pela UF escolhida aqui, não pela praça do card."></select>
       </div>
       <div id="bmgAgKpis" class="vol-kpis"></div>
       <div id="chartBoiMagroAgio" class="chart-container"></div>
@@ -9383,6 +9403,10 @@ header{
           <option value="0">Série inteira</option>
         </select>
       </div>
+      <!-- O AVISO DE ATRASO DA PRAÇA. Vale para a seção inteira e por isso
+           mora aqui, na barra, e não repetido em oito cards. Fica vazio
+           quando a praça está em dia. -->
+      <div id="femAvisoAtraso"></div>
       <div id="femPrecoKpis" class="vol-kpis"></div>
       <div id="chartFemPreco" class="chart-container" style="height:420px"></div>
       <div id="chartFemPrecoContext" class="chart-context"></div>
@@ -25379,19 +25403,79 @@ function updatePreco() {
        boi magro um boi vendido paga — então é o peso de abate de
        referência dividido pela arroba da Scot. Nenhuma premissa nova: as
        duas pontas da divisão já estavam na tela. */
-    var _scotPt = [];
+    var _ovTr = [];
     try {
-      var _sc = _scotCtrl('bmgScot');
-      if (_sc){
-        var _o = _sc.R.porUF[_sc.uf] && _sc.R.porUF[_sc.uf]['Boi Magro'];
-        if (_o && _o.arroba > 0){
-          _scotPt = [ _scotTraco(_rgDt(_sc.R.data), pb / _o.arroba,
-            'Scot · ' + _sc.raca + ' · ' + _sc.uf,
-            'boi magro de ' + _o.kg + ' kg a ' + _pcN(_o.arroba,2) + ' @ (apuração da Scot)'
-            + '<br>R$ ' + _pcN(_o.cab,2) + '/cabeça · ' + _femDtBr(_sc.R.data)) ];
+      var _ov = (typeof window._ovCtrl === 'function')
+              ? window._ovCtrl('bmgScot', 'Boi Magro', 'macho|Boi Magro') : null;
+      if (_ov){
+        var _boiEm = {};
+        pts.forEach(function(o){ _boiEm[o.d] = o.boi; });
+
+        /* A SCOT COMO SÉRIE. Ela publica quantas ARROBAS de boi gordo custa
+           a cabeça do magro, apurada contra a referência dela de boi gordo.
+           O card mede quantas CABEÇAS um boi vendido paga, então é o peso de
+           abate de referência dividido pela arroba da Scot. As duas pontas
+           da divisão já estavam na tela; nenhuma premissa nova. Antes isto
+           era um losango único porque `_scotBase` só guardava a última
+           leitura — agora as três datas da aba aparecem. */
+        if (_ov.scot && _ov.scot.serie){
+          var _S = _ov.scot.serie, _sx = [], _sy = [], _scd = [];
+          _S.pts.forEach(function(q){
+            if (!(q.arroba > 0)) return;
+            _sx.push(_rgDt(q.d)); _sy.push(pb / q.arroba);
+            _scd.push([q.arroba, q.cab, q.kg]);
+          });
+          if (_sx.length) _ovTr.push(window._ovSerie(_sx, _sy,
+            'Scot · ' + _ov.scot.raca + ' · ' + _ov.uf,
+            window._OV_COR_SCOT, 'dot', _scd,
+            '<b>Scot · ' + _ov.scot.raca + ' · ' + _ov.uf + '</b>'
+            + '<br><b>%{y:.2f} bois magros</b> por boi de ' + pb + '@'
+            + '<br>cabeça a %{customdata[0]:,.2f} @ (apuração da Scot)'
+            + '<br>R$ %{customdata[1]:,.2f}/cabeça · %{customdata[2]} kg<extra></extra>'));
+        }
+
+        /* A DATAGRO NÃO VIRA PONTO NESTE EIXO, E POR UMA RAZÃO.
+           O eixo conta CABEÇAS, e cabeça exige preço por cabeça: R$/kg
+           vezes o peso. A DATAGRO publica o quilo e uma FAIXA de peso, não
+           um peso. Usar o ponto médio da faixa daria um número de aparência
+           exata construído sobre uma escolha que não estaria na tela — o
+           mesmo erro que o painel evita no CEPEA, que não declara peso.
+
+           Então ela entra como FAIXA VERTICAL: a conta nos dois extremos
+           publicados. Animal no topo da faixa custa mais por cabeça e o boi
+           paga menos cabeças; no fundo da faixa, o contrário. Os dois
+           limites são da fonte, e o que está entre eles é exatamente o que a
+           fonte diz, sem estreitar nem alargar. */
+        if (_ov.dg && _ov.dg.serie){
+          var _D = _ov.dg.serie, _fx = [], _fy = [], _fcd = [];
+          _D.pts.forEach(function(q){
+            var boi = _boiEm[q.d];
+            if (!(boi > 0) || !(q.rkg > 0)) return;
+            var boiCab = pb * boi;
+            var _lo = boiCab / (q.rkg * _D.cat.hi);   /* pesado: menos cabeças */
+            var _hi = boiCab / (q.rkg * _D.cat.lo);   /* leve: mais cabeças   */
+            var _dt = _rgDt(q.d), _cd = [q.rkg, _D.cat.lo, _D.cat.hi, boi];
+            _fx.push(_dt, _dt, null);
+            _fy.push(_lo, _hi, null);
+            _fcd.push(_cd, _cd, _cd);
+          });
+          if (_fx.length) _ovTr.push({
+            x:_fx, y:_fy, type:'scatter', mode:'lines+markers', connectgaps:false,
+            name:'DATAGRO · ' + _ov.dg.raca + ' · ' + _ov.uf
+                 + ' · faixa de ' + _D.cat.lo + ' a ' + _D.cat.hi + ' kg',
+            showlegend:true,
+            line:{ color:window._OV_COR_DG, width:2.6 },
+            marker:{ symbol:'line-ew-open', size:10, color:window._OV_COR_DG,
+                     line:{ color:window._OV_COR_DG, width:2 } },
+            customdata:_fcd,
+            hovertemplate:'<b>DATAGRO · ' + _ov.dg.raca + ' · ' + _ov.uf + '</b>'
+              + '<br><b>%{y:.2f} bois magros</b> por boi de ' + pb + '@'
+              + '<br>R$ %{customdata[0]:,.2f}/kg vivo · boi a R$ %{customdata[3]:,.2f}/@'
+              + '<br>extremo da faixa de %{customdata[1]} a %{customdata[2]} kg'
+              + '<extra></extra>' });
         }
       }
-    } catch(e){ console.warn('Scot sobre troca boi × magro:', e); }
+    } catch(e){ console.warn('Sobreposições sobre troca boi × magro:', e); }
     renderPlot(chartId, _faixa.concat([
       { x:pts.map(function(o){ return _rgDt(o.d); }), y:cab,
         type:'scatter', mode:'lines', name:'Bois magros por boi vendido',
@@ -25401,8 +25485,10 @@ function updatePreco() {
                      +'<br>boi de '+pb+'@ a R$ %{customdata[2]:,.2f}/@ = R$ %{customdata[0]:,.0f}'
                      +'<br>boi magro R$ %{customdata[1]:,.0f}/cabeça'
                      +(M.nPracas>1?'<br>%{customdata[3]} praças com as duas no dia':'')+'<extra></extra>' }
-    ]).concat(_scotPt), {
+    ]).concat(_ovTr), {
       height:_EXP_ALT, margin:{ l:70, r:26, t:64, b:52 }, hovermode:'x unified',
+      /* a legenda só aparece quando há sobreposição para nomear */
+      showlegend:_ovTr.length>0,
       xaxis:{ automargin:true },
       yaxis:{ title:{ text:'bois magros comprados por boi de '+pb+'@ vendido', standoff:6 }, automargin:true },
       shapes:[
@@ -25417,9 +25503,7 @@ function updatePreco() {
                +(M.nPracas>1 && pts[0].p25!=null ? ' · faixa roxa = do percentil 25 ao 75 ENTRE PRAÇAS no dia' : ''),
           xref:'paper', yref:'paper', x:0, y:1.02, xanchor:'left', yanchor:'bottom',
           showarrow:false, font:{ size:10, color:'#6b7280' } }
-      ],
-      /* a legenda só aparece quando há ponto da Scot para nomear */
-      showlegend:_scotPt.length>0
+      ]
     });
 
     _seloAmostra(chartId, pts.length, pts[0].d, pts[pts.length-1].d);
@@ -25564,21 +25648,74 @@ function updatePreco() {
        A Scot também publica a própria relação em @, apurada contra a
        referência dela de boi gordo; esse número vai no hover, nomeado, em
        vez de ser misturado ao do card. */
-    var _scotPt = [];
+    /* AS SOBREPOSIÇÕES, COMO SÉRIE E NÃO COMO PONTO.
+       Antes a Scot entrava com UM losango no último x da série do CEPEA.
+       Não era escolha de desenho: `_scotBase` guarda só a última leitura de
+       cada UF, então não havia série para desenhar. Com `_scotSerie`, que
+       preserva as datas, as três leituras da Scot e as duas da DATAGRO
+       aparecem onde aconteceram.
+
+       A CONTA É A DESTE CARD, com o preço de cada fonte. O card converte
+       peso vivo em arroba dividindo por 30 — 375 kg = 12,5 @, o que embute
+       rendimento de carcaça de 50% —, e as duas fontes usam o MESMO
+       divisor. Dividir por 15 daria arroba viva e um ágio de −42% onde o
+       card mostra +16%: o mesmo nome para duas contas diferentes, que é o
+       defeito que este painel existe para não ter. Muda a fonte do preço,
+       nunca o método.
+
+       Para a DATAGRO o peso nem entra: ela publica R$ POR QUILO, e a arroba
+       do card é o quilo vezes 30. A faixa de peso dela não atrapalha aqui
+       porque ágio é comparação de preço POR UNIDADE, e unidade não depende
+       do tamanho do animal.
+
+       CADA DATA CONTRA O BOI DAQUELA DATA. O ponto de 20/10 usa o boi do
+       CEPEA de 20/10, nunca o último. Sem boi na data, o ponto não existe. */
+    var _ovTr = [];
     try {
-      var _sc = _scotCtrl('bmgAgScot');
-      if (_sc){
-        var _o = _sc.R.porUF[_sc.uf] && _sc.R.porUF[_sc.uf]['Boi Magro'];
-        if (_o && _o.cab > 0 && _o.kg > 0 && atual.boi > 0){
-          var _arrS = _o.cab / (_o.kg / 30);
-          _scotPt = [ _scotTraco(xs[xs.length-1], 100*(_arrS/atual.boi - 1),
-            'Scot · ' + _sc.raca + ' · ' + _sc.uf,
-            'R$ ' + _pcN(_o.cab,2) + '/cabeça · ' + _o.kg + ' kg = ' + _pcN(_o.kg/30,2) + ' @'
-            + '<br>@ do magro R$ ' + _pcN(_arrS,2) + ' contra @ do boi R$ ' + _pcN(atual.boi,2)
-            + '<br>a própria Scot apura ' + _pcN(_o.arroba,2) + ' @ de troca · ' + _femDtBr(_sc.R.data)) ];
+      var _ov = (typeof window._ovCtrl === 'function')
+              ? window._ovCtrl('bmgAgScot', 'Boi Magro', 'macho|Boi Magro') : null;
+      if (_ov){
+        var _boiEm = {};
+        linhas.forEach(function(o){ _boiEm[o.d] = o.boi; });
+        if (_ov.scot && _ov.scot.serie){
+          var _S = _ov.scot.serie, _sx = [], _sy = [], _scd = [];
+          _S.pts.forEach(function(q){
+            var boi = _boiEm[q.d];
+            if (!(boi > 0) || !(q.cab > 0) || !(q.kg > 0)) return;
+            var arr = q.cab / (q.kg / 30);
+            _sx.push(_rgDt(q.d)); _sy.push(100*(arr/boi - 1));
+            _scd.push([q.cab, q.kg, arr, boi, q.arroba]);
+          });
+          if (_sx.length) _ovTr.push(window._ovSerie(_sx, _sy,
+            'Scot · ' + _ov.scot.raca + ' · ' + _ov.uf,
+            window._OV_COR_SCOT, 'dot', _scd,
+            '<b>Scot · ' + _ov.scot.raca + ' · ' + _ov.uf + '</b>'
+            + '<br>ágio <b>%{y:.1f}%</b>'
+            + '<br>R$ %{customdata[0]:,.2f}/cabeça · %{customdata[1]} kg'
+            + '<br>@ do magro R$ %{customdata[2]:,.2f} contra @ do boi R$ %{customdata[3]:,.2f}'
+            + '<br>a própria Scot apura %{customdata[4]:,.2f} @ de troca<extra></extra>'));
+        }
+        if (_ov.dg && _ov.dg.serie){
+          var _D = _ov.dg.serie, _dx = [], _dy = [], _dcd = [];
+          _D.pts.forEach(function(q){
+            var boi = _boiEm[q.d];
+            if (!(boi > 0) || !(q.rkg > 0)) return;
+            var arr = q.rkg * 30;
+            _dx.push(_rgDt(q.d)); _dy.push(100*(arr/boi - 1));
+            _dcd.push([q.rkg, arr, boi]);
+          });
+          if (_dx.length) _ovTr.push(window._ovSerie(_dx, _dy,
+            'DATAGRO · ' + _ov.dg.raca + ' · ' + _ov.uf,
+            window._OV_COR_DG, 'dashdot', _dcd,
+            '<b>DATAGRO · ' + _ov.dg.raca + ' · ' + _ov.uf + '</b>'
+            + '<br>ágio <b>%{y:.1f}%</b>'
+            + '<br>R$ %{customdata[0]:,.2f}/kg vivo · faixa '
+            + _D.cat.lo + ' a ' + _D.cat.hi + ' kg'
+            + '<br>@ do magro R$ %{customdata[1]:,.2f} contra @ do boi R$ %{customdata[2]:,.2f}'
+            + '<extra></extra>'));
         }
       }
-    } catch(e){ console.warn('Scot sobre ágio do magro:', e); }
+    } catch(e){ console.warn('Sobreposições sobre o ágio do magro:', e); }
     renderPlot(chartId, [
       { x:xs, y:ag, type:'scatter', mode:'lines', name:'ágio da @ do magro',
         line:{ width:2.2, color:'#b45309' },
@@ -25589,10 +25726,10 @@ function updatePreco() {
       { x:[xs[xs.length-1]], y:[atual.agio], type:'scatter', mode:'markers', showlegend:false,
         marker:{ size:11, color: atual.agio>=0?'#b45309':'#0f766e', line:{color:'#fff',width:2} },
         hovertemplate:'hoje %{y:.1f}%<extra></extra>' }
-    ].concat(_scotPt), {
+    ].concat(_ovTr), {
       height:_EXP_ALT, margin:{ l:64, r:26, t:64, b:52 }, hovermode:'x unified',
-      /* a legenda só aparece quando há ponto da Scot para nomear */
-      showlegend:_scotPt.length>0,
+      /* a legenda só aparece quando há sobreposição para nomear */
+      showlegend:_ovTr.length>0,
       xaxis:{ automargin:true },
       yaxis:{ title:{ text:'ágio da @ do magro sobre a do boi (%)', standoff:6 },
               zeroline:true, zerolinecolor:'#111827', automargin:true },
@@ -50270,6 +50407,54 @@ function updateRelacao() {
   }
   try { window._scotBase = _scotBase; } catch(e){}
 
+  /* ── A SÉRIE DA SCOT, POR DATA ─────────────────────────────────────────
+     POR QUE ESTE LEITOR EXISTE. `_scotBase` monta `porUF[uf][categoria]`
+     percorrendo as linhas e sobrescrevendo, então ela guarda só a ÚLTIMA
+     leitura de cada UF. Era a razão estrutural de a Scot aparecer como um
+     losango solto sobre a série do CEPEA: não havia série para desenhar,
+     havia um valor. A aba tem três datas, e três pontos são uma série
+     curta, não um ponto.
+
+     `_scotBase` não foi alterada: ela está auditada e serve a outros
+     cards. Este leitor relê a mesma aba preservando as datas, e usa a
+     definição de categoria que ela já resolveu — o rótulo com o peso
+     declarado continua vindo de um lugar só. */
+  var _SCOT_SERIE_CACHE = {};
+  try { document.addEventListener('workbookLoaded', function(){
+    _SCOT_SERIE_CACHE = {}; }); } catch(e){}
+
+  function _scotSerie(raca, uf, categoria){
+    var ck = raca + '|' + String(uf||'').toUpperCase() + '|' + categoria;
+    if (_SCOT_SERIE_CACHE[ck] !== undefined) return _SCOT_SERIE_CACHE[ck];
+    var B = _scotBase();
+    var R = B && B.porRaca[raca];
+    if (!R){ _SCOT_SERIE_CACHE[ck] = null; return null; }
+    var cat = null;
+    R.cats.forEach(function(k){ if (k.nome === categoria) cat = k; });
+    if (!cat){ _SCOT_SERIE_CACHE[ck] = null; return null; }
+    var linhas = [];
+    try { linhas = parseSheet(R.aba) || []; } catch(e){ linhas = []; }
+    var alvo = String(uf||'').toUpperCase(), pts = [];
+    linhas.forEach(function(r){
+      if (String(r['UF'] || '').trim().toUpperCase() !== alvo) return;
+      var d = _rgData(r['Data']); if (!d) return;
+      var cab = Number(r[cat.colCab]);
+      if (!isFinite(cab) || cab <= 0) return;      /* ausência não vira zero */
+      var arr = cat.colArroba ? Number(r[cat.colArroba]) : NaN;
+      pts.push({ d:d, cab:cab, kg:cat.kg,
+                 porKg: cab / cat.kg,
+                 arroba: (isFinite(arr) && arr > 0) ? arr : null });
+    });
+    pts.sort(function(a,b){ return a.d < b.d ? -1 : (a.d > b.d ? 1 : 0); });
+    var out = pts.length
+      ? { raca:raca, uf:alvo, cat:categoria, kg:cat.kg, aba:R.aba, pts:pts, n:pts.length,
+          ini:pts[0].d, fim:pts[pts.length-1].d }
+      : null;
+    _SCOT_SERIE_CACHE[ck] = out;
+    return out;
+  }
+  try { window._scotSerie = _scotSerie; } catch(e){}
+
   /* O que a Scot diz para uma UF, numa raça e categoria. `null` quando não
      há apuração — Mestiço não cobre RS e SC, e isso aparece como ausência,
      não como zero. */
@@ -50466,6 +50651,94 @@ function updateRelacao() {
              hovertemplate:'<b>'+rot+'</b><br>%{y:,.2f}'+(detalhe?('<br>'+detalhe):'')+'<extra></extra>' };
   }
 
+  /* ── O CONTROLE DAS SOBREPOSIÇÕES, PARA AS DUAS FONTES JUNTAS ─────────
+     `_scotCtrl` continua intacta: ela serve ao card do bezerro e devolve
+     exatamente o que aquele card espera. Esta é a versão de dois
+     fornecedores, com UM seletor de UF para os dois — a pergunta "em que
+     estado" é a mesma, e dois seletores de estado lado a lado conviriam o
+     operador a compará-los em geografias diferentes sem perceber.
+
+     A lista de UFs é a UNIÃO das duas fontes ativas, e cada opção diz
+     quais delas cobrem aquele estado. A Scot apura 16 UFs no Nelore e 14 no
+     Mestiço; a DATAGRO apura 10 no Nelore e 7 nas outras duas raças. Sem
+     essa marca, escolher um estado que só uma das fontes cobre pareceria
+     uma fonte faltando. */
+  function _ovCtrl(pref, categoriaScot, chaveCatDg){
+    var sr = document.getElementById(pref + 'Raca');
+    var sd = document.getElementById(pref + 'DgRaca');
+    var su = document.getElementById(pref + 'Uf');
+    if (!su) return null;
+    var B = null, D = null;
+    try { B = _scotBase(); } catch(e){}
+    try { D = _dgBase(); } catch(e){}
+    if (sr && !B) sr.disabled = true;
+    if (sd && sd.getAttribute('data-pronto') !== '1'){
+      if (D) D.racas.forEach(function(r){ sd.appendChild(new Option(r, r)); });
+      else sd.disabled = true;
+      sd.setAttribute('data-pronto', '1');
+    }
+    var racaS = (sr && sr.value) ? sr.value : '';
+    var racaD = (sd && sd.value) ? sd.value : '';
+    if (!racaS && !racaD){ su.style.display = 'none'; return null; }
+
+    var ufsS = (racaS && B && B.porRaca[racaS]) ? B.porRaca[racaS].ufs : [];
+    var ufsD = [];
+    if (racaD){ try { ufsD = _dgUfs(racaD, chaveCatDg) || []; } catch(e){ ufsD = []; } }
+    var vistos = {}, ufs = [];
+    ufsS.concat(ufsD).forEach(function(u){ if (!vistos[u]){ vistos[u] = 1; ufs.push(u); } });
+    ufs.sort();
+    if (!ufs.length){ su.style.display = 'none'; return null; }
+    su.style.display = '';
+
+    var ass = racaS + '|' + racaD;
+    if (su.getAttribute('data-ass') !== ass){
+      var ant = su.value;
+      su.innerHTML = '';
+      ufs.forEach(function(u){
+        var temS = ufsS.indexOf(u) >= 0, temD = ufsD.indexOf(u) >= 0;
+        var rot = u;
+        if (racaS && racaD)
+          rot = u + (temS && temD ? '  · Scot e DATAGRO'
+                                  : (temS ? '  · só Scot' : '  · só DATAGRO'));
+        su.appendChild(new Option(rot, u));
+      });
+      su.setAttribute('data-ass', ass);
+      su.value = (ufs.indexOf(ant) >= 0) ? ant
+               : (ufs.indexOf('SP') >= 0 ? 'SP' : ufs[0]);
+    }
+    var uf = su.value;
+    var oS = null, oD = null;
+    if (racaS){ try { oS = { raca:racaS, serie:_scotSerie(racaS, uf, categoriaScot) }; } catch(e){} }
+    if (racaD){ try { oD = { raca:racaD, serie:_dgSerie(racaD, uf, chaveCatDg) }; } catch(e){} }
+    return { uf:uf, scot:oS, dg:oD, ufsScot:ufsS, ufsDg:ufsD };
+  }
+  try { window._ovCtrl = _ovCtrl; } catch(e){}
+
+  /* ── O TRAÇO DA SOBREPOSIÇÃO ──────────────────────────────────────────
+     O losango de 13 px existia porque havia UM ponto para marcar, e um
+     ponto solto precisa de tamanho para ser visto. Com série, marcador
+     grande vira borrão: 7 px com linha fina, e a FORMA continua separando
+     a leitura de outra fonte de um pregão da série do CEPEA.
+
+     A cor é cinza de contexto, não uma quarta cor de entidade: boi magro da
+     Scot e boi magro da DATAGRO são a MESMA entidade lida por fontes
+     diferentes, e o que separa fonte de fonte neste arquivo é forma, não
+     tom. Grafite para a Scot, cinza médio para a DATAGRO, tracejados
+     distintos — sobrevive a daltonismo e a impressão em preto e branco. */
+  function _ovSerie(x, y, rot, cor, tracejado, custom, hover){
+    return { x:x, y:y, type:'scatter',
+             mode:(x.length > 8 ? 'lines' : 'lines+markers'),
+             name:rot, showlegend:true, connectgaps:false,
+             line:{ color:cor, width:1.8, dash:tracejado || 'dot' },
+             marker:{ symbol:'diamond-open', size:7, color:cor,
+                      line:{ color:cor, width:1.6 } },
+             customdata:custom, hovertemplate:hover };
+  }
+  var _OV_COR_SCOT = _PAL.referencia;   /* grafite */
+  var _OV_COR_DG   = _PAL.neutro;       /* cinza médio */
+  try { window._ovSerie = _ovSerie;
+        window._OV_COR_SCOT = _OV_COR_SCOT; window._OV_COR_DG = _OV_COR_DG; } catch(e){}
+
   function _scotRender(){
     try { _scotEscadaCard(); } catch(e){ console.warn('Reposição Scot:', e); }
   }
@@ -50484,10 +50757,12 @@ function updateRelacao() {
     /* Os seletores de sobreposição vivem em três cards da mesma seção e
        repintam só ela. Trocar a raça obriga a refazer a lista de UFs: o
        Mestiço não cobre RS nem SC. */
-    if (/^(bmgScot|bmgAgScot|bzbScot)(Raca|Uf)$/.test(t.id)){
+    if (/^(bmgScot|bmgAgScot|bzbScot)(Raca|DgRaca|Uf)$/.test(t.id)){
       if (/Raca$/.test(t.id)){
-        var su = document.getElementById(t.id.replace(/Raca$/, 'Uf'));
-        if (su) su.setAttribute('data-raca', '');
+        var su = document.getElementById(t.id.replace(/(Dg)?Raca$/, 'Uf'));
+        /* Trocar qualquer das duas raças refaz a lista de UFs: a união muda,
+           e `data-ass` é a assinatura das duas juntas. */
+        if (su){ su.setAttribute('data-raca', ''); su.setAttribute('data-ass', ''); }
       }
       try { if (typeof window._m3RenderRelacoes === 'function') window._m3RenderRelacoes(); }
       catch(e){ console.warn('Sobreposição Scot:', e); }
@@ -50600,7 +50875,25 @@ function updateRelacao() {
     var B = _dgBase(); if (!B) return [];
     return B.ufs.filter(function(u){ return _dgValor(raca, u, chaveCat) != null; });
   }
-  try { window._dgBase = _dgBase; window._dgValor = _dgValor; } catch(e){}
+  /* A SÉRIE DA DATAGRO, POR DATA. O `obs` já é indexado por data, então
+     aqui é só percorrer as datas da aba. Duas leituras hoje; o leitor não
+     supõe quantas serão. */
+  function _dgSerie(raca, uf, chaveCat){
+    var B = _dgBase(); if (!B) return null;
+    var cat = _dgCat(chaveCat); if (!cat) return null;
+    var u = String(uf||'').toUpperCase(), pts = [];
+    B.datas.forEach(function(d){
+      var v = B.obs[raca + '|' + u + '|' + d + '|' + chaveCat];
+      if (v > 0) pts.push({ d:d, rkg:v });          /* ausência não vira ponto */
+    });
+    return pts.length
+      ? { raca:raca, uf:u, cat:cat, aba:B.aba, pts:pts, n:pts.length,
+          ini:pts[0].d, fim:pts[pts.length-1].d }
+      : null;
+  }
+  try { window._dgBase = _dgBase; window._dgValor = _dgValor;
+        window._dgSerie = _dgSerie; window._dgCat = _dgCat;
+        window._dgUfs = _dgUfs; } catch(e){}
 
   /* ── A CATEGORIA EQUIVALENTE NA SCOT ──────────────────────────────────
      Equivalência de NOME de categoria, declarada aqui para ficar auditável.
@@ -51775,6 +52068,83 @@ function updateRelacao() {
   /* As praças do bloco mudam com a categoria. O seletor guarda em
      `data-cat` para qual categoria foi montado e só se refaz quando ela
      muda — assim trocar de período não perde a praça escolhida. */
+  /* ── ATÉ QUANDO CADA PRAÇA ESTÁ EM DIA ────────────────────────────────
+     CAUSA RAIZ DE UM DEFEITO REAL. A seção abria em SP/Presidente Prudente
+     por preferência escrita no código. Em 16/10/2026 o boi gordo do CEPEA
+     parou de publicar naquela praça; o par vaca+boi congelou em 15/10 e a
+     seção INTEIRA passou a mostrar 15/10 como se fosse o dia, com 23 praças
+     em 21/10 ao lado e nada na tela dizendo isso.
+
+     Preferência fixa é uma aposta de que a fonte nunca falha naquele ponto,
+     e essa aposta não tem como ser ganha sempre. O padrão passa a ser
+     MEDIDO: a praça com o par mais recente, e entre as empatadas a de série
+     mais longa. E o atraso de qualquer praça escolhida fica na tela, porque
+     o que fez isto parecer defeito não foi o dado velho — foi o silêncio. */
+  var _FEM_ATUAL_CACHE;
+  try { document.addEventListener('workbookLoaded', function(){
+    _FEM_ATUAL_CACHE = undefined; }); } catch(e){}
+
+  function _femMapaAtualidade(){
+    if (_FEM_ATUAL_CACHE !== undefined) return _FEM_ATUAL_CACHE;
+    var ps = [];
+    try { ps = _rgPracas('Vaca Gorda') || []; } catch(e){ ps = []; }
+    var porChave = {}, maisRecente = null, melhor = null;
+    ps.forEach(function(p){
+      if (p.unidade !== 'R$/@') return;
+      var Q = _femPares(p.chave);
+      if (!Q || !Q.n) return;
+      var fim = Q.datas[Q.n-1];
+      porChave[p.chave] = { rot:p.uf+'/'+p.praca, fim:fim, n:Q.n };
+      if (maisRecente == null || fim > maisRecente) maisRecente = fim;
+      if (!melhor || fim > melhor.fim || (fim === melhor.fim && Q.n > melhor.n))
+        melhor = { chave:p.chave, rot:p.uf+'/'+p.praca, fim:fim, n:Q.n };
+    });
+    _FEM_ATUAL_CACHE = { porChave:porChave, maisRecente:maisRecente, melhor:melhor };
+    return _FEM_ATUAL_CACHE;
+  }
+  /* Pregões de atraso de uma praça contra a mais recente da seção. Conta
+     PREGÕES do CEPEA, não dias de calendário: dizer "6 dias" num fim de
+     semana faria um atraso de um pregão parecer três. */
+  function _femAtraso(chave){
+    var A = _femMapaAtualidade();
+    var e = A.porChave[chave];
+    if (!e || !A.maisRecente || e.fim >= A.maisRecente) return null;
+    var datas = [];
+    try {
+      var S = _femSerieCepea('Vaca Gorda', chave);
+      /* A régua é o calendário da praça MAIS ATUAL: é ele que define
+         quantos pregões a seção deixou de ver. */
+      if (A.melhor){
+        var R = _femSerieCepea('Vaca Gorda', A.melhor.chave);
+        if (R) datas = R.datas;
+      }
+      if (!datas.length && S) datas = S.datas;
+    } catch(err){}
+    var n = 0;
+    for (var i=0;i<datas.length;i++) if (datas[i] > e.fim && datas[i] <= A.maisRecente) n++;
+    return { fim:e.fim, maisRecente:A.maisRecente, pregoes:n, rot:e.rot };
+  }
+
+  /* O aviso da seção, escrito num lugar só e visível antes de qualquer
+     card. Some quando a praça está em dia. */
+  function _femAvisoAtrasoSecao(){
+    var el = document.getElementById('femAvisoAtraso');
+    if (!el) return;
+    if (_femCatSel() !== 'vaca' && _femCatSel() !== 'ambas'){ el.innerHTML = ''; return; }
+    var sel = document.getElementById('femVPraca');
+    var chave = _femPracaSel();
+    if (!chave){ el.innerHTML = ''; return; }
+    var A = _femAtraso(chave);
+    if (!A){ el.innerHTML = ''; return; }
+    var m = _femMapaAtualidade();
+    el.innerHTML = '<div class="fem-atraso"><b>' + _sfEsc(A.rot) + '</b> está parada em <b>'
+      + _femDtBr(A.fim) + '</b>, ' + A.pregoes + (A.pregoes === 1 ? ' pregão' : ' pregões')
+      + ' atrás do mais recente do CEPEA regional (<b>' + _femDtBr(A.maisRecente) + '</b>). '
+      + 'O par vaca e boi precisa das duas cotações na MESMA data, e nesta praça uma das duas '
+      + 'deixou de publicar. Os números abaixo são de ' + _femDtBr(A.fim) + ', não de hoje.'
+      + (m.melhor ? (' Em dia: <b>' + _sfEsc(m.melhor.rot) + '</b>.') : '') + '</div>';
+  }
+
   function _femPopulaPracasBloco(){
     var el = document.getElementById('femVPraca'); if (!el) return;
     var cat = _femCatSel();
@@ -51819,10 +52189,22 @@ function updateRelacao() {
       var ps = [];
       try { ps = _rgPracas('Vaca Gorda') || []; } catch(e){}
       ps = ps.filter(function(p){ return p.unidade === 'R$/@'; });
+      /* O rótulo leva ATÉ QUANDO a praça tem par. Sem isso, escolher uma
+         praça parada é indistinguível de escolher uma em dia, e foi assim
+         que a seção passou dias mostrando 15/10 sem ninguém ver por quê. */
+      var _A = _femMapaAtualidade();
       ps.forEach(function(p){
-        html += '<option value="' + p.chave + '">' + p.uf + '/' + p.praca + '</option>';
-        if (p.uf + '/' + p.praca === 'SP/Presidente Prudente') padrao = p.chave;
+        var e = _A.porChave[p.chave];
+        var marca = '';
+        if (e){
+          marca = '  · ' + e.n + ' pregões · até ' + _femDtBr(e.fim).slice(0,5);
+          if (_A.maisRecente && e.fim < _A.maisRecente) marca += ' (parada)';
+        } else {
+          marca = '  · sem par vaca e boi';
+        }
+        html += '<option value="' + p.chave + '">' + p.uf + '/' + p.praca + marca + '</option>';
       });
+      if (_A.melhor) padrao = _A.melhor.chave;
       if (!padrao && ps.length) padrao = ps[0].chave;
     }
     el.innerHTML = html;
@@ -52537,6 +52919,7 @@ function updateRelacao() {
   }
 
   function _femRender(){
+    try { _femAvisoAtrasoSecao(); } catch(e){ console.warn('Fêmeas — aviso de atraso:', e); }
     [['desconto',_femDescontoCard], ['base',_femBaseCard],
      ['novilha',_femNovilhaCard],
      ['preço',_femPrecoCard], ['posição',_femPosicaoCard],
