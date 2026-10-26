@@ -4086,6 +4086,50 @@ header{
 #pagePaneTop10 > .pane-hero,
 #pagePaneTop10 > .pane-ctrl-bar { display: none !important; }
 
+/* ══ RESUMO DO DIA, NO SISTEMA DO RADAR ═══════════════════════════════
+   O `.pane-hero` é uma faixa em degradê verde-escuro com rótulo em verde
+   neon. Ela nasceu quando cada painel era uma PÁGINA e precisava se
+   apresentar. Depois da migração para a navegação por ambientes, o nome da
+   seção já está no menu, e a faixa passou a repetir o que o menu diz —
+   num registro que o resto do Radar não usa em lugar nenhum: aqui a
+   superfície é branca, a borda é fina e cinza, e o teal aparece como
+   RÉGUA de 3px, nunca como bloco chapado.
+
+   Alertas e TOP 5 já tinham chegado a essa conclusão e escondem o próprio
+   herói duas regras acima. Esta é a terceira seção migrada a fazer o
+   mesmo. O texto que o herói trazia não some: vira `.explain`, que é o
+   componente da casa para prosa explicativa.                             */
+#pagePaneHist7 > .pane-hero { display: none !important; }
+
+/* O CABEÇALHO DE GRUPO. Era uma linha solta de teal 800 em caixa alta, sem
+   superfície e sem régua, flutuando entre dois cards. O sistema já tem uma
+   gramática para rótulo pequeno — `.rb-head`, `.ex-tag`, `.vk-lbl`: caixa
+   alta, `--fs-nano`, entreletra .07em, cinza. É ela que vale aqui; o teal
+   fica para o código do ativo, que é a informação que o olho procura. */
+.h7-grupo{
+  display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+  margin: 22px 0 10px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #e6eaee;
+}
+.h7-grupo:first-child{ margin-top: 4px; }
+.h7-grupo-nome{
+  font-size: var(--fs-nano); font-weight:700; text-transform:uppercase;
+  letter-spacing:.07em; color:#6b7280;
+}
+.h7-grupo-nome b{ color:#0f766e; font-weight:800; }
+.h7-grupo-ult{
+  margin-left:auto; font-size: var(--fs-nano); color:#9ca3af;
+  font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+/* A moldura da tabela seguia uma borda verde-menta própria. Passa a ser a
+   mesma borda de todo card do Radar. */
+.h7-tab-wrap{
+  overflow:auto;
+  border:1px solid #e6eaee;
+  border-radius:10px;
+}
+
 #pagePaneTop10 .top10-card{
   background: var(--m3-surface) !important;
   border: 1px solid var(--m3-border-soft) !important;
@@ -62208,7 +62252,17 @@ function extractSeries(sheetName){
 
   function marketMeta(group){
     if(group==='milho')  return { key:'milho',  title:'MILHO',   prefix:'CCM', spotSheet:'MILHO - CEPEA',     spotLabel:'MILHO CEPEA',    uni:'R$ por saca' };
-    if(group==='soja')   return { key:'soja',   title:'SOJA',    prefix:'SJC', spotSheet:'SOJA - PARANAGUÁ',  spotLabel:'SOJA PARANAGUÁ', uni:'R$ por saca' };
+    /* O SJC DA B3 É COTADO EM DÓLAR POR SACA, e o indicador de Paranaguá do
+       CEPEA em real por saca. O resto do Radar sabe disso e converte pelo
+       dólar futuro do mesmo vencimento; este painel era o único lugar que
+       punha as duas pontas no mesmo eixo e na mesma coluna como se fossem a
+       mesma moeda — em 23/10, físico R$ 152,41 contra futuro 28,13, que não
+       é queda de 82%, é dólar contra real.
+
+       Enquanto a conversão não for decidida aqui, a unidade do futuro é
+       DECLARADA e a base não é calculada. Número errado com aparência de
+       certo é pior que número ausente. */
+    if(group==='soja')   return { key:'soja',   title:'SOJA',    prefix:'SJC', spotSheet:'SOJA - PARANAGUÁ',  spotLabel:'SOJA PARANAGUÁ', uni:'R$ por saca', uniFut:'US$ por saca' };
     if(group==='dolar')  return { key:'dolar',  title:'DÓLAR',   prefix:'DOL', spotSheet:null,                spotLabel:'DÓLAR PTAX',     uni:'R$ por US$ mil' };
     if(group==='acucar') return { key:'acucar', title:'AÇÚCAR',  prefix:null,  spotSheet:'AÇUCAR',            spotLabel:'AÇÚCAR CEPEA',   uni:'R$ por saca' };
     if(group==='etanol') return { key:'etanol', title:'ETANOL',  prefix:'ETH', spotSheet:'ETANOL',            spotLabel:'ETANOL CEPEA',   uni:'R$ por litro' };
@@ -62371,7 +62425,10 @@ function extractSeries(sheetName){
     /* Cabeçalho */
     var head = '<tr>' +
       '<th class="col-contract" style="min-width:160px;text-align:left;">' + meta.title
-      + (meta.uni ? '<span class="h7-uni">' + meta.uni + '</span>' : '') + '</th>';
+      + (meta.uni
+          ? '<span class="h7-uni">' + meta.uni
+            + (meta.uniFut ? ' · futuros em ' + meta.uniFut : '') + '</span>'
+          : '') + '</th>';
     dates7.forEach(function(d){
       head += '<th class="col-date" style="text-align:right;">' + fmtDateShort(d) + '</th>';
     });
@@ -63164,6 +63221,85 @@ function extractSeries(sheetName){
     dolar:'DÓLAR (DOL)', acucar:'AÇÚCAR', etanol:'ETANOL (ETH)'
   };
 
+  /* ── A RÉGUA DE INDICADORES ───────────────────────────────────────────
+     "Gráfico sem destaque" tem uma causa concreta: a curva mostra onze
+     séries num intervalo de poucos reais, e nada na tela diz qual é o
+     número que importa. Todo card do Radar abre com quatro tiras de
+     indicador acima da figura — é o padrão de `.vol-kpis`, o mesmo de
+     volatilidade, regional, fêmeas e atacado. Estes dois cards eram os
+     únicos do painel sem ela.
+
+     Os quatro números são os que a curva responde: quanto vale o físico
+     hoje, quanto vale o primeiro vencimento, qual a distância entre os
+     dois — a base — e quantos vencimentos a curva cobre. Nenhum deles é
+     conta nova: saem das mesmas séries que o gráfico desenha. */
+  function _h7Kpis(group, alvoId){
+    var elK = el(alvoId); if (!elK) return;
+    var elSel = el(alvoId + '_sel');
+    if (!hasWorkbook()){ elK.innerHTML = ''; return; }
+
+    var meta = marketMeta(group);
+    var items = buildTable(group);
+    var uni = meta.uni || '';
+
+    function ultimo(it){
+      var s = seriesFor(it.sheet); if (!s || !s.closes || !s.closes.length) return null;
+      var sc = (it.scale != null) ? it.scale : 1;
+      for (var i = s.closes.length - 1; i >= 0; i--){
+        var v = s.closes[i];
+        if (v != null && isFinite(v) && v > 0) return { v: v * sc, d: s.dates[i] };
+      }
+      return null;
+    }
+    function tira(rot, val, sub, mod){
+      return '<div class="vol-kpi' + (mod ? ' ' + mod : '') + '">'
+           + '<div class="vk-lbl">' + rot + '</div>'
+           + '<div class="vk-val">' + val + '</div>'
+           + '<div class="vk-sub">' + (sub || '') + '</div></div>';
+    }
+
+    var spot = null;
+    for (var i = 0; i < items.length; i++) if (items[i].kind === 'spot'){ spot = items[i]; break; }
+    /* O primeiro vencimento já vem primeiro: `listFutures` ordena por
+       vencimento desde esta leva. */
+    var frente = null;
+    for (i = 0; i < items.length; i++) if (items[i].kind !== 'spot'){ frente = items[i]; break; }
+
+    var uSpot = spot ? ultimo(spot) : null;
+    var uFre  = frente ? ultimo(frente) : null;
+    var nVenc = items.filter(function(x){ return x.kind !== 'spot'; }).length;
+
+    var h = '';
+    if (uSpot) h += tira('FÍSICO HOJE', _h7Num(uSpot.v), uni + ' · ' + fmtDateShort(uSpot.d));
+    if (uFre)  h += tira(String(frente.sheet || '').toUpperCase(), _h7Num(uFre.v),
+                         (meta.uniFut ? meta.uniFut + ' · ' : 'primeiro vencimento · ')
+                         + fmtDateShort(uFre.d));
+    /* BASE: futuro menos físico, na unidade do ativo. Só existe quando as
+       duas pontas têm cotação E ESTÃO NA MESMA MOEDA — subtrair dólar de
+       real dá um número, e esse número não quer dizer nada. O dólar, que
+       não tem indicador à vista nesta aba, também não ganha a tira. */
+    if (uSpot && uFre && uSpot.v > 0 && !meta.uniFut){
+      var base = uFre.v - uSpot.v;
+      var pct = base / uSpot.v * 100;
+      h += tira('BASE',
+                (base >= 0 ? '+' : '−') + _h7Num(Math.abs(base)),
+                (pct >= 0 ? '+' : '−') + Math.abs(pct).toFixed(1).replace('.', ',')
+                  + '% sobre o físico');
+    }
+    /* O açúcar não tem contrato nesta base, e "0 · contratos na curva" lê
+       como se a curva tivesse ficado vazia por falha. Zero aqui é a
+       natureza do ativo, não ausência de dado. */
+    h += (nVenc > 0)
+       ? tira('VENCIMENTOS', String(nVenc), nVenc === 1 ? 'contrato na curva' : 'contratos na curva')
+       : tira('VENCIMENTOS', '–', 'nenhum contrato futuro para este ativo');
+    elK.innerHTML = h;
+
+    if (elSel){
+      var ref = uSpot || uFre;
+      elSel.textContent = ref ? ('último pregão ' + fmtDateShort(ref.d)) : '';
+    }
+  }
+
   function renderAll(){
     var groups = getActiveGroups();
     var mc = el('hist7MultiContainer');
@@ -63175,16 +63311,34 @@ function extractSeries(sheetName){
       var curveId = 'hist7Curve_' + group;
       var thId    = 'hist7Th_' + group;
       var tbId    = 'hist7Tb_' + group;
+      /* ── O CONTRATO DE CARD DA CASA ─────────────────────────────────
+         `.card-title` sozinho não basta: o tema copia o texto de
+         `.card-title-text` para dentro da figura — é esse texto que vai no
+         PNG baixado pela barra do Plotly — e a busca global do painel
+         indexa por ele. Sem o span, estes seis cards eram anônimos nos dois
+         lugares. O `.pill` diz, numa linha, a pergunta que o card responde,
+         como em todos os outros cards do Radar. */
+      var _nomeAtivo = (label.split('(')[0] || label).trim();
+      var _cod = (label.match(/\(([^)]+)\)/) || [,''])[1];
+      var kpiId = 'hist7Kpis_' + group;
       var html =
-        (gi > 0 ? '<div class="panel-divider" style="margin:8px 0 20px"></div>' : '') +
-        '<div style="font-size: var(--fs-md);font-weight:800;color:var(--accent,#0f766e);letter-spacing:.06em;text-transform:uppercase;padding:4px 0 10px">' + label + '</div>' +
+        '<div class="h7-grupo">'
+          + '<span class="h7-grupo-nome">' + _nomeAtivo
+          + (_cod ? ' <b>' + _cod + '</b>' : '') + '</span>'
+          + '<span class="h7-grupo-ult" id="' + kpiId + '_sel"></span>'
+        + '</div>' +
         '<section class="card" style="margin-bottom:12px">' +
-          '<div class="card-title">Curva de Preços — contratos futuros + físico</div>' +
+          '<div class="card-title"><span class="card-title-text">'
+            + _nomeAtivo + ' — curva de preços</span></div>' +
+          '<div class="pill">Onde a curva da B3 está contra o físico de hoje</div>' +
+          '<div id="' + kpiId + '" class="vol-kpis"></div>' +
           '<div id="' + curveId + '" class="chart-container"></div>' +
         '</section>' +
         '<section class="card">' +
-          '<div class="card-title">Tabela de Fechamentos — últimos 7 pregões · MM por contrato</div>' +
-          '<div style="overflow:auto;border-radius:12px;border:1px solid #d1fae5;box-shadow:0 1px 3px rgba(0,0,0,.06);">' +
+          '<div class="card-title"><span class="card-title-text">'
+            + _nomeAtivo + ' — fechamentos dos últimos 7 pregões</span></div>' +
+          '<div class="pill">Cada vencimento, pregão a pregão, com a média de 21</div>' +
+          '<div class="h7-tab-wrap">' +
             '<table class="hist7-live-table">' +
               '<thead id="' + thId + '"></thead>' +
               '<tbody id="' + tbId + '"></tbody>' +
@@ -63195,12 +63349,13 @@ function extractSeries(sheetName){
       sec.innerHTML = html;
       mc.appendChild(sec);
       /* render after DOM is attached */
-      setTimeout((function(g, cId, thI, tbI){
+      setTimeout((function(g, cId, thI, tbI, kId){
         return function(){
           try { renderCurve(g, cId); } catch(e){ console.error('Curve', g, e); }
           try { renderTable(g, thI, tbI); } catch(e){ console.error('Table', g, e); }
+          try { _h7Kpis(g, kId); } catch(e){ console.error('Kpis', g, e); }
         };
-      })(group, curveId, thId, tbId), 0);
+      })(group, curveId, thId, tbId, kpiId), 0);
     });
     /* keep state.group at first active for A4 compat */
     if(groups.length) state.group = groups[0];
