@@ -11934,50 +11934,80 @@ body[data-asel-agro="0"] #sectionJanelasTrava { display: none !important; }
 body:not([data-asel-agro="0"]) #sectionJanelasTravaOutros { display: none !important; }
 body[data-asel-agro="0"] #sectionJanelasTrava + .panel-divider { display: none !important; }
 
-/* ───── 7 Pregões: tabela estilizada ───── */
+/* ───── 7 Pregões: tabela estilizada ─────
+   TIPOGRAFIA DE NÚMERO, NÃO DE CARTAZ. `--font-display` é Montserrat, uma
+   geométrica de títulos com algarismos largos e de larguras diferentes
+   entre si; numa tabela de preços isso torce a coluna. Inter com
+   `tabular-nums` põe a vírgula de cada linha em cima da vírgula da outra,
+   que é a única razão de a tabela existir em vez de uma lista.
+
+   E o cabeçalho perde o degradê. Gradiente é decoração: numa faixa de
+   cabeçalho ele muda a cor do texto ao longo da linha sem que essa variação
+   signifique coisa alguma. Um teal sólido separa melhor e imprime melhor. */
 .hist7-live-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  font-family: var(--font-display, 'Inter', sans-serif);
-  font-size: var(--fs-base);
+  font-family: var(--font-sans, 'Inter', sans-serif);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  font-size: var(--fs-sm);
   background: #fff;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
 }
 .hist7-live-table thead tr th {
-  background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+  background: #0f766e;
   color: #fff;
   font-weight: 700;
-  font-size: var(--fs-sm);
-  letter-spacing: .04em;
+  font-size: var(--fs-mini);
+  letter-spacing: .05em;
   text-transform: uppercase;
-  padding: 9px 10px;
+  padding: 7px 10px;
   text-align: right;
   white-space: nowrap;
-  border-bottom: 2px solid rgba(255,255,255,0.15);
+  border-bottom: 0;
+}
+/* A unidade dita uma vez, embaixo do nome do mercado, em vez de repetida
+   em cada uma das 77 células. */
+.hist7-live-table thead tr th .h7-uni{
+  display: block;
+  font-size: var(--fs-micro);
+  font-weight: 500;
+  letter-spacing: .02em;
+  text-transform: none;
+  color: rgba(255,255,255,0.72);
+  margin-top: 1px;
 }
 .hist7-live-table thead tr th:first-child {
   text-align: left;
-  border-radius: 12px 0 0 0;
+  border-radius: 10px 0 0 0;
 }
-.hist7-live-table thead tr th:last-child { border-radius: 0 12px 0 0; }
+.hist7-live-table thead tr th:last-child { border-radius: 0 10px 0 0; }
 .hist7-live-table tbody tr td {
-  padding: 7px 10px;
+  padding: 5px 10px;
   text-align: right;
-  border-bottom: 1px solid #f0fdf4;
+  border-bottom: 1px solid #eef2f5;
   color: #1f2937;
+  line-height: 1.5;
   transition: background .1s;
 }
-.hist7-live-table tbody tr td:first-child { text-align: left; font-weight: 700; color: #134e4a; }
-.hist7-live-table tbody tr:nth-child(even) td { background: #f0fdf4; }
-.hist7-live-table tbody tr:hover td { background: #ccfbf1 !important; }
-.hist7-live-table tbody tr:first-child td { font-weight: 900; font-size: var(--fs-base); }
+.hist7-live-table tbody tr td:first-child { text-align: left; font-weight: 600; color: #134e4a; }
+/* Zebra mais clara: a faixa serve para o olho não pular de linha, não para
+   dividir a tabela em blocos verdes. */
+.hist7-live-table tbody tr:nth-child(even) td { background: #f8fafb; }
+.hist7-live-table tbody tr:hover td { background: #ecfdf5 !important; }
+/* A primeira linha é o FÍSICO, a âncora da leitura: continua em destaque,
+   sem o salto de corpo que a fazia brigar com o cabeçalho. */
+.hist7-live-table tbody tr:first-child td {
+  font-weight: 800;
+  border-bottom: 1px solid #cbd5e1;
+}
 .hist7-live-table td.mm-col {
   background: #f0fdf4;
-  font-weight: 800;
+  font-weight: 700;
   color: #065f46;
-  border-left: 2px solid #6ee7b7;
+  border-left: 1px solid #a7f3d0;
 }
 .hist7-live-table td.tag-weekly {
   color: #6b7280;
@@ -11986,7 +12016,7 @@ body[data-asel-agro="0"] #sectionJanelasTrava + .panel-divider { display: none !
 }
 .hist7-live-table td.val-up   { color: #065f46; }
 .hist7-live-table td.val-down { color: #991b1b; }
-.hist7-live-table thead th.mm-col { background: #065f46; border-left: 2px solid #6ee7b7; }
+.hist7-live-table thead th.mm-col { background: #0f766e; border-left: 1px solid rgba(255,255,255,0.28); }
 
 /* ===== Ocultar abas Agro-exclusivas no modo Outros Ativos ===== */
 body[data-asel-agro="0"] .tab-subgroup[data-cat="gestao"] {
@@ -62158,6 +62188,16 @@ function extractSeries(sheetName){
     if(v==null || v==='' || isNaN(v)) return '';
     return 'R$ ' + Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2});
   }
+  /* O MESMO NÚMERO, SEM O "R$" EM CADA CÉLULA.
+     Setenta e sete repetições do símbolo numa tabela em que TODA coluna é a
+     mesma moeda não informam nada e custam caro: empurram os algarismos para
+     a direita em larguras diferentes, de modo que a coluna deixa de alinhar
+     justamente onde o alinhamento é a função da tabela. A unidade passa a
+     ser dita uma vez, no cabeçalho da primeira coluna. */
+  function _h7Num(v){
+    if(v==null || v==='' || isNaN(v)) return '';
+    return Number(v).toLocaleString('pt-BR',{minimumFractionDigits:2, maximumFractionDigits:2});
+  }
   function fmtDateShort(d){
   var dt = (d instanceof Date) ? d : new Date(d);
   if(!dt || isNaN(dt.getTime())) return '';
@@ -62167,21 +62207,40 @@ function extractSeries(sheetName){
 }
 
   function marketMeta(group){
-    if(group==='milho')  return { key:'milho',  title:'MILHO',   prefix:'CCM', spotSheet:'MILHO - CEPEA',     spotLabel:'MILHO CEPEA' };
-    if(group==='soja')   return { key:'soja',   title:'SOJA',    prefix:'SJC', spotSheet:'SOJA - PARANAGUÁ',  spotLabel:'SOJA PARANAGUÁ' };
-    if(group==='dolar')  return { key:'dolar',  title:'DÓLAR',   prefix:'DOL', spotSheet:null,                spotLabel:'DÓLAR PTAX' };
-    if(group==='acucar') return { key:'acucar', title:'AÇÚCAR',  prefix:null,  spotSheet:'AÇUCAR',            spotLabel:'AÇÚCAR CEPEA' };
-    if(group==='etanol') return { key:'etanol', title:'ETANOL',  prefix:'ETH', spotSheet:'ETANOL',            spotLabel:'ETANOL CEPEA' };
-    return { key:'boi', title:'BOI', prefix:'BGI', spotSheet:'BOI GORDO', spotLabel:'BOI GORDO' };
+    if(group==='milho')  return { key:'milho',  title:'MILHO',   prefix:'CCM', spotSheet:'MILHO - CEPEA',     spotLabel:'MILHO CEPEA',    uni:'R$ por saca' };
+    if(group==='soja')   return { key:'soja',   title:'SOJA',    prefix:'SJC', spotSheet:'SOJA - PARANAGUÁ',  spotLabel:'SOJA PARANAGUÁ', uni:'R$ por saca' };
+    if(group==='dolar')  return { key:'dolar',  title:'DÓLAR',   prefix:'DOL', spotSheet:null,                spotLabel:'DÓLAR PTAX',     uni:'R$ por US$ mil' };
+    if(group==='acucar') return { key:'acucar', title:'AÇÚCAR',  prefix:null,  spotSheet:'AÇUCAR',            spotLabel:'AÇÚCAR CEPEA',   uni:'R$ por saca' };
+    if(group==='etanol') return { key:'etanol', title:'ETANOL',  prefix:'ETH', spotSheet:'ETANOL',            spotLabel:'ETANOL CEPEA',   uni:'R$ por litro' };
+    return { key:'boi', title:'BOI', prefix:'BGI', spotSheet:'BOI GORDO', spotLabel:'BOI GORDO', uni:'R$ por arroba' };
   }
 
+  /* ── A ORDEM DE UMA CURVA É O VENCIMENTO ──────────────────────────────
+     `.sort()` ordena texto, e o código do contrato não é cronológico: a
+     letra do mês vem antes do ano. A tabela saía F27, G27, H27, J27, K27,
+     M27, V26, V27, X26, Z26 — ou seja, janeiro de 2027 em cima e outubro
+     de 2026 no meio. Numa tabela que existe para mostrar a estrutura a
+     termo, ordem alfabética não é só feia: ela desmonta a leitura, porque
+     o degrau entre linhas vizinhas deixa de ser o degrau entre
+     vencimentos vizinhos.
+
+     A chave é ano*12 + mês, a mesma de `_contractMaturityKey`. */
+  var _H7_MES = {F:1,G:2,H:3,J:4,K:5,M:6,N:7,Q:8,U:9,V:10,X:11,Z:12};
+  function _h7OrdemVenc(sn){
+    var m = String(sn||'').toUpperCase().match(/^[A-Z]{3}([FGHJKMNQUVXZ])(\d{2})$/);
+    if(!m) return 1e9;                       /* não é contrato: vai para o fim */
+    return (2000 + parseInt(m[2],10)) * 12 + (_H7_MES[m[1]] || 0);
+  }
   function listFutures(prefix){
     if(!hasWorkbook()) return [];
     var p = String(prefix||'').toUpperCase();
     return workbook.SheetNames.filter(function(s){
       s = String(s||'').toUpperCase().trim();
       return s.startsWith(p) && /^[A-Z]{3}[FGHJKMNQUVXZ]\d{2}$/.test(s);
-    }).sort();
+    }).sort(function(a,b){
+      var ka = _h7OrdemVenc(a), kb = _h7OrdemVenc(b);
+      return (ka - kb) || (a < b ? -1 : 1);
+    });
   }
 
   /* Only contracts expiring in the current month or later */
@@ -62311,7 +62370,8 @@ function extractSeries(sheetName){
 
     /* Cabeçalho */
     var head = '<tr>' +
-      '<th class="col-contract" style="min-width:160px;text-align:left;">' + meta.title + '</th>';
+      '<th class="col-contract" style="min-width:160px;text-align:left;">' + meta.title
+      + (meta.uni ? '<span class="h7-uni">' + meta.uni + '</span>' : '') + '</th>';
     dates7.forEach(function(d){
       head += '<th class="col-date" style="text-align:right;">' + fmtDateShort(d) + '</th>';
     });
@@ -62343,20 +62403,28 @@ function extractSeries(sheetName){
           dir = v > prevVal ? ' val-up' : (v < prevVal ? ' val-down' : '');
         }
         if(v!=null) prevVal = v;
-        tds.push('<td class="'+cls+dir+'">' + (v==null?'':fmtBRL(v)) + '</td>');
+        tds.push('<td class="'+cls+dir+'">' + (v==null?'':_h7Num(v)) + '</td>');
       });
 
       /* MM: semanal → MM3; diária → MM21 */
       var mm = null;
       if(weekly){
         mm = _mmN(s, 3);
-        if(mm!=null) mm = mm*_sc;
+        mm = (mm != null && isFinite(mm)) ? mm * _sc : null;
       } else {
+        /* ── MM INEXISTENTE NÃO É ZERO ──────────────────────────────────
+           `tryExtractMA21` grava `null` enquanto a série não tem 21 pregões,
+           e `null * _sc` vale ZERO em JavaScript. Resultado: um contrato
+           recém-listado — o CCMF28, com quatro pregões — exibia "MM 0,00",
+           que não é média nenhuma e ainda por cima parece preço. Contrato
+           novo demais para ter média de 21 pregões fica com a célula vazia,
+           que é o que o painel faz em toda parte com dado que não existe. */
         var lastIx = s.closes.length-1;
-        mm = (s.ma21&&s.ma21.length) ? s.ma21[lastIx]*_sc : null;
+        var _ma = (s.ma21 && s.ma21.length) ? s.ma21[lastIx] : null;
+        mm = (_ma != null && isFinite(_ma)) ? _ma * _sc : null;
       }
       var mmLabel = weekly ? 'MM3s' : 'MM21';
-      var mmTd = '<td class="mm-col">' + (mm==null ? '' : fmtBRL(mm)) + (weekly&&mm!=null?' <sup style="font-size: var(--fs-micro);opacity:.7">sem</sup>' : '') + '</td>';
+      var mmTd = '<td class="mm-col">' + (mm==null ? '' : _h7Num(mm)) + (weekly&&mm!=null?' <sup style="font-size: var(--fs-micro);opacity:.7">sem</sup>' : '') + '</td>';
 
       body.push('<tr><td class="col-contract">' + it.name + (weekly?' <span style="font-size: var(--fs-micro);color:#9ca3af;font-weight:400;">(sem.)</span>':'') + '</td>' +
         tds.join('') + mmTd + '</tr>');
@@ -62447,6 +62515,32 @@ function extractSeries(sheetName){
       try { return String((document.getElementById('sheetSelect')||{}).value||'').toUpperCase(); }
       catch(e){ return ''; }
     })();
+    /* ── SEM CONTRATO ESCOLHIDO, O PROTAGONISTA É O PRIMEIRO VENCIMENTO ──
+       O desenho acima supõe que existe um contrato selecionado para receber
+       o teal. Quando o seletor está no indicador físico — que é o estado em
+       que a Visão Executiva abre — nenhum futuro casa, e os dez saem no
+       mesmo cinza de fundo a 42% de opacidade: um feixe pálido sem legenda
+       em que não se distingue BGIV26 de BGIZ26.
+
+       Na falta de escolha, o protagonista natural é o PRIMEIRO VENCIMENTO.
+       É o contrato de referência de quem olha o resumo do dia, é o que
+       ancora a curva, e é o que a Visão Executiva já usa como padrão em
+       todos os outros cards. */
+    var _h7Destaque = (function(){
+      if (_selAtual){
+        for (var i=0;i<items.length;i++)
+          if (items[i].kind !== 'spot' && String(items[i].sheet||'').toUpperCase() === _selAtual)
+            return _selAtual;                       /* a escolha do operador manda */
+      }
+      var melhor = null, kMelhor = null;
+      items.forEach(function(it){
+        if (it.kind === 'spot') return;
+        var k = _h7OrdemVenc(it.sheet);
+        if (k >= 1e9) return;
+        if (kMelhor == null || k < kMelhor){ kMelhor = k; melhor = String(it.sheet||'').toUpperCase(); }
+      });
+      return melhor || '';
+    })();
     var spotIdx = 0, futIdx = 0;
     var traces = [];
 
@@ -62523,7 +62617,7 @@ function extractSeries(sheetName){
 
       var isSpot = it.kind === 'spot';
       var label = isSpot ? it.name : it.sheet;
-      var ehFoco = !isSpot && _selAtual && String(it.sheet||'').toUpperCase() === _selAtual;
+      var ehFoco = !isSpot && _h7Destaque && String(it.sheet||'').toUpperCase() === _h7Destaque;
       if(!isSpot) futIdx++; else spotIdx++;
 
       var color = ehFoco ? COR_FOCO : (isSpot ? COR_FISICO : COR_FUNDO);
@@ -62540,11 +62634,13 @@ function extractSeries(sheetName){
         legendrank: ehFoco ? 1 : (isSpot ? 2 : 3),
         line: {
           color: color,
-          width: ehFoco ? 2.8 : (isSpot ? 1.9 : 1.1),
+          width: ehFoco ? 2.8 : (isSpot ? 1.9 : 1.25),
           dash:  isSpot && !ehFoco ? 'dash' : 'solid',
           shape: 'spline', smoothing: 0.35
         },
-        opacity: ehFoco ? 1 : (isSpot ? 0.95 : 0.42),
+        /* 0,42 apagava o feixe a ponto de ele virar sombra. O fundo precisa
+           ser legível como conjunto sem competir com o protagonista. */
+        opacity: ehFoco ? 1 : (isSpot ? 0.95 : 0.58),
         showlegend: ehFoco || isSpot,   /* o feixe de fundo não precisa de legenda */
         /* O hover diz o número, não a moeda: num grupo com físico em reais e
            contrato em dólar, um "R$" fixo aqui erra metade das linhas. */
@@ -62572,6 +62668,27 @@ function extractSeries(sheetName){
       });
     });
 
+    /* ── O FORMATO DO EIXO SAI DA JANELA, NÃO DE UM PADRÃO FIXO ────────
+       `%b %Y` numa janela de sete pregões escreve "Oct 2026" quatro vezes
+       seguidas: quatro marcas, zero informação, e o leitor sem saber a que
+       dia pertence cada ponto. O formato passa a ser escolhido pelo que a
+       janela cobre — dia e mês quando ela cabe em dois meses, mês e ano
+       quando é longa o bastante para isso significar alguma coisa. */
+    var _h7Span = (function(){
+      var mn = null, mx = null;
+      traces.forEach(function(t){
+        (t.x || []).forEach(function(v){
+          var k = (v instanceof Date) ? v.getTime() : Date.parse(v);
+          if (!isFinite(k)) return;
+          if (mn == null || k < mn) mn = k;
+          if (mx == null || k > mx) mx = k;
+        });
+      });
+      return (mn == null || mx == null) ? null : (mx - mn) / 86400000;
+    })();
+    var _h7Fmt = (_h7Span != null && _h7Span <= 62) ? "%d/%m"
+               : (_h7Span != null && _h7Span <= 400) ? "%d/%m/%y" : "%b/%y";
+
     var layout = {
       margin: {l:62, r:64, t:18, b:60},
       font:   {family:"Inter, sans-serif", size:12, color:"#374151"},
@@ -62580,7 +62697,7 @@ function extractSeries(sheetName){
         zeroline:    false,
         showline:    true,
         linecolor:   "rgba(17,24,39,0.15)",
-        tickformat:  "%b %Y",
+        tickformat:  _h7Fmt,
         tickfont:    {color:"#6b7280", size:11},
         tickangle:   -30,
         automargin:  true,
