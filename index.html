@@ -20265,7 +20265,10 @@ var workbook = null; try{ window.workbook = workbook; }catch(e){}
   var sheetData = {};
 
   function setStatus(msg) {
-    document.getElementById('status').textContent = msg;
+    /* O #status saiu do layout; sem esta checagem a primeira mensagem
+       derrubava o envio manual da planilha antes de ler o arquivo. */
+    var _st = document.getElementById('status');
+    if (_st) _st.textContent = msg;
 
     var appStatusText = document.getElementById('appStatusText');
     var appStatus = document.getElementById('appStatus');
@@ -53271,7 +53274,10 @@ function updateRelacao() {
     }
     el.innerHTML = html;
     if (padrao) el.value = padrao;
-    el.setAttribute('data-cat', cat);
+    /* Lista vazia não conta como montada: sem isto, uma chamada antes da
+       planilha travava o seletor sem praça até recarregar a página. */
+    if (html) el.setAttribute('data-cat', cat);
+    else el.removeAttribute('data-cat');
   }
 
   function _femBloco(){
@@ -57432,9 +57438,42 @@ function updateRelacao() {
      Radar já tinha — gráfico escondido não é desenhado, para não sair com
      largura zero — e evita redesenhar 188 gráficos a cada clique. */
   var _M3_JA_DESENHOU = {};
+  /* SEÇÃO ABERTA ANTES DA PLANILHA FICAVA EM BRANCO. O Plotly chega do CDN
+     antes do dados.xlsx (6 MB), e o evento 'm3PlotlyPronto' chama
+     redrawAll, que inicia a navegação e reabre a última seção usada. Os
+     cards dessa seção desenhavam sem planilha, alguns seletores (a praça
+     das fêmeas, as fontes das curvas sintéticas) se davam por montados com
+     a lista vazia, e a seção era marcada como desenhada: quando a planilha
+     chegava, nada redesenhava. Quem tinha parado na página de fêmeas abria
+     o Radar com todos os gráficos dela vazios.
+     Agora nada de seção é desenhado sem planilha. Na primeira chegada dela
+     a seção aberta é desenhada na hora; nas sincronizações de 10 minutos as
+     seções só ficam marcadas para redesenhar na próxima visita, para não
+     refazer a tela debaixo de quem está preenchendo uma simulação. */
+  var _M3_PLANILHA_JA_VEIO = false;
+  function _m3TemPlanilha(){
+    try { return !!(window.workbook && window.workbook.SheetNames && window.workbook.SheetNames.length); }
+    catch(e){ return false; }
+  }
+  try {
+    document.addEventListener('workbookLoaded', function(){
+      /* Depois do redrawAll que _aplicaWorkbook agenda para 30 ms: os
+         caches da planilha anterior já foram limpos e o desenho legado já
+         rodou. */
+      setTimeout(function(){
+        try {
+          var primeira = !_M3_PLANILHA_JA_VEIO;
+          _M3_PLANILHA_JA_VEIO = true;
+          _M3_JA_DESENHOU = {};
+          if (primeira && _M3_AMB.migrado && window._m3SecAtual) m3AtivarSecao(window._m3SecAtual);
+        } catch(e){ console.warn('Redesenho após a planilha:', e); }
+      }, 120);
+    });
+  } catch(e){}
   function _m3Desenha(secId, forcar){
     var s=_M3_ESTRUTURA.filter(function(x){ return x.id===secId; })[0];
     if(!s || !s.render || !s.render.length) return;
+    if(!_m3TemPlanilha()) return;
     if(_M3_JA_DESENHOU[secId] && !forcar) return;
     s.render.forEach(function(fn){
       try { if (typeof window[fn]==='function') window[fn](); }
