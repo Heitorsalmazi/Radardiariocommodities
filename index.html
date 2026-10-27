@@ -25505,10 +25505,10 @@ function updatePreco() {
        boi magro um boi vendido paga — então é o peso de abate de
        referência dividido pela arroba da Scot. Nenhuma premissa nova: as
        duas pontas da divisão já estavam na tela. */
-    var _ovTr = [];
+    var _ovTr = [], _ovDatas = [], _ov = null;
     try {
-      var _ov = (typeof window._ovCtrl === 'function')
-              ? window._ovCtrl('bmgScot', 'Boi Magro', 'macho|Boi Magro') : null;
+      _ov = (typeof window._ovCtrl === 'function')
+          ? window._ovCtrl('bmgScot', 'Boi Magro', 'macho|Boi Magro') : null;
       if (_ov){
         var _boiEm = {};
         pts.forEach(function(o){ _boiEm[o.d] = o.boi; });
@@ -25524,7 +25524,8 @@ function updatePreco() {
           var _S = _ov.scot.serie, _sx = [], _sy = [], _scd = [];
           _S.pts.forEach(function(q){
             if (!(q.arroba > 0)) return;
-            _sx.push(_rgDt(q.d)); _sy.push(pb / q.arroba);
+            var _dt = _rgDt(q.d);
+            _sx.push(_dt); _sy.push(pb / q.arroba); _ovDatas.push(_dt);
             _scd.push([q.arroba, q.cab, q.kg]);
           });
           if (_sx.length) _ovTr.push(window._ovSerie(_sx, _sy,
@@ -25548,36 +25549,65 @@ function updatePreco() {
            paga menos cabeças; no fundo da faixa, o contrário. Os dois
            limites são da fonte, e o que está entre eles é exatamente o que a
            fonte diz, sem estreitar nem alargar. */
+        /* ── A FAIXA DA DATAGRO É UMA BANDA NO TEMPO, NÃO UMA BARRA ─────
+           A conta continua a mesma e os dois limites continuam sendo os da
+           fonte: animal no topo da faixa de peso custa mais por cabeça e o
+           boi paga menos cabeças; no fundo da faixa, o contrário. O que
+           muda é o desenho. Antes cada pregão virava um segmento VERTICAL
+           ligando os dois extremos, e quatro pregões seguidos viravam
+           quatro barras coladas — o bloco que ocupava a borda direita do
+           card.
+
+           Agora os dois extremos são DUAS LINHAS no tempo, com a área entre
+           elas preenchida: a mesma gramática da faixa entre praças que já
+           está neste gráfico. A incerteza de peso vira espessura da banda,
+           que é como uma faixa se lê; e a direção de um pregão para o
+           outro passa a ser visível, que era justamente o que a barra
+           vertical escondia. */
         if (_ov.dg && _ov.dg.serie){
-          var _D = _ov.dg.serie, _fx = [], _fy = [], _fcd = [];
+          var _D = _ov.dg.serie, _dx = [], _dlo = [], _dhi = [], _dcd = [];
           _D.pts.forEach(function(q){
             var boi = _boiEm[q.d];
             if (!(boi > 0) || !(q.rkg > 0)) return;
             var boiCab = pb * boi;
-            var _lo = boiCab / (q.rkg * _D.cat.hi);   /* pesado: menos cabeças */
-            var _hi = boiCab / (q.rkg * _D.cat.lo);   /* leve: mais cabeças   */
-            var _dt = _rgDt(q.d), _cd = [q.rkg, _D.cat.lo, _D.cat.hi, boi];
-            _fx.push(_dt, _dt, null);
-            _fy.push(_lo, _hi, null);
-            _fcd.push(_cd, _cd, _cd);
+            var _dt = _rgDt(q.d);
+            _dx.push(_dt); _ovDatas.push(_dt);
+            _dlo.push(boiCab / (q.rkg * _D.cat.hi));   /* pesado: menos cabeças */
+            _dhi.push(boiCab / (q.rkg * _D.cat.lo));   /* leve: mais cabeças   */
+            _dcd.push([q.rkg, _D.cat.lo, _D.cat.hi, boi]);
           });
-          if (_fx.length) _ovTr.push({
-            x:_fx, y:_fy, type:'scatter', mode:'lines+markers', connectgaps:false,
-            name:'DATAGRO · ' + _ov.dg.raca + ' · ' + _ov.uf
-                 + ' · faixa de ' + _D.cat.lo + ' a ' + _D.cat.hi + ' kg',
-            showlegend:true,
-            line:{ color:window._OV_COR_DG, width:2.6 },
-            marker:{ symbol:'line-ew-open', size:10, color:window._OV_COR_DG,
-                     line:{ color:window._OV_COR_DG, width:2 } },
-            customdata:_fcd,
-            hovertemplate:'<b>DATAGRO · ' + _ov.dg.raca + ' · ' + _ov.uf + '</b>'
-              + '<br><b>%{y:.2f} bois magros</b> por boi de ' + pb + '@'
-              + '<br>R$ %{customdata[0]:,.2f}/kg vivo · boi a R$ %{customdata[3]:,.2f}/@'
-              + '<br>extremo da faixa de %{customdata[1]} a %{customdata[2]} kg'
-              + '<extra></extra>' });
+          if (_dx.length){
+            var _rotD = 'DATAGRO · ' + _ov.dg.raca + ' · ' + _ov.uf
+                      + ' · ' + _D.cat.lo + '–' + _D.cat.hi + ' kg';
+            var _hovD = '<br>R$ %{customdata[0]:,.2f}/kg vivo · boi a R$ %{customdata[3]:,.2f}/@';
+            _ovTr.push({
+              x:_dx, y:_dhi, type:'scatter', mode:'lines', connectgaps:false,
+              name:_rotD, legendgroup:'ovdg', showlegend:false,
+              line:{ color:window._OV_COR_DG, width:1.3, dash:'dot' },
+              customdata:_dcd,
+              hovertemplate:'<b>' + _rotD + '</b>'
+                + '<br><b>%{y:.2f} bois magros</b> · animal de %{customdata[1]} kg'
+                + _hovD + '<extra></extra>' });
+            _ovTr.push({
+              x:_dx, y:_dlo, type:'scatter', mode:'lines', connectgaps:false,
+              name:_rotD, legendgroup:'ovdg', showlegend:true,
+              fill:'tonexty', fillcolor:'rgba(107,114,128,0.20)',
+              line:{ color:window._OV_COR_DG, width:1.3, dash:'dot' },
+              customdata:_dcd,
+              hovertemplate:'<b>' + _rotD + '</b>'
+                + '<br><b>%{y:.2f} bois magros</b> · animal de %{customdata[2]} kg'
+                + _hovD + '<extra></extra>' });
+          }
         }
       }
     } catch(e){ console.warn('Sobreposições sobre troca boi × magro:', e); }
+    /* Com sobreposição na tela, o card abre na janela em que ela é linha.
+       Sem sobreposição, nada muda: o histórico inteiro continua o padrão. */
+    var _ovJanTroca = (_ovTr.length && typeof window._ovJanela === 'function')
+      ? window._ovJanela(_ovDatas, _rgDt(pts[pts.length-1].d), 30) : null;
+    var _ovNotaTroca = (_ovTr.length && typeof window._ovCobertura === 'function')
+      ? window._ovCobertura(_ov) : '';
+
     renderPlot(chartId, _faixa.concat([
       { x:pts.map(function(o){ return _rgDt(o.d); }), y:cab,
         type:'scatter', mode:'lines', name:'Bois magros por boi vendido',
@@ -25591,7 +25621,7 @@ function updatePreco() {
       height:_EXP_ALT, margin:{ l:70, r:26, t:64, b:52 }, hovermode:'x unified',
       /* a legenda só aparece quando há sobreposição para nomear */
       showlegend:_ovTr.length>0,
-      xaxis:{ automargin:true },
+      xaxis: _ovJanTroca ? { automargin:true, range:_ovJanTroca } : { automargin:true },
       yaxis:{ title:{ text:'bois magros comprados por boi de '+pb+'@ vendido', standoff:6 }, automargin:true },
       shapes:[
         { type:'line', xref:'paper', x0:0, x1:1, yref:'y', y0:Q.p50, y1:Q.p50,
@@ -25602,7 +25632,9 @@ function updatePreco() {
       annotations:[
         { text:'mediana no tempo '+_exN(Q.p50,2)+' cabeças · boi de referência: '+pb+'@ · '+M.rot
                +' · '+pts.length+' pregões desde '+pts[0].d
-               +(M.nPracas>1 && pts[0].p25!=null ? ' · faixa roxa = do percentil 25 ao 75 ENTRE PRAÇAS no dia' : ''),
+               +(M.nPracas>1 && pts[0].p25!=null ? ' · faixa roxa = do percentil 25 ao 75 ENTRE PRAÇAS no dia' : '')
+               +_ovNotaTroca
+               +(_ovJanTroca ? ' · janela de 30 dias' : ''),
           xref:'paper', yref:'paper', x:0, y:1.02, xanchor:'left', yanchor:'bottom',
           showarrow:false, font:{ size:10, color:'#6b7280' } }
       ]
@@ -25772,10 +25804,10 @@ function updatePreco() {
 
        CADA DATA CONTRA O BOI DAQUELA DATA. O ponto de 20/10 usa o boi do
        CEPEA de 20/10, nunca o último. Sem boi na data, o ponto não existe. */
-    var _ovTr = [];
+    var _ovTr = [], _ovDatas = [], _ov = null;
     try {
-      var _ov = (typeof window._ovCtrl === 'function')
-              ? window._ovCtrl('bmgAgScot', 'Boi Magro', 'macho|Boi Magro') : null;
+      _ov = (typeof window._ovCtrl === 'function')
+          ? window._ovCtrl('bmgAgScot', 'Boi Magro', 'macho|Boi Magro') : null;
       if (_ov){
         var _boiEm = {};
         linhas.forEach(function(o){ _boiEm[o.d] = o.boi; });
@@ -25785,7 +25817,8 @@ function updatePreco() {
             var boi = _boiEm[q.d];
             if (!(boi > 0) || !(q.cab > 0) || !(q.kg > 0)) return;
             var arr = q.cab / (q.kg / 30);
-            _sx.push(_rgDt(q.d)); _sy.push(100*(arr/boi - 1));
+            var _dt = _rgDt(q.d);
+            _sx.push(_dt); _sy.push(100*(arr/boi - 1)); _ovDatas.push(_dt);
             _scd.push([q.cab, q.kg, arr, boi, q.arroba]);
           });
           if (_sx.length) _ovTr.push(window._ovSerie(_sx, _sy,
@@ -25803,7 +25836,8 @@ function updatePreco() {
             var boi = _boiEm[q.d];
             if (!(boi > 0) || !(q.rkg > 0)) return;
             var arr = q.rkg * 30;
-            _dx.push(_rgDt(q.d)); _dy.push(100*(arr/boi - 1));
+            var _dt = _rgDt(q.d);
+            _dx.push(_dt); _dy.push(100*(arr/boi - 1)); _ovDatas.push(_dt);
             _dcd.push([q.rkg, arr, boi]);
           });
           if (_dx.length) _ovTr.push(window._ovSerie(_dx, _dy,
@@ -25818,6 +25852,13 @@ function updatePreco() {
         }
       }
     } catch(e){ console.warn('Sobreposições sobre o ágio do magro:', e); }
+    /* Mesma regra do card vizinho: com sobreposição, abre na janela em que
+       ela é linha; sem sobreposição, o histórico inteiro. */
+    var _ovJanAg = (_ovTr.length && typeof window._ovJanela === 'function')
+      ? window._ovJanela(_ovDatas, xs[xs.length-1], 30) : null;
+    var _ovNotaAg = (_ovTr.length && typeof window._ovCobertura === 'function')
+      ? window._ovCobertura(_ov) : '';
+
     renderPlot(chartId, [
       { x:xs, y:ag, type:'scatter', mode:'lines', name:'ágio da @ do magro',
         line:{ width:2.2, color:'#b45309' },
@@ -25832,7 +25873,7 @@ function updatePreco() {
       height:_EXP_ALT, margin:{ l:64, r:26, t:64, b:52 }, hovermode:'x unified',
       /* a legenda só aparece quando há sobreposição para nomear */
       showlegend:_ovTr.length>0,
-      xaxis:{ automargin:true },
+      xaxis: _ovJanAg ? { automargin:true, range:_ovJanAg } : { automargin:true },
       yaxis:{ title:{ text:'ágio da @ do magro sobre a do boi (%)', standoff:6 },
               zeroline:true, zerolinecolor:'#111827', automargin:true },
       shapes:[
@@ -25843,7 +25884,9 @@ function updatePreco() {
       ],
       annotations:[
         { text:'boi magro de '+_pcN(Pz.kg,0)+' kg = '+_pcN(Pz.arrobas,2)+' @ · mediana '+_pcN(Q.p50,1)
-               +'% · faixa central '+_pcN(Q.p25,1)+'–'+_pcN(Q.p75,1)+'% · '+S.rot+' · '+pts.length+' pregões',
+               +'% · faixa central '+_pcN(Q.p25,1)+'–'+_pcN(Q.p75,1)+'% · '+S.rot+' · '+pts.length+' pregões'
+               +_ovNotaAg
+               +(_ovJanAg ? ' · janela de 30 dias' : ''),
           xref:'paper', yref:'paper', x:0, y:1.02, xanchor:'left', yanchor:'bottom',
           showarrow:false, font:{ size:10, color:'#6b7280' } }
       ]
@@ -50895,6 +50938,64 @@ function updateRelacao() {
   }
   var _OV_COR_SCOT = _PAL.referencia;   /* grafite */
   var _OV_COR_DG   = _PAL.neutro;       /* cinza médio */
+
+  /* ── A JANELA QUE DEIXA A SOBREPOSIÇÃO SER LINHA ────────────────────
+     A série do CEPEA tem 550 pregões desde agosto de 2024. A Scot tem
+     cinco leituras e a DATAGRO tem quatro, todas da mesma semana. No eixo
+     inteiro, cinco dias ocupam meio por cento da largura — e meio por
+     cento de largura com cinco pontos empilhados não é linha, é mancha.
+     Era exatamente isso que a tela mostrava: uma coluna de losangos
+     encostada na borda direita.
+
+     Então, QUANDO HÁ SOBREPOSIÇÃO, o gráfico abre na janela em que ela é
+     uma linha. Não é o histórico perdendo importância: a pergunta que a
+     sobreposição responde é de agora — onde a outra fonte está em relação
+     ao CEPEA nesta semana. O histórico inteiro continua a um clique, no
+     botão "Tudo", e as referências do card (mediana e faixa central) são
+     desenhadas em `xref:'paper'`, ou seja, valem em qualquer zoom.
+
+     A janela termina no ÚLTIMO DADO da tela e recua 30 dias — a mesma
+     conta do botão "30d", para que ele acenda e o operador veja de onde
+     veio o enquadramento. Se a sobreposição começar antes disso, a janela
+     recua até cobri-la: nenhum ponto da outra fonte fica fora da tela. */
+  function _ovJanela(datasOv, ultimoPrincipal, dias){
+    var DIA = 86400000, t = [];
+    function ms(d){
+      var v = (d instanceof Date) ? d.getTime() : +new Date(d);
+      return isFinite(v) ? v : null;
+    }
+    (datasOv || []).forEach(function(d){ var v = ms(d); if (v != null) t.push(v); });
+    if (!t.length) return null;
+    t.sort(function(a, b){ return a - b; });
+    var up = ms(ultimoPrincipal);
+    var x1 = (up != null && up > t[t.length - 1]) ? up : t[t.length - 1];
+    var x0 = x1 - Math.max(dias || 30, 7) * DIA;
+    if (x0 > t[0] - 2 * DIA) x0 = t[0] - 2 * DIA;   /* nunca cortar a fonte */
+    return [new Date(x0), new Date(x1)];
+  }
+
+  /* Quanto cada fonte cobre, dito na tela. Uma linha curta sem explicação
+     parece defeito; com a contagem de pregões ao lado, é o tamanho da
+     apuração. */
+  function _ovCobertura(_ov){
+    function br(iso){
+      return (typeof iso === 'string' && iso.length >= 10)
+        ? iso.slice(8, 10) + '/' + iso.slice(5, 7) : iso;
+    }
+    /* Curta de propósito: esta linha já carrega a amostra do próprio card,
+       e um subtítulo que passa da largura do gráfico é cortado pela
+       direita — some justamente o fim, que é onde a informação nova está. */
+    function trecho(rot, S){
+      if (!S || !S.n) return null;
+      return rot + ' ' + S.n + ' preg' + (S.n > 1 ? 'ões ' : 'ão ')
+           + br(S.ini) + (S.n > 1 ? '–' + br(S.fim) : '');
+    }
+    var ps = [];
+    if (_ov && _ov.scot) { var a = trecho('Scot', _ov.scot.serie); if (a) ps.push(a); }
+    if (_ov && _ov.dg)   { var b = trecho('DATAGRO', _ov.dg.serie); if (b) ps.push(b); }
+    return ps.length ? ' · ' + ps.join(' · ') : '';
+  }
+  try { window._ovJanela = _ovJanela; window._ovCobertura = _ovCobertura; } catch(e){}
   try { window._ovSerie = _ovSerie;
         window._OV_COR_SCOT = _OV_COR_SCOT; window._OV_COR_DG = _OV_COR_DG; } catch(e){}
 
@@ -53650,6 +53751,86 @@ function updateRelacao() {
     }
     pr.setAttribute('data-grupo', grupo);
   }
+  /* ── SELETOR NÃO OFERECE O QUE NÃO EXISTE ───────────────────────
+     A barra tinha três listas FIXAS e as configurações são variáveis: o
+     CEPEA regional cota vaca gorda e NÃO cota novilha, e mesmo assim
+     "Novilha gorda" aparecia escolhível com a fonte do CEPEA selecionada.
+     A combinação não tem configuração nenhuma, então os três cards da
+     seção caíam de uma vez no aviso de planilha sem dado — um aviso
+     correto sobre uma seleção que a própria tela permitiu fazer.
+
+     A correção não é melhorar o aviso. É a lista de categorias passar a
+     sair das configurações que existem para a fonte e a praça escolhidas,
+     como a lista de praças já saía. "As duas" só aparece quando há duas;
+     com uma só, a lista mostra essa uma, e o operador vê na barra o que a
+     base cobre em vez de descobrir no erro. */
+  var _SF_ROT_CAT = { vaca:'Vaca gorda', novilha:'Novilha gorda' };
+
+  function _sfPopulaFontes(){
+    var fo = document.getElementById('sfFonte'); if (!fo) return;
+    if (fo.getAttribute('data-pronto') === '1') return;
+    var tem = {};
+    _sfConfigs().forEach(function(c){ tem[c.grupo] = 1; });
+    var ok = [];
+    for (var i = fo.options.length - 1; i >= 0; i--){
+      if (tem[fo.options[i].value]) ok.push(fo.options[i].value);
+      else fo.remove(i);
+    }
+    if (ok.length && ok.indexOf(fo.value) < 0) fo.value = ok[ok.length - 1];
+    fo.setAttribute('data-pronto','1');
+  }
+
+  function _sfPopulaCats(){
+    var fo = document.getElementById('sfFonte'),
+        pr = document.getElementById('sfPraca'),
+        ca = document.getElementById('sfCat');
+    if (!ca) return;
+    var grupo = (fo && fo.value) ? fo.value : 'cepea';
+    var praca = (pr && pr.value) ? pr.value : null;
+    var ass = grupo + '|' + (praca || '');
+    /* ── A ESCOLHA DO OPERADOR SOBREVIVE AO ESTREITAMENTO ───────────
+       Quando a fonte só cobre uma categoria, a lista encolhe e o seletor
+       passa a marcar essa uma. Isso é a tela se ajustando, não o operador
+       mudando de ideia — e tratar as duas coisas como iguais faria a
+       seleção dele se perder na ida e nunca mais voltar: quem estava em "As
+       duas" no CEPEA, que só tem vaca, voltaria da coleta própria vendo
+       apenas vaca, com a novilha disponível e fora da tela.
+
+       Então o que o operador escolheu fica guardado à parte, e a lista só
+       o substitui enquanto a escolha não couber. Assim que couber de novo,
+       ela volta. */
+    if (!ca.hasAttribute('data-escolha'))
+      ca.setAttribute('data-escolha', ca.value || 'ambas');
+    if (ca.getAttribute('data-ass') === ass) return;
+
+    var tem = {}, ordem = [];
+    _sfConfigs().forEach(function(c){
+      if (c.grupo !== grupo) return;
+      if (praca && c.rotPraca !== praca) return;
+      if (!tem[c.categoria]){ tem[c.categoria] = 1; ordem.push(c.categoria); }
+    });
+    ordem.sort(function(a,b){
+      return (_SF_ORD_CAT[a]||0) - (_SF_ORD_CAT[b]||0);
+    });
+
+    var ant = ca.getAttribute('data-escolha') || ca.value, html = '';
+    if (ordem.length > 1) html += '<option value="ambas">As duas</option>';
+    ordem.forEach(function(cat){
+      html += '<option value="' + cat + '">'
+            + (_SF_ROT_CAT[cat] || cat) + '</option>';
+    });
+    ca.innerHTML = html;
+    /* Mantém a escolha anterior quando ela ainda existe; senão cai no que
+       a fonte cobre, nunca em seleção vazia. */
+    var valido = false, atual = false;
+    for (var j = 0; j < ca.options.length; j++){
+      if (ca.options[j].value === ant) valido = true;
+      if (ca.options[j].value === ca.value) atual = true;
+    }
+    ca.value = valido ? ant : (atual ? ca.value : ca.options[0].value);
+    ca.setAttribute('data-ass', ass);
+  }
+
   function _sfPopulaVencs(){
     var el = document.getElementById('sfVenc'); if (!el) return;
     if (el.getAttribute('data-pronto') === '1' && el.options.length) return;
@@ -53662,7 +53843,9 @@ function updateRelacao() {
     el.setAttribute('data-pronto','1');
   }
   function _sfSelecionadas(){
+    _sfPopulaFontes();
     _sfPopulaPracas();
+    _sfPopulaCats();
     var fo = document.getElementById('sfFonte'),
         pr = document.getElementById('sfPraca'),
         ca = document.getElementById('sfCat');
@@ -53963,6 +54146,14 @@ function updateRelacao() {
           var p = document.getElementById('sfPraca');
           if (p) p.setAttribute('data-grupo','');
         }
+        /* Fonte e praça mandam nas categorias disponíveis: as duas invalidam
+           a lista para ela se refazer antes do primeiro card ler dela. */
+        if (id === 'sfFonte' || id === 'sfPraca'){
+          var c = document.getElementById('sfCat');
+          if (c) c.setAttribute('data-ass','');
+        }
+        /* Só o clique no próprio seletor conta como escolha. */
+        if (id === 'sfCat') el.setAttribute('data-escolha', el.value);
         try { _sfRender(); } catch(e){ console.warn('Sintéticos ('+id+'):', e); }
       });
     });
@@ -62253,16 +62444,22 @@ function extractSeries(sheetName){
   function marketMeta(group){
     if(group==='milho')  return { key:'milho',  title:'MILHO',   prefix:'CCM', spotSheet:'MILHO - CEPEA',     spotLabel:'MILHO CEPEA',    uni:'R$ por saca' };
     /* O SJC DA B3 É COTADO EM DÓLAR POR SACA, e o indicador de Paranaguá do
-       CEPEA em real por saca. O resto do Radar sabe disso e converte pelo
-       dólar futuro do mesmo vencimento; este painel era o único lugar que
-       punha as duas pontas no mesmo eixo e na mesma coluna como se fossem a
-       mesma moeda — em 23/10, físico R$ 152,41 contra futuro 28,13, que não
-       é queda de 82%, é dólar contra real.
+       CEPEA em real por saca. Este painel punha as duas pontas no mesmo eixo
+       e na mesma coluna como se fossem a mesma moeda — em 23/10, físico
+       R$ 152,41 contra futuro 28,13, que não é queda de 82%, é dólar contra
+       real. Por isso a unidade do futuro vinha DECLARADA e a base não era
+       calculada: número errado com aparência de certo é pior que número
+       ausente.
 
-       Enquanto a conversão não for decidida aqui, a unidade do futuro é
-       DECLARADA e a base não é calculada. Número errado com aparência de
-       certo é pior que número ausente. */
-    if(group==='soja')   return { key:'soja',   title:'SOJA',    prefix:'SJC', spotSheet:'SOJA - PARANAGUÁ',  spotLabel:'SOJA PARANAGUÁ', uni:'R$ por saca', uniFut:'US$ por saca' };
+       AGORA A COLUNA TEM UMA MOEDA SÓ. O físico é convertido para dólar
+       pela taxa DO PREGÃO, e não o futuro para real: o mercado de soja
+       pensa em dólar, o contrato é nativo nessa moeda, e multiplicar a
+       curva inteira de futuros pelo câmbio importaria o ruído do câmbio
+       para dentro de uma curva que não o tem. A taxa é a de cada dia, nunca
+       a de hoje aplicada ao passado. Com as duas pontas na mesma moeda, a
+       tira de BASE volta a existir e passa a medir o que ela sempre quis
+       medir aqui: o prêmio de porto. */
+    if(group==='soja')   return { key:'soja',   title:'SOJA',    prefix:'SJC', spotSheet:'SOJA - PARANAGUÁ',  spotLabel:'SOJA PARANAGUÁ', uni:'US$ por saca', convSpot:'paraUSD' };
     if(group==='dolar')  return { key:'dolar',  title:'DÓLAR',   prefix:'DOL', spotSheet:null,                spotLabel:'DÓLAR PTAX',     uni:'R$ por US$ mil' };
     if(group==='acucar') return { key:'acucar', title:'AÇÚCAR',  prefix:null,  spotSheet:'AÇUCAR',            spotLabel:'AÇÚCAR CEPEA',   uni:'R$ por saca' };
     if(group==='etanol') return { key:'etanol', title:'ETANOL',  prefix:'ETH', spotSheet:'ETANOL',            spotLabel:'ETANOL CEPEA',   uni:'R$ por litro' };
@@ -62279,6 +62476,114 @@ function extractSeries(sheetName){
      vencimentos vizinhos.
 
      A chave é ano*12 + mês, a mesma de `_contractMaturityKey`. */
+  /* ── O CÂMBIO DO DIA, PARA CONVERTER A SOJA FÍSICA ────────────────────
+     O SJC da B3 é cotado em DÓLAR por saca; o indicador de Paranaguá do
+     CEPEA, em REAL por saca. Este painel punha os dois no mesmo eixo e na
+     mesma coluna como se fossem a mesma moeda.
+
+     A conversão vai do físico para o dólar, não do futuro para o real. Duas
+     razões: o mercado de soja pensa em dólar e o contrato é nativo nessa
+     moeda; e multiplicar a curva inteira de futuros pelo câmbio importaria
+     o ruído do câmbio para dentro de uma curva que não o tem.
+
+     A TAXA É A DO PREGÃO, não a de hoje aplicada ao passado — o preço de
+     12/09 é convertido pelo dólar de 12/09. Converter a série inteira pela
+     taxa corrente reescreveria a história, que é o erro que este painel
+     evita em toda parte.
+
+     DE ONDE VEM A TAXA. Primeiro vencimento do DOL em cada pregão, dividido
+     por mil: o DOL é cotado em reais por US$ 1.000, e `UNIDADES` já declara
+     esse fator 1/1000 no painel. Sem DOL no dia, o WDO pela mesma regra.
+     Sem nenhum dos dois, o dia não tem taxa e o ponto não existe — não se
+     empresta o câmbio do dia anterior, porque aí o preço seria de um dia e
+     a moeda de outro.
+
+     O QUE ESPERAR. O arquivo já mediu isto: em 39 pregões com as três
+     pontas negociando no mesmo dia, o físico fica 6,7% acima do futuro
+     convertido — prêmio de porto. É esse número que a base passa a mostrar,
+     no lugar dos −82% que saíam de subtrair dólar de real. */
+  var _H7_DOL_CACHE;
+  try { document.addEventListener('workbookLoaded', function(){
+    _H7_DOL_CACHE = undefined; }); } catch(e){}
+
+  function _h7Dolar(){
+    if (_H7_DOL_CACHE !== undefined) return _H7_DOL_CACHE;
+    if (!hasWorkbook()){ return (_H7_DOL_CACHE = null); }
+
+    function frente(prefixo){
+      var porData = {};
+      workbook.SheetNames.forEach(function(sn){
+        var nome = String(sn).trim().toUpperCase();
+        if (!new RegExp('^' + prefixo + '[FGHJKMNQUVXZ]\\d{2}$').test(nome)) return;
+        var k = null;
+        try { k = window._contractMaturityKey(nome); } catch(e){}
+        if (k == null) return;
+        var S = null;
+        try { S = window._baseSerieDiaria(nome); } catch(e){}
+        if (!S) return;
+        Object.keys(S).forEach(function(d){
+          var v = S[d];
+          if (!(v > 0)) return;
+          /* O vencimento do mês corrente ainda negocia; os já vencidos
+             naquele pregão não entram. */
+          var kd = (+d.slice(0,4)) * 12 + (+d.slice(5,7)) - 1;
+          if (k < kd) return;
+          var at = porData[d];
+          if (!at || k < at.k) porData[d] = { k:k, v:v };
+        });
+      });
+      var m = {}; var n = 0;
+      Object.keys(porData).forEach(function(d){ m[d] = porData[d].v / 1000; n++; });
+      return n ? { mapa:m, n:n } : null;
+    }
+
+    var r = frente('DOL');
+    var fonte = 'DOL, primeiro vencimento';
+    if (!r || r.n < 20){
+      var w = frente('WDO');
+      if (w && (!r || w.n > r.n)){ r = w; fonte = 'WDO, primeiro vencimento'; }
+    }
+    _H7_DOL_CACHE = r ? { mapa:r.mapa, n:r.n, fonte:fonte } : null;
+    return _H7_DOL_CACHE;
+  }
+
+  /* A chave de data de um ponto, aceitando Date ou texto ISO. */
+  function _h7Chave(d){
+    if (!d) return null;
+    if (d instanceof Date){
+      if (isNaN(d.getTime())) return null;
+      return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2);
+    }
+    var t = String(d);
+    return /^\d{4}-\d{2}-\d{2}/.test(t) ? t.slice(0,10) : null;
+  }
+
+  /* Valor de um item já na unidade de tela: escala fixa quando houver, e
+     conversão pelo câmbio do pregão quando o item pedir. Devolve `null`
+     quando falta a taxa — ausência, nunca número improvisado. */
+  function _h7Val(it, v, dataPonto){
+    if (v == null || !isFinite(v) || !(v > 0)) return null;
+    var out = v * ((it && it.scale != null) ? it.scale : 1);
+    if (it && it.conv === 'paraUSD'){
+      var D = _h7Dolar();
+      var k = _h7Chave(dataPonto);
+      var fx = (D && k) ? D.mapa[k] : null;
+      if (!(fx > 0)) return null;
+      out = out / fx;
+    }
+    return out;
+  }
+
+  /* A premissa aparece na tela, ao lado da unidade: quem lê "US$ por saca"
+     numa coluna que também traz o indicador do CEPEA precisa saber de onde
+     veio a taxa e que ela é a do pregão, não a de hoje. */
+  function _h7NotaConv(meta){
+    if (!meta || !meta.convSpot) return '';
+    var D = _h7Dolar();
+    if (!D) return ' · físico sem conversão: a planilha não traz dólar';
+    return ' · físico convertido pelo dólar do pregão (' + D.fonte + ')';
+  }
+
   var _H7_MES = {F:1,G:2,H:3,J:4,K:5,M:6,N:7,Q:8,U:9,V:10,X:11,Z:12};
   function _h7OrdemVenc(sn){
     var m = String(sn||'').toUpperCase().match(/^[A-Z]{3}([FGHJKMNQUVXZ])(\d{2})$/);
@@ -62369,7 +62674,8 @@ function extractSeries(sheetName){
     if(meta.spotSheet && hasWorkbook()){
       var _norm = function(s){ return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim(); };
       var _spotMatch = workbook.SheetNames.find(function(n){ return _norm(n) === _norm(meta.spotSheet); });
-      if(_spotMatch) rows.push({ kind:'spot', name: meta.spotLabel, sheet: _spotMatch });
+      if(_spotMatch) rows.push({ kind:'spot', name: meta.spotLabel, sheet: _spotMatch,
+                                 conv: meta.convSpot || null });
     }
     // BEZERRO não aparece nos 7 Pregões do BOI (é usado apenas na Relação de Troca)
     // Etanol futures (ETH) are priced in R$/m³; CEPEA spot is R$/L → scale futures ÷1000
@@ -62427,7 +62733,8 @@ function extractSeries(sheetName){
       '<th class="col-contract" style="min-width:160px;text-align:left;">' + meta.title
       + (meta.uni
           ? '<span class="h7-uni">' + meta.uni
-            + (meta.uniFut ? ' · futuros em ' + meta.uniFut : '') + '</span>'
+            + (meta.uniFut ? ' · futuros em ' + meta.uniFut : '')
+            + (_h7NotaConv(meta) || '') + '</span>'
           : '') + '</th>';
     dates7.forEach(function(d){
       head += '<th class="col-date" style="text-align:right;">' + fmtDateShort(d) + '</th>';
@@ -62452,7 +62759,7 @@ function extractSeries(sheetName){
       var tds = [];
       dates7.forEach(function(d){
         var ix = lastIndexForDate(s.dates, d);
-        var v = (ix>=0 && s.closes[ix]!=null) ? s.closes[ix]*_sc : null;
+        var v = (ix>=0) ? _h7Val(it, s.closes[ix], s.dates[ix]) : null;
         var cls = 'col-date';
         if(weekly && v==null){ tds.push('<td class="tag-weekly">—</td>'); return; }
         var dir = '';
@@ -62464,10 +62771,32 @@ function extractSeries(sheetName){
       });
 
       /* MM: semanal → MM3; diária → MM21 */
+      /* ── A MÉDIA SE CALCULA NA MOEDA DA TELA ────────────────────
+         Para o item convertido, somar 21 reais de 21 pregões e dividir o
+         resultado por UMA taxa daria uma média em dólar de hoje aplicada ao
+         passado — reescrever a história, que é o que esta conversão existe
+         para não fazer. Cada pregão é convertido pela taxa dele e a média
+         sai dos valores já convertidos; pregão sem câmbio fica de fora da
+         média em vez de entrar com a taxa do vizinho. */
+      function _conv(n){
+        if (!it.conv) return null;
+        var out = [], base = (s.closes||[]).length - n;
+        for (var _k = Math.max(0, base); _k < s.closes.length; _k++){
+          var _c = _h7Val(it, s.closes[_k], s.dates[_k]);
+          if (_c != null && isFinite(_c)) out.push(_c);
+        }
+        if (out.length < Math.ceil(n * 0.7)) return null;
+        var _sm = 0;
+        out.forEach(function(x){ _sm += x; });
+        return _sm / out.length;
+      }
       var mm = null;
       if(weekly){
-        mm = _mmN(s, 3);
-        mm = (mm != null && isFinite(mm)) ? mm * _sc : null;
+        mm = it.conv ? _conv(3) : _mmN(s, 3);
+        mm = (mm != null && isFinite(mm)) ? (it.conv ? mm : mm * _sc) : null;
+      } else if (it.conv){
+        mm = _conv(21);
+        if (!(mm != null && isFinite(mm))) mm = null;
       } else {
         /* ── MM INEXISTENTE NÃO É ZERO ──────────────────────────────────
            `tryExtractMA21` grava `null` enquanto a série não tem 21 pregões,
@@ -62626,9 +62955,8 @@ function extractSeries(sheetName){
            duas na mesma unidade. Comparar a mediana do grupo sem escala com a
            mediana da série com escala reprova o grupo inteiro por uma
            diferença que o próprio painel já resolveu. */
-        var _e = (a.it && a.it.scale != null) ? a.it.scale : 1;
-        var vs = (a.closes||[]).filter(function(v){ return v != null && isFinite(v) && v > 0; })
-                               .map(function(v){ return v * _e; });
+        var vs = (a.closes||[]).map(function(v, _i){ return _h7Val(a.it, v, a.x[_i]); })
+                               .filter(function(v){ return v != null && isFinite(v) && v > 0; });
         if (!vs.length) return;
         vs.sort(function(x,y){ return x-y; });
         meds.push(vs[Math.floor(vs.length/2)]);
@@ -62644,7 +62972,7 @@ function extractSeries(sheetName){
     aligned.forEach(function(a){
       var it = a.it;
       var _sc = (it.scale != null) ? it.scale : 1;
-      var y = a.closes.map(function(v){ return (v != null && !isNaN(v)) ? v * _sc : v; });
+      var y = a.closes.map(function(v, _i){ return _h7Val(it, v, a.x[_i]); });
       var x = a.x;
 
       /* Contrato sem um único preço válido não entra na curva ────────────
@@ -63011,8 +63339,7 @@ function extractSeries(sheetName){
         var aligned = _alignGroupSeries(items);
         aligned.forEach(function(a){
           var it = a.it;
-          var _sc = (it.scale != null) ? it.scale : 1;
-          var yVals = a.closes.map(function(v){ return (v!=null&&!isNaN(v)) ? v*_sc : v; });
+          var yVals = a.closes.map(function(v, _i){ return _h7Val(it, v, a.x[_i]); });
           traces.push({
             type:'scatter', mode:'lines',
             name: it.kind==='spot' ? it.name : it.sheet,
@@ -63244,10 +63571,9 @@ function extractSeries(sheetName){
 
     function ultimo(it){
       var s = seriesFor(it.sheet); if (!s || !s.closes || !s.closes.length) return null;
-      var sc = (it.scale != null) ? it.scale : 1;
       for (var i = s.closes.length - 1; i >= 0; i--){
-        var v = s.closes[i];
-        if (v != null && isFinite(v) && v > 0) return { v: v * sc, d: s.dates[i] };
+        var v = _h7Val(it, s.closes[i], s.dates[i]);
+        if (v != null && isFinite(v) && v > 0) return { v: v, d: s.dates[i] };
       }
       return null;
     }
@@ -63270,7 +63596,9 @@ function extractSeries(sheetName){
     var nVenc = items.filter(function(x){ return x.kind !== 'spot'; }).length;
 
     var h = '';
-    if (uSpot) h += tira('FÍSICO HOJE', _h7Num(uSpot.v), uni + ' · ' + fmtDateShort(uSpot.d));
+    if (uSpot) h += tira('FÍSICO HOJE', _h7Num(uSpot.v),
+                         uni + (spot && spot.conv ? ' · convertido' : '')
+                         + ' · ' + fmtDateShort(uSpot.d));
     if (uFre)  h += tira(String(frente.sheet || '').toUpperCase(), _h7Num(uFre.v),
                          (meta.uniFut ? meta.uniFut + ' · ' : 'primeiro vencimento · ')
                          + fmtDateShort(uFre.d));
