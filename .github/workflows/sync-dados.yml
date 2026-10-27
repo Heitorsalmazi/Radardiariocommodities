@@ -112,15 +112,71 @@ jobs:
           print(f"XLSX salvo com sucesso: {size_kb:.1f} KB")
           PYEOF
 
+      # ── A PLANILHA PRECISA CHEGAR COM OS VALORES CALCULADOS ─────────────
+      # O Radar lê o dados.xlsx no navegador, e o navegador não calcula
+      # fórmula: ele lê o valor que ficou gravado no arquivo. Em 27/10/2026 a
+      # planilha chegou com 44.604 fórmulas e NENHUM valor gravado — o
+      # openpyxl preserva a fórmula e descarta o resultado. No Excel tudo
+      # parecia certo, porque o Excel recalcula ao abrir; no Radar o boi
+      # perdeu 41 datas e o bezerro deflacionado mudou de patamar.
+      #
+      # A partir daqui o sync confere o arquivo, recalcula quando falta valor
+      # e só publica se a conferência aprovar. Planilha reprovada não sobe: o
+      # job fica vermelho, o GitHub avisa por e-mail e o Radar continua com a
+      # última versão boa. Número errado com cara de certo é pior que número
+      # de ontem.
+
+      - name: A origem mudou desde a última publicação?
+        id: origem
+        run: |
+          NOVO=$(sha256sum dados.xlsx | cut -d' ' -f1)
+          ANTIGO=$(cat data/dados_origem.sha256 2>/dev/null || echo "")
+          echo "origem baixada : $NOVO"
+          echo "origem anterior: ${ANTIGO:-nenhuma registrada}"
+          if [ "$NOVO" = "$ANTIGO" ]; then
+            # O recálculo regrava o arquivo e muda os bytes mesmo sem dado
+            # novo. Sem esta trava, cada execução publicaria um commit vazio
+            # de conteúdo e dispararia um deploy à toa.
+            echo "A planilha de origem não mudou. Mantendo a versão publicada."
+            git checkout -- dados.xlsx
+            echo "mudou=0" >> "$GITHUB_OUTPUT"
+          else
+            echo "$NOVO" > data/dados_origem.sha256
+            echo "mudou=1" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Gravar os valores das fórmulas (LibreOffice em português)
+        if: steps.origem.outputs.mudou == '1'
+        run: |
+          set -e
+          if python3 scripts/recalcular_dados.py precisa dados.xlsx; then
+            # O PPA traz o LibreOffice atual, que calcula FILTRO e LET. O do
+            # Ubuntu (24.2) não calcula, e essas células ficariam vazias.
+            sudo add-apt-repository -y ppa:libreoffice/ppa \
+              || echo "PPA indisponível; seguindo com o LibreOffice do Ubuntu."
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq --no-install-recommends libreoffice-calc-nogui \
+              || sudo apt-get install -y -qq libreoffice-calc
+            soffice --version || true
+            python3 scripts/recalcular_dados.py recalcular dados.xlsx
+          else
+            echo "A planilha já chegou com os valores calculados."
+          fi
+
+      - name: Conferir a planilha antes de publicar
+        if: steps.origem.outputs.mudou == '1'
+        run: python3 scripts/recalcular_dados.py validar dados.xlsx
+
       - name: Commit e push com rebase
         run: |
           set -e
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # SÓ este arquivo. Um "git add -A" arrastaria o que os outros
-          # workflows baixaram no mesmo minuto.
-          git add dados.xlsx
+          # SÓ estes arquivos. Um "git add -A" arrastaria o que os outros
+          # workflows baixaram no mesmo minuto. A impressão digital da origem
+          # sobe junto para a próxima execução saber se há dado novo.
+          git add dados.xlsx data/dados_origem.sha256 2>/dev/null || git add dados.xlsx
 
           if git diff --staged --quiet; then
             echo "Sem mudanças. Nenhum commit necessário."
