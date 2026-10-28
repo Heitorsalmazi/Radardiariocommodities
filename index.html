@@ -3913,6 +3913,10 @@ header{
   font-weight:800; font-size: var(--fs-sm); letter-spacing:.04em;
   color: var(--m3-title) !important;
 }
+#pagePaneAlertas .ct-venc{
+  display:block; font-size: var(--fs-nano); font-weight:600; letter-spacing:.02em;
+  color: var(--m3-muted) !important; margin-top:1px;
+}
 #pagePaneAlertas .ct-sig{
   font-size: var(--fs-nano); font-weight:800; letter-spacing:.02em;
   border-radius:999px; padding:2px 7px; white-space:nowrap;
@@ -11142,7 +11146,8 @@ header{
       O fechamento de cada contrato é comparado com três réguas da mesma janela: a
       <b>faixa de preços</b> (percentis 25 e 75), a <b>reta de tendência</b> do período, medida em
       desvios do resíduo do dia, e os indicadores de giro de sempre (RSI, MACD, bandas de
-      Bollinger). A tabela abre pelo contrato mais deslocado da própria trajetória.
+      Bollinger). Entram só os contratos em vigor, do vencimento mais curto ao mais longo,
+      depois do indicador físico que serve de referência.
       <span class="ex-tag">Para que serve</span>
       Serve para encurtar a busca. Com vinte vencimentos abertos, o sinal diz quais merecem
       atenção hoje. A decisão de travar continua dependendo de custo, volume em aberto e prazo,
@@ -11165,7 +11170,13 @@ header{
         <option value="90">90 pregões</option>
         <option value="120">120 pregões</option>
         <option value="252">252 pregões</option>
+        <option value="outro">Outra quantidade…</option>
       </select>
+      <span id="alertasJanelaLivre" style="display:none;align-items:center;gap:6px;margin-left:6px">
+        <input type="number" id="alertasJanelaN" class="bgi-sel" min="5" max="2520" step="1" inputmode="numeric"
+               style="width:96px" placeholder="ex.: 45" title="Digite quantos pregões entram no cálculo e tecle Enter. Mínimo de 5.">
+        <span class="bgi-lbl" style="margin:0">pregões</span>
+      </span>
       <button type="button" id="alertasVerA4" class="bgi-sel" style="margin-left:10px;cursor:pointer" title="Abre a folha A4 pronta para impressão, com um quadro por contrato.">Versão para imprimir</button>
       <button type="button" id="alertasPNG" class="bgi-sel" style="margin-left:6px;cursor:pointer" title="Salva a folha A4 como imagem.">Exportar PNG</button>
     </div>
@@ -61696,6 +61707,74 @@ function saveSelectedSheets(setOrArr){
      outra IIFE e não alcançam aqui, nem os do TOP 5. O contrato visual é
      o das classes (`vol-kpi`, `read-box`, `pc-tab`), então a marcação é
      escrita localmente. */
+  /* ── SÓ CONTRATOS EM VIGOR, NA ORDEM DE VENCIMENTO ────────────────────
+     A lista misturava os vencimentos do ano inteiro: em outubro o boi
+     trazia BGIH26 a BGIU26 com o último preço de meses atrás, lado a lado
+     com os contratos que negociam hoje, e a ordem era pelo deslocamento da
+     tendência, de modo que o vencimento de dezembro podia aparecer depois
+     de um de maio.
+
+     Vencido aqui é o contrato cujo mês já passou ou que parou de cotar.
+     O mês sozinho não basta: o dólar vence no primeiro dia útil e o milho
+     no dia 15, então o contrato do mês corrente pode já estar encerrado.
+     Por isso a referência é a própria planilha: o contrato precisa ter
+     preço até 10 dias antes do pregão mais recente do mercado. A data de
+     referência também é a da planilha, não o relógio de quem abre.
+
+     O indicador físico (boi gordo, milho CEPEA, soja Paranaguá) não tem
+     vencimento e fica na frente, como régua para os contratos. */
+  function _alUltimaData(sh){
+    try {
+      var e = extractSeries(sh);
+      if (e && e.ok && e.dates && e.dates.length){
+        var d = e.dates[e.dates.length - 1];
+        d = (d instanceof Date) ? d : new Date(d);
+        return isNaN(d) ? null : d;
+      }
+    } catch(x){}
+    return null;
+  }
+  function _alVencKey(sh){
+    try { return (typeof _contractMaturityKey === 'function') ? _contractMaturityKey(sh) : null; }
+    catch(e){ return null; }
+  }
+  function _alVigentes(sheets){
+    var info = (sheets || []).map(function(sh){
+      return { sh:sh, k:_alVencKey(sh), ult:_alUltimaData(sh) };
+    });
+    var maisRecente = null;
+    info.forEach(function(o){ if (o.ult && (!maisRecente || o.ult > maisRecente)) maisRecente = o.ult; });
+    var ref = maisRecente || new Date();
+    var mesRef = ref.getFullYear() * 12 + ref.getMonth();
+    var vivos = info.filter(function(o){
+      if (o.k == null) return true;
+      if (o.k < mesRef) return false;
+      if (!o.ult || !maisRecente) return true;
+      return (maisRecente - o.ult) <= 10 * 864e5;
+    });
+    vivos.sort(function(a, b){
+      if (a.k == null && b.k == null) return _alOrdemFis(a.sh, b.sh);
+      if (a.k == null) return -1;
+      if (b.k == null) return 1;
+      return a.k - b.k;
+    });
+    return { lista: vivos.map(function(o){ return o.sh; }), fora: info.length - vivos.length };
+  }
+  var _AL_MES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  /* Entre os físicos, o do próprio mercado vem primeiro: no boi, o boi
+     gordo antes do bezerro. */
+  function _alOrdemFis(a, b){
+    function sem(x){ return String(x||'').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+    var m = sem(state.mercado);
+    var ra = sem(a).indexOf(m) === 0 ? 0 : 1, rb = sem(b).indexOf(m) === 0 ? 0 : 1;
+    return (ra - rb) || String(a).localeCompare(String(b));
+  }
+  function _alVencTxt(nome){
+    var k = _alVencKey(nome);
+    if (k == null) return 'físico · referência';
+    return 'vence em ' + _AL_MES[k % 12] + '/' + String(Math.floor(k / 12)).slice(2);
+  }
+
   function _alKpi(rot, val, sub){
     return '<div class="vol-kpi"><div class="vk-lbl">'+rot+'</div>'
          + '<div class="vk-val">'+val+'</div><div class="vk-sub">'+(sub||'')+'</div></div>';
@@ -61892,7 +61971,8 @@ function saveSelectedSheets(setOrArr){
              ? ((d.dAbs >= 0 ? '+' : '-') + fmtNum(Math.abs(d.dAbs), dec) + ' ') : '';
 
     return '<div class="ct-card">'
-         + '<div class="ct-topo"><span class="ct-nome">' + l.nome + '</span>'
+         + '<div class="ct-topo"><span class="ct-nome">' + l.nome
+         + '<span class="ct-venc">' + _alVencTxt(l.nome) + '</span></span>'
          + '<span class="ct-sig ' + cls + '">' + sig + '</span></div>'
          + '<div class="ct-preco"><b>' + fmtNum(l.preco, dec) + '</b>'
          + (l.uni ? ('<span class="ct-uni">' + l.uni + '</span>') : '')
@@ -61938,20 +62018,29 @@ function saveSelectedSheets(setOrArr){
         boll: d.bollStatus || null
       };
     });
-    /* A ordem é por distância da tendência, dos dois lados: o contrato mais
-       esticado para cima interessa a quem vende, o mais afundado a quem
-       compra, e a tabela serve aos dois. Sem resíduo calculado, o contrato
-       desce para o fim. */
+    /* Os quadros seguem o vencimento: físico na frente, depois do contrato
+       mais curto ao mais longo, que é como a curva é lida. O contrato mais
+       deslocado da tendência continua destacado no indicador do alto. */
     linhas.sort(function(a,b){
-      var za = (a.z==null) ? -1 : Math.abs(a.z);
-      var zb = (b.z==null) ? -1 : Math.abs(b.z);
-      return (zb - za) || String(a.nome).localeCompare(String(b.nome));
+      var ka = _alVencKey(a.nome), kb = _alVencKey(b.nome);
+      if (ka == null && kb == null) return _alOrdemFis(a.nome, b.nome);
+      if (ka == null) return -1;
+      if (kb == null) return 1;
+      return ka - kb;
     });
 
     var nSup = linhas.filter(function(l){ return l.faixaOrd===1; }).length;
     var nInf = linhas.filter(function(l){ return l.faixaOrd===-1; }).length;
     var nZ2  = linhas.filter(function(l){ return l.z!=null && Math.abs(l.z)>=2; }).length;
-    var topo = linhas[0];
+    var topo = null;
+    linhas.forEach(function(l){
+      if (l.z == null) return;
+      if (!topo || Math.abs(l.z) > Math.abs(topo.z)) topo = l;
+    });
+    if (!topo) topo = linhas[0];
+    var nContr = linhas.filter(function(l){ return _alVencKey(l.nome) != null; }).length;
+    var nFis = linhas.length - nContr;
+    var nVenc = state.vencidos || 0;
 
     function zTxt(z){
       if(z==null) return 'n/d';
@@ -61959,8 +62048,10 @@ function saveSelectedSheets(setOrArr){
     }
 
     kEl.innerHTML =
-      _alKpi('CONTRATOS LIDOS', String(linhas.length),
-             'mercado ' + state.mercado + ', janela de ' + state.win + ' pregões') +
+      _alKpi('CONTRATOS EM VIGOR', String(nContr),
+             (nFis ? ('mais ' + nFis + ' físico' + (nFis===1?'':'s') + ' · ') : '')
+             + 'janela de ' + state.win + ' pregões'
+             + (nVenc ? (' · ' + nVenc + ' vencido' + (nVenc===1?'':'s') + ' fora') : '')) +
       _alKpi('NA FAIXA SUPERIOR', String(nSup),
              nInf ? (nInf + ' na faixa inferior') : 'nenhum na faixa inferior') +
       _alKpi('A 2σ OU MAIS DA TENDÊNCIA', String(nZ2),
@@ -61975,8 +62066,10 @@ function saveSelectedSheets(setOrArr){
 
     _alLeitura(
       'Na janela de <b>' + state.win + ' pregões</b>, <b>' + nSup + '</b> de <b>' + linhas.length
-      + '</b> contrato' + (linhas.length===1?'':'s') + ' de <b>' + state.mercado + '</b> fecharam no '
-      + 'percentil 75 ou acima, e <b>' + nInf + '</b> no percentil 25 ou abaixo. O maior afastamento '
+      + '</b> quadro' + (linhas.length===1?'':'s') + ' de <b>' + state.mercado + '</b>'
+      + (nFis ? (' (' + nContr + ' contrato' + (nContr===1?'':'s') + ' em vigor e ' + nFis
+                 + ' indicador' + (nFis===1?'':'es') + ' físico' + (nFis===1?'':'s') + ')') : '')
+      + ' fecharam no percentil 75 ou acima, e <b>' + nInf + '</b> no percentil 25 ou abaixo. O maior afastamento '
       + 'da tendência é ' + (topo ? ('<b>' + topo.nome + '</b>, a ' + zTxt(topo.z) + ' do resíduo, '
       + 'com último de ' + fmtNum(topo.preco, topo.dec) + (topo.uni?(' '+topo.uni):'')) : '—') + '.'
       + (nZ2 ? (' Há <b>' + nZ2 + '</b> contrato' + (nZ2===1?'':'s') + ' a dois desvios ou mais, '
@@ -62012,6 +62105,8 @@ function saveSelectedSheets(setOrArr){
     }catch(e){}
     /* Fora os cortes de mercado, que não são série de contrato. */
     try{ sheets = sheets.filter(_alEhSerieDeContrato); }catch(e){}
+    /* Fora os vencidos, e o resto na ordem de vencimento. */
+    try{ var _vg = _alVigentes(sheets); sheets = _vg.lista; state.vencidos = _vg.fora; }catch(e){ state.vencidos = 0; }
     // Cap 12 para caber 1 página
     sheets = sheets;
 
@@ -62137,10 +62232,17 @@ function saveSelectedSheets(setOrArr){
       var m = document.getElementById('alertasMercado');
       if(m && m.value!==state.mercado) m.value = state.mercado;
       var j = document.getElementById('alertasJanela');
+      var jl = document.getElementById('alertasJanelaLivre');
+      var jn = document.getElementById('alertasJanelaN');
       if(j){
         var achou = false;
-        Array.prototype.forEach.call(j.options, function(o){ if(+o.value===+state.win) achou = true; });
-        if(achou) j.value = String(state.win);
+        Array.prototype.forEach.call(j.options, function(o){ if(o.value!=='outro' && +o.value===+state.win) achou = true; });
+        /* Quem escolheu "Outra quantidade" continua vendo a caixa mesmo
+           que digite um número igual a uma das opções prontas. */
+        var livre = !achou || j.value === 'outro';
+        j.value = livre ? 'outro' : String(state.win);
+        if(jl) jl.style.display = livre ? 'inline-flex' : 'none';
+        if(jn && livre && +jn.value !== +state.win) jn.value = String(state.win);
       }
       $all('.seg-btn', pane).forEach(function(b){
         b.classList.toggle('active', b.getAttribute('data-mercado')===state.mercado);
@@ -62155,10 +62257,38 @@ function saveSelectedSheets(setOrArr){
       state.mercado = _alm.value || 'boi'; _alEspelha(); render();
     });
     var _alj = document.getElementById('alertasJanela');
+    var _aljl = document.getElementById('alertasJanelaLivre');
+    var _aljn = document.getElementById('alertasJanelaN');
     if(_alj) _alj.addEventListener('change', function(){
+      if(_alj.value === 'outro'){
+        /* Abre a caixa já com a janela atual; o cálculo só refaz quando o
+           número é confirmado. */
+        if(_aljl) _aljl.style.display = 'inline-flex';
+        if(_aljn){ _aljn.value = String(state.win); try{ _aljn.focus(); _aljn.select(); }catch(e){} }
+        return;
+      }
       var v = parseInt(_alj.value,10); if(!isFinite(v) || v<5) v = 30;
       state.win = v; _alEspelha(); render();
     });
+    function _alAplicaLivre(){
+      if(!_aljn) return;
+      /* A caixa perde o foco quando se escolhe uma opção pronta, e o
+         'change' dela chega depois do da lista: sem esta guarda, o número
+         antigo da caixa desfazia a escolha. */
+      if(_alj && _alj.value !== 'outro') return;
+      var v = parseInt(_aljn.value,10);
+      if(!isFinite(v)) { _aljn.value = String(state.win); return; }
+      v = Math.max(5, Math.min(2520, v));
+      _aljn.value = String(v);
+      if(v === state.win) return;
+      state.win = v; _alEspelha(); render();
+    }
+    if(_aljn){
+      _aljn.addEventListener('change', _alAplicaLivre);
+      _aljn.addEventListener('keydown', function(ev){
+        if(ev.key === 'Enter'){ ev.preventDefault(); _alAplicaLivre(); }
+      });
+    }
     /* A folha A4 nasce fechada: ela é o caminho da impressão. O botão
        revela, esconde e diz em qual estado está. */
     var _ala4 = document.getElementById('alertasVerA4');
